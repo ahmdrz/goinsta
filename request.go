@@ -11,7 +11,7 @@ var (
 	lastResponse *http.Response
 	lastJson     string
 	cookie       string
-	jar          *Jar
+	cookiejar    *jar
 )
 
 func (insta *Instagram) sendRequest(endpoint string, post string, login bool) error {
@@ -23,12 +23,12 @@ func (insta *Instagram) sendRequest(endpoint string, post string, login bool) er
 	var err error
 
 	if len(post) > 0 {
-		req, err = http.NewRequest("POST", API_URL+endpoint, bytes.NewBuffer([]byte(post)))
+		req, err = http.NewRequest("POST", GOINSTA_API_URL+endpoint, bytes.NewBuffer([]byte(post)))
 		if err != nil {
 			return err
 		}
 	} else {
-		req, err = http.NewRequest("GET", API_URL+endpoint, nil)
+		req, err = http.NewRequest("GET", GOINSTA_API_URL+endpoint, nil)
 		if err != nil {
 			return err
 		}
@@ -39,16 +39,16 @@ func (insta *Instagram) sendRequest(endpoint string, post string, login bool) er
 	req.Header.Set("Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
 	req.Header.Set("Cookie2", "$Version=1")
 	req.Header.Set("Accept-Language", "en-US")
-	req.Header.Set("User-Agent", USER_AGENT)
+	req.Header.Set("User-Agent", GOINSTA_USER_AGENT)
 
 	tempjar := newJar()
 
 	if !login {
-		for key, value := range jar.cookies { // make a copy of session
+		for key, value := range cookiejar.cookies { // make a copy of session
 			tempjar.cookies[key] = value
 		}
 	} else {
-		tempjar = jar // copy pointers (move sessions)
+		tempjar = cookiejar // copy pointers (move sessions)
 	}
 
 	client := &http.Client{
