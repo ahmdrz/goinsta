@@ -15,6 +15,10 @@ Unofficial Instagram API written in Golang
  - [x] MediaLikers
  - [x] Follow
  - [x] UnFollow
+ - [x] Block
+ - [x] UnBlock
+ - [x] Like
+ - [x] UnLike
 
 This repository is a copy of [Instagram-API-Python](https://github.com/LevPasha/Instagram-API-python) , And original source is [Instagram-API](https://github.com/mgp25/Instagram-API)
 
@@ -40,6 +44,8 @@ func main() {
 	if err := insta.Login(); err != nil {
 		panic(err)
 	}
+
+    defer insta.Logout()
 
 	bytes, err := insta.UserFeed()
 	if err != nil {

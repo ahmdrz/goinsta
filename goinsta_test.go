@@ -75,7 +75,7 @@ func TestSelfUserFeed(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
-	t.Log(string(bytes)[:15])
+	t.Log(string(bytes))
 }
 
 func TestMediaLikers(t *testing.T) {
@@ -121,6 +121,20 @@ func TestFollow(t *testing.T) {
 	}
 
 	bytes, err := insta.Follow("1572292791") // ahmdrz (creator) instagram usernameID
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	t.Log(string(bytes))
+}
+
+func TestLike(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	bytes, err := insta.Like("1336846574982263293") // one of ahmdrz images
 	if err != nil {
 		t.Fatal(err)
 		return
