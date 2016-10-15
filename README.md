@@ -19,6 +19,15 @@ Unofficial Instagram API written in Golang
  - [x] UnBlock
  - [x] Like
  - [x] UnLike
+ - [ ] GetProfileData
+ - [ ] SetPublicAccount
+ - [ ] SetPrivateAccount
+ - [ ] RemoveProfilePicture
+ - [ ] Comment
+ - [ ] DeleteComment
+ - [x] EditMedia
+ - [x] DeleteMedia
+ - [x] MediaInfo
 
 This repository is a copy of [Instagram-API-Python](https://github.com/LevPasha/Instagram-API-python) , And original source is [Instagram-API](https://github.com/mgp25/Instagram-API)
 

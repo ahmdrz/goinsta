@@ -142,3 +142,17 @@ func TestLike(t *testing.T) {
 
 	t.Log(string(bytes))
 }
+
+func TestMediaInfo(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	bytes, err := insta.MediaInfo("1336846574982263293") // one of ahmdrz images
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	t.Log(string(bytes))
+}
