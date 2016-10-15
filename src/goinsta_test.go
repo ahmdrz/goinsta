@@ -3,6 +3,7 @@ package goinsta
 import (
 	"encoding/json"
 	"os"
+	"strconv"
 	"testing"
 )
 
@@ -199,7 +200,7 @@ func TestCommentAndDeleteComment(t *testing.T) {
 	t.Log(string(bytes))
 
 	type Comment struct {
-		ID string `json:"pk"`
+		ID int64 `json:"pk"`
 	}
 
 	var Result struct {
@@ -218,7 +219,7 @@ func TestCommentAndDeleteComment(t *testing.T) {
 		return
 	}
 
-	bytes, err = insta.DeleteComment("1336846574982263293", Result.Comment.ID) // one of ahmdrz images
+	bytes, err = insta.DeleteComment("1336846574982263293", strconv.FormatInt(Result.Comment.ID, 10)) // one of ahmdrz images
 	if err != nil {
 		t.Fatal(err)
 		return
