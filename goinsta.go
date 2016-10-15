@@ -117,3 +117,40 @@ func (insta *Instagram) UserFollowings(userid, maxid string) ([]byte, error) {
 
 	return []byte(lastJson), nil
 }
+
+func (insta *Instagram) UserFollowers(userid, maxid string) ([]byte, error) {
+	err := insta.sendRequest("friendships/"+insta.Informations.UsernameId+"/followers/?max_id="+maxid+"&ig_sig_key_version="+SIG_KEY_VERSION+"&rank_token="+insta.Informations.RankToken, "", false)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return []byte(lastJson), nil
+}
+
+func (insta *Instagram) UserFeed(strings ...string) ([]byte, error) {
+
+	if len(strings) == 2 { // maxid and timestamp
+		err := insta.sendRequest("feed/user/"+insta.Informations.UsernameId+"/?rank_token="+insta.Informations.RankToken+"&maxid="+strings[0]+"&min_timestamp="+strings[1]+"&ranked_content=true", "", false)
+		if err != nil {
+			return []byte{}, err
+		}
+
+		return []byte(lastJson), nil
+	} else if len(strings) == 1 { // only maxid
+		err := insta.sendRequest("feed/user/"+insta.Informations.UsernameId+"/?rank_token="+insta.Informations.RankToken+"&maxid="+strings[0]+"&ranked_content=true", "", false)
+		if err != nil {
+			return []byte{}, err
+		}
+
+		return []byte(lastJson), nil
+	} else if len(strings) == 0 { // nothing
+		err := insta.sendRequest("feed/user/"+insta.Informations.UsernameId+"/?rank_token="+insta.Informations.RankToken+"&ranked_content=true", "", false)
+		if err != nil {
+			return []byte{}, err
+		}
+
+		return []byte(lastJson), nil
+	}
+
+	return []byte{}, fmt.Errorf("Invalid input arguments")
+}

@@ -50,5 +50,29 @@ func TestUserFollowings(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
-	t.Log(string(bytes)[:10])
+	t.Log(string(bytes)[:15])
+}
+
+func TestUserFollowers(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+	bytes, err := insta.UserFollowers(insta.Informations.UsernameId, "")
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	t.Log(string(bytes)[:15])
+}
+
+func TestSelfUserFeed(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+	bytes, err := insta.UserFeed(insta.Informations.UsernameId)
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	t.Log(string(bytes)[:15])
 }
