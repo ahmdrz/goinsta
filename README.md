@@ -5,6 +5,17 @@ Unofficial Instagram API written in Golang
 
 ***
 
+# Methods 
+
+ - [x] Login
+ - [x] Logout
+ - [x] UserFollowings
+ - [x] UserFollowers
+ - [x] UserFeed
+ - [x] MediaLikers
+ - [x] Follow
+ - [x] UnFollow
+
 This repository is a copy of [Instagram-API-Python](https://github.com/LevPasha/Instagram-API-python) , And original source is [Instagram-API](https://github.com/mgp25/Instagram-API)
 
 # How to use ?

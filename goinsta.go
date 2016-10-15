@@ -84,8 +84,9 @@ func (insta *Instagram) Login() error {
 }
 
 func (insta *Instagram) Logout() error {
+	err := insta.sendRequest("accounts/logout/", "", false)
 	jar = nil
-	return insta.sendRequest("accounts/logout/", "", false)
+	return err
 }
 
 func (insta *Instagram) UserFollowings(userid, maxid string) ([]byte, error) {
