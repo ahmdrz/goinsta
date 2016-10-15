@@ -16,32 +16,6 @@ const (
 	SIG_KEY_VERSION = "4"
 )
 
-type UserInfo struct {
-	Username          string `json:"username"`
-	ProfilePictureId  string `json:"profile_pic_id"`
-	ProfilePictureURL string `json:"profile_pic_url"`
-	FullName          string `json:"full_name"`
-	PK                int64  `json:"pk"`
-	IsVerified        bool   `json:"is_verified"`
-	IsPrivate         bool   `json:"is_private"`
-}
-
-type Informations struct {
-	Username   string
-	Password   string
-	DeviceID   string
-	UUID       string
-	UsernameId string
-	RankToken  string
-	Token      string
-}
-
-type Instagram struct {
-	IsLoggedIn   bool
-	Informations Informations
-	LoggedInUser UserInfo
-}
-
 func New(username, password string) *Instagram {
 	jar = newJar()
 	return &Instagram{
@@ -109,6 +83,11 @@ func (insta *Instagram) Login() error {
 	return nil
 }
 
+func (insta *Instagram) Logout() error {
+	jar = nil
+	return insta.sendRequest("accounts/logout/", "", false)
+}
+
 func (insta *Instagram) UserFollowings(userid, maxid string) ([]byte, error) {
 	err := insta.sendRequest("friendships/"+insta.Informations.UsernameId+"/following/?max_id="+maxid+"&ig_sig_key_version="+SIG_KEY_VERSION+"&rank_token="+insta.Informations.RankToken, "", false)
 	if err != nil {
@@ -160,5 +139,57 @@ func (insta *Instagram) MediaLikers(mediaId string) ([]byte, error) {
 	if err != nil {
 		return []byte{}, err
 	}
+	return []byte(lastJson), nil
+}
+
+func (insta *Instagram) Follow(userid string) ([]byte, error) {
+	var Data struct {
+		UUID      string `json:"_uuid"`
+		UID       string `json:"_uid"`
+		UserID    string `json:"user_id"`
+		CSRFToken string `json:"_csrftoken"`
+	}
+
+	Data.UUID = insta.Informations.UUID
+	Data.UID = insta.Informations.UsernameId
+	Data.UserID = userid
+	Data.CSRFToken = insta.Informations.Token
+
+	bytes, err := json.Marshal(Data)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	err = insta.sendRequest("friendships/create/"+userid+"/", generateSignature(string(bytes)), false)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return []byte(lastJson), nil
+}
+
+func (insta *Instagram) UnFollow(userid string) ([]byte, error) {
+	var Data struct {
+		UUID      string `json:"_uuid"`
+		UID       string `json:"_uid"`
+		UserID    string `json:"user_id"`
+		CSRFToken string `json:"_csrftoken"`
+	}
+
+	Data.UUID = insta.Informations.UUID
+	Data.UID = insta.Informations.UsernameId
+	Data.UserID = userid
+	Data.CSRFToken = insta.Informations.Token
+
+	bytes, err := json.Marshal(Data)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	err = insta.sendRequest("friendships/destroy/"+userid+"/", generateSignature(string(bytes)), false)
+	if err != nil {
+		return []byte{}, err
+	}
+
 	return []byte(lastJson), nil
 }

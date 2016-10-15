@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"reflect"
 )
 
 var (
@@ -14,19 +13,6 @@ var (
 	cookie       string
 	jar          *Jar
 )
-
-func cloneValue(source interface{}, destin interface{}) {
-	x := reflect.ValueOf(source)
-	if x.Kind() == reflect.Ptr {
-		starX := x.Elem()
-		y := reflect.New(starX.Type())
-		starY := y.Elem()
-		starY.Set(starX)
-		reflect.ValueOf(destin).Elem().Set(y.Elem())
-	} else {
-		destin = x.Interface()
-	}
-}
 
 func (insta *Instagram) sendRequest(endpoint string, post string, login bool) error {
 	if !insta.IsLoggedIn && !login {

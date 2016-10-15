@@ -39,7 +39,7 @@ func TestLogin(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
-	t.Log("Logged in user", insta.LoggedInUser.FullName)
+	t.Log("Logged in user", insta.LoggedInUser.FullName, insta.Informations.UsernameId)
 }
 
 func TestUserFollowings(t *testing.T) {
@@ -75,7 +75,7 @@ func TestSelfUserFeed(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
-	t.Log(string(bytes))
+	t.Log(string(bytes)[:15])
 }
 
 func TestMediaLikers(t *testing.T) {
@@ -113,4 +113,18 @@ func TestMediaLikers(t *testing.T) {
 	} else {
 		t.Skip("Empty feed")
 	}
+}
+
+func TestFollow(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	bytes, err := insta.Follow("1572292791") // ahmdrz (creator) instagram usernameID
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	t.Log(string(bytes))
 }
