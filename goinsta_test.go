@@ -103,10 +103,14 @@ func TestMediaLikers(t *testing.T) {
 		return
 	}
 
-	bytes, err = insta.MediaLikers(Result.Items[0].Id)
-	if err != nil {
-		t.Fatal(err)
-		return
+	if len(Result.Items) > 0 {
+		bytes, err = insta.MediaLikers(Result.Items[0].Id)
+		if err != nil {
+			t.Fatal(err)
+			return
+		}
+		t.Log(string(bytes)[:30])
+	} else {
+		t.Skip("Empty feed")
 	}
-	t.Log(string(bytes)[:30])
 }
