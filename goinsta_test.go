@@ -50,5 +50,5 @@ func TestUserFollowings(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
-	t.Log(string(bytes)[:100])
+	t.Log(string(bytes)[:10])
 }
