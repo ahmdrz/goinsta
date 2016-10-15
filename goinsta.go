@@ -430,7 +430,7 @@ func (insta *Instagram) RemoveSelfTag(mediaId string) ([]byte, error) {
 }
 
 func (insta *Instagram) TagFeed(tag string) ([]byte, error) {
-	err := insta.sendRequest("feed/tag/"+tag+"/followers/?rank_token="+insta.Informations.RankToken+"&ranked_content=true", "", false)
+	err := insta.sendRequest("feed/tag/"+tag+"/?rank_token="+insta.Informations.RankToken+"&ranked_content=true", "", false)
 	if err != nil {
 		return []byte{}, err
 	}

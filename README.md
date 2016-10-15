@@ -45,6 +45,9 @@ The example is very simple !
 
 Note : *every methods return array of byte , they are JSONs , you have to unmarshal*
 
+
+### GetUserFeed
+
 ```go
 package main
 
@@ -100,6 +103,12 @@ func main() {
 		fmt.Println(item.Id, item.Caption.Text)
 	}
 }
+```
+
+### GetTagFeed (SearchByTagName) 
+
+```go
+
 ```
 
 # Thanks
