@@ -376,3 +376,64 @@ func (insta *Instagram) MediaInfo(mediaId string) ([]byte, error) {
 
 	return []byte(lastJson), nil
 }
+
+func (insta *Instagram) Expose() ([]byte, error) {
+	var Data struct {
+		UUID       string `json:"_uuid"`
+		UID        string `json:"_uid"`
+		Experiment string `json:"experiment"`
+		CSRFToken  string `json:"_csrftoken"`
+		ID         string `json:"id"`
+	}
+
+	Data.UUID = insta.Informations.UUID
+	Data.UID = insta.Informations.UsernameId
+	Data.ID = insta.Informations.UsernameId
+	Data.Experiment = "ig_android_profile_contextual_feed"
+	Data.CSRFToken = insta.Informations.Token
+
+	bytes, err := json.Marshal(Data)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	err = insta.sendRequest("qe/expose/", generateSignature(string(bytes)), false)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return []byte(lastJson), nil
+}
+
+func (insta *Instagram) RemoveSelfTag(mediaId string) ([]byte, error) {
+	var Data struct {
+		UUID      string `json:"_uuid"`
+		UID       string `json:"_uid"`
+		CSRFToken string `json:"_csrftoken"`
+	}
+
+	Data.UUID = insta.Informations.UUID
+	Data.UID = insta.Informations.UsernameId
+	Data.CSRFToken = insta.Informations.Token
+
+	bytes, err := json.Marshal(Data)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	err = insta.sendRequest("media/"+mediaId+"/remove/", generateSignature(string(bytes)), false)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return []byte(lastJson), nil
+}
+
+func (insta *Instagram) TagFeed(tag string) ([]byte, error) {
+	err := insta.sendRequest("feed/tag/"+tag+"/followers/?rank_token="+insta.Informations.RankToken+"&ranked_content=true", "", false)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return []byte(lastJson), nil
+}
