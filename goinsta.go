@@ -43,7 +43,7 @@ type Instagram struct {
 }
 
 func New(username, password string) *Instagram {
-	jar = NewJar()
+	jar = newJar()
 	return &Instagram{
 		Informations: Informations{
 			DeviceID: generateDeviceID(generateMD5Hash(username + password)),

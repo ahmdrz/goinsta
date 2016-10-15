@@ -11,7 +11,7 @@ type Jar struct {
 	cookies map[string][]*http.Cookie
 }
 
-func NewJar() *Jar {
+func newJar() *Jar {
 	jar := new(Jar)
 	jar.cookies = make(map[string][]*http.Cookie)
 	return jar

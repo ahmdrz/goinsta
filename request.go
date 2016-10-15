@@ -55,7 +55,7 @@ func (insta *Instagram) sendRequest(endpoint string, post string, login bool) er
 	req.Header.Set("Accept-Language", "en-US")
 	req.Header.Set("User-Agent", USER_AGENT)
 
-	tempjar := NewJar()
+	tempjar := newJar()
 
 	if !login {
 		for key, value := range jar.cookies { // make a copy of session

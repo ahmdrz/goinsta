@@ -75,7 +75,7 @@ func TestSelfUserFeed(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
-	t.Log(string(bytes)[:15])
+	t.Log(string(bytes))
 }
 
 func TestMediaLikers(t *testing.T) {
