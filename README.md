@@ -20,11 +20,11 @@ Unofficial Instagram API written in Golang
  - [x] Like
  - [x] UnLike
  - [ ] GetProfileData
- - [ ] SetPublicAccount
- - [ ] SetPrivateAccount
- - [ ] RemoveProfilePicture
- - [ ] Comment
- - [ ] DeleteComment
+ - [x] SetPublicAccount
+ - [x] SetPrivateAccount
+ - [x] RemoveProfilePicture
+ - [x] Comment
+ - [x] DeleteComment
  - [x] EditMedia
  - [x] DeleteMedia
  - [x] MediaInfo
@@ -164,8 +164,10 @@ func main() {
 	}
 }
 
+## For more , see example folder
+
 ```
 
 # Thanks
 
-@levpasha
+1. [levpasha](https://github.com/LevPasha)

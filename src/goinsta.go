@@ -351,6 +351,30 @@ func (insta *Instagram) DeleteMedia(mediaId string) ([]byte, error) {
 	return []byte(lastJson), nil
 }
 
+func (insta *Instagram) RemoveProfilePicture() ([]byte, error) {
+	var Data struct {
+		UUID      string `json:"_uuid"`
+		UID       string `json:"_uid"`
+		CSRFToken string `json:"_csrftoken"`
+	}
+
+	Data.UUID = insta.Informations.UUID
+	Data.UID = insta.Informations.UsernameId
+	Data.CSRFToken = insta.Informations.Token
+
+	bytes, err := json.Marshal(Data)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	err = insta.sendRequest("accounts/remove_profile_picture/", generateSignature(string(bytes)), false)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return []byte(lastJson), nil
+}
+
 func (insta *Instagram) MediaInfo(mediaId string) ([]byte, error) {
 	var Data struct {
 		UUID      string `json:"_uuid"`
@@ -431,6 +455,104 @@ func (insta *Instagram) RemoveSelfTag(mediaId string) ([]byte, error) {
 
 func (insta *Instagram) TagFeed(tag string) ([]byte, error) {
 	err := insta.sendRequest("feed/tag/"+tag+"/?rank_token="+insta.Informations.RankToken+"&ranked_content=true", "", false)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return []byte(lastJson), nil
+}
+
+func (insta *Instagram) SetPublicAccount() ([]byte, error) {
+	var Data struct {
+		UUID      string `json:"_uuid"`
+		UID       string `json:"_uid"`
+		CSRFToken string `json:"_csrftoken"`
+	}
+
+	Data.UUID = insta.Informations.UUID
+	Data.UID = insta.Informations.UsernameId
+	Data.CSRFToken = insta.Informations.Token
+
+	bytes, err := json.Marshal(Data)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	err = insta.sendRequest("accounts/set_public/", generateSignature(string(bytes)), false)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return []byte(lastJson), nil
+}
+
+func (insta *Instagram) SetPrivateAccount() ([]byte, error) {
+	var Data struct {
+		UUID      string `json:"_uuid"`
+		UID       string `json:"_uid"`
+		CSRFToken string `json:"_csrftoken"`
+	}
+
+	Data.UUID = insta.Informations.UUID
+	Data.UID = insta.Informations.UsernameId
+	Data.CSRFToken = insta.Informations.Token
+
+	bytes, err := json.Marshal(Data)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	err = insta.sendRequest("accounts/set_private/", generateSignature(string(bytes)), false)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return []byte(lastJson), nil
+}
+
+func (insta *Instagram) Comment(mediaId, text string) ([]byte, error) {
+	var Data struct {
+		UUID        string `json:"_uuid"`
+		UID         string `json:"_uid"`
+		CSRFToken   string `json:"_csrftoken"`
+		CommentText string `json:"comment_text"`
+	}
+
+	Data.UUID = insta.Informations.UUID
+	Data.UID = insta.Informations.UsernameId
+	Data.CSRFToken = insta.Informations.Token
+	Data.CommentText = text
+
+	bytes, err := json.Marshal(Data)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	err = insta.sendRequest("media/"+mediaId+"/comment/", generateSignature(string(bytes)), false)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return []byte(lastJson), nil
+}
+
+func (insta *Instagram) DeleteComment(mediaId, commentId string) ([]byte, error) {
+	var Data struct {
+		UUID      string `json:"_uuid"`
+		UID       string `json:"_uid"`
+		CSRFToken string `json:"_csrftoken"`
+	}
+
+	Data.UUID = insta.Informations.UUID
+	Data.UID = insta.Informations.UsernameId
+	Data.CSRFToken = insta.Informations.Token
+
+	bytes, err := json.Marshal(Data)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	err = insta.sendRequest("media/"+mediaId+"/comment/"+commentId+"/delete/", generateSignature(string(bytes)), false)
 	if err != nil {
 		return []byte{}, err
 	}

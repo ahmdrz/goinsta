@@ -168,5 +168,33 @@ func TestTagFeed(t *testing.T) {
 		return
 	}
 
+	t.Log(string(bytes)[:100])
+}
+
+func TestSetPrivate(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	bytes, err := insta.SetPrivateAccount()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	t.Log(string(bytes))
+}
+
+func TestComment(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	bytes, err := insta.Comment("1336846574982263293", "Hello , I'm your Instagram Bot !") // one of ahmdrz images
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
 	t.Log(string(bytes))
 }
