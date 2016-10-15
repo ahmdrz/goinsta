@@ -40,6 +40,7 @@ Unofficial Instagram API written in Golang
  - [ ] GetRecentActivity
  - [ ] GetFollowingRecentActivity
  - [x] TagFeed
+ - [x] SearchUsername
 
 This repository is a copy of [Instagram-API-Python](https://github.com/LevPasha/Instagram-API-python) , And original source is [Instagram-API](https://github.com/mgp25/Instagram-API)
 

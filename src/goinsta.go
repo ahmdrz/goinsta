@@ -559,3 +559,12 @@ func (insta *Instagram) DeleteComment(mediaId, commentId string) ([]byte, error)
 
 	return []byte(lastJson), nil
 }
+
+func (insta *Instagram) SearchUsername(username string) ([]byte, error) {
+	err := insta.sendRequest("users/"+username+"/usernameinfo/", "", false)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return []byte(lastJson), nil
+}

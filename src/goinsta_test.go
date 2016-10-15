@@ -227,3 +227,39 @@ func TestCommentAndDeleteComment(t *testing.T) {
 
 	t.Log(string(bytes))
 }
+
+func TestSearchUsername(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	bytes, err := insta.SearchUsername("ahmd.rz")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	type User struct {
+		Id       int64  `json:"pk"`
+		Username string `json:"username"`
+	}
+
+	var Result struct {
+		Status string `json:"status"`
+		User   User   `json:"user"`
+	}
+
+	err = json.Unmarshal(bytes, &Result)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if Result.Status != "ok" {
+		t.Fatalf("Incorrect status" + Result.Status)
+	}
+
+	if Result.User.Username != "ahmd.rz" {
+		t.Fatalf("Incorrect username" + Result.User.Username)
+	}
+
+	t.Log(Result)
+}
