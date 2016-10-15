@@ -185,12 +185,40 @@ func TestSetPrivate(t *testing.T) {
 	t.Log(string(bytes))
 }
 
-func TestComment(t *testing.T) {
+func TestCommentAndDeleteComment(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
 	bytes, err := insta.Comment("1336846574982263293", "Hello , I'm your Instagram Bot !") // one of ahmdrz images
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	t.Log(string(bytes))
+
+	type Comment struct {
+		ID string `json:"pk"`
+	}
+
+	var Result struct {
+		Comment Comment `json:"comment"`
+		Status  string  `json:"status"`
+	}
+
+	err = json.Unmarshal(bytes, &Result)
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	if Result.Status != "ok" {
+		t.Fatalf("Incorrect format for comment")
+		return
+	}
+
+	bytes, err = insta.DeleteComment("1336846574982263293", Result.Comment.ID) // one of ahmdrz images
 	if err != nil {
 		t.Fatal(err)
 		return
