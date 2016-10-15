@@ -5,6 +5,10 @@ Unofficial Instagram API written in Golang
 
 ***
 
+# Installation 
+
+`go get -u -v github.com/ahmdrz/goinsta/src`
+
 # Methods 
 
  - [x] Login
@@ -55,7 +59,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/ahmdrz/goinsta"
+	"github.com/ahmdrz/goinsta/src"
 )
 
 func main() {
@@ -114,7 +118,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/ahmdrz/goinsta"
+	"github.com/ahmdrz/goinsta/src"
 )
 
 func main() {
