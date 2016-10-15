@@ -108,6 +108,61 @@ func main() {
 ### GetTagFeed (SearchByTagName) 
 
 ```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+
+	"github.com/ahmdrz/goinsta"
+)
+
+func main() {
+	insta := goinsta.New("USERNAME","PASSWORD")	
+
+	if err := insta.Login(); err != nil {
+		panic(err)
+	}
+	
+	defer insta.Logout()
+
+	bytes, err := insta.TagFeed("Pizza")
+	if err != nil {
+		panic(err)
+	}
+
+	type Caption struct {
+		Status string `json:"status"`
+		Text   string `json:"text"`
+	}
+
+	type Item struct {
+		Id        string  `json:"id"`
+		Caption   Caption `json:"caption"`
+		LikeCount int     `json:"like_count"`
+	}
+
+	var Result struct {
+		Status string `json:"status"`
+		Items  []Item `json:"ranked_items"`
+	}
+
+	err = json.Unmarshal(bytes, &Result)
+	if err != nil {
+		panic(err)
+	}
+
+	if Result.Status != "ok" {
+		panic("Error occured , " + Result.Status)
+	}
+
+	for _, item := range Result.Items {
+		if len(item.Caption.Text) > 30 {
+			item.Caption.Text = item.Caption.Text[:30]
+		}
+		fmt.Println(item.Caption.Text, "-----", item.LikeCount)
+	}
+}
 
 ```
 
