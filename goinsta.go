@@ -143,7 +143,7 @@ func (insta *Instagram) UserFeed(strings ...string) ([]byte, error) {
 		}
 
 		return []byte(lastJson), nil
-	} else if len(strings) == 0 { // nothing
+	} else if len(strings) == 0 { // nothing (current user)
 		err := insta.sendRequest("feed/user/"+insta.Informations.UsernameId+"/?rank_token="+insta.Informations.RankToken+"&ranked_content=true", "", false)
 		if err != nil {
 			return []byte{}, err
@@ -153,4 +153,12 @@ func (insta *Instagram) UserFeed(strings ...string) ([]byte, error) {
 	}
 
 	return []byte{}, fmt.Errorf("Invalid input arguments")
+}
+
+func (insta *Instagram) MediaLikers(mediaId string) ([]byte, error) {
+	err := insta.sendRequest("media/"+mediaId+"/likers/?", "", false)
+	if err != nil {
+		return []byte{}, err
+	}
+	return []byte(lastJson), nil
 }

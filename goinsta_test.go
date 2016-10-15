@@ -1,6 +1,7 @@
 package goinsta
 
 import (
+	"encoding/json"
 	"os"
 	"testing"
 )
@@ -69,10 +70,43 @@ func TestSelfUserFeed(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
-	bytes, err := insta.UserFeed(insta.Informations.UsernameId)
+	bytes, err := insta.UserFeed()
 	if err != nil {
 		t.Fatal(err)
 		return
 	}
 	t.Log(string(bytes)[:15])
+}
+
+func TestMediaLikers(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+	bytes, err := insta.UserFeed()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	type Item struct {
+		Id string `json:"id"`
+	}
+
+	var Result struct {
+		Status string `json:"status"`
+		Items  []Item `json:"items"`
+	}
+
+	err = json.Unmarshal(bytes, &Result)
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	bytes, err = insta.MediaLikers(Result.Items[0].Id)
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	t.Log(string(bytes)[:30])
 }
