@@ -1,13 +1,14 @@
 # goinsta
-[![Build Status](https://travis-ci.org/ahmdrz/goinsta.svg?branch=master)](https://travis-ci.org/ahmdrz/goinsta)
+[![Build Status](https://travis-ci.org/ahmdrz/goinsta.svg?branch=master)](https://travis-ci.org/ahmdrz/goinsta) [![GoDoc](https://godoc.org/github.com/ahmdrz/goinsta?status.svg)](https://godoc.org/github.com/ahmdrz/goinsta) 
 
 Unofficial Instagram API written in Golang
+This library work like android version of instagram
 
 ***
 
 # Installation 
 
-`go get -u -v github.com/ahmdrz/goinsta/src`
+`go get -u -v github.com/ahmdrz/goinsta`
 
 # Methods 
 
@@ -48,66 +49,43 @@ This repository is a copy of [Instagram-API-Python](https://github.com/LevPasha/
 
 The example is very simple !
 
-Note : *every methods return array of byte , they are JSONs , you have to unmarshal*
-
-
 ### GetUserFeed
 
 ```go
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 
-	"github.com/ahmdrz/goinsta/src"
+	"github.com/ahmdrz/goinsta"
 )
 
 func main() {
-	insta := goinsta.New("USERNAME","PASSWORD")
+	insta := goinsta.New("USERNAME", "PASSWORD")
 
 	if err := insta.Login(); err != nil {
 		panic(err)
 	}
 
-    defer insta.Logout()
+	defer insta.Logout()
 
-	bytes, err := insta.UserFeed()
+	resp, err := insta.UserFeed()
 	if err != nil {
 		panic(err)
 	}
 
-	type Caption struct {
-		Status string `json:"status"`
-		Text   string `json:"text"`
+	if resp.Status != "ok" {
+		panic("Error occured , " + resp.Status)
 	}
 
-	type Item struct {
-		Id      string  `json:"id"`
-		Caption Caption `json:"caption"`
-	}
-
-	var Result struct {
-		Status string `json:"status"`
-		Items  []Item `json:"items"`
-	}
-
-	err = json.Unmarshal(bytes, &Result)
-	if err != nil {
-		panic(err)
-	}
-
-	if Result.Status != "ok" {
-		panic("Error occured , " + Result.Status)
-	}
-
-	for _, item := range Result.Items {
+	for _, item := range resp.Items {
 		if len(item.Caption.Text) > 30 {
 			item.Caption.Text = item.Caption.Text[:30]
 		}
-		fmt.Println(item.Id, item.Caption.Text)
+		fmt.Println(item.ID, item.Caption.Text)
 	}
 }
+
 ```
 
 ### GetTagFeed (SearchByTagName) 
@@ -116,10 +94,9 @@ func main() {
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 
-	"github.com/ahmdrz/goinsta/src"
+	"github.com/ahmdrz/goinsta"
 )
 
 func main() {
@@ -131,37 +108,16 @@ func main() {
 	
 	defer insta.Logout()
 
-	bytes, err := insta.TagFeed("Pizza")
+	resp, err := insta.TagFeed("Pizza")
 	if err != nil {
 		panic(err)
 	}
 
-	type Caption struct {
-		Status string `json:"status"`
-		Text   string `json:"text"`
+	if resp.Status != "ok" {
+		panic("Error occured , " + resp.Status)
 	}
 
-	type Item struct {
-		Id        string  `json:"id"`
-		Caption   Caption `json:"caption"`
-		LikeCount int     `json:"like_count"`
-	}
-
-	var Result struct {
-		Status string `json:"status"`
-		Items  []Item `json:"ranked_items"`
-	}
-
-	err = json.Unmarshal(bytes, &Result)
-	if err != nil {
-		panic(err)
-	}
-
-	if Result.Status != "ok" {
-		panic("Error occured , " + Result.Status)
-	}
-
-	for _, item := range Result.Items {
+	for _, item := range resp.Items {
 		if len(item.Caption.Text) > 30 {
 			item.Caption.Text = item.Caption.Text[:30]
 		}
