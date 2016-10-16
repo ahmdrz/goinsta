@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	response "github.com/ahmdrz/goinsta/src/response"
+	response "github.com/ahmdrz/goinsta/response"
 )
 
 // GetLastJson return latest json response from instagram

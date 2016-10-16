@@ -4,7 +4,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/ahmdrz/goinsta/src"
+	"github.com/ahmdrz/goinsta"
 )
 
 func main() {

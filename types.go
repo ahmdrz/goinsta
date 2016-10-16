@@ -1,7 +1,7 @@
 package goinsta
 
 import (
-	response "github.com/ahmdrz/goinsta/src/response"
+	response "github.com/ahmdrz/goinsta/response"
 )
 
 type Informations struct {

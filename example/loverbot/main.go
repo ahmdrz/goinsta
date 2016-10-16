@@ -2,7 +2,7 @@
 package main
 
 import (
-	"github.com/ahmdrz/goinsta/src"
+	"github.com/ahmdrz/goinsta"
 )
 
 func main() {
