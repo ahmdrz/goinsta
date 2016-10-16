@@ -220,35 +220,20 @@ func TestSearchUsername(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	bytes, err := insta.SearchUsername("ahmd.rz")
+	resp, err := insta.GetUsername("ahmd.rz")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	type User struct {
-		Id       int64  `json:"pk"`
-		Username string `json:"username"`
+	if resp.Status != "ok" {
+		t.Fatalf("Incorrect status" + resp.Status)
 	}
 
-	var Result struct {
-		Status string `json:"status"`
-		User   User   `json:"user"`
+	if resp.User.Username != "ahmd.rz" {
+		t.Fatalf("Incorrect username" + resp.User.Username)
 	}
 
-	err = json.Unmarshal(bytes, &Result)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if Result.Status != "ok" {
-		t.Fatalf("Incorrect status" + Result.Status)
-	}
-
-	if Result.User.Username != "ahmd.rz" {
-		t.Fatalf("Incorrect username" + Result.User.Username)
-	}
-
-	t.Log(Result)
+	t.Log(resp.Status)
 }
 
 func TestGetProfileData(t *testing.T) {

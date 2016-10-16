@@ -170,3 +170,25 @@ type ProfileDataResponse struct {
 	StatusResponse
 	User ProfileUserResponse `json:"user"`
 }
+
+// GetUsernameResponse return special userinformation
+type GetUsernameResponse struct {
+	StatusResponse
+	User UsernameResponse `json:"user"`
+}
+
+// UsernameResponse information of each instagram users
+type UsernameResponse struct {
+	User
+	ExternalUrl         string         `json:"external_url"`
+	Biography           string         `json:"biography"`
+	HDProfilePicUrlInfo ImageCondidate `json:"hd_profile_pic_url_info"`
+	UserTagsCount       int            `json:"usertags_count"`
+	MediaCount          int            `json:"media_count"`
+	FollowingCount      int            `json:"following_count"`
+	IsBusiness          bool           `json:"is_business"`
+	AutoExpandChaining  bool           `json:"auto_expand_chaining"`
+	HasChaining         bool           `json:"has_chaining"`
+	FollowerCount       int            `json:"follower_count"`
+	GeoMediaCount       int            `json:"geo_media_count"`
+}

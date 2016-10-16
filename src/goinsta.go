@@ -4,14 +4,22 @@ package goinsta
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"strconv"
 	"strings"
 
 	response "github.com/ahmdrz/goinsta/src/response"
 )
 
+// GetLastJson return latest json response from instagram
 func (insta *Instagram) GetLastJson() string {
 	return lastJson
+}
+
+// GetSessions return current instagram session and cookies
+// Maybe need for webpages that use this API
+func (insta *Instagram) GetSessions() map[string][]*http.Cookie {
+	return cookiejar.cookies
 }
 
 // Const values ,
@@ -183,6 +191,233 @@ func (insta *Instagram) MediaLikers(mediaId string) (response.MediaLikersRespons
 	err = json.Unmarshal([]byte(lastJson), &resp)
 	if err != nil {
 		return response.MediaLikersResponse{}, err
+	}
+
+	return resp, nil
+}
+
+// Expose , expose instagram
+// return error if status was not 'ok' or runtime error
+func (insta *Instagram) Expose() error {
+	var Data struct {
+		UUID       string `json:"_uuid"`
+		UID        string `json:"_uid"`
+		Experiment string `json:"experiment"`
+		CSRFToken  string `json:"_csrftoken"`
+		ID         string `json:"id"`
+	}
+
+	Data.UUID = insta.Informations.UUID
+	Data.UID = insta.Informations.UsernameId
+	Data.ID = insta.Informations.UsernameId
+	Data.Experiment = "ig_android_profile_contextual_feed"
+	Data.CSRFToken = insta.Informations.Token
+
+	bytes, err := json.Marshal(Data)
+	if err != nil {
+		return err
+	}
+
+	err = insta.sendRequest("qe/expose/", generateSignature(string(bytes)), false)
+	if err != nil {
+		return err
+	}
+
+	resp := response.StatusResponse{}
+
+	err = json.Unmarshal([]byte(lastJson), &resp)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// MediaInfo return media information
+func (insta *Instagram) MediaInfo(mediaId string) (response.FeedsResponse, error) {
+	var Data struct {
+		UUID      string `json:"_uuid"`
+		UID       string `json:"_uid"`
+		MediaID   string `json:"media_id"`
+		CSRFToken string `json:"_csrftoken"`
+	}
+
+	Data.UUID = insta.Informations.UUID
+	Data.UID = insta.Informations.UsernameId
+	Data.MediaID = mediaId
+	Data.CSRFToken = insta.Informations.Token
+
+	bytes, err := json.Marshal(Data)
+	if err != nil {
+		return response.FeedsResponse{}, err
+	}
+
+	err = insta.sendRequest("media/"+mediaId+"/info/", generateSignature(string(bytes)), false)
+	if err != nil {
+		return response.FeedsResponse{}, err
+	}
+
+	resp := response.FeedsResponse{}
+
+	err = json.Unmarshal([]byte(lastJson), &resp)
+	if err != nil {
+		return response.FeedsResponse{}, err
+	}
+
+	return resp, nil
+}
+
+// SetPublicAccount Sets account to public
+func (insta *Instagram) SetPublicAccount() (response.ProfileDataResponse, error) {
+	var Data struct {
+		UUID      string `json:"_uuid"`
+		UID       string `json:"_uid"`
+		CSRFToken string `json:"_csrftoken"`
+	}
+
+	Data.UUID = insta.Informations.UUID
+	Data.UID = insta.Informations.UsernameId
+	Data.CSRFToken = insta.Informations.Token
+
+	bytes, err := json.Marshal(Data)
+	if err != nil {
+		return response.ProfileDataResponse{}, err
+	}
+
+	err = insta.sendRequest("accounts/set_public/", generateSignature(string(bytes)), false)
+	if err != nil {
+		return response.ProfileDataResponse{}, err
+	}
+
+	resp := response.ProfileDataResponse{}
+	err = json.Unmarshal([]byte(lastJson), &resp)
+	if err != nil {
+		return response.ProfileDataResponse{}, err
+	}
+
+	return resp, nil
+}
+
+// SetPrivateAccount Sets account to private
+func (insta *Instagram) SetPrivateAccount() (response.ProfileDataResponse, error) {
+	var Data struct {
+		UUID      string `json:"_uuid"`
+		UID       string `json:"_uid"`
+		CSRFToken string `json:"_csrftoken"`
+	}
+
+	Data.UUID = insta.Informations.UUID
+	Data.UID = insta.Informations.UsernameId
+	Data.CSRFToken = insta.Informations.Token
+
+	bytes, err := json.Marshal(Data)
+	if err != nil {
+		return response.ProfileDataResponse{}, err
+	}
+
+	err = insta.sendRequest("accounts/set_private/", generateSignature(string(bytes)), false)
+	if err != nil {
+		return response.ProfileDataResponse{}, err
+	}
+
+	resp := response.ProfileDataResponse{}
+	err = json.Unmarshal([]byte(lastJson), &resp)
+	if err != nil {
+		return response.ProfileDataResponse{}, err
+	}
+
+	return resp, nil
+}
+
+// GetProfileData return current user information
+func (insta *Instagram) GetProfileData() (response.ProfileDataResponse, error) {
+	var Data struct {
+		UUID      string `json:"_uuid"`
+		UID       string `json:"_uid"`
+		CSRFToken string `json:"_csrftoken"`
+	}
+
+	Data.UUID = insta.Informations.UUID
+	Data.UID = insta.Informations.UsernameId
+	Data.CSRFToken = insta.Informations.Token
+
+	bytes, err := json.Marshal(Data)
+	if err != nil {
+		return response.ProfileDataResponse{}, err
+	}
+
+	err = insta.sendRequest("accounts/current_user/?edit=true", generateSignature(string(bytes)), false)
+	if err != nil {
+		return response.ProfileDataResponse{}, err
+	}
+
+	resp := response.ProfileDataResponse{}
+	err = json.Unmarshal([]byte(lastJson), &resp)
+	if err != nil {
+		return response.ProfileDataResponse{}, err
+	}
+
+	return resp, nil
+}
+
+// RemoveProfilePicture will remove current logged in user profile picture
+func (insta *Instagram) RemoveProfilePicture() (response.ProfileDataResponse, error) {
+	var Data struct {
+		UUID      string `json:"_uuid"`
+		UID       string `json:"_uid"`
+		CSRFToken string `json:"_csrftoken"`
+	}
+
+	Data.UUID = insta.Informations.UUID
+	Data.UID = insta.Informations.UsernameId
+	Data.CSRFToken = insta.Informations.Token
+
+	bytes, err := json.Marshal(Data)
+	if err != nil {
+		return response.ProfileDataResponse{}, err
+	}
+
+	err = insta.sendRequest("accounts/remove_profile_picture/", generateSignature(string(bytes)), false)
+	if err != nil {
+		return response.ProfileDataResponse{}, err
+	}
+
+	resp := response.ProfileDataResponse{}
+	err = json.Unmarshal([]byte(lastJson), &resp)
+	if err != nil {
+		return response.ProfileDataResponse{}, err
+	}
+
+	return resp, nil
+}
+
+// GetUsername return information of a user by username
+func (insta *Instagram) GetUsername(username string) (response.GetUsernameResponse, error) {
+	err := insta.sendRequest("users/"+username+"/usernameinfo/", "", false)
+	if err != nil {
+		return response.GetUsernameResponse{}, err
+	}
+
+	resp := response.GetUsernameResponse{}
+	err = json.Unmarshal([]byte(lastJson), &resp)
+	if err != nil {
+		return response.GetUsernameResponse{}, err
+	}
+
+	return resp, nil
+}
+
+// TagFeed search by tags in instagram
+func (insta *Instagram) TagFeed(tag string) (response.TagFeedsResponse, error) {
+	err := insta.sendRequest("feed/tag/"+tag+"/?rank_token="+insta.Informations.RankToken+"&ranked_content=true", "", false)
+	if err != nil {
+		return response.TagFeedsResponse{}, err
+	}
+
+	resp := response.TagFeedsResponse{}
+	err = json.Unmarshal([]byte(lastJson), &resp)
+	if err != nil {
+		return response.TagFeedsResponse{}, err
 	}
 
 	return resp, nil
@@ -396,100 +631,6 @@ func (insta *Instagram) DeleteMedia(mediaId string) ([]byte, error) {
 	return []byte(lastJson), nil
 }
 
-func (insta *Instagram) RemoveProfilePicture() ([]byte, error) {
-	var Data struct {
-		UUID      string `json:"_uuid"`
-		UID       string `json:"_uid"`
-		CSRFToken string `json:"_csrftoken"`
-	}
-
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.CSRFToken = insta.Informations.Token
-
-	bytes, err := json.Marshal(Data)
-	if err != nil {
-		return []byte{}, err
-	}
-
-	err = insta.sendRequest("accounts/remove_profile_picture/", generateSignature(string(bytes)), false)
-	if err != nil {
-		return []byte{}, err
-	}
-
-	return []byte(lastJson), nil
-}
-
-func (insta *Instagram) MediaInfo(mediaId string) (response.FeedsResponse, error) {
-	var Data struct {
-		UUID      string `json:"_uuid"`
-		UID       string `json:"_uid"`
-		MediaID   string `json:"media_id"`
-		CSRFToken string `json:"_csrftoken"`
-	}
-
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.MediaID = mediaId
-	Data.CSRFToken = insta.Informations.Token
-
-	bytes, err := json.Marshal(Data)
-	if err != nil {
-		return response.FeedsResponse{}, err
-	}
-
-	err = insta.sendRequest("media/"+mediaId+"/info/", generateSignature(string(bytes)), false)
-	if err != nil {
-		return response.FeedsResponse{}, err
-	}
-
-	resp := response.FeedsResponse{}
-
-	err = json.Unmarshal([]byte(lastJson), &resp)
-	if err != nil {
-		return response.FeedsResponse{}, err
-	}
-
-	return resp, nil
-}
-
-// Expose , expose instagram
-// return error if status was not 'ok' or runtime error
-func (insta *Instagram) Expose() error {
-	var Data struct {
-		UUID       string `json:"_uuid"`
-		UID        string `json:"_uid"`
-		Experiment string `json:"experiment"`
-		CSRFToken  string `json:"_csrftoken"`
-		ID         string `json:"id"`
-	}
-
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.ID = insta.Informations.UsernameId
-	Data.Experiment = "ig_android_profile_contextual_feed"
-	Data.CSRFToken = insta.Informations.Token
-
-	bytes, err := json.Marshal(Data)
-	if err != nil {
-		return err
-	}
-
-	err = insta.sendRequest("qe/expose/", generateSignature(string(bytes)), false)
-	if err != nil {
-		return err
-	}
-
-	resp := response.StatusResponse{}
-
-	err = json.Unmarshal([]byte(lastJson), &resp)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (insta *Instagram) RemoveSelfTag(mediaId string) ([]byte, error) {
 	var Data struct {
 		UUID      string `json:"_uuid"`
@@ -512,83 +653,6 @@ func (insta *Instagram) RemoveSelfTag(mediaId string) ([]byte, error) {
 	}
 
 	return []byte(lastJson), nil
-}
-
-func (insta *Instagram) TagFeed(tag string) (response.TagFeedsResponse, error) {
-	err := insta.sendRequest("feed/tag/"+tag+"/?rank_token="+insta.Informations.RankToken+"&ranked_content=true", "", false)
-	if err != nil {
-		return response.TagFeedsResponse{}, err
-	}
-
-	resp := response.TagFeedsResponse{}
-	err = json.Unmarshal([]byte(lastJson), &resp)
-	if err != nil {
-		return response.TagFeedsResponse{}, err
-	}
-
-	return resp, nil
-}
-
-// SetPublicAccount Sets account to public
-func (insta *Instagram) SetPublicAccount() (response.ProfileDataResponse, error) {
-	var Data struct {
-		UUID      string `json:"_uuid"`
-		UID       string `json:"_uid"`
-		CSRFToken string `json:"_csrftoken"`
-	}
-
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.CSRFToken = insta.Informations.Token
-
-	bytes, err := json.Marshal(Data)
-	if err != nil {
-		return response.ProfileDataResponse{}, err
-	}
-
-	err = insta.sendRequest("accounts/set_public/", generateSignature(string(bytes)), false)
-	if err != nil {
-		return response.ProfileDataResponse{}, err
-	}
-
-	resp := response.ProfileDataResponse{}
-	err = json.Unmarshal([]byte(lastJson), &resp)
-	if err != nil {
-		return response.ProfileDataResponse{}, err
-	}
-
-	return resp, nil
-}
-
-// SetPrivateAccount Sets account to private
-func (insta *Instagram) SetPrivateAccount() (response.ProfileDataResponse, error) {
-	var Data struct {
-		UUID      string `json:"_uuid"`
-		UID       string `json:"_uid"`
-		CSRFToken string `json:"_csrftoken"`
-	}
-
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.CSRFToken = insta.Informations.Token
-
-	bytes, err := json.Marshal(Data)
-	if err != nil {
-		return response.ProfileDataResponse{}, err
-	}
-
-	err = insta.sendRequest("accounts/set_private/", generateSignature(string(bytes)), false)
-	if err != nil {
-		return response.ProfileDataResponse{}, err
-	}
-
-	resp := response.ProfileDataResponse{}
-	err = json.Unmarshal([]byte(lastJson), &resp)
-	if err != nil {
-		return response.ProfileDataResponse{}, err
-	}
-
-	return resp, nil
 }
 
 func (insta *Instagram) Comment(mediaId, text string) ([]byte, error) {
@@ -639,43 +703,4 @@ func (insta *Instagram) DeleteComment(mediaId, commentId string) ([]byte, error)
 	}
 
 	return []byte(lastJson), nil
-}
-
-func (insta *Instagram) SearchUsername(username string) ([]byte, error) {
-	err := insta.sendRequest("users/"+username+"/usernameinfo/", "", false)
-	if err != nil {
-		return []byte{}, err
-	}
-
-	return []byte(lastJson), nil
-}
-
-func (insta *Instagram) GetProfileData() (response.ProfileDataResponse, error) {
-	var Data struct {
-		UUID      string `json:"_uuid"`
-		UID       string `json:"_uid"`
-		CSRFToken string `json:"_csrftoken"`
-	}
-
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.CSRFToken = insta.Informations.Token
-
-	bytes, err := json.Marshal(Data)
-	if err != nil {
-		return response.ProfileDataResponse{}, err
-	}
-
-	err = insta.sendRequest("accounts/current_user/?edit=true", generateSignature(string(bytes)), false)
-	if err != nil {
-		return response.ProfileDataResponse{}, err
-	}
-
-	resp := response.ProfileDataResponse{}
-	err = json.Unmarshal([]byte(lastJson), &resp)
-	if err != nil {
-		return response.ProfileDataResponse{}, err
-	}
-
-	return resp, nil
 }
