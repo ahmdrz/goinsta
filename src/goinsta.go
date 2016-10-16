@@ -75,8 +75,8 @@ func (insta *Instagram) Login() error {
 	}
 
 	var Result struct {
-		LoggedInUser UserInfo `json:"logged_in_user"`
-		Status       string   `json:"status"`
+		LoggedInUser response.User `json:"logged_in_user"`
+		Status       string        `json:"status"`
 	}
 
 	err = json.Unmarshal([]byte(lastJson), &Result)

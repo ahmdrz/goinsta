@@ -1,7 +1,7 @@
 package goinsta
 
 import (
-	"strconv"
+	response "github.com/ahmdrz/goinsta/src/response"
 )
 
 type Informations struct {
@@ -17,24 +17,5 @@ type Informations struct {
 type Instagram struct {
 	IsLoggedIn   bool
 	Informations Informations
-	LoggedInUser UserInfo
+	LoggedInUser response.User
 }
-
-/////////////////////
-// Instagram types //
-/////////////////////
-type UserInfo struct {
-	Username          string `json:"username"`
-	ProfilePictureId  string `json:"profile_pic_id"`
-	ProfilePictureURL string `json:"profile_pic_url"`
-	FullName          string `json:"full_name"`
-	PK                int64  `json:"pk"`
-	IsVerified        bool   `json:"is_verified"`
-	IsPrivate         bool   `json:"is_private"`
-}
-
-func (user UserInfo) StringID() string {
-	return strconv.FormatInt(user.PK, 10)
-}
-
-/////////////////////////
