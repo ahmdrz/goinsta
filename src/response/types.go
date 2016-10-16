@@ -5,7 +5,12 @@ import (
 )
 
 // Pagination every pagination have next_max_id
-type Pagination struct {
+type Int64Pagination struct {
+	NextMaxID int64 `json:"next_max_id"`
+}
+
+// Pagination every pagination have next_max_id
+type StringPagination struct {
 	NextMaxID string `json:"next_max_id"`
 }
 
@@ -15,7 +20,7 @@ type UsersReponse struct {
 	BigList  bool   `json:"big_list"`
 	Users    []User `json:"users"`
 	PageSize int    `json:"page_size"`
-	Pagination
+	StringPagination
 }
 
 // User , Instagram user informations
@@ -43,7 +48,7 @@ type FeedsResponse struct {
 	NumResults    int                 `json:"num_results"`
 	AutoLoadMore  bool                `json:"auto_load_more_enabled"`
 	MoreAvailable bool                `json:"more_available"`
-	Pagination
+	StringPagination
 }
 
 // TagFeedsResponse struct contains array of MediaItemResponse
@@ -83,7 +88,7 @@ type MediaItemResponse struct {
 	Caption                      string            `json:"caption",omitempty`
 	CaptionIsEdited              bool              `json:"caption_is_edited"`
 	PhotoOfYou                   bool              `json:"photo_of_you"`
-	Pagination
+	Int64Pagination
 }
 
 // ImageVersions struct for image information , urls and etc

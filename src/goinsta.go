@@ -10,6 +10,10 @@ import (
 	response "github.com/ahmdrz/goinsta/src/response"
 )
 
+func (insta *Instagram) GetLastJson() string {
+	return lastJson
+}
+
 // Const values ,
 // GOINSTA Default variables contains API url , user agent and etc...
 // GOINSTA_IG_SIG_KEY is Instagram sign key, It's important
@@ -138,32 +142,35 @@ func (insta *Instagram) UserFollowers(userid, maxid string) (response.UsersRepon
 // If input was one string that we call maxid , mode is pagination
 // If input was two string can pagination by timestamp and maxid
 // If input was empty default value will select.
-func (insta *Instagram) UserFeed(strings ...string) ([]byte, error) {
+func (insta *Instagram) UserFeed(strings ...string) (response.FeedsResponse, error) {
 
 	if len(strings) == 2 { // maxid and timestamp
 		err := insta.sendRequest("feed/user/"+insta.Informations.UsernameId+"/?rank_token="+insta.Informations.RankToken+"&maxid="+strings[0]+"&min_timestamp="+strings[1]+"&ranked_content=true", "", false)
 		if err != nil {
-			return []byte{}, err
+			return response.FeedsResponse{}, err
 		}
-
-		return []byte(lastJson), nil
 	} else if len(strings) == 1 { // only maxid
 		err := insta.sendRequest("feed/user/"+insta.Informations.UsernameId+"/?rank_token="+insta.Informations.RankToken+"&maxid="+strings[0]+"&ranked_content=true", "", false)
 		if err != nil {
-			return []byte{}, err
+			return response.FeedsResponse{}, err
 		}
-
-		return []byte(lastJson), nil
 	} else if len(strings) == 0 { // nothing (current user)
 		err := insta.sendRequest("feed/user/"+insta.Informations.UsernameId+"/?rank_token="+insta.Informations.RankToken+"&ranked_content=true", "", false)
 		if err != nil {
-			return []byte{}, err
+			return response.FeedsResponse{}, err
 		}
+	} else {
+		return response.FeedsResponse{}, fmt.Errorf("invalid input")
 
-		return []byte(lastJson), nil
 	}
 
-	return []byte{}, fmt.Errorf("Invalid input arguments")
+	resp := response.FeedsResponse{}
+	err := json.Unmarshal([]byte(lastJson), &resp)
+	if err != nil {
+		return response.FeedsResponse{}, err
+	}
+
+	return resp, nil
 }
 
 // MediaLikers return likers of a media , input is mediaid of a media
@@ -407,7 +414,7 @@ func (insta *Instagram) RemoveProfilePicture() ([]byte, error) {
 	return []byte(lastJson), nil
 }
 
-func (insta *Instagram) MediaInfo(mediaId string) ([]byte, error) {
+func (insta *Instagram) MediaInfo(mediaId string) (response.FeedsResponse, error) {
 	var Data struct {
 		UUID      string `json:"_uuid"`
 		UID       string `json:"_uid"`
@@ -422,15 +429,22 @@ func (insta *Instagram) MediaInfo(mediaId string) ([]byte, error) {
 
 	bytes, err := json.Marshal(Data)
 	if err != nil {
-		return []byte{}, err
+		return response.FeedsResponse{}, err
 	}
 
 	err = insta.sendRequest("media/"+mediaId+"/info/", generateSignature(string(bytes)), false)
 	if err != nil {
-		return []byte{}, err
+		return response.FeedsResponse{}, err
 	}
 
-	return []byte(lastJson), nil
+	resp := response.FeedsResponse{}
+
+	err = json.Unmarshal([]byte(lastJson), &resp)
+	if err != nil {
+		return response.FeedsResponse{}, err
+	}
+
+	return resp, nil
 }
 
 func (insta *Instagram) Expose() ([]byte, error) {
@@ -485,13 +499,19 @@ func (insta *Instagram) RemoveSelfTag(mediaId string) ([]byte, error) {
 	return []byte(lastJson), nil
 }
 
-func (insta *Instagram) TagFeed(tag string) ([]byte, error) {
+func (insta *Instagram) TagFeed(tag string) (response.TagFeedsResponse, error) {
 	err := insta.sendRequest("feed/tag/"+tag+"/?rank_token="+insta.Informations.RankToken+"&ranked_content=true", "", false)
 	if err != nil {
-		return []byte{}, err
+		return response.TagFeedsResponse{}, err
 	}
 
-	return []byte(lastJson), nil
+	resp := response.TagFeedsResponse{}
+	err = json.Unmarshal([]byte(lastJson), &resp)
+	if err != nil {
+		return response.TagFeedsResponse{}, err
+	}
+
+	return resp, nil
 }
 
 func (insta *Instagram) SetPublicAccount() ([]byte, error) {

@@ -49,6 +49,7 @@ func TestUserFollowings(t *testing.T) {
 	}
 	resp, err := insta.UserFollowings(insta.Informations.UsernameId, "")
 	if err != nil {
+		t.Log(insta.GetLastJson())
 		t.Fatal(err)
 		return
 	}
@@ -61,6 +62,7 @@ func TestUserFollowers(t *testing.T) {
 	}
 	resp, err := insta.UserFollowers(insta.Informations.UsernameId, "")
 	if err != nil {
+		t.Log(insta.GetLastJson())
 		t.Fatal(err)
 		return
 	}
@@ -71,41 +73,26 @@ func TestSelfUserFeed(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
-	bytes, err := insta.UserFeed()
+	resp, err := insta.UserFeed()
 	if err != nil {
 		t.Fatal(err)
 		return
 	}
-	t.Log(string(bytes))
+	t.Log(resp.Status)
 }
 
 func TestMediaLikers(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
-	bytes, err := insta.UserFeed()
+	resp, err := insta.UserFeed()
 	if err != nil {
 		t.Fatal(err)
 		return
 	}
 
-	type Item struct {
-		Id string `json:"id"`
-	}
-
-	var Result struct {
-		Status string `json:"status"`
-		Items  []Item `json:"items"`
-	}
-
-	err = json.Unmarshal(bytes, &Result)
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
-
-	if len(Result.Items) > 0 {
-		bytes, err = insta.MediaLikers(Result.Items[0].Id)
+	if len(resp.Items) > 0 {
+		bytes, err := insta.MediaLikers(resp.Items[0].ID)
 		if err != nil {
 			t.Fatal(err)
 			return
@@ -149,13 +136,13 @@ func TestMediaInfo(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	bytes, err := insta.MediaInfo("1336846574982263293") // one of ahmdrz images
+	resp, err := insta.MediaInfo("1336846574982263293") // one of ahmdrz images
 	if err != nil {
 		t.Fatal(err)
 		return
 	}
 
-	t.Log(string(bytes))
+	t.Log(resp.Status)
 }
 
 func TestTagFeed(t *testing.T) {
@@ -163,13 +150,13 @@ func TestTagFeed(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	bytes, err := insta.TagFeed("pizza") // one of ahmdrz images
+	resp, err := insta.TagFeed("pizza") // one of ahmdrz images
 	if err != nil {
 		t.Fatal(err)
 		return
 	}
 
-	t.Log(string(bytes)[:100])
+	t.Log(resp.Items[0])
 }
 
 func TestSetPrivate(t *testing.T) {
