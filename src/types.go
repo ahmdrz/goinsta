@@ -33,6 +33,6 @@ type UserInfo struct {
 	IsPrivate         bool   `json:"is_private"`
 }
 
-func (user UserInfo) StringID() {
+func (user UserInfo) StringID() string {
 	return strconv.FormatInt(user.PK, 10)
 }
