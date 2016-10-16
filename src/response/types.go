@@ -78,14 +78,14 @@ type MediaItemResponse struct {
 	User                         User              `json:"user"`
 	OrganicTrackingToken         string            `json:"organic_tracking_token"`
 	LikeCount                    int               `json:"like_count"`
-	TopLikers                    []string          `json:"top_likers"`
+	TopLikers                    []string          `json:"top_likers",omitempty`
 	HasLiked                     bool              `json:"has_liked"`
 	HasMoreComments              bool              `json:"has_more_comments"`
 	MaxNumVisiblePreviewComments int               `json:"max_num_visible_preview_comments"`
-	PreviewComments              []CommentResponse `json:"preview_comments"`
-	Comments                     []CommentResponse `json:"comments"`
+	PreviewComments              []CommentResponse `json:"preview_comments",omitempty`
+	Comments                     []CommentResponse `json:"comments",omitempty`
 	CommentCount                 int               `json:"comment_count"`
-	Caption                      string            `json:"caption",omitempty`
+	Caption                      Caption           `json:"caption",omitempty`
 	CaptionIsEdited              bool              `json:"caption_is_edited"`
 	PhotoOfYou                   bool              `json:"photo_of_you"`
 	Int64Pagination
@@ -101,6 +101,12 @@ type ImageCondidate struct {
 	Url    string `json:"url"`
 	Width  int    `json:"width"`
 	Height int    `json:"height"`
+}
+
+// Caption struct point to caption of a media
+type Caption struct {
+	CommentResponse
+	HasTranslation bool `json:"has_translation"`
 }
 
 // Location struct mean where photo or video taken
