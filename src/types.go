@@ -36,3 +36,5 @@ type UserInfo struct {
 func (user UserInfo) StringID() string {
 	return strconv.FormatInt(user.PK, 10)
 }
+
+/////////////////////////
