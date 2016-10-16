@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ahmdrz/goinsta/src/response"
+	response "github.com/ahmdrz/goinsta/src/response"
 )
 
 // Const values ,
@@ -102,24 +102,36 @@ func (insta *Instagram) Logout() error {
 
 // UserFollowings return followings of specific user
 // skip maxid with empty string for get first page
-func (insta *Instagram) UserFollowings(userid, maxid string) ([]byte, error) {
+func (insta *Instagram) UserFollowings(userid, maxid string) (response.UsersReponse, error) {
 	err := insta.sendRequest("friendships/"+insta.Informations.UsernameId+"/following/?max_id="+maxid+"&ig_sig_key_version="+GOINSTA_SIG_KEY_VERSION+"&rank_token="+insta.Informations.RankToken, "", false)
 	if err != nil {
-		return []byte{}, err
+		return response.UsersReponse{}, err
 	}
 
-	return []byte(lastJson), nil
+	resp := response.UsersReponse{}
+	err = json.Unmarshal([]byte(lastJson), &resp)
+	if err != nil {
+		return response.UsersReponse{}, err
+	}
+
+	return resp, nil
 }
 
 // UserFollowers return followers of specific user
 // skip maxid with empty string for get first page
-func (insta *Instagram) UserFollowers(userid, maxid string) ([]byte, error) {
+func (insta *Instagram) UserFollowers(userid, maxid string) (response.UsersReponse, error) {
 	err := insta.sendRequest("friendships/"+insta.Informations.UsernameId+"/followers/?max_id="+maxid+"&ig_sig_key_version="+GOINSTA_SIG_KEY_VERSION+"&rank_token="+insta.Informations.RankToken, "", false)
 	if err != nil {
-		return []byte{}, err
+		return response.UsersReponse{}, err
 	}
 
-	return []byte(lastJson), nil
+	resp := response.UsersReponse{}
+	err = json.Unmarshal([]byte(lastJson), &resp)
+	if err != nil {
+		return response.UsersReponse{}, err
+	}
+
+	return resp, nil
 }
 
 // UserFeed has tree mode ,

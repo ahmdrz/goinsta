@@ -47,24 +47,24 @@ func TestUserFollowings(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
-	bytes, err := insta.UserFollowings(insta.Informations.UsernameId, "")
+	resp, err := insta.UserFollowings(insta.Informations.UsernameId, "")
 	if err != nil {
 		t.Fatal(err)
 		return
 	}
-	t.Log(string(bytes)[:15])
+	t.Log(resp.Status)
 }
 
 func TestUserFollowers(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
-	bytes, err := insta.UserFollowers(insta.Informations.UsernameId, "")
+	resp, err := insta.UserFollowers(insta.Informations.UsernameId, "")
 	if err != nil {
 		t.Fatal(err)
 		return
 	}
-	t.Log(string(bytes)[:15])
+	t.Log(resp.Status)
 }
 
 func TestSelfUserFeed(t *testing.T) {
