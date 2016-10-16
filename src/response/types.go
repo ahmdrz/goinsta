@@ -1,4 +1,4 @@
-package goinsta
+package goinstaresponse
 
 // UsersResponse
 type UsersReponse struct {
