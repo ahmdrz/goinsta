@@ -1,4 +1,7 @@
 # goinsta
+
+> Golang Instagram API , Unofficial Instagram API for Golang
+
 [![Build Status](https://travis-ci.org/ahmdrz/goinsta.svg?branch=master)](https://travis-ci.org/ahmdrz/goinsta) [![GoDoc](https://godoc.org/github.com/ahmdrz/goinsta?status.svg)](https://godoc.org/github.com/ahmdrz/goinsta) 
 
 Unofficial Instagram API written in Golang
