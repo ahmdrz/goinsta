@@ -174,12 +174,18 @@ func (insta *Instagram) UserFeed(strings ...string) (response.FeedsResponse, err
 }
 
 // MediaLikers return likers of a media , input is mediaid of a media
-func (insta *Instagram) MediaLikers(mediaId string) ([]byte, error) {
+func (insta *Instagram) MediaLikers(mediaId string) (response.MediaLikersResponse, error) {
 	err := insta.sendRequest("media/"+mediaId+"/likers/?", "", false)
 	if err != nil {
-		return []byte{}, err
+		return response.MediaLikersResponse{}, err
 	}
-	return []byte(lastJson), nil
+	resp := response.MediaLikersResponse{}
+	err = json.Unmarshal([]byte(lastJson), &resp)
+	if err != nil {
+		return response.MediaLikersResponse{}, err
+	}
+
+	return resp, nil
 }
 
 func (insta *Instagram) Follow(userid string) ([]byte, error) {
@@ -447,7 +453,9 @@ func (insta *Instagram) MediaInfo(mediaId string) (response.FeedsResponse, error
 	return resp, nil
 }
 
-func (insta *Instagram) Expose() ([]byte, error) {
+// Expose , expose instagram
+// return error if status was not 'ok' or runtime error
+func (insta *Instagram) Expose() error {
 	var Data struct {
 		UUID       string `json:"_uuid"`
 		UID        string `json:"_uid"`
@@ -464,15 +472,22 @@ func (insta *Instagram) Expose() ([]byte, error) {
 
 	bytes, err := json.Marshal(Data)
 	if err != nil {
-		return []byte{}, err
+		return err
 	}
 
 	err = insta.sendRequest("qe/expose/", generateSignature(string(bytes)), false)
 	if err != nil {
-		return []byte{}, err
+		return err
 	}
 
-	return []byte(lastJson), nil
+	resp := response.StatusResponse{}
+
+	err = json.Unmarshal([]byte(lastJson), &resp)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (insta *Instagram) RemoveSelfTag(mediaId string) ([]byte, error) {
@@ -514,7 +529,8 @@ func (insta *Instagram) TagFeed(tag string) (response.TagFeedsResponse, error) {
 	return resp, nil
 }
 
-func (insta *Instagram) SetPublicAccount() ([]byte, error) {
+// SetPublicAccount Sets account to public
+func (insta *Instagram) SetPublicAccount() (response.ProfileDataResponse, error) {
 	var Data struct {
 		UUID      string `json:"_uuid"`
 		UID       string `json:"_uid"`
@@ -527,18 +543,25 @@ func (insta *Instagram) SetPublicAccount() ([]byte, error) {
 
 	bytes, err := json.Marshal(Data)
 	if err != nil {
-		return []byte{}, err
+		return response.ProfileDataResponse{}, err
 	}
 
 	err = insta.sendRequest("accounts/set_public/", generateSignature(string(bytes)), false)
 	if err != nil {
-		return []byte{}, err
+		return response.ProfileDataResponse{}, err
 	}
 
-	return []byte(lastJson), nil
+	resp := response.ProfileDataResponse{}
+	err = json.Unmarshal([]byte(lastJson), &resp)
+	if err != nil {
+		return response.ProfileDataResponse{}, err
+	}
+
+	return resp, nil
 }
 
-func (insta *Instagram) SetPrivateAccount() ([]byte, error) {
+// SetPrivateAccount Sets account to private
+func (insta *Instagram) SetPrivateAccount() (response.ProfileDataResponse, error) {
 	var Data struct {
 		UUID      string `json:"_uuid"`
 		UID       string `json:"_uid"`
@@ -551,15 +574,21 @@ func (insta *Instagram) SetPrivateAccount() ([]byte, error) {
 
 	bytes, err := json.Marshal(Data)
 	if err != nil {
-		return []byte{}, err
+		return response.ProfileDataResponse{}, err
 	}
 
 	err = insta.sendRequest("accounts/set_private/", generateSignature(string(bytes)), false)
 	if err != nil {
-		return []byte{}, err
+		return response.ProfileDataResponse{}, err
 	}
 
-	return []byte(lastJson), nil
+	resp := response.ProfileDataResponse{}
+	err = json.Unmarshal([]byte(lastJson), &resp)
+	if err != nil {
+		return response.ProfileDataResponse{}, err
+	}
+
+	return resp, nil
 }
 
 func (insta *Instagram) Comment(mediaId, text string) ([]byte, error) {
@@ -621,7 +650,7 @@ func (insta *Instagram) SearchUsername(username string) ([]byte, error) {
 	return []byte(lastJson), nil
 }
 
-func (insta *Instagram) GetProfileData() ([]byte, error) {
+func (insta *Instagram) GetProfileData() (response.ProfileDataResponse, error) {
 	var Data struct {
 		UUID      string `json:"_uuid"`
 		UID       string `json:"_uid"`
@@ -634,13 +663,19 @@ func (insta *Instagram) GetProfileData() ([]byte, error) {
 
 	bytes, err := json.Marshal(Data)
 	if err != nil {
-		return []byte{}, err
+		return response.ProfileDataResponse{}, err
 	}
 
 	err = insta.sendRequest("accounts/current_user/?edit=true", generateSignature(string(bytes)), false)
 	if err != nil {
-		return []byte{}, err
+		return response.ProfileDataResponse{}, err
 	}
 
-	return []byte(lastJson), nil
+	resp := response.ProfileDataResponse{}
+	err = json.Unmarshal([]byte(lastJson), &resp)
+	if err != nil {
+		return response.ProfileDataResponse{}, err
+	}
+
+	return resp, nil
 }

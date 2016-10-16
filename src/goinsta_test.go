@@ -92,12 +92,12 @@ func TestMediaLikers(t *testing.T) {
 	}
 
 	if len(resp.Items) > 0 {
-		bytes, err := insta.MediaLikers(resp.Items[0].ID)
+		result, err := insta.MediaLikers(resp.Items[0].ID)
 		if err != nil {
 			t.Fatal(err)
 			return
 		}
-		t.Log(string(bytes)[:30])
+		t.Log(result.Status)
 	} else {
 		t.Skip("Empty feed")
 	}
@@ -164,13 +164,13 @@ func TestSetPrivate(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	bytes, err := insta.SetPrivateAccount()
+	resp, err := insta.SetPrivateAccount()
 	if err != nil {
 		t.Fatal(err)
 		return
 	}
 
-	t.Log(string(bytes))
+	t.Log(resp.Status)
 }
 
 func TestCommentAndDeleteComment(t *testing.T) {
@@ -256,10 +256,10 @@ func TestGetProfileData(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	bytes, err := insta.GetProfileData()
+	resp, err := insta.GetProfileData()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	t.Log(string(bytes))
+	t.Log(resp.User.FullName)
 }

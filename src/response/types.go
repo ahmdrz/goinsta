@@ -4,6 +4,11 @@ import (
 	"strconv"
 )
 
+// Status struct point to if response is ok or not
+type StatusResponse struct {
+	Status string `json:"status"`
+}
+
 // Pagination every pagination have next_max_id
 type Int64Pagination struct {
 	NextMaxID int64 `json:"next_max_id"`
@@ -16,7 +21,7 @@ type StringPagination struct {
 
 // UsersResponse
 type UsersReponse struct {
-	Status   string `json:"status"`
+	StatusResponse
 	BigList  bool   `json:"big_list"`
 	Users    []User `json:"users"`
 	PageSize int    `json:"page_size"`
@@ -43,7 +48,7 @@ func (user User) StringID() string {
 
 // FeedsResponse struct contains array of media and can pagination
 type FeedsResponse struct {
-	Status        string              `json:"status"`
+	StatusResponse
 	Items         []MediaItemResponse `json:"items"`
 	NumResults    int                 `json:"num_results"`
 	AutoLoadMore  bool                `json:"auto_load_more_enabled"`
@@ -123,7 +128,7 @@ type Location struct {
 
 // CommentResponse struct is a object for comment under media
 type CommentResponse struct {
-	Status       string `json:"status"`
+	StatusResponse
 	UserID       int64  `json:"user_id"`
 	CreatedAtUTC int64  `json:"created_at_utc"`
 	CreatedAt    int64  `json:"created_at"`
@@ -134,4 +139,34 @@ type CommentResponse struct {
 	MediaID      int64  `json:"media_id"`
 	PK           int64  `json:"pk"`
 	Type         int    `json:"type"`
+}
+
+// MediaLikersResponse struct for get array of users that like a media
+type MediaLikersResponse struct {
+	StatusResponse
+	UserCount int    `json:"user_count"`
+	Users     []User `json:"users"`
+}
+
+// ProfileUserResponse struct is current logged in user profile data
+// It's very similar to User struct but have more features
+// Gender -> 1 male , 2 female , 3 unknow
+type ProfileUserResponse struct {
+	User
+	//Birthday -> what the hell is ?
+	PhoneNumber             string           `json:"phone_number"`
+	HDProfilePicVersions    []ImageCondidate `json:"hd_profile_pic_versions"`
+	Gender                  int              `json:"gender"`
+	ShowConversionEditEntry bool             `json:"show_conversion_edit_entry"`
+	ExternalLynxUrl         string           `json:"external_lynx_url"`
+	Biography               string           `json:"biography"`
+	HDProfilePicUrlInfo     ImageCondidate   `json:"hd_profile_pic_url_info"`
+	Email                   string           `json:"email"`
+	ExternalUrl             string           `json:"external_url"`
+}
+
+// ProfileDataResponse have StatusResponse and ProfileUserResponse
+type ProfileDataResponse struct {
+	StatusResponse
+	User ProfileUserResponse `json:"user"`
 }
