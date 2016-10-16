@@ -704,3 +704,51 @@ func (insta *Instagram) DeleteComment(mediaId, commentId string) ([]byte, error)
 
 	return []byte(lastJson), nil
 }
+
+func (insta *Instagram) GetRecentRecipients() ([]byte, error) {
+	err := insta.sendRequest("direct_share/recent_recipients/", "", false)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return []byte(lastJson), nil
+}
+
+func (insta *Instagram) Explore() ([]byte, error) {
+	err := insta.sendRequest("discover/explore/", "", false)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return []byte(lastJson), nil
+}
+
+func (insta *Instagram) ChangePassword(newpassword string) ([]byte, error) {
+	var Data struct {
+		UUID         string `json:"_uuid"`
+		UID          string `json:"_uid"`
+		CSRFToken    string `json:"_csrftoken"`
+		OldPassword  string `json:"old_password"`
+		NewPassword1 string `json:"new_password1"`
+		NewPassword2 string `json:"new_password2"`
+	}
+
+	Data.UUID = insta.Informations.UUID
+	Data.UID = insta.Informations.UsernameId
+	Data.CSRFToken = insta.Informations.Token
+	Data.OldPassword = insta.Informations.Password
+	Data.NewPassword1 = newpassword
+	Data.NewPassword2 = newpassword
+
+	bytes, err := json.Marshal(Data)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	err = insta.sendRequest("accounts/change_password/", generateSignature(string(bytes)), false)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return []byte(lastJson), nil
+}

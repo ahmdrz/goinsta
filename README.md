@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/ahmdrz/goinsta.svg?branch=master)](https://travis-ci.org/ahmdrz/goinsta) [![GoDoc](https://godoc.org/github.com/ahmdrz/goinsta?status.svg)](https://godoc.org/github.com/ahmdrz/goinsta) 
 
 Unofficial Instagram API written in Golang
+
 This library work like android version of instagram
 
 ***
@@ -42,6 +43,8 @@ This library work like android version of instagram
  - [ ] GetFollowingRecentActivity
  - [x] TagFeed
  - [x] SearchUsername
+ - [x] GetRecentRecipients
+ - [x] ChangePassword
 
 This repository is a copy of [Instagram-API-Python](https://github.com/LevPasha/Instagram-API-python) , And original source is [Instagram-API](https://github.com/mgp25/Instagram-API)
 
@@ -127,7 +130,7 @@ func main() {
 
 ```
 
-## For more , see example folder
+For more , see example folder
 
 # Thanks
 
