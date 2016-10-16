@@ -23,7 +23,7 @@ Unofficial Instagram API written in Golang
  - [x] UnBlock
  - [x] Like
  - [x] UnLike
- - [ ] GetProfileData
+ - [x] GetProfileData
  - [x] SetPublicAccount
  - [x] SetPrivateAccount
  - [x] RemoveProfilePicture

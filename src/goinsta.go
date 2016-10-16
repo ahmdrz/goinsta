@@ -8,6 +8,9 @@ import (
 	"strings"
 )
 
+// Const values ,
+// GOINSTA Default variables contains API url , user agent and etc...
+// GOINSTA_IG_SIG_KEY is Instagram sign key, It's important
 const (
 	GOINSTA_API_URL         = "https://i.instagram.com/api/v1/"
 	GOINSTA_USER_AGENT      = "Instagram 8.2.0 Android (18/4.3; 320dpi; 720x1280; Xiaomi; HM 1SW; armani; qcom; en_US)"
@@ -16,6 +19,9 @@ const (
 	GOINSTA_SIG_KEY_VERSION = "4"
 )
 
+// New try to fill Instagram struct
+// New does not try to login , it will only fill
+// Instagram struct
 func New(username, password string) *Instagram {
 	cookiejar = newJar()
 	return &Instagram{
@@ -28,6 +34,8 @@ func New(username, password string) *Instagram {
 	}
 }
 
+// Login to Instagram.
+// return error if can't send request to instagram server
 func (insta *Instagram) Login() error {
 	err := insta.sendRequest("si/fetch_headers/?challenge_type=signup&guid="+generateUUID(false), "", true)
 	if err != nil {
@@ -83,12 +91,14 @@ func (insta *Instagram) Login() error {
 	return nil
 }
 
+// Logout of Instagram
 func (insta *Instagram) Logout() error {
 	err := insta.sendRequest("accounts/logout/", "", false)
 	cookiejar = nil
 	return err
 }
 
+// UserFollowings return followings of specific user
 func (insta *Instagram) UserFollowings(userid, maxid string) ([]byte, error) {
 	err := insta.sendRequest("friendships/"+insta.Informations.UsernameId+"/following/?max_id="+maxid+"&ig_sig_key_version="+GOINSTA_SIG_KEY_VERSION+"&rank_token="+insta.Informations.RankToken, "", false)
 	if err != nil {
@@ -98,6 +108,7 @@ func (insta *Instagram) UserFollowings(userid, maxid string) ([]byte, error) {
 	return []byte(lastJson), nil
 }
 
+// UserFollowers return followers of specific user
 func (insta *Instagram) UserFollowers(userid, maxid string) ([]byte, error) {
 	err := insta.sendRequest("friendships/"+insta.Informations.UsernameId+"/followers/?max_id="+maxid+"&ig_sig_key_version="+GOINSTA_SIG_KEY_VERSION+"&rank_token="+insta.Informations.RankToken, "", false)
 	if err != nil {
@@ -107,6 +118,10 @@ func (insta *Instagram) UserFollowers(userid, maxid string) ([]byte, error) {
 	return []byte(lastJson), nil
 }
 
+// UserFeed has tree mode ,
+// If input was one string that we call maxid , mode is pagination
+// If input was two string can pagination by timestamp and maxid
+// If input was empty default value will select.
 func (insta *Instagram) UserFeed(strings ...string) ([]byte, error) {
 
 	if len(strings) == 2 { // maxid and timestamp
@@ -135,6 +150,7 @@ func (insta *Instagram) UserFeed(strings ...string) ([]byte, error) {
 	return []byte{}, fmt.Errorf("Invalid input arguments")
 }
 
+// MediaLikers return likers of a media , input is mediaid of a media
 func (insta *Instagram) MediaLikers(mediaId string) ([]byte, error) {
 	err := insta.sendRequest("media/"+mediaId+"/likers/?", "", false)
 	if err != nil {
@@ -562,6 +578,30 @@ func (insta *Instagram) DeleteComment(mediaId, commentId string) ([]byte, error)
 
 func (insta *Instagram) SearchUsername(username string) ([]byte, error) {
 	err := insta.sendRequest("users/"+username+"/usernameinfo/", "", false)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return []byte(lastJson), nil
+}
+
+func (insta *Instagram) GetProfileData() ([]byte, error) {
+	var Data struct {
+		UUID      string `json:"_uuid"`
+		UID       string `json:"_uid"`
+		CSRFToken string `json:"_csrftoken"`
+	}
+
+	Data.UUID = insta.Informations.UUID
+	Data.UID = insta.Informations.UsernameId
+	Data.CSRFToken = insta.Informations.Token
+
+	bytes, err := json.Marshal(Data)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	err = insta.sendRequest("accounts/current_user/?edit=true", generateSignature(string(bytes)), false)
 	if err != nil {
 		return []byte{}, err
 	}

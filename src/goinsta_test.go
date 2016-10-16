@@ -263,3 +263,16 @@ func TestSearchUsername(t *testing.T) {
 
 	t.Log(Result)
 }
+
+func TestGetProfileData(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	bytes, err := insta.GetProfileData()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Log(string(bytes))
+}
