@@ -204,7 +204,7 @@ func TestCommentAndDeleteComment(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	bytes, err := insta.Comment("1336846574982263293", "Hello , I'm your Instagram Bot !") // one of ahmdrz images
+	bytes, err := insta.Comment("1363799876794028707", "Wow <3 pizza !") // random image ! from search by tags on pizza
 	if err != nil {
 		t.Fatal(err)
 		return
@@ -232,7 +232,7 @@ func TestCommentAndDeleteComment(t *testing.T) {
 		return
 	}
 
-	bytes, err = insta.DeleteComment("1336846574982263293", strconv.FormatInt(Result.Comment.ID, 10)) // one of ahmdrz images
+	bytes, err = insta.DeleteComment("1363799876794028707", strconv.FormatInt(Result.Comment.ID, 10))
 	if err != nil {
 		t.Fatal(err)
 		return
