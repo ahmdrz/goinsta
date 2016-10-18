@@ -34,7 +34,49 @@ func (insta *Instagram) GetSessions() map[string][]*http.Cookie {
 // Const values ,
 // GOINSTA Default variables contains API url , user agent and etc...
 // GOINSTA_IG_SIG_KEY is Instagram sign key, It's important
+// Filter_<name>
 const (
+	Filter_Walden           = 20
+	Filter_Crema            = 616
+	Filter_Reyes            = 614
+	Filter_Moon             = 111
+	Filter_Ashby            = 116
+	Filter_Maven            = 118
+	Filter_Brannan          = 22
+	Filter_Hefe             = 21
+	Filter_Valencia         = 25
+	Filter_Clarendon        = 112
+	Filter_Helena           = 117
+	Filter_Brooklyn         = 115
+	Filter_Dogpatch         = 105
+	Filter_Ludwig           = 603
+	Filter_Stinson          = 109
+	Filter_Inkwell          = 10
+	Filter_Rise             = 23
+	Filter_Perpetua         = 608
+	Filter_Juno             = 613
+	Filter_Charmes          = 108
+	Filter_Ginza            = 107
+	Filter_Hudson           = 26
+	Filter_Normat           = 0
+	Filter_Slumber          = 605
+	Filter_Lark             = 615
+	Filter_Skyline          = 113
+	Filter_Kelvin           = 16
+	Filter_1977             = 14
+	Filter_Lo_Fi            = 2
+	Filter_Aden             = 612
+	Filter_Amaro            = 24
+	Filter_Sutro            = 18
+	Filter_Vasper           = 106
+	Filter_Nashville        = 15
+	Filter_X_Pro_II         = 1
+	Filter_Mayfair          = 17
+	Filter_Toaster          = 19
+	Filter_Earlybird        = 3
+	Filter_Willow           = 28
+	Filter_Sierra           = 27
+	Filter_Gingham          = 114
 	GOINSTA_API_URL         = "https://i.instagram.com/api/v1/"
 	GOINSTA_USER_AGENT      = "Instagram 8.2.0 Android (18/4.3; 320dpi; 720x1280; Xiaomi; HM 1SW; armani; qcom; en_US)"
 	GOINSTA_IG_SIG_KEY      = "55e91155636eaa89ba5ed619eb4645a4daf1103f2161dbfe6fd94d5ea7716095"
@@ -42,6 +84,7 @@ const (
 	GOINSTA_SIG_KEY_VERSION = "4"
 )
 
+// GOINSTA_DEVICE_SETTINGS variable is a simulate of an android device
 var GOINSTA_DEVICE_SETTINGS = map[string]interface{}{
 	"manufacturer":    "Xiaomi",
 	"model":           "HM 1SW",
@@ -440,7 +483,7 @@ func (insta *Instagram) TagFeed(tag string) (response.TagFeedsResponse, error) {
 }
 
 // UploadPhoto can upload your photo with any quality , better to use 87
-func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upload_id int64, quality int) (response.UploadPhotoResponse, error) {
+func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upload_id int64, quality int, filter_type int) (response.UploadPhotoResponse, error) {
 	photo_name := fmt.Sprintf("pending_media_%s.jpg", upload_id)
 
 	//multipart request body
@@ -530,6 +573,7 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 			"crop_original_size": []int{w * 1.0, h * 1.0},
 			"crop_center":        []float32{0.0, 0.0},
 			"crop_zoom":          1.0,
+			"filter_type":        filter_type,
 		}
 		config["extra"] = map[string]interface{}{
 			"source_width":  w,

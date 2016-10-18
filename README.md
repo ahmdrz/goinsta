@@ -114,7 +114,7 @@ func main() {
 
 	defer insta.Logout()
 
-	resp, _ := insta.UploadPhoto("PATH_TO_IMAGE", "CAPTION", insta.NewUploadID(), 87) // default quality is 87
+	resp, _ := insta.UploadPhoto("PATH_TO_IMAGE", "CAPTION", insta.NewUploadID(), 87,goinsta.Filter_Lark) // default quality is 87
 
 	fmt.Println(resp.Status)
 }
