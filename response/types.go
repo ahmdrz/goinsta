@@ -192,3 +192,16 @@ type UsernameResponse struct {
 	FollowerCount       int            `json:"follower_count"`
 	GeoMediaCount       int            `json:"geo_media_count"`
 }
+
+// UploadResponse struct informatio of upload method
+type UploadResponse struct {
+	StatusResponse
+	UploadID string `json:"upload_id",omitempty`
+	Message  string `json:"message"`
+}
+
+type UploadPhotoResponse struct {
+	StatusResponse
+	Media    MediaItemResponse `json:"media"`
+	UploadID string            `json:"upload_id"`
+}

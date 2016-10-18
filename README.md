@@ -38,7 +38,7 @@ This library work like android version of instagram
  - [x] DeleteMedia
  - [x] MediaInfo
  - [x] Expose
- - [ ] UploadPhoto
+ - [x] UploadPhoto
  - [ ] UploadVideo
  - [x] RemoveSelfTag
  - [ ] GetUsernameInfo
@@ -94,7 +94,7 @@ func main() {
 
 ```
 
-### GetTagFeed (SearchByTagName) 
+### UploadPhoto
 
 ```go
 package main
@@ -106,29 +106,17 @@ import (
 )
 
 func main() {
-	insta := goinsta.New("USERNAME","PASSWORD")	
+	insta := goinsta.New("USERNAME", "PASSWORD")
 
 	if err := insta.Login(); err != nil {
 		panic(err)
 	}
-	
+
 	defer insta.Logout()
 
-	resp, err := insta.TagFeed("Pizza")
-	if err != nil {
-		panic(err)
-	}
+	resp, _ := insta.UploadPhoto("PATH_TO_IMAGE", "CAPTION", insta.NewUploadID(), 87) // default quality is 87
 
-	if resp.Status != "ok" {
-		panic("Error occured , " + resp.Status)
-	}
-
-	for _, item := range resp.Items {
-		if len(item.Caption.Text) > 30 {
-			item.Caption.Text = item.Caption.Text[:30]
-		}
-		fmt.Println(item.Caption.Text, "-----", item.LikeCount)
-	}
+	fmt.Println(resp.Status)
 }
 
 ```

@@ -2,11 +2,20 @@
 package goinsta
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"image"
+	_ "image/jpeg"
+	_ "image/png"
+	"io"
+	"io/ioutil"
+	"mime/multipart"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	response "github.com/ahmdrz/goinsta/response"
 )
@@ -32,6 +41,13 @@ const (
 	GOINSTA_EXPERIMENTS     = "ig_android_progressive_jpeg,ig_creation_growth_holdout,ig_android_report_and_hide,ig_android_new_browser,ig_android_enable_share_to_whatsapp,ig_android_direct_drawing_in_quick_cam_universe,ig_android_huawei_app_badging,ig_android_universe_video_production,ig_android_asus_app_badging,ig_android_direct_plus_button,ig_android_ads_heatmap_overlay_universe,ig_android_http_stack_experiment_2016,ig_android_infinite_scrolling,ig_fbns_blocked,ig_android_white_out_universe,ig_android_full_people_card_in_user_list,ig_android_post_auto_retry_v7_21,ig_fbns_push,ig_android_feed_pill,ig_android_profile_link_iab,ig_explore_v3_us_holdout,ig_android_histogram_reporter,ig_android_anrwatchdog,ig_android_search_client_matching,ig_android_high_res_upload_2,ig_android_new_browser_pre_kitkat,ig_android_2fac,ig_android_grid_video_icon,ig_android_white_camera_universe,ig_android_disable_chroma_subsampling,ig_android_share_spinner,ig_android_explore_people_feed_icon,ig_explore_v3_android_universe,ig_android_media_favorites,ig_android_nux_holdout,ig_android_search_null_state,ig_android_react_native_notification_setting,ig_android_ads_indicator_change_universe,ig_android_video_loading_behavior,ig_android_black_camera_tab,liger_instagram_android_univ,ig_explore_v3_internal,ig_android_direct_emoji_picker,ig_android_prefetch_explore_delay_time,ig_android_business_insights_qe,ig_android_direct_media_size,ig_android_enable_client_share,ig_android_promoted_posts,ig_android_app_badging_holdout,ig_android_ads_cta_universe,ig_android_mini_inbox_2,ig_android_feed_reshare_button_nux,ig_android_boomerang_feed_attribution,ig_android_fbinvite_qe,ig_fbns_shared,ig_android_direct_full_width_media,ig_android_hscroll_profile_chaining,ig_android_feed_unit_footer,ig_android_media_tighten_space,ig_android_private_follow_request,ig_android_inline_gallery_backoff_hours_universe,ig_android_direct_thread_ui_rewrite,ig_android_rendering_controls,ig_android_ads_full_width_cta_universe,ig_video_max_duration_qe_preuniverse,ig_android_prefetch_explore_expire_time,ig_timestamp_public_test,ig_android_profile,ig_android_dv2_consistent_http_realtime_response,ig_android_enable_share_to_messenger,ig_explore_v3,ig_ranking_following,ig_android_pending_request_search_bar,ig_android_feed_ufi_redesign,ig_android_video_pause_logging_fix,ig_android_default_folder_to_camera,ig_android_video_stitching_7_23,ig_android_profanity_filter,ig_android_business_profile_qe,ig_android_search,ig_android_boomerang_entry,ig_android_inline_gallery_universe,ig_android_ads_overlay_design_universe,ig_android_options_app_invite,ig_android_view_count_decouple_likes_universe,ig_android_periodic_analytics_upload_v2,ig_android_feed_unit_hscroll_auto_advance,ig_peek_profile_photo_universe,ig_android_ads_holdout_universe,ig_android_prefetch_explore,ig_android_direct_bubble_icon,ig_video_use_sve_universe,ig_android_inline_gallery_no_backoff_on_launch_universe,ig_android_image_cache_multi_queue,ig_android_camera_nux,ig_android_immersive_viewer,ig_android_dense_feed_unit_cards,ig_android_sqlite_dev,ig_android_exoplayer,ig_android_add_to_last_post,ig_android_direct_public_threads,ig_android_prefetch_venue_in_composer,ig_android_bigger_share_button,ig_android_dv2_realtime_private_share,ig_android_non_square_first,ig_android_video_interleaved_v2,ig_android_follow_search_bar,ig_android_last_edits,ig_android_video_download_logging,ig_android_ads_loop_count_universe,ig_android_swipeable_filters_blacklist,ig_android_boomerang_layout_white_out_universe,ig_android_ads_carousel_multi_row_universe,ig_android_mentions_invite_v2,ig_android_direct_mention_qe,ig_android_following_follower_social_context"
 	GOINSTA_SIG_KEY_VERSION = "4"
 )
+
+var GOINSTA_DEVICE_SETTINGS = map[string]interface{}{
+	"manufacturer":    "Xiaomi",
+	"model":           "HM 1SW",
+	"android_version": 18,
+	"android_release": "4.3",
+}
 
 // New try to fill Instagram struct
 // New does not try to login , it will only fill
@@ -423,6 +439,131 @@ func (insta *Instagram) TagFeed(tag string) (response.TagFeedsResponse, error) {
 	return resp, nil
 }
 
+// UploadPhoto can upload your photo with any quality , better to use 87
+func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upload_id int64, quality int) (response.UploadPhotoResponse, error) {
+	photo_name := fmt.Sprintf("pending_media_%s.jpg", upload_id)
+
+	//multipart request body
+	var b bytes.Buffer
+	w := multipart.NewWriter(&b)
+	f, err := os.Open(photo_path)
+	if err != nil {
+		return response.UploadPhotoResponse{}, err
+	}
+	defer f.Close()
+
+	w.WriteField("upload_id", strconv.FormatInt(upload_id, 10))
+	w.WriteField("_uuid", insta.Informations.UUID)
+	w.WriteField("_csrftoken", insta.Informations.Token)
+	w.WriteField("image_compression", "{\"lib_name\":\"jt\",\"lib_version\":\"1.3.0\",\"quality\":\""+strconv.Itoa(quality)+"\"}")
+
+	fw, err := w.CreateFormFile("photo", photo_name)
+	if err != nil {
+		return response.UploadPhotoResponse{}, err
+	}
+	if _, err = io.Copy(fw, f); err != nil {
+		return response.UploadPhotoResponse{}, err
+	}
+	w.Close()
+
+	//making post request
+	req, err := http.NewRequest("POST", GOINSTA_API_URL+"upload/photo/", &b)
+	if err != nil {
+		return response.UploadPhotoResponse{}, err
+	}
+	req.Header.Set("X-IG-Capabilities", "3Q4=")
+	req.Header.Set("X-IG-Connection-Type", "WIFI") // cool header :smile:
+	req.Header.Set("Cookie2", "$Version=1")
+	req.Header.Set("Accept-Language", "en-US")
+	req.Header.Set("Accept-Encoding", "gzip, deflate")
+	req.Header.Set("Content-type", w.FormDataContentType())
+	req.Header.Set("Connection", "close")
+	req.Header.Set("User-Agent", GOINSTA_USER_AGENT)
+
+	tempjar := newJar()
+	for key, value := range cookiejar.cookies { // make a copy of session
+		tempjar.cookies[key] = value
+	}
+
+	client := &http.Client{
+		Jar: tempjar,
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return response.UploadPhotoResponse{}, err
+	}
+	defer resp.Body.Close()
+
+	lastResponse = resp
+	cookie = resp.Header.Get("Set-Cookie")
+
+	body, _ := ioutil.ReadAll(resp.Body)
+
+	lastJson = string(body)
+
+	if resp.StatusCode != 200 {
+		return response.UploadPhotoResponse{}, fmt.Errorf("invalid status code" + resp.Status)
+	}
+
+	upresponse := response.UploadResponse{}
+	err = json.Unmarshal(body, &upresponse)
+	if err != nil {
+		return response.UploadPhotoResponse{}, err
+	}
+
+	if upresponse.Status == "ok" {
+		w, h, err := getImageDimension(photo_path)
+		if err != nil {
+			return response.UploadPhotoResponse{}, err
+		}
+
+		var config map[string]interface{} = make(map[string]interface{})
+		config["_csrftoken"] = insta.Informations.Token
+		config["media_folder"] = "Instagram"
+		config["source_type"] = 4
+		config["_uid"] = insta.Informations.UsernameId
+		config["_uuid"] = insta.Informations.UUID
+		config["caption"] = photo_caption
+		config["upload_id"] = strconv.FormatInt(upload_id, 10)
+		config["device"] = GOINSTA_DEVICE_SETTINGS
+		config["edits"] = map[string]interface{}{
+			"crop_original_size": []int{w * 1.0, h * 1.0},
+			"crop_center":        []float32{0.0, 0.0},
+			"crop_zoom":          1.0,
+		}
+		config["extra"] = map[string]interface{}{
+			"source_width":  w,
+			"source_height": h,
+		}
+
+		bytes, err := json.Marshal(config)
+		if err != nil {
+			return response.UploadPhotoResponse{}, err
+		}
+		err = insta.sendRequest("media/configure/?", generateSignature(string(bytes)), false)
+		if err != nil {
+			return response.UploadPhotoResponse{}, err
+		}
+
+		uploadresponse := response.UploadPhotoResponse{}
+		err = json.Unmarshal([]byte(lastJson), &uploadresponse)
+		if err != nil {
+			return response.UploadPhotoResponse{}, err
+		}
+
+		return uploadresponse, nil
+	} else {
+		return response.UploadPhotoResponse{}, fmt.Errorf(upresponse.Status)
+	}
+
+	return response.UploadPhotoResponse{}, fmt.Errorf("Unknown error occured!")
+}
+
+// NewUploadID return unix nano time
+func (insta *Instagram) NewUploadID() int64 {
+	return time.Now().UnixNano()
+}
+
 func (insta *Instagram) Follow(userid string) ([]byte, error) {
 	var Data struct {
 		UUID      string `json:"_uuid"`
@@ -751,4 +892,39 @@ func (insta *Instagram) ChangePassword(newpassword string) ([]byte, error) {
 	}
 
 	return []byte(lastJson), nil
+}
+
+func (insta *Instagram) Timeline(maxid ...string) ([]byte, error) {
+	nextmaxid := ""
+
+	if len(maxid) == 0 {
+		nextmaxid = ""
+	} else if len(maxid) == 1 {
+		nextmaxid = "&max_id=" + maxid[0]
+	} else {
+		return []byte{}, fmt.Errorf("Incorrect input")
+	}
+
+	err := insta.sendRequest("feed/timeline/?rank_token="+insta.Informations.RankToken+"&ranked_content=true"+nextmaxid, "", false)
+
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return []byte(lastJson), nil
+
+}
+
+// getImageDimension return image dimension , types is .jpg and .png
+func getImageDimension(imagePath string) (int, int, error) {
+	file, err := os.Open(imagePath)
+	if err != nil {
+		return 0, 0, err
+	}
+
+	image, _, err := image.DecodeConfig(file)
+	if err != nil {
+		return 0, 0, err
+	}
+	return image.Width, image.Height, nil
 }
