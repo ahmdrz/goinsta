@@ -108,7 +108,13 @@ func TestFollow(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	resp, err := insta.Follow("1572292791") // ahmdrz (creator) instagram usernameID
+	user, err := insta.GetUsername("elonmusk")
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	resp, err := insta.Follow(user.User.StringID())
 	if err != nil {
 		t.Fatal(err)
 		return
@@ -122,7 +128,13 @@ func TestUnFollow(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	resp, err := insta.UnFollow("1572292791") // ahmdrz (creator) instagram usernameID
+	user, err := insta.GetUsername("elonmusk")
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	resp, err := insta.UnFollow(user.User.StringID())
 	if err != nil {
 		t.Fatal(err)
 		return
@@ -136,7 +148,7 @@ func TestLike(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	bytes, err := insta.Like("1336846574982263293") // one of ahmdrz images
+	bytes, err := insta.Like("1363799876794028707") // random image ! from search by tags on pizza
 	if err != nil {
 		t.Fatal(err)
 		return
@@ -150,7 +162,7 @@ func TestMediaInfo(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	resp, err := insta.MediaInfo("1336846574982263293") // one of ahmdrz images
+	resp, err := insta.MediaInfo("1363799876794028707") // random image ! from search by tags on pizza
 	if err != nil {
 		t.Fatal(err)
 		return
