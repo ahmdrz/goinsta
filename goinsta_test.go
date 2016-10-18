@@ -47,7 +47,7 @@ func TestUserFollowings(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
-	resp, err := insta.UserFollowings(insta.Informations.UsernameId, "")
+	resp, err := insta.UserFollowing(insta.Informations.UsernameId, "")
 	if err != nil {
 		t.Log(insta.GetLastJson())
 		t.Fatal(err)

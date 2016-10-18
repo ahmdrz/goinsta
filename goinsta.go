@@ -164,7 +164,7 @@ func (insta *Instagram) Logout() error {
 
 // UserFollowings return followings of specific user
 // skip maxid with empty string for get first page
-func (insta *Instagram) UserFollowings(userid, maxid string) (response.UsersReponse, error) {
+func (insta *Instagram) UserFollowing(userid, maxid string) (response.UsersReponse, error) {
 	err := insta.sendRequest("friendships/"+insta.Informations.UsernameId+"/following/?max_id="+maxid+"&ig_sig_key_version="+GOINSTA_SIG_KEY_VERSION+"&rank_token="+insta.Informations.RankToken, "", false)
 	if err != nil {
 		return response.UsersReponse{}, err
@@ -896,4 +896,52 @@ func getImageDimension(imagePath string) (int, int, error) {
 		return 0, 0, err
 	}
 	return image.Width, image.Height, nil
+}
+
+func (insta *Instagram) SelfUserFollowers(maxid string) (response.UsersReponse, error) {
+	return insta.UserFollowers(insta.Informations.UsernameId, maxid)
+}
+
+func (insta *Instagram) SelfUserFollowing(maxid string) (response.UsersReponse, error) {
+	return insta.UserFollowing(insta.Informations.UsernameId, maxid)
+}
+
+func (insta *Instagram) SelfTotalUserFollowers() (response.UsersReponse, error) {
+	resp := response.UsersReponse{}
+	for {
+		temp_resp, err := insta.SelfUserFollowers(resp.NextMaxID)
+		if err != nil {
+			return response.UsersReponse{}, err
+		}
+		for _, user := range temp_resp.Users {
+			resp.Users = append(resp.Users, user)
+		}
+		resp.PageSize += temp_resp.PageSize
+		if !temp_resp.BigList {
+			return resp, nil
+		}
+		resp.NextMaxID = temp_resp.NextMaxID
+		resp.Status = temp_resp.Status
+	}
+	return resp, nil
+}
+
+func (insta *Instagram) SelfTotalUserFollowing() (response.UsersReponse, error) {
+	resp := response.UsersReponse{}
+	for {
+		temp_resp, err := insta.SelfUserFollowing(resp.NextMaxID)
+		if err != nil {
+			return response.UsersReponse{}, err
+		}
+		for _, user := range temp_resp.Users {
+			resp.Users = append(resp.Users, user)
+		}
+		resp.PageSize += temp_resp.PageSize
+		if !temp_resp.BigList {
+			return resp, nil
+		}
+		resp.NextMaxID = temp_resp.NextMaxID
+		resp.Status = temp_resp.Status
+	}
+	return resp, nil
 }
