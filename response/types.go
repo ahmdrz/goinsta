@@ -205,3 +205,22 @@ type UploadPhotoResponse struct {
 	Media    MediaItemResponse `json:"media"`
 	UploadID string            `json:"upload_id"`
 }
+
+type FriendShipResponse struct {
+	IncomingRequest bool `json:"incoming_request"`
+	FollowedBy      bool `json:"followed_by"`
+	OutgoingRequest bool `json:"outgoing_request"`
+	Following       bool `json:"following"`
+	Blocking        bool `json:"blocking"`
+	IsPrivate       bool `json:"is_private"`
+}
+
+type FollowResponse struct {
+	StatusResponse
+	FriendShipStatus FriendShipResponse `json:"friendship_status"`
+}
+
+type UnFollowResponse struct {
+	StatusResponse
+	FriendShipStatus FriendShipResponse `json:"friendship_status"`
+}

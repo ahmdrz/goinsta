@@ -108,13 +108,27 @@ func TestFollow(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	bytes, err := insta.Follow("1572292791") // ahmdrz (creator) instagram usernameID
+	resp, err := insta.Follow("1572292791") // ahmdrz (creator) instagram usernameID
 	if err != nil {
 		t.Fatal(err)
 		return
 	}
 
-	t.Log(string(bytes))
+	t.Log(resp.Status)
+}
+
+func TestUnFollow(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	resp, err := insta.UnFollow("1572292791") // ahmdrz (creator) instagram usernameID
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	t.Log(resp.Status)
 }
 
 func TestLike(t *testing.T) {

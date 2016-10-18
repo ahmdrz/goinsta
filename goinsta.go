@@ -115,27 +115,18 @@ func (insta *Instagram) Login() error {
 		return fmt.Errorf("Login failed for", insta.Informations.Username, " error : ", err)
 	}
 
-	var Data struct {
-		PhoneID          string `json:"phone_id"`
-		CSRFToken        string `json:"_csrftoken"`
-		Username         string `json:"username"`
-		GUID             string `json:"guid"`
-		DeviceID         string `json:"device_id"`
-		Password         string `json:"password"`
-		LoginAttempCount string `json:"login_attempt_count"`
-	}
-
-	Data.Username = insta.Informations.Username
-	Data.Password = insta.Informations.Password
-	Data.PhoneID = generateUUID(true)
-	Data.GUID = insta.Informations.UUID
-	Data.LoginAttempCount = "0"
-	Data.DeviceID = insta.Informations.DeviceID
 	data := cookie[strings.Index(cookie, "csrftoken=")+10:]
 	data = data[:strings.Index(data, ";")]
-	Data.CSRFToken = data
 
-	result, err := json.Marshal(Data)
+	result, err := json.Marshal(map[string]interface{}{
+		"guid":                insta.Informations.UUID,
+		"login_attempt_count": 0,
+		"_csrftoken":          data,
+		"device_id":           insta.Informations.DeviceID,
+		"phone_id":            generateUUID(true),
+		"username":            insta.Informations.Username,
+		"password":            insta.Informations.Password,
+	})
 	if err != nil {
 		return err
 	}
@@ -258,21 +249,13 @@ func (insta *Instagram) MediaLikers(mediaId string) (response.MediaLikersRespons
 // Expose , expose instagram
 // return error if status was not 'ok' or runtime error
 func (insta *Instagram) Expose() error {
-	var Data struct {
-		UUID       string `json:"_uuid"`
-		UID        string `json:"_uid"`
-		Experiment string `json:"experiment"`
-		CSRFToken  string `json:"_csrftoken"`
-		ID         string `json:"id"`
-	}
-
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.ID = insta.Informations.UsernameId
-	Data.Experiment = "ig_android_profile_contextual_feed"
-	Data.CSRFToken = insta.Informations.Token
-
-	bytes, err := json.Marshal(Data)
+	bytes, err := json.Marshal(map[string]interface{}{
+		"_uuid":      insta.Informations.UUID,
+		"_uid":       insta.Informations.UsernameId,
+		"_csrftoken": insta.Informations.Token,
+		"id":         insta.Informations.UsernameId,
+		"experiment": "ig_android_profile_contextual_feed",
+	})
 	if err != nil {
 		return err
 	}
@@ -294,19 +277,13 @@ func (insta *Instagram) Expose() error {
 
 // MediaInfo return media information
 func (insta *Instagram) MediaInfo(mediaId string) (response.FeedsResponse, error) {
-	var Data struct {
-		UUID      string `json:"_uuid"`
-		UID       string `json:"_uid"`
-		MediaID   string `json:"media_id"`
-		CSRFToken string `json:"_csrftoken"`
-	}
 
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.MediaID = mediaId
-	Data.CSRFToken = insta.Informations.Token
-
-	bytes, err := json.Marshal(Data)
+	bytes, err := json.Marshal(map[string]interface{}{
+		"_uuid":      insta.Informations.UUID,
+		"_uid":       insta.Informations.UsernameId,
+		"_csrftoken": insta.Informations.Token,
+		"media_id":   mediaId,
+	})
 	if err != nil {
 		return response.FeedsResponse{}, err
 	}
@@ -328,17 +305,11 @@ func (insta *Instagram) MediaInfo(mediaId string) (response.FeedsResponse, error
 
 // SetPublicAccount Sets account to public
 func (insta *Instagram) SetPublicAccount() (response.ProfileDataResponse, error) {
-	var Data struct {
-		UUID      string `json:"_uuid"`
-		UID       string `json:"_uid"`
-		CSRFToken string `json:"_csrftoken"`
-	}
-
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.CSRFToken = insta.Informations.Token
-
-	bytes, err := json.Marshal(Data)
+	bytes, err := json.Marshal(map[string]interface{}{
+		"_uuid":      insta.Informations.UUID,
+		"_uid":       insta.Informations.UsernameId,
+		"_csrftoken": insta.Informations.Token,
+	})
 	if err != nil {
 		return response.ProfileDataResponse{}, err
 	}
@@ -359,17 +330,11 @@ func (insta *Instagram) SetPublicAccount() (response.ProfileDataResponse, error)
 
 // SetPrivateAccount Sets account to private
 func (insta *Instagram) SetPrivateAccount() (response.ProfileDataResponse, error) {
-	var Data struct {
-		UUID      string `json:"_uuid"`
-		UID       string `json:"_uid"`
-		CSRFToken string `json:"_csrftoken"`
-	}
-
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.CSRFToken = insta.Informations.Token
-
-	bytes, err := json.Marshal(Data)
+	bytes, err := json.Marshal(map[string]interface{}{
+		"_uuid":      insta.Informations.UUID,
+		"_uid":       insta.Informations.UsernameId,
+		"_csrftoken": insta.Informations.Token,
+	})
 	if err != nil {
 		return response.ProfileDataResponse{}, err
 	}
@@ -390,17 +355,11 @@ func (insta *Instagram) SetPrivateAccount() (response.ProfileDataResponse, error
 
 // GetProfileData return current user information
 func (insta *Instagram) GetProfileData() (response.ProfileDataResponse, error) {
-	var Data struct {
-		UUID      string `json:"_uuid"`
-		UID       string `json:"_uid"`
-		CSRFToken string `json:"_csrftoken"`
-	}
-
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.CSRFToken = insta.Informations.Token
-
-	bytes, err := json.Marshal(Data)
+	bytes, err := json.Marshal(map[string]interface{}{
+		"_uuid":      insta.Informations.UUID,
+		"_uid":       insta.Informations.UsernameId,
+		"_csrftoken": insta.Informations.Token,
+	})
 	if err != nil {
 		return response.ProfileDataResponse{}, err
 	}
@@ -421,17 +380,11 @@ func (insta *Instagram) GetProfileData() (response.ProfileDataResponse, error) {
 
 // RemoveProfilePicture will remove current logged in user profile picture
 func (insta *Instagram) RemoveProfilePicture() (response.ProfileDataResponse, error) {
-	var Data struct {
-		UUID      string `json:"_uuid"`
-		UID       string `json:"_uid"`
-		CSRFToken string `json:"_csrftoken"`
-	}
-
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.CSRFToken = insta.Informations.Token
-
-	bytes, err := json.Marshal(Data)
+	bytes, err := json.Marshal(map[string]interface{}{
+		"_uuid":      insta.Informations.UUID,
+		"_uid":       insta.Informations.UsernameId,
+		"_csrftoken": insta.Informations.Token,
+	})
 	if err != nil {
 		return response.ProfileDataResponse{}, err
 	}
@@ -608,72 +561,65 @@ func (insta *Instagram) NewUploadID() int64 {
 	return time.Now().UnixNano()
 }
 
-func (insta *Instagram) Follow(userid string) ([]byte, error) {
-	var Data struct {
-		UUID      string `json:"_uuid"`
-		UID       string `json:"_uid"`
-		UserID    string `json:"user_id"`
-		CSRFToken string `json:"_csrftoken"`
-	}
-
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.UserID = userid
-	Data.CSRFToken = insta.Informations.Token
-
-	bytes, err := json.Marshal(Data)
+// Follow one of instagram users with userid , you can find userid in GetUsername
+func (insta *Instagram) Follow(userid string) (response.FollowResponse, error) {
+	bytes, err := json.Marshal(map[string]interface{}{
+		"_uuid":      insta.Informations.UUID,
+		"_uid":       insta.Informations.UsernameId,
+		"_csrftoken": insta.Informations.Token,
+		"user_id":    userid,
+	})
 	if err != nil {
-		return []byte{}, err
+		return response.FollowResponse{}, err
 	}
 
 	err = insta.sendRequest("friendships/create/"+userid+"/", generateSignature(string(bytes)), false)
 	if err != nil {
-		return []byte{}, err
+		return response.FollowResponse{}, err
 	}
 
-	return []byte(lastJson), nil
+	resp := response.FollowResponse{}
+	err = json.Unmarshal([]byte(lastJson), &resp)
+	if err != nil {
+		return response.FollowResponse{}, err
+	}
+
+	return resp, nil
 }
 
-func (insta *Instagram) UnFollow(userid string) ([]byte, error) {
-	var Data struct {
-		UUID      string `json:"_uuid"`
-		UID       string `json:"_uid"`
-		UserID    string `json:"user_id"`
-		CSRFToken string `json:"_csrftoken"`
-	}
-
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.UserID = userid
-	Data.CSRFToken = insta.Informations.Token
-
-	bytes, err := json.Marshal(Data)
+// UnFollow one of instagram users with userid , you can find userid in GetUsername
+func (insta *Instagram) UnFollow(userid string) (response.UnFollowResponse, error) {
+	bytes, err := json.Marshal(map[string]interface{}{
+		"_uuid":      insta.Informations.UUID,
+		"_uid":       insta.Informations.UsernameId,
+		"_csrftoken": insta.Informations.Token,
+		"user_id":    userid,
+	})
 	if err != nil {
-		return []byte{}, err
+		return response.UnFollowResponse{}, err
 	}
 
 	err = insta.sendRequest("friendships/destroy/"+userid+"/", generateSignature(string(bytes)), false)
 	if err != nil {
-		return []byte{}, err
+		return response.UnFollowResponse{}, err
 	}
 
-	return []byte(lastJson), nil
+	resp := response.UnFollowResponse{}
+	err = json.Unmarshal([]byte(lastJson), &resp)
+	if err != nil {
+		return response.UnFollowResponse{}, err
+	}
+
+	return resp, nil
 }
 
 func (insta *Instagram) Block(userid string) ([]byte, error) {
-	var Data struct {
-		UUID      string `json:"_uuid"`
-		UID       string `json:"_uid"`
-		UserID    string `json:"user_id"`
-		CSRFToken string `json:"_csrftoken"`
-	}
-
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.UserID = userid
-	Data.CSRFToken = insta.Informations.Token
-
-	bytes, err := json.Marshal(Data)
+	bytes, err := json.Marshal(map[string]interface{}{
+		"_uuid":      insta.Informations.UUID,
+		"_uid":       insta.Informations.UsernameId,
+		"_csrftoken": insta.Informations.Token,
+		"user_id":    userid,
+	})
 	if err != nil {
 		return []byte{}, err
 	}
@@ -687,19 +633,12 @@ func (insta *Instagram) Block(userid string) ([]byte, error) {
 }
 
 func (insta *Instagram) UnBlock(userid string) ([]byte, error) {
-	var Data struct {
-		UUID      string `json:"_uuid"`
-		UID       string `json:"_uid"`
-		UserID    string `json:"user_id"`
-		CSRFToken string `json:"_csrftoken"`
-	}
-
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.UserID = userid
-	Data.CSRFToken = insta.Informations.Token
-
-	bytes, err := json.Marshal(Data)
+	bytes, err := json.Marshal(map[string]interface{}{
+		"_uuid":      insta.Informations.UUID,
+		"_uid":       insta.Informations.UsernameId,
+		"_csrftoken": insta.Informations.Token,
+		"user_id":    userid,
+	})
 	if err != nil {
 		return []byte{}, err
 	}
@@ -713,19 +652,12 @@ func (insta *Instagram) UnBlock(userid string) ([]byte, error) {
 }
 
 func (insta *Instagram) Like(mediaId string) ([]byte, error) {
-	var Data struct {
-		UUID      string `json:"_uuid"`
-		UID       string `json:"_uid"`
-		MediaID   string `json:"media_id"`
-		CSRFToken string `json:"_csrftoken"`
-	}
-
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.MediaID = mediaId
-	Data.CSRFToken = insta.Informations.Token
-
-	bytes, err := json.Marshal(Data)
+	bytes, err := json.Marshal(map[string]interface{}{
+		"_uuid":      insta.Informations.UUID,
+		"_uid":       insta.Informations.UsernameId,
+		"_csrftoken": insta.Informations.Token,
+		"media_id":   mediaId,
+	})
 	if err != nil {
 		return []byte{}, err
 	}
@@ -739,19 +671,12 @@ func (insta *Instagram) Like(mediaId string) ([]byte, error) {
 }
 
 func (insta *Instagram) UnLike(mediaId string) ([]byte, error) {
-	var Data struct {
-		UUID      string `json:"_uuid"`
-		UID       string `json:"_uid"`
-		MediaID   string `json:"media_id"`
-		CSRFToken string `json:"_csrftoken"`
-	}
-
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.MediaID = mediaId
-	Data.CSRFToken = insta.Informations.Token
-
-	bytes, err := json.Marshal(Data)
+	bytes, err := json.Marshal(map[string]interface{}{
+		"_uuid":      insta.Informations.UUID,
+		"_uid":       insta.Informations.UsernameId,
+		"_csrftoken": insta.Informations.Token,
+		"media_id":   mediaId,
+	})
 	if err != nil {
 		return []byte{}, err
 	}
