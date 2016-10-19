@@ -125,8 +125,6 @@ func main() {
 
 ```
 
-For more , see example folder
-
 # Thanks
 
 1. [levpasha](https://github.com/LevPasha)
