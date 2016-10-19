@@ -40,7 +40,7 @@ func TestLogin(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
-	t.Log("Logged in user", insta.LoggedInUser.FullName, insta.Informations.UsernameId)
+	t.Log("status : ok , " + insta.LoggedInUser.FullName)
 }
 
 func TestUserFollowings(t *testing.T) {
