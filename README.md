@@ -38,20 +38,27 @@ This library work like android version of instagram
  - [x] DeleteMedia
  - [x] MediaInfo
  - [x] Expose
- - [x] UploadPhoto
- - [ ] UploadVideo
+ - [x] UploadPhoto 
  - [x] RemoveSelfTag
- - [ ] GetUsernameInfo
- - [ ] GetRecentActivity
- - [ ] GetFollowingRecentActivity
+ - [x] GetUsername
+ - [x] GetRecentActivity
+ - [x] GetFollowingRecentActivity
  - [x] TagFeed
- - [x] SearchUsername
  - [x] GetRecentRecipients
  - [x] ChangePassword
  - [x] SelfUserFollowers
  - [x] SelfUserFollowing
  - [x] SelfTotalUserFollowers
  - [x] SelfTotalUserFollowing
+ - [ ] UploadVideo
+ - [ ] GetUserTags
+ - [ ] SelfUserTags
+ - [ ] GetGeoMedia
+ - [ ] SelfGeoMedia
+ - [ ] SearchUsername
+ - [ ] SearchTags
+ - [ ] SearchFacebookUsers
+ - [ ] SyncContacts
 
 This repository is a copy of [Instagram-API-Python](https://github.com/LevPasha/Instagram-API-python) , And original source is [Instagram-API](https://github.com/mgp25/Instagram-API)
 

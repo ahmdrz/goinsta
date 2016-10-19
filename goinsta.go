@@ -945,3 +945,21 @@ func (insta *Instagram) SelfTotalUserFollowing() (response.UsersReponse, error) 
 	}
 	return resp, nil
 }
+
+func (insta *Instagram) GetRecentActivity() ([]byte, error) {
+	err := insta.sendRequest("news/inbox/?", "", false)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return []byte(lastJson), nil
+}
+
+func (insta *Instagram) GetFollowingRecentActivity() ([]byte, error) {
+	err := insta.sendRequest("news/?", "", false)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return []byte(lastJson), nil
+}

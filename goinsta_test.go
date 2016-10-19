@@ -274,3 +274,16 @@ func TestGetProfileData(t *testing.T) {
 
 	t.Log(resp.User.FullName)
 }
+
+func TestRecentActivity(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	bytes, err := insta.GetRecentActivity()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Log(string(bytes))
+}
