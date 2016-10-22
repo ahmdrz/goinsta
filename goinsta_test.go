@@ -241,7 +241,7 @@ func TestCommentAndDeleteComment(t *testing.T) {
 	t.Log(string(bytes))
 }
 
-func TestSearchUsername(t *testing.T) {
+func TestGetUsername(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
@@ -281,6 +281,32 @@ func TestRecentActivity(t *testing.T) {
 	}
 
 	bytes, err := insta.GetRecentActivity()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Log(string(bytes))
+}
+
+func TestSearchUsername(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	bytes, err := insta.SearchUsername("ahmdrz")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Log(string(bytes))
+}
+
+func TestSearchTags(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	bytes, err := insta.SearchTags("instagram")
 	if err != nil {
 		t.Fatal(err)
 	}

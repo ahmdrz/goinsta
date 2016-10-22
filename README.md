@@ -52,9 +52,9 @@ This library work like android version of instagram
  - [x] UserFollowings
  - [ ] GetGeoMedia
  - [ ] GetUserTags
- - [ ] SearchFacebookUsers
- - [ ] SearchTags
- - [ ] SearchUsername
+ - [x] SearchFacebookUsers
+ - [x] SearchTags
+ - [x] SearchUsername
  - [ ] SelfGeoMedia
  - [ ] SelfUserTags
  - [ ] SyncContacts

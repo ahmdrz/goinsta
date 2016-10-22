@@ -963,3 +963,30 @@ func (insta *Instagram) GetFollowingRecentActivity() ([]byte, error) {
 
 	return []byte(lastJson), nil
 }
+
+func (insta *Instagram) SearchUsername(query string) ([]byte, error) {
+	err := insta.sendRequest("users/search/?ig_sig_key_version="+GOINSTA_SIG_KEY_VERSION+"&is_typeahead=true&query="+query+"&rank_token="+insta.Informations.RankToken, "", false)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return []byte(lastJson), nil
+}
+
+func (insta *Instagram) SearchTags(query string) ([]byte, error) {
+	err := insta.sendRequest("tags/search/?is_typeahead=true&q="+query+"&rank_token="+insta.Informations.RankToken, "", false)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return []byte(lastJson), nil
+}
+
+func (insta *Instagram) SearchFacebookUsers(query string) ([]byte, error) {
+	err := insta.sendRequest("fbsearch/topsearch/?context=blended&query="+query+"&rank_token="+insta.Informations.RankToken, "", false)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return []byte(lastJson), nil
+}
