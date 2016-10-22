@@ -112,7 +112,7 @@ func New(username, password string) *Instagram {
 func (insta *Instagram) Login() error {
 	err := insta.sendRequest("si/fetch_headers/?challenge_type=signup&guid="+generateUUID(false), "", true)
 	if err != nil {
-		return fmt.Errorf("Login failed for", insta.Informations.Username, " error : ", err)
+		return fmt.Errorf("Login failed for %s error %s :", insta.Informations.Username, err.Error())
 	}
 
 	data := cookie[strings.Index(cookie, "csrftoken=")+10:]
@@ -437,7 +437,7 @@ func (insta *Instagram) TagFeed(tag string) (response.TagFeedsResponse, error) {
 
 // UploadPhoto can upload your photo with any quality , better to use 87
 func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upload_id int64, quality int, filter_type int) (response.UploadPhotoResponse, error) {
-	photo_name := fmt.Sprintf("pending_media_%s.jpg", upload_id)
+	photo_name := fmt.Sprintf("pending_media_%d.jpg", upload_id)
 
 	//multipart request body
 	var b bytes.Buffer
@@ -552,8 +552,6 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 	} else {
 		return response.UploadPhotoResponse{}, fmt.Errorf(upresponse.Status)
 	}
-
-	return response.UploadPhotoResponse{}, fmt.Errorf("Unknown error occured!")
 }
 
 // NewUploadID return unix nano time
@@ -923,7 +921,6 @@ func (insta *Instagram) SelfTotalUserFollowers() (response.UsersReponse, error) 
 		resp.NextMaxID = temp_resp.NextMaxID
 		resp.Status = temp_resp.Status
 	}
-	return resp, nil
 }
 
 func (insta *Instagram) SelfTotalUserFollowing() (response.UsersReponse, error) {
@@ -943,7 +940,6 @@ func (insta *Instagram) SelfTotalUserFollowing() (response.UsersReponse, error) 
 		resp.NextMaxID = temp_resp.NextMaxID
 		resp.Status = temp_resp.Status
 	}
-	return resp, nil
 }
 
 func (insta *Instagram) GetRecentActivity() ([]byte, error) {

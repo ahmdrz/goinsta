@@ -6,6 +6,8 @@
 
 Unofficial Instagram API written in Golang
 
+**Very simple and no-dependency Instagram API**
+
 This library work like android version of instagram
 
 ***

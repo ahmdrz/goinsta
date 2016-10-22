@@ -185,6 +185,20 @@ func TestTagFeed(t *testing.T) {
 	t.Log(resp.Items[0])
 }
 
+func TestSetPublic(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	resp, err := insta.SetPublicAccount()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	t.Log(resp.Status)
+}
+
 func TestSetPrivate(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
@@ -296,6 +310,7 @@ func TestSearchUsername(t *testing.T) {
 	bytes, err := insta.SearchUsername("ahmdrz")
 	if err != nil {
 		t.Fatal(err)
+		return
 	}
 
 	t.Log(string(bytes))
@@ -309,7 +324,79 @@ func TestSearchTags(t *testing.T) {
 	bytes, err := insta.SearchTags("instagram")
 	if err != nil {
 		t.Fatal(err)
+		return
 	}
 
 	t.Log(string(bytes))
+}
+
+func TestGetLastJson(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	_, err := insta.SearchTags("instagram")
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	t.Log(insta.GetLastJson())
+}
+
+func TestGetSessions(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	m := insta.GetSessions()
+	for _, session := range m {
+		for _, cookie := range session {
+			t.Log(generateMD5Hash(cookie.String()))
+		}
+	}
+}
+
+func TestExpose(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	err := insta.Expose()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	t.Log("status : ok")
+}
+
+func TestRemoveProfilePicture(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	resp, err := insta.RemoveProfilePicture()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	t.Log(resp.Status)
+}
+
+/////////// logout
+
+func TestLogout(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	err := insta.Logout()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	t.Log("status : ok")
 }

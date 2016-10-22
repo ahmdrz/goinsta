@@ -7,8 +7,6 @@ import (
 	"encoding/hex"
 	"net/url"
 	"strings"
-
-	"github.com/satori/go.uuid"
 )
 
 func generateMD5Hash(text string) string {
@@ -30,11 +28,14 @@ func generateDeviceID(seed string) string {
 }
 
 func generateUUID(replace bool) string {
-	u1 := uuid.NewV4()
-	if replace {
-		return strings.Replace(u1.String(), "-", "", -1)
+	uuid, err := newUUID()
+	if err != nil {
+		return "cb479ee7-a50d-49e7-8b7b-60cc1a105e22" // default value when error occurred
 	}
-	return u1.String()
+	if replace {
+		return strings.Replace(uuid, "-", "", -1)
+	}
+	return uuid
 }
 
 func generateSignature(data string) string {

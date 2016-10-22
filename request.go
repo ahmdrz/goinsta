@@ -68,7 +68,7 @@ func (insta *Instagram) sendRequest(endpoint string, post string, login bool) er
 	lastJson = string(body)
 
 	if resp.StatusCode != 200 {
-		return fmt.Errorf("Invalid status code", string(body))
+		return fmt.Errorf("Invalid status code %s", string(body))
 	}
 
 	return nil
