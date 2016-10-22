@@ -16,49 +16,49 @@ This library work like android version of instagram
 
 # Methods 
 
- - [x] Login
- - [x] Logout
- - [x] UserFollowings
- - [x] UserFollowers
- - [x] UserFeed
- - [x] MediaLikers
- - [x] Follow
- - [x] UnFollow
  - [x] Block
- - [x] UnBlock
- - [x] Like
- - [x] UnLike
- - [x] GetProfileData
- - [x] SetPublicAccount
- - [x] SetPrivateAccount
- - [x] RemoveProfilePicture
+ - [x] ChangePassword
  - [x] Comment
  - [x] DeleteComment
- - [x] EditMedia
  - [x] DeleteMedia
- - [x] MediaInfo
+ - [x] EditMedia
  - [x] Expose
- - [x] UploadPhoto 
- - [x] RemoveSelfTag
- - [x] GetUsername
- - [x] GetRecentActivity
+ - [x] Follow
  - [x] GetFollowingRecentActivity
- - [x] TagFeed
+ - [x] GetProfileData
+ - [x] GetRecentActivity
  - [x] GetRecentRecipients
- - [x] ChangePassword
- - [x] SelfUserFollowers
- - [x] SelfUserFollowing
+ - [x] GetUsername
+ - [x] Like
+ - [x] Login
+ - [x] Logout
+ - [x] MediaInfo
+ - [x] MediaLikers
+ - [x] RemoveProfilePicture
+ - [x] RemoveSelfTag
  - [x] SelfTotalUserFollowers
  - [x] SelfTotalUserFollowing
- - [ ] UploadVideo
- - [ ] GetUserTags
- - [ ] SelfUserTags
+ - [x] SelfUserFollowers
+ - [x] SelfUserFollowing
+ - [x] SetPrivateAccount
+ - [x] SetPublicAccount
+ - [x] TagFeed
+ - [x] UnBlock
+ - [x] UnFollow
+ - [x] UnLike
+ - [x] UploadPhoto 
+ - [x] UserFeed
+ - [x] UserFollowers
+ - [x] UserFollowings
  - [ ] GetGeoMedia
- - [ ] SelfGeoMedia
- - [ ] SearchUsername
- - [ ] SearchTags
+ - [ ] GetUserTags
  - [ ] SearchFacebookUsers
+ - [ ] SearchTags
+ - [ ] SearchUsername
+ - [ ] SelfGeoMedia
+ - [ ] SelfUserTags
  - [ ] SyncContacts
+ - [ ] UploadVideo
 
 This repository is a copy of [Instagram-API-Python](https://github.com/LevPasha/Instagram-API-python) , And original source is [Instagram-API](https://github.com/mgp25/Instagram-API)
 
