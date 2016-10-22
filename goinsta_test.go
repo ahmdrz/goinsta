@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"strconv"
+	"strings"
 	"testing"
 )
 
@@ -192,20 +193,10 @@ func TestSetPublic(t *testing.T) {
 
 	resp, err := insta.SetPublicAccount()
 	if err != nil {
-		t.Fatal(err)
-		return
-	}
-
-	t.Log(resp.Status)
-}
-
-func TestSetPrivate(t *testing.T) {
-	if skip {
-		t.Skip("Empty username or password , Skipping ...")
-	}
-
-	resp, err := insta.SetPrivateAccount()
-	if err != nil {
+		if strings.Contains(err.Error(), "too many requests") {
+			t.Log("too many requests")
+			return
+		}
 		t.Fatal(err)
 		return
 	}
@@ -378,6 +369,24 @@ func TestRemoveProfilePicture(t *testing.T) {
 
 	resp, err := insta.RemoveProfilePicture()
 	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	t.Log(resp.Status)
+}
+
+func TestSetPrivate(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	resp, err := insta.SetPrivateAccount()
+	if err != nil {
+		if strings.Contains(err.Error(), "too many requests") {
+			t.Log("too many requests")
+			return
+		}
 		t.Fatal(err)
 		return
 	}
