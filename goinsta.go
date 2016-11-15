@@ -165,7 +165,7 @@ func (insta *Instagram) Logout() error {
 // UserFollowings return followings of specific user
 // skip maxid with empty string for get first page
 func (insta *Instagram) UserFollowing(userid, maxid string) (response.UsersReponse, error) {
-	err := insta.sendRequest("friendships/"+insta.Informations.UsernameId+"/following/?max_id="+maxid+"&ig_sig_key_version="+GOINSTA_SIG_KEY_VERSION+"&rank_token="+insta.Informations.RankToken, "", false)
+	err := insta.sendRequest("friendships/"+userid+"/following/?max_id="+maxid+"&ig_sig_key_version="+GOINSTA_SIG_KEY_VERSION+"&rank_token="+insta.Informations.RankToken, "", false)
 	if err != nil {
 		return response.UsersReponse{}, err
 	}
@@ -182,7 +182,7 @@ func (insta *Instagram) UserFollowing(userid, maxid string) (response.UsersRepon
 // UserFollowers return followers of specific user
 // skip maxid with empty string for get first page
 func (insta *Instagram) UserFollowers(userid, maxid string) (response.UsersReponse, error) {
-	err := insta.sendRequest("friendships/"+insta.Informations.UsernameId+"/followers/?max_id="+maxid+"&ig_sig_key_version="+GOINSTA_SIG_KEY_VERSION+"&rank_token="+insta.Informations.RankToken, "", false)
+	err := insta.sendRequest("friendships/"+userid+"/followers/?max_id="+maxid+"&ig_sig_key_version="+GOINSTA_SIG_KEY_VERSION+"&rank_token="+insta.Informations.RankToken, "", false)
 	if err != nil {
 		return response.UsersReponse{}, err
 	}
