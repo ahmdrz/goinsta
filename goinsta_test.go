@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"os"
 	"strconv"
-	"strings"
 	"testing"
 )
 
@@ -41,7 +40,7 @@ func TestLogin(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
-	t.Log("status : ok , " + insta.LoggedInUser.FullName)
+	t.Log("status : ok")
 }
 
 func TestUserFollowings(t *testing.T) {
@@ -149,13 +148,13 @@ func TestLike(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	bytes, err := insta.Like("1363799876794028707") // random image ! from search by tags on pizza
+	_, err := insta.Like("1363799876794028707") // random image ! from search by tags on pizza
 	if err != nil {
 		t.Fatal(err)
 		return
 	}
 
-	t.Log(string(bytes))
+	t.Log("Finished")
 }
 
 func TestMediaInfo(t *testing.T) {
@@ -186,24 +185,6 @@ func TestTagFeed(t *testing.T) {
 	t.Log(resp.Items[0])
 }
 
-func TestSetPublic(t *testing.T) {
-	if skip {
-		t.Skip("Empty username or password , Skipping ...")
-	}
-
-	resp, err := insta.SetPublicAccount()
-	if err != nil {
-		if strings.Contains(err.Error(), "too many requests") {
-			t.Log("too many requests")
-			return
-		}
-		t.Fatal(err)
-		return
-	}
-
-	t.Log(resp.Status)
-}
-
 func TestCommentAndDeleteComment(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
@@ -215,7 +196,7 @@ func TestCommentAndDeleteComment(t *testing.T) {
 		return
 	}
 
-	t.Log(string(bytes))
+	t.Log("Finished")
 
 	type Comment struct {
 		ID int64 `json:"pk"`
@@ -243,7 +224,7 @@ func TestCommentAndDeleteComment(t *testing.T) {
 		return
 	}
 
-	t.Log(string(bytes))
+	t.Log("Finished")
 }
 
 func TestGetUsername(t *testing.T) {
@@ -272,12 +253,12 @@ func TestGetProfileData(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	resp, err := insta.GetProfileData()
+	_, err := insta.GetProfileData()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	t.Log(resp.User.FullName)
+	t.Log("Finished")
 }
 
 func TestRecentActivity(t *testing.T) {
@@ -285,12 +266,12 @@ func TestRecentActivity(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	bytes, err := insta.GetRecentActivity()
+	_, err := insta.GetRecentActivity()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	t.Log(string(bytes))
+	t.Log("Finished")
 }
 
 func TestSearchUsername(t *testing.T) {
@@ -298,13 +279,13 @@ func TestSearchUsername(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	bytes, err := insta.SearchUsername("ahmdrz")
+	_, err := insta.SearchUsername("ahmd.rz")
 	if err != nil {
 		t.Fatal(err)
 		return
 	}
 
-	t.Log(string(bytes))
+	t.Log("Finished")
 }
 
 func TestSearchTags(t *testing.T) {
@@ -312,13 +293,13 @@ func TestSearchTags(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	bytes, err := insta.SearchTags("instagram")
+	_, err := insta.SearchTags("instagram")
 	if err != nil {
 		t.Fatal(err)
 		return
 	}
 
-	t.Log(string(bytes))
+	t.Log("Finished")
 }
 
 func TestGetLastJson(t *testing.T) {
@@ -332,7 +313,7 @@ func TestGetLastJson(t *testing.T) {
 		return
 	}
 
-	t.Log(insta.GetLastJson())
+	t.Log("Finished")
 }
 
 func TestGetSessions(t *testing.T) {
@@ -360,38 +341,6 @@ func TestExpose(t *testing.T) {
 	}
 
 	t.Log("status : ok")
-}
-
-func TestRemoveProfilePicture(t *testing.T) {
-	if skip {
-		t.Skip("Empty username or password , Skipping ...")
-	}
-
-	resp, err := insta.RemoveProfilePicture()
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
-
-	t.Log(resp.Status)
-}
-
-func TestSetPrivate(t *testing.T) {
-	if skip {
-		t.Skip("Empty username or password , Skipping ...")
-	}
-
-	resp, err := insta.SetPrivateAccount()
-	if err != nil {
-		if strings.Contains(err.Error(), "too many requests") {
-			t.Log("too many requests")
-			return
-		}
-		t.Fatal(err)
-		return
-	}
-
-	t.Log(resp.Status)
 }
 
 /////////// logout
