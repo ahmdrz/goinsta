@@ -8,18 +8,23 @@ import (
 )
 
 var (
-	username string
-	password string
-	insta    *Instagram
-	skip     bool
+	username    string
+	password    string
+	pullrequest bool
+	insta       *Instagram
+	skip        bool
 )
 
 func TestHandlesNonExistingItems(t *testing.T) {
 	username = os.Getenv("INSTA_USERNAME")
 	password = os.Getenv("INSTA_PASSWORD")
-	if len(username)*len(password) == 0 {
+	pullrequest = os.Getenv("INSTA_PULL") == "true"
+	if len(username)*len(password) == 0 && !pullrequest {
 		skip = true
 		t.Fatal("Username or Password is empty")
+	}
+	if pullrequest {
+		skip = true
 	}
 }
 
