@@ -19,13 +19,14 @@ func TestHandlesNonExistingItems(t *testing.T) {
 	username = os.Getenv("INSTA_USERNAME")
 	password = os.Getenv("INSTA_PASSWORD")
 	pullrequest = os.Getenv("INSTA_PULL") == "true"
+
+	t.Log("Pull Request", pullrequest)
+
 	if len(username)*len(password) == 0 && !pullrequest {
 		skip = true
 		t.Fatal("Username or Password is empty")
 	}
-	if pullrequest {
-		skip = true
-	}
+	skip = pullrequest
 }
 
 func TestDeviceID(t *testing.T) {
