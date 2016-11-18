@@ -822,6 +822,48 @@ func (insta *Instagram) GetRecentRecipients() ([]byte, error) {
 	return []byte(lastJson), nil
 }
 
+func (insta *Instagram) GetV2Inbox() ([]byte, error) {
+	err := insta.sendRequest("direct_v2/inbox/?", "", false)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return []byte(lastJson), nil
+}
+
+func (insta *Instagram) GetDirectPendingRequests() (response.DirectPendingRequests, error) {
+	err := insta.sendRequest("direct_v2/pending_inbox/?", "", false)
+	if err != nil {
+		return response.DirectPendingRequests{}, err
+	}
+
+	result := response.DirectPendingRequests{}
+	json.Unmarshal([]byte(insta.GetLastJson()), &result)
+	return result, nil
+}
+
+func (insta *Instagram) GetRankedRecipients() (response.DirectRankedRecipients, error) {
+	err := insta.sendRequest("direct_v2/ranked_recipients/?", "", false)
+	if err != nil {
+		return response.DirectRankedRecipients{}, err
+	}
+
+	result := response.DirectRankedRecipients{}
+	json.Unmarshal([]byte(insta.GetLastJson()), &result)
+	return result, nil
+}
+
+func (insta *Instagram) GetDirectThread(threadid string) (response.DirectThread, error) {
+	err := insta.sendRequest("direct_v2/threads/"+threadid+"/", "", false)
+	if err != nil {
+		return response.DirectThread{}, err
+	}
+
+	result := response.DirectThread{}
+	json.Unmarshal([]byte(insta.GetLastJson()), &result)
+	return result, nil
+}
+
 func (insta *Instagram) Explore() ([]byte, error) {
 	err := insta.sendRequest("discover/explore/", "", false)
 	if err != nil {
