@@ -196,6 +196,21 @@ func (insta *Instagram) UserFollowers(userid, maxid string) (response.UsersRepon
 	return resp, nil
 }
 
+// FirstUserFeed latest users feed
+func (insta *Instagram) FirstUserFeed(userid string) (response.UserFeedResponse, error) {
+	err := insta.sendRequest("feed/user/"+userid+"/?rank_token="+insta.Informations.RankToken+"&maxid=&min_timestamp=&ranked_content=true", "", false)
+	if err != nil {
+		return response.UserFeedResponse{}, err
+	}
+	resp := response.UserFeedResponse{}
+	err = json.Unmarshal([]byte(lastJson), &resp)
+	if err != nil {
+		return response.UserFeedResponse{}, err
+	}
+
+	return resp, nil
+}
+
 // UserFeed has tree mode ,
 // If input was one string that we call maxid , mode is pagination
 // If input was two string can pagination by timestamp and maxid
