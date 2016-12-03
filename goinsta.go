@@ -1045,7 +1045,11 @@ func (insta *Instagram) SearchFacebookUsers(query string) ([]byte, error) {
 }
 
 func (insta *Instagram) DirectMessage(recipient string, message string) ([]byte, error) {
-	recipients, err := json.Marshal([]string{recipient})
+	recipients, err := json.Marshal([][]string{[]string{recipient}})
+	if err != nil {
+		return nil, err
+	}
+	threads, err := json.Marshal([]string{"0"})
 	if err != nil {
 		return nil, err
 	}
@@ -1055,7 +1059,7 @@ func (insta *Instagram) DirectMessage(recipient string, message string) ([]byte,
 	w.SetBoundary(insta.Informations.UUID)
 	w.WriteField("recipient_users", string(recipients))
 	w.WriteField("client_context", insta.Informations.UUID)
-	w.WriteField("thread_ids", "[0]")
+	w.WriteField("thread_ids", string(threads))
 	w.WriteField("text", message)
 	w.Close()
 
@@ -1064,9 +1068,8 @@ func (insta *Instagram) DirectMessage(recipient string, message string) ([]byte,
 		return nil, err
 	}
 	req.Header.Set("Accept", "*/*")
-	req.Header.Set("Cookie2", "$Version=1")
-	req.Header.Set("Accept-Language", "en-US")
-	req.Header.Set("Content-type", w.FormDataContentType())
+	req.Header.Set("Accept-Language", "en-en")
+	req.Header.Set("Content-Type", w.FormDataContentType())
 	req.Header.Set("Connection", "keep-alive")
 	req.Header.Set("User-Agent", GOINSTA_USER_AGENT)
 
