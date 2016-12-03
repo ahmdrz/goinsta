@@ -12,6 +12,7 @@ import (
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 	"strings"
@@ -1017,13 +1018,16 @@ func (insta *Instagram) GetFollowingRecentActivity() ([]byte, error) {
 	return []byte(lastJson), nil
 }
 
-func (insta *Instagram) SearchUsername(query string) ([]byte, error) {
-	err := insta.sendRequest("users/search/?ig_sig_key_version="+GOINSTA_SIG_KEY_VERSION+"&is_typeahead=true&query="+query+"&rank_token="+insta.Informations.RankToken, "", false)
+func (insta *Instagram) SearchUsername(query string) (response.SearchUserResponse, error) {
+	err := insta.sendRequest("users/search/?ig_sig_key_version="+GOINSTA_SIG_KEY_VERSION+"&is_typeahead=true&query="+url.QueryEscape(query)+"&rank_token="+insta.Informations.RankToken, "", false)
 	if err != nil {
-		return []byte{}, err
+		return response.SearchUserResponse{}, err
 	}
 
-	return []byte(lastJson), nil
+	result := response.SearchUserResponse{}
+	json.Unmarshal([]byte(lastJson), &result)
+
+	return result, nil
 }
 
 func (insta *Instagram) SearchTags(query string) ([]byte, error) {
