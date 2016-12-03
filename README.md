@@ -6,6 +6,11 @@
 
 Unofficial Instagram API written in Golang
 
+## Legal
+
+@mgp25
+This code is in no way affiliated with, authorized, maintained, sponsored or endorsed by Instagram or any of its affiliates or subsidiaries. This is an independent and unofficial API. Use at your own risk.
+
 **Very simple and no-dependency Instagram API**
 
 This library work like android version of instagram
