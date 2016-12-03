@@ -1043,3 +1043,52 @@ func (insta *Instagram) SearchFacebookUsers(query string) ([]byte, error) {
 
 	return []byte(lastJson), nil
 }
+
+func (insta *Instagram) DirectMessage(recipient string, message string) ([]byte, error) {
+	recipients, err := json.Marshal([]string{recipient})
+	if err != nil {
+		return nil, err
+	}
+
+	var b bytes.Buffer
+	w := multipart.NewWriter(&b)
+	w.SetBoundary(insta.Informations.UUID)
+	w.WriteField("recipient_users", string(recipients))
+	w.WriteField("client_context", insta.Informations.UUID)
+	w.WriteField("thread_ids", "[0]")
+	w.WriteField("text", message)
+	w.Close()
+
+	req, err := http.NewRequest("POST", GOINSTA_API_URL+"direct_v2/threads/broadcast/text/", &b)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Accept", "*/*")
+	req.Header.Set("Cookie2", "$Version=1")
+	req.Header.Set("Accept-Language", "en-US")
+	req.Header.Set("Content-type", w.FormDataContentType())
+	req.Header.Set("Connection", "keep-alive")
+	req.Header.Set("User-Agent", GOINSTA_USER_AGENT)
+
+	tempjar := newJar()
+	for key, value := range cookiejar.cookies { // make a copy of session
+		tempjar.cookies[key] = value
+	}
+
+	client := &http.Client{
+		Jar: tempjar,
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	lastResponse = resp
+	cookie = resp.Header.Get("Set-Cookie")
+
+	body, _ := ioutil.ReadAll(resp.Body)
+
+	lastJson = string(body)
+	return body, nil
+}
