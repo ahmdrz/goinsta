@@ -820,3 +820,148 @@ type SearchUserResponse struct {
 		ProfilePicID         string  `json:"profile_pic_id,omitempty"`
 	} `json:"users"`
 }
+
+type ExploreResponse struct {
+	Status              string `json:"status"`
+	NumResults          int    `json:"num_results"`
+	AutoLoadMoreEnabled bool   `json:"auto_load_more_enabled"`
+	Items               []struct {
+		Stories struct {
+			Tray []struct {
+				CanReply   bool `json:"can_reply"`
+				ExpiringAt int  `json:"expiring_at"`
+				User       struct {
+					Username         string `json:"username"`
+					FriendshipStatus struct {
+						IncomingRequest bool `json:"incoming_request"`
+						FollowedBy      bool `json:"followed_by"`
+						OutgoingRequest bool `json:"outgoing_request"`
+						Following       bool `json:"following"`
+						Blocking        bool `json:"blocking"`
+						IsPrivate       bool `json:"is_private"`
+					} `json:"friendship_status"`
+					ProfilePicURL string `json:"profile_pic_url"`
+					ProfilePicID  string `json:"profile_pic_id"`
+					FullName      string `json:"full_name"`
+					Pk            int    `json:"pk"`
+					IsVerified    bool   `json:"is_verified"`
+					IsPrivate     bool   `json:"is_private"`
+				} `json:"user"`
+				SourceToken        string `json:"source_token"`
+				Seen               int    `json:"seen"`
+				LatestReelMedia    int    `json:"latest_reel_media"`
+				ID                 int    `json:"id"`
+				RankedPosition     int    `json:"ranked_position"`
+				SeenRankedPosition int    `json:"seen_ranked_position"`
+			} `json:"tray"`
+			ID         int64 `json:"id"`
+			IsPortrait bool  `json:"is_portrait"`
+		} `json:"stories,omitempty"`
+		Media struct {
+			TakenAt         int    `json:"taken_at"`
+			Pk              int64  `json:"pk"`
+			ID              string `json:"id"`
+			DeviceTimestamp int64  `json:"device_timestamp"`
+			MediaType       int    `json:"media_type"`
+			Code            string `json:"code"`
+			ClientCacheKey  string `json:"client_cache_key"`
+			FilterType      int    `json:"filter_type"`
+			ImageVersions2  struct {
+				Candidates []struct {
+					URL    string `json:"url"`
+					Width  int    `json:"width"`
+					Height int    `json:"height"`
+				} `json:"candidates"`
+			} `json:"image_versions2"`
+			OriginalWidth  int `json:"original_width"`
+			OriginalHeight int `json:"original_height"`
+			User           struct {
+				Username                   string `json:"username"`
+				HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
+				IsUnpublished              bool   `json:"is_unpublished"`
+				IsFavorite                 bool   `json:"is_favorite"`
+				FriendshipStatus           struct {
+					Following       bool `json:"following"`
+					OutgoingRequest bool `json:"outgoing_request"`
+				} `json:"friendship_status"`
+				ProfilePicURL string `json:"profile_pic_url"`
+				ProfilePicID  string `json:"profile_pic_id"`
+				FullName      string `json:"full_name"`
+				Pk            int    `json:"pk"`
+				IsVerified    bool   `json:"is_verified"`
+				IsPrivate     bool   `json:"is_private"`
+			} `json:"user"`
+			OrganicTrackingToken         string `json:"organic_tracking_token"`
+			LikeCount                    int    `json:"like_count"`
+			HasLiked                     bool   `json:"has_liked"`
+			HasMoreComments              bool   `json:"has_more_comments"`
+			NextMaxID                    int64  `json:"next_max_id"`
+			MaxNumVisiblePreviewComments int    `json:"max_num_visible_preview_comments"`
+			PreviewComments              []struct {
+				Status       string `json:"status"`
+				UserID       int    `json:"user_id"`
+				CreatedAtUtc int    `json:"created_at_utc"`
+				CreatedAt    int    `json:"created_at"`
+				BitFlags     int    `json:"bit_flags"`
+				User         struct {
+					Username      string `json:"username"`
+					ProfilePicURL string `json:"profile_pic_url"`
+					ProfilePicID  string `json:"profile_pic_id"`
+					FullName      string `json:"full_name"`
+					Pk            int    `json:"pk"`
+					IsVerified    bool   `json:"is_verified"`
+					IsPrivate     bool   `json:"is_private"`
+				} `json:"user"`
+				ContentType string `json:"content_type"`
+				Text        string `json:"text"`
+				MediaID     int64  `json:"media_id"`
+				Pk          int64  `json:"pk"`
+				Type        int    `json:"type"`
+			} `json:"preview_comments"`
+			CommentCount int `json:"comment_count"`
+			Caption      struct {
+				Status       string `json:"status"`
+				UserID       int    `json:"user_id"`
+				CreatedAtUtc int    `json:"created_at_utc"`
+				CreatedAt    int    `json:"created_at"`
+				BitFlags     int    `json:"bit_flags"`
+				User         struct {
+					Username                   string `json:"username"`
+					HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
+					IsUnpublished              bool   `json:"is_unpublished"`
+					IsFavorite                 bool   `json:"is_favorite"`
+					FriendshipStatus           struct {
+						Following       bool `json:"following"`
+						OutgoingRequest bool `json:"outgoing_request"`
+					} `json:"friendship_status"`
+					ProfilePicURL string `json:"profile_pic_url"`
+					ProfilePicID  string `json:"profile_pic_id"`
+					FullName      string `json:"full_name"`
+					Pk            int    `json:"pk"`
+					IsVerified    bool   `json:"is_verified"`
+					IsPrivate     bool   `json:"is_private"`
+				} `json:"user"`
+				ContentType    string `json:"content_type"`
+				Text           string `json:"text"`
+				MediaID        int64  `json:"media_id"`
+				Pk             int64  `json:"pk"`
+				HasTranslation bool   `json:"has_translation"`
+				Type           int    `json:"type"`
+			} `json:"caption"`
+			CaptionIsEdited    bool   `json:"caption_is_edited"`
+			PhotoOfYou         bool   `json:"photo_of_you"`
+			Algorithm          string `json:"algorithm"`
+			ExploreContext     string `json:"explore_context"`
+			ExploreSourceToken string `json:"explore_source_token"`
+			Explore            struct {
+				Explanation string `json:"explanation"`
+				ActorID     int    `json:"actor_id"`
+				SourceToken string `json:"source_token"`
+			} `json:"explore"`
+			ImpressionToken string `json:"impression_token"`
+		} `json:"media,omitempty"`
+	} `json:"items"`
+	MoreAvailable bool   `json:"more_available"`
+	NextMaxID     string `json:"next_max_id"`
+	MaxID         string `json:"max_id"`
+}

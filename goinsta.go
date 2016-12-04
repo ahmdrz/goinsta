@@ -880,13 +880,16 @@ func (insta *Instagram) GetDirectThread(threadid string) (response.DirectThread,
 	return result, nil
 }
 
-func (insta *Instagram) Explore() ([]byte, error) {
+func (insta *Instagram) Explore() (response.ExploreResponse, error) {
 	err := insta.sendRequest("discover/explore/", "", false)
 	if err != nil {
-		return []byte{}, err
+		return response.ExploreResponse{}, err
 	}
 
-	return []byte(lastJson), nil
+	result := response.ExploreResponse{}
+	json.Unmarshal([]byte(lastJson), &result)
+
+	return result, nil
 }
 
 func (insta *Instagram) ChangePassword(newpassword string) ([]byte, error) {
