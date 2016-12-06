@@ -419,6 +419,31 @@ func (insta *Instagram) RemoveProfilePicture() (response.ProfileDataResponse, er
 	return resp, nil
 }
 
+// GetUserID return information of a user by user ID
+func (insta *Instagram) GetUserID(userid string) (response.GetUsernameResponse, error) {
+	bytes, err := json.Marshal(map[string]interface{}{
+		"_uuid":      insta.Informations.UUID,
+		"_uid":       insta.Informations.UsernameId,
+		"_csrftoken": insta.Informations.Token,
+	})
+	if err != nil {
+		return response.GetUsernameResponse{}, err
+	}
+
+	err = insta.sendRequest("users/"+userid+"/info/", generateSignature(string(bytes)), false)
+	if err != nil {
+		return response.GetUsernameResponse{}, err
+	}
+
+	resp := response.GetUsernameResponse{}
+	err = json.Unmarshal([]byte(lastJson), &resp)
+	if err != nil {
+		return response.GetUsernameResponse{}, err
+	}
+
+	return resp, nil
+}
+
 // GetUsername return information of a user by username
 func (insta *Instagram) GetUsername(username string) (response.GetUsernameResponse, error) {
 	err := insta.sendRequest("users/"+username+"/usernameinfo/", "", false)

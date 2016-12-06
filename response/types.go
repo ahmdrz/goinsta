@@ -171,6 +171,12 @@ type ProfileDataResponse struct {
 	User ProfileUserResponse `json:"user"`
 }
 
+// GetUserID return userinformation
+type GetUserID struct {
+	StatusResponse
+	User UsernameResponse `json:"user"`
+}
+
 // GetUsernameResponse return special userinformation
 type GetUsernameResponse struct {
 	StatusResponse

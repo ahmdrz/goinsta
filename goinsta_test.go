@@ -233,6 +233,27 @@ func TestCommentAndDeleteComment(t *testing.T) {
 	t.Log("Finished")
 }
 
+func TestGetUserID(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	resp, err := insta.GetUserID("17644112") // ID of "elonmusk"
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if resp.Status != "ok" {
+		t.Fatalf("Incorrect status" + resp.Status)
+	}
+
+	if resp.User.Username != "elonmusk" {
+		t.Fatalf("Username mismatch" + resp.User.Username)
+	}
+
+	t.Log(resp.Status)
+}
+
 func TestGetUsername(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
