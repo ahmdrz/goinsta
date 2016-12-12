@@ -14,6 +14,10 @@ var (
 	cookiejar    *jar
 )
 
+func (insta *Instagram) NewRequest(endpoint string, post string) error {
+	return insta.sendRequest(endpoint, post, false)
+}
+
 func (insta *Instagram) sendRequest(endpoint string, post string, login bool) error {
 	if !insta.IsLoggedIn && !login {
 		return fmt.Errorf("not logged in")
