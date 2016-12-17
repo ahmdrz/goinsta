@@ -179,8 +179,39 @@ type GetUserID struct {
 
 // GetUsernameResponse return special userinformation
 type GetUsernameResponse struct {
-	StatusResponse
-	User UsernameResponse `json:"user"`
+	User struct {
+		IsPrivate            bool   `json:"is_private"`
+		ExternalLynxURL      string `json:"external_lynx_url"`
+		IsVerified           bool   `json:"is_verified"`
+		MediaCount           int    `json:"media_count"`
+		AutoExpandChaining   bool   `json:"auto_expand_chaining"`
+		IsFavorite           bool   `json:"is_favorite"`
+		FullName             string `json:"full_name"`
+		Pk                   int    `json:"pk"`
+		FollowingCount       int    `json:"following_count"`
+		ExternalURL          string `json:"external_url"`
+		ProfilePicURL        string `json:"profile_pic_url"`
+		FollowerCount        int    `json:"follower_count"`
+		HdProfilePicVersions []struct {
+			Height int    `json:"height"`
+			Width  int    `json:"width"`
+			URL    string `json:"url"`
+		} `json:"hd_profile_pic_versions"`
+		HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
+		ProfilePicID               string `json:"profile_pic_id"`
+		UsertagsCount              int    `json:"usertags_count"`
+		Username                   string `json:"username"`
+		HdProfilePicURLInfo        struct {
+			Height int    `json:"height"`
+			Width  int    `json:"width"`
+			URL    string `json:"url"`
+		} `json:"hd_profile_pic_url_info"`
+		GeoMediaCount int    `json:"geo_media_count"`
+		IsBusiness    bool   `json:"is_business"`
+		Biography     string `json:"biography"`
+		HasChaining   bool   `json:"has_chaining"`
+	} `json:"user"`
+	Status string `json:"status"`
 }
 
 // UsernameResponse information of each instagram users
