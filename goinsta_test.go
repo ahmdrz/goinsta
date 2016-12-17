@@ -120,7 +120,7 @@ func TestFollow(t *testing.T) {
 		return
 	}
 
-	resp, err := insta.Follow(user.User.StringID())
+	resp, err := insta.Follow(strconv.Itoa(user.User.Pk))
 	if err != nil {
 		t.Fatal(err)
 		return
@@ -140,7 +140,7 @@ func TestUnFollow(t *testing.T) {
 		return
 	}
 
-	resp, err := insta.UnFollow(user.User.StringID())
+	resp, err := insta.UnFollow(strconv.Itoa(user.User.Pk))
 	if err != nil {
 		t.Fatal(err)
 		return
