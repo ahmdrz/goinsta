@@ -1002,3 +1002,126 @@ type ExploreResponse struct {
 	NextMaxID     string `json:"next_max_id"`
 	MaxID         string `json:"max_id"`
 }
+
+type MediaInfoResponse struct {
+	Status              string `json:"status"`
+	NumResults          int    `json:"num_results"`
+	AutoLoadMoreEnabled bool   `json:"auto_load_more_enabled"`
+	Items               []struct {
+		TakenAt         int    `json:"taken_at"`
+		Pk              int64  `json:"pk"`
+		ID              string `json:"id"`
+		DeviceTimestamp int    `json:"device_timestamp"`
+		MediaType       int    `json:"media_type"`
+		Code            string `json:"code"`
+		ClientCacheKey  string `json:"client_cache_key"`
+		FilterType      int    `json:"filter_type"`
+		ImageVersions2  struct {
+			Candidates []struct {
+				URL    string `json:"url"`
+				Width  int    `json:"width"`
+				Height int    `json:"height"`
+			} `json:"candidates"`
+		} `json:"image_versions2"`
+		OriginalWidth  int `json:"original_width"`
+		OriginalHeight int `json:"original_height"`
+		Location       struct {
+			ExternalSource   string  `json:"external_source"`
+			City             string  `json:"city"`
+			Name             string  `json:"name"`
+			FacebookPlacesID int64   `json:"facebook_places_id"`
+			Address          string  `json:"address"`
+			Lat              float64 `json:"lat"`
+			Pk               int     `json:"pk"`
+			Lng              float64 `json:"lng"`
+		} `json:"location"`
+		ViewCount float64 `json:"view_count"`
+		Lat       float64 `json:"lat"`
+		Lng       float64 `json:"lng"`
+		User      struct {
+			Username                   string `json:"username"`
+			HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
+			IsUnpublished              bool   `json:"is_unpublished"`
+			IsFavorite                 bool   `json:"is_favorite"`
+			FriendshipStatus           struct {
+				Following       bool `json:"following"`
+				OutgoingRequest bool `json:"outgoing_request"`
+			} `json:"friendship_status"`
+			ProfilePicURL string `json:"profile_pic_url"`
+			ProfilePicID  string `json:"profile_pic_id"`
+			FullName      string `json:"full_name"`
+			Pk            int    `json:"pk"`
+			IsVerified    bool   `json:"is_verified"`
+			IsPrivate     bool   `json:"is_private"`
+		} `json:"user"`
+		OrganicTrackingToken         string        `json:"organic_tracking_token"`
+		LikeCount                    int           `json:"like_count"`
+		TopLikers                    []interface{} `json:"top_likers"`
+		HasLiked                     bool          `json:"has_liked"`
+		HasMoreComments              bool          `json:"has_more_comments"`
+		NextMaxID                    int64         `json:"next_max_id"`
+		MaxNumVisiblePreviewComments int           `json:"max_num_visible_preview_comments"`
+		PreviewComments              []struct {
+			Status       string `json:"status"`
+			UserID       int    `json:"user_id"`
+			CreatedAtUtc int    `json:"created_at_utc"`
+			CreatedAt    int    `json:"created_at"`
+			BitFlags     int    `json:"bit_flags"`
+			User         struct {
+				Username      string `json:"username"`
+				ProfilePicURL string `json:"profile_pic_url"`
+				ProfilePicID  string `json:"profile_pic_id"`
+				FullName      string `json:"full_name"`
+				Pk            int    `json:"pk"`
+				IsVerified    bool   `json:"is_verified"`
+				IsPrivate     bool   `json:"is_private"`
+			} `json:"user"`
+			ContentType string `json:"content_type"`
+			Text        string `json:"text"`
+			MediaID     int64  `json:"media_id"`
+			Pk          int64  `json:"pk"`
+			Type        int    `json:"type"`
+		} `json:"preview_comments"`
+		CommentCount int `json:"comment_count"`
+		Caption      struct {
+			Status       string `json:"status"`
+			UserID       int    `json:"user_id"`
+			CreatedAtUtc int    `json:"created_at_utc"`
+			CreatedAt    int    `json:"created_at"`
+			BitFlags     int    `json:"bit_flags"`
+			User         struct {
+				Username                   string `json:"username"`
+				HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
+				IsUnpublished              bool   `json:"is_unpublished"`
+				IsFavorite                 bool   `json:"is_favorite"`
+				FriendshipStatus           struct {
+					Following       bool `json:"following"`
+					OutgoingRequest bool `json:"outgoing_request"`
+				} `json:"friendship_status"`
+				ProfilePicURL string `json:"profile_pic_url"`
+				ProfilePicID  string `json:"profile_pic_id"`
+				FullName      string `json:"full_name"`
+				Pk            int    `json:"pk"`
+				IsVerified    bool   `json:"is_verified"`
+				IsPrivate     bool   `json:"is_private"`
+			} `json:"user"`
+			ContentType string `json:"content_type"`
+			Text        string `json:"text"`
+			MediaID     int64  `json:"media_id"`
+			Pk          int64  `json:"pk"`
+			Type        int    `json:"type"`
+		} `json:"caption"`
+		CaptionIsEdited bool `json:"caption_is_edited"`
+		PhotoOfYou      bool `json:"photo_of_you"`
+		VideoVersions   []struct {
+			URL    string `json:"url"`
+			Width  int    `json:"width"`
+			Type   int    `json:"type"`
+			Height int    `json:"height"`
+		} `json:"video_versions"`
+		HasAudio      bool    `json:"has_audio"`
+		VideoDuration float64 `json:"video_duration"`
+	} `json:"items"`
+	MoreAvailable       bool `json:"more_available"`
+	CommentLikesEnabled bool `json:"comment_likes_enabled"`
+}

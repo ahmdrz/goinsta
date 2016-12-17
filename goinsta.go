@@ -292,7 +292,7 @@ func (insta *Instagram) Expose() error {
 }
 
 // MediaInfo return media information
-func (insta *Instagram) MediaInfo(mediaId string) (response.FeedsResponse, error) {
+func (insta *Instagram) MediaInfo(mediaId string) (response.MediaInfoResponse, error) {
 
 	bytes, err := json.Marshal(map[string]interface{}{
 		"_uuid":      insta.Informations.UUID,
@@ -301,19 +301,19 @@ func (insta *Instagram) MediaInfo(mediaId string) (response.FeedsResponse, error
 		"media_id":   mediaId,
 	})
 	if err != nil {
-		return response.FeedsResponse{}, err
+		return response.MediaInfoResponse{}, err
 	}
 
 	err = insta.sendRequest("media/"+mediaId+"/info/", generateSignature(string(bytes)), false)
 	if err != nil {
-		return response.FeedsResponse{}, err
+		return response.MediaInfoResponse{}, err
 	}
 
-	resp := response.FeedsResponse{}
+	resp := response.MediaInfoResponse{}
 
 	err = json.Unmarshal([]byte(lastJson), &resp)
 	if err != nil {
-		return response.FeedsResponse{}, err
+		return response.MediaInfoResponse{}, err
 	}
 
 	return resp, nil
