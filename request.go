@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 )
 
 var (
@@ -12,6 +13,7 @@ var (
 	lastJson     string
 	cookie       string
 	cookiejar    *jar
+	proxyUrl     string
 )
 
 func (insta *Instagram) NewRequest(endpoint string, post string) error {
@@ -58,6 +60,14 @@ func (insta *Instagram) sendRequest(endpoint string, post string, login bool) er
 	client := &http.Client{
 		Jar: tempjar,
 	}
+	if proxyUrl != "" {
+		proxy, err := url.Parse(proxyUrl)
+		if err != nil {
+			return err
+		}
+		client.Transport = &http.Transport{Proxy: http.ProxyURL(proxy) }
+	}
+
 	resp, err := client.Do(req)
 	if err != nil {
 		return err
