@@ -139,6 +139,10 @@ func main() {
 
 ```
 
+# Does goinsta support proxy servers?
+Yes, you may create goinsta object using: 
+goinsta.NewViaProxy("USERNAME", "PASSWORD", "http://<ip>:<port>")
+
 # Thanks
 
 1. [levpasha](https://github.com/LevPasha)
