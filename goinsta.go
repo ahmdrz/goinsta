@@ -93,6 +93,12 @@ var GOINSTA_DEVICE_SETTINGS = map[string]interface{}{
 	"android_release": "4.3",
 }
 
+// All requests will use proxy server (example http://<ip>:<port>)
+func NewViaProxy(username, password, proxy string) *Instagram {
+	proxyUrl = proxy
+	return New(username, password)
+}
+
 // New try to fill Instagram struct
 // New does not try to login , it will only fill
 // Instagram struct
