@@ -10,7 +10,7 @@ import (
 
 var (
 	lastResponse *http.Response
-	lastJson     []byte
+
 	cookie       string
 	cookiejar    *jar
 	proxyUrl     string
@@ -79,7 +79,7 @@ func (insta *Instagram) sendRequest(endpoint string, post string, login bool) er
 
 	body, _ := ioutil.ReadAll(resp.Body)
 
-	lastJson = body
+	insta.lastJson = body
 
 	if resp.StatusCode != 200 {
 		return fmt.Errorf("Invalid status code %s", string(body))
