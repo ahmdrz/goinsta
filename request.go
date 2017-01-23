@@ -16,27 +16,26 @@ var (
 	proxyUrl     string
 )
 
-func (insta *Instagram) NewRequest(endpoint string, post string) error {
+func (insta *Instagram) NewRequest(endpoint string, post string) ([]byte, error) {
 	return insta.sendRequest(endpoint, post, false)
 }
 
-func (insta *Instagram) sendRequest(endpoint string, post string, login bool) error {
+func (insta *Instagram) sendRequest(endpoint string, post string, login bool) (body []byte, err error) {
 	if !insta.IsLoggedIn && !login {
-		return fmt.Errorf("not logged in")
+		return nil, fmt.Errorf("not logged in")
 	}
 
 	var req *http.Request
-	var err error
 
 	if len(post) > 0 {
 		req, err = http.NewRequest("POST", GOINSTA_API_URL+endpoint, bytes.NewBuffer([]byte(post)))
 		if err != nil {
-			return err
+			return
 		}
 	} else {
 		req, err = http.NewRequest("GET", GOINSTA_API_URL+endpoint, nil)
 		if err != nil {
-			return err
+			return
 		}
 	}
 
@@ -63,27 +62,27 @@ func (insta *Instagram) sendRequest(endpoint string, post string, login bool) er
 	if proxyUrl != "" {
 		proxy, err := url.Parse(proxyUrl)
 		if err != nil {
-			return err
+			return body, err
 		}
 		client.Transport = &http.Transport{Proxy: http.ProxyURL(proxy) }
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return err
+		return body, err
 	}
 	defer resp.Body.Close()
 
 	lastResponse = resp
 	cookie = resp.Header.Get("Set-Cookie")
 
-	body, _ := ioutil.ReadAll(resp.Body)
+	body, _ = ioutil.ReadAll(resp.Body)
 
 	insta.lastJson = body
 
 	if resp.StatusCode != 200 {
-		return fmt.Errorf("Invalid status code %s", string(body))
+		return nil, fmt.Errorf("Invalid status code %s", string(body))
 	}
 
-	return nil
+	return body, err
 }
