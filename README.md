@@ -23,49 +23,7 @@ This library work like android version of instagram
 
 # Methods 
 
- - [x] Block
- - [x] ChangePassword
- - [x] Comment
- - [x] DeleteComment
- - [x] DeleteMedia
- - [x] EditMedia
- - [x] Expose
- - [x] Follow
- - [x] GetFollowingRecentActivity
- - [x] GetProfileData
- - [x] GetRecentActivity
- - [x] GetRecentRecipients
- - [x] GetUsername
- - [x] Like
- - [x] Login
- - [x] Logout
- - [x] MediaInfo
- - [x] MediaLikers
- - [x] RemoveProfilePicture
- - [x] RemoveSelfTag
- - [x] SelfTotalUserFollowers
- - [x] SelfTotalUserFollowing
- - [x] SelfUserFollowers
- - [x] SelfUserFollowing
- - [x] SetPrivateAccount
- - [x] SetPublicAccount
- - [x] TagFeed
- - [x] UnBlock
- - [x] UnFollow
- - [x] UnLike
- - [x] UploadPhoto 
- - [x] UserFeed
- - [x] UserFollowers
- - [x] UserFollowings
- - [ ] GetGeoMedia
- - [ ] GetUserTags
- - [x] SearchFacebookUsers
- - [x] SearchTags
- - [x] SearchUsername
- - [ ] SelfGeoMedia
- - [ ] SelfUserTags
- - [ ] SyncContacts
- - [ ] UploadVideo
+There is lot of methods , like uploadPhoto , follow , unfollow , comment , like and etc...
 
 This repository is a copy of [Instagram-API-Python](https://github.com/LevPasha/Instagram-API-python) , And original source is [Instagram-API](https://github.com/mgp25/Instagram-API)
 
