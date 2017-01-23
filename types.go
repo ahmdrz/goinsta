@@ -15,6 +15,8 @@ type Informations struct {
 }
 
 type Instagram struct {
+	lastJson []byte
+
 	IsLoggedIn   bool
 	Informations Informations
 	LoggedInUser response.User

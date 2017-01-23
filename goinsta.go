@@ -23,12 +23,13 @@ import (
 
 // GetLastJson return latest json response from instagram
 func (insta *Instagram) GetLastJson() string {
-	return string(lastJson)
+	return string(insta.lastJson)
 }
 
 // GetSessions return current instagram session and cookies
 // Maybe need for webpages that use this API
 func (insta *Instagram) GetSessions() map[string][]*http.Cookie {
+	fmt.Println()
 	return cookiejar.cookies
 }
 
@@ -148,7 +149,7 @@ func (insta *Instagram) Login() error {
 		Status       string        `json:"status"`
 	}
 
-	err = json.Unmarshal(lastJson, &Result)
+	err = json.Unmarshal(insta.lastJson, &Result)
 	if err != nil {
 		return err
 	}
@@ -178,7 +179,7 @@ func (insta *Instagram) UserFollowing(userid, maxid string) (response.UsersRepon
 	}
 
 	resp := response.UsersReponse{}
-	err = json.Unmarshal(lastJson, &resp)
+	err = json.Unmarshal(insta.lastJson, &resp)
 	if err != nil {
 		return response.UsersReponse{}, err
 	}
@@ -195,7 +196,7 @@ func (insta *Instagram) UserFollowers(userid, maxid string) (response.UsersRepon
 	}
 
 	resp := response.UsersReponse{}
-	err = json.Unmarshal(lastJson, &resp)
+	err = json.Unmarshal(insta.lastJson, &resp)
 	if err != nil {
 		return response.UsersReponse{}, err
 	}
@@ -210,7 +211,7 @@ func (insta *Instagram) FirstUserFeed(userid string) (response.UserFeedResponse,
 		return response.UserFeedResponse{}, err
 	}
 	resp := response.UserFeedResponse{}
-	err = json.Unmarshal(lastJson, &resp)
+	err = json.Unmarshal(insta.lastJson, &resp)
 	if err != nil {
 		return response.UserFeedResponse{}, err
 	}
@@ -245,7 +246,7 @@ func (insta *Instagram) UserFeed(strings ...string) (response.FeedsResponse, err
 	}
 
 	resp := response.FeedsResponse{}
-	err := json.Unmarshal(lastJson, &resp)
+	err := json.Unmarshal(insta.lastJson, &resp)
 	if err != nil {
 		return response.FeedsResponse{}, err
 	}
@@ -260,7 +261,7 @@ func (insta *Instagram) MediaLikers(mediaId string) (response.MediaLikersRespons
 		return response.MediaLikersResponse{}, err
 	}
 	resp := response.MediaLikersResponse{}
-	err = json.Unmarshal(lastJson, &resp)
+	err = json.Unmarshal(insta.lastJson, &resp)
 	if err != nil {
 		return response.MediaLikersResponse{}, err
 	}
@@ -289,7 +290,7 @@ func (insta *Instagram) Expose() error {
 
 	resp := response.StatusResponse{}
 
-	err = json.Unmarshal(lastJson, &resp)
+	err = json.Unmarshal(insta.lastJson, &resp)
 	if err != nil {
 		return err
 	}
@@ -317,7 +318,7 @@ func (insta *Instagram) MediaInfo(mediaId string) (response.MediaInfoResponse, e
 
 	resp := response.MediaInfoResponse{}
 
-	err = json.Unmarshal(lastJson, &resp)
+	err = json.Unmarshal(insta.lastJson, &resp)
 	if err != nil {
 		return response.MediaInfoResponse{}, err
 	}
@@ -342,7 +343,7 @@ func (insta *Instagram) SetPublicAccount() (response.ProfileDataResponse, error)
 	}
 
 	resp := response.ProfileDataResponse{}
-	err = json.Unmarshal(lastJson, &resp)
+	err = json.Unmarshal(insta.lastJson, &resp)
 	if err != nil {
 		return response.ProfileDataResponse{}, err
 	}
@@ -367,7 +368,7 @@ func (insta *Instagram) SetPrivateAccount() (response.ProfileDataResponse, error
 	}
 
 	resp := response.ProfileDataResponse{}
-	err = json.Unmarshal(lastJson, &resp)
+	err = json.Unmarshal(insta.lastJson, &resp)
 	if err != nil {
 		return response.ProfileDataResponse{}, err
 	}
@@ -392,7 +393,7 @@ func (insta *Instagram) GetProfileData() (response.ProfileDataResponse, error) {
 	}
 
 	resp := response.ProfileDataResponse{}
-	err = json.Unmarshal(lastJson, &resp)
+	err = json.Unmarshal(insta.lastJson, &resp)
 	if err != nil {
 		return response.ProfileDataResponse{}, err
 	}
@@ -417,7 +418,7 @@ func (insta *Instagram) RemoveProfilePicture() (response.ProfileDataResponse, er
 	}
 
 	resp := response.ProfileDataResponse{}
-	err = json.Unmarshal(lastJson, &resp)
+	err = json.Unmarshal(insta.lastJson, &resp)
 	if err != nil {
 		return response.ProfileDataResponse{}, err
 	}
@@ -442,7 +443,7 @@ func (insta *Instagram) GetUserID(userid string) (response.GetUsernameResponse, 
 	}
 
 	resp := response.GetUsernameResponse{}
-	err = json.Unmarshal(lastJson, &resp)
+	err = json.Unmarshal(insta.lastJson, &resp)
 	if err != nil {
 		return response.GetUsernameResponse{}, err
 	}
@@ -458,7 +459,7 @@ func (insta *Instagram) GetUsername(username string) (response.GetUsernameRespon
 	}
 
 	resp := response.GetUsernameResponse{}
-	err = json.Unmarshal(lastJson, &resp)
+	err = json.Unmarshal(insta.lastJson, &resp)
 	if err != nil {
 		return response.GetUsernameResponse{}, err
 	}
@@ -474,7 +475,7 @@ func (insta *Instagram) TagFeed(tag string) (response.TagFeedsResponse, error) {
 	}
 
 	resp := response.TagFeedsResponse{}
-	err = json.Unmarshal(lastJson, &resp)
+	err = json.Unmarshal(insta.lastJson, &resp)
 	if err != nil {
 		return response.TagFeedsResponse{}, err
 	}
@@ -542,7 +543,7 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 
 	body, _ := ioutil.ReadAll(resp.Body)
 
-	lastJson = body
+	insta.lastJson = body
 
 	if resp.StatusCode != 200 {
 		return response.UploadPhotoResponse{}, fmt.Errorf("invalid status code" + resp.Status)
@@ -591,7 +592,7 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 		}
 
 		uploadresponse := response.UploadPhotoResponse{}
-		err = json.Unmarshal(lastJson, &uploadresponse)
+		err = json.Unmarshal(insta.lastJson, &uploadresponse)
 		if err != nil {
 			return response.UploadPhotoResponse{}, err
 		}
@@ -625,7 +626,7 @@ func (insta *Instagram) Follow(userid string) (response.FollowResponse, error) {
 	}
 
 	resp := response.FollowResponse{}
-	err = json.Unmarshal(lastJson, &resp)
+	err = json.Unmarshal(insta.lastJson, &resp)
 	if err != nil {
 		return response.FollowResponse{}, err
 	}
@@ -651,7 +652,7 @@ func (insta *Instagram) UnFollow(userid string) (response.UnFollowResponse, erro
 	}
 
 	resp := response.UnFollowResponse{}
-	err = json.Unmarshal(lastJson, &resp)
+	err = json.Unmarshal(insta.lastJson, &resp)
 	if err != nil {
 		return response.UnFollowResponse{}, err
 	}
@@ -675,7 +676,7 @@ func (insta *Instagram) Block(userid string) ([]byte, error) {
 		return []byte{}, err
 	}
 
-	return lastJson, nil
+	return insta.lastJson, nil
 }
 
 func (insta *Instagram) UnBlock(userid string) ([]byte, error) {
@@ -694,7 +695,7 @@ func (insta *Instagram) UnBlock(userid string) ([]byte, error) {
 		return []byte{}, err
 	}
 
-	return lastJson, nil
+	return insta.lastJson, nil
 }
 
 func (insta *Instagram) Like(mediaId string) ([]byte, error) {
@@ -713,7 +714,7 @@ func (insta *Instagram) Like(mediaId string) ([]byte, error) {
 		return []byte{}, err
 	}
 
-	return lastJson, nil
+	return insta.lastJson, nil
 }
 
 func (insta *Instagram) UnLike(mediaId string) ([]byte, error) {
@@ -732,7 +733,7 @@ func (insta *Instagram) UnLike(mediaId string) ([]byte, error) {
 		return []byte{}, err
 	}
 
-	return lastJson, nil
+	return insta.lastJson, nil
 }
 
 func (insta *Instagram) EditMedia(mediaId string, caption string) ([]byte, error) {
@@ -758,7 +759,7 @@ func (insta *Instagram) EditMedia(mediaId string, caption string) ([]byte, error
 		return []byte{}, err
 	}
 
-	return lastJson, nil
+	return insta.lastJson, nil
 }
 
 func (insta *Instagram) DeleteMedia(mediaId string) ([]byte, error) {
@@ -784,7 +785,7 @@ func (insta *Instagram) DeleteMedia(mediaId string) ([]byte, error) {
 		return []byte{}, err
 	}
 
-	return lastJson, nil
+	return insta.lastJson, nil
 }
 
 func (insta *Instagram) RemoveSelfTag(mediaId string) ([]byte, error) {
@@ -808,7 +809,7 @@ func (insta *Instagram) RemoveSelfTag(mediaId string) ([]byte, error) {
 		return []byte{}, err
 	}
 
-	return lastJson, nil
+	return insta.lastJson, nil
 }
 
 func (insta *Instagram) Comment(mediaId, text string) ([]byte, error) {
@@ -834,7 +835,7 @@ func (insta *Instagram) Comment(mediaId, text string) ([]byte, error) {
 		return []byte{}, err
 	}
 
-	return lastJson, nil
+	return insta.lastJson, nil
 }
 
 func (insta *Instagram) DeleteComment(mediaId, commentId string) ([]byte, error) {
@@ -858,7 +859,7 @@ func (insta *Instagram) DeleteComment(mediaId, commentId string) ([]byte, error)
 		return []byte{}, err
 	}
 
-	return lastJson, nil
+	return insta.lastJson, nil
 }
 
 func (insta *Instagram) GetRecentRecipients() ([]byte, error) {
@@ -867,7 +868,7 @@ func (insta *Instagram) GetRecentRecipients() ([]byte, error) {
 		return []byte{}, err
 	}
 
-	return lastJson, nil
+	return insta.lastJson, nil
 }
 
 func (insta *Instagram) GetV2Inbox() ([]byte, error) {
@@ -876,7 +877,7 @@ func (insta *Instagram) GetV2Inbox() ([]byte, error) {
 		return []byte{}, err
 	}
 
-	return lastJson, nil
+	return insta.lastJson, nil
 }
 
 func (insta *Instagram) GetDirectPendingRequests() (response.DirectPendingRequests, error) {
@@ -919,7 +920,7 @@ func (insta *Instagram) Explore() (response.ExploreResponse, error) {
 	}
 
 	result := response.ExploreResponse{}
-	json.Unmarshal(lastJson, &result)
+	json.Unmarshal(insta.lastJson, &result)
 
 	return result, nil
 }
@@ -951,7 +952,7 @@ func (insta *Instagram) ChangePassword(newpassword string) ([]byte, error) {
 		return []byte{}, err
 	}
 
-	return lastJson, nil
+	return insta.lastJson, nil
 }
 
 func (insta *Instagram) Timeline(maxid ...string) ([]byte, error) {
@@ -971,7 +972,7 @@ func (insta *Instagram) Timeline(maxid ...string) ([]byte, error) {
 		return []byte{}, err
 	}
 
-	return lastJson, nil
+	return insta.lastJson, nil
 
 }
 
@@ -1037,7 +1038,7 @@ func (insta *Instagram) GetRecentActivity() ([]byte, error) {
 		return []byte{}, err
 	}
 
-	return lastJson, nil
+	return insta.lastJson, nil
 }
 
 func (insta *Instagram) GetFollowingRecentActivity() ([]byte, error) {
@@ -1046,7 +1047,7 @@ func (insta *Instagram) GetFollowingRecentActivity() ([]byte, error) {
 		return []byte{}, err
 	}
 
-	return lastJson, nil
+	return insta.lastJson, nil
 }
 
 func (insta *Instagram) SearchUsername(query string) (response.SearchUserResponse, error) {
@@ -1056,7 +1057,7 @@ func (insta *Instagram) SearchUsername(query string) (response.SearchUserRespons
 	}
 
 	result := response.SearchUserResponse{}
-	json.Unmarshal(lastJson, &result)
+	json.Unmarshal(insta.lastJson, &result)
 
 	return result, nil
 }
@@ -1067,7 +1068,7 @@ func (insta *Instagram) SearchTags(query string) ([]byte, error) {
 		return []byte{}, err
 	}
 
-	return lastJson, nil
+	return insta.lastJson, nil
 }
 
 func (insta *Instagram) SearchFacebookUsers(query string) ([]byte, error) {
@@ -1076,7 +1077,7 @@ func (insta *Instagram) SearchFacebookUsers(query string) ([]byte, error) {
 		return []byte{}, err
 	}
 
-	return lastJson, nil
+	return insta.lastJson, nil
 }
 
 func (insta *Instagram) DirectMessage(recipient string, message string) (response.DirectMessageResponse, error) {
@@ -1127,7 +1128,7 @@ func (insta *Instagram) DirectMessage(recipient string, message string) (respons
 		return response.DirectMessageResponse{}, fmt.Errorf(string(body))
 	}
 
-	lastJson = body
+	insta.lastJson = body
 
 	result := response.DirectMessageResponse{}
 	json.Unmarshal(body, &result)
