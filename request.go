@@ -9,10 +9,6 @@ import (
 )
 
 var (
-	lastResponse *http.Response
-
-	cookie       string
-	cookiejar    *jar
 	proxyUrl     string
 )
 
@@ -27,16 +23,13 @@ func (insta *Instagram) sendRequest(endpoint string, post string, login bool) (b
 
 	var req *http.Request
 
+	method := "GET"
 	if len(post) > 0 {
-		req, err = http.NewRequest("POST", GOINSTA_API_URL+endpoint, bytes.NewBuffer([]byte(post)))
-		if err != nil {
-			return
-		}
-	} else {
-		req, err = http.NewRequest("GET", GOINSTA_API_URL+endpoint, nil)
-		if err != nil {
-			return
-		}
+		method = "POST"
+	}
+	req, err = http.NewRequest(method, GOINSTA_API_URL+endpoint, bytes.NewBuffer([]byte(post)))
+	if err != nil {
+		return
 	}
 
 	req.Header.Set("Connection", "close")
@@ -46,18 +39,8 @@ func (insta *Instagram) sendRequest(endpoint string, post string, login bool) (b
 	req.Header.Set("Accept-Language", "en-US")
 	req.Header.Set("User-Agent", GOINSTA_USER_AGENT)
 
-	tempjar := newJar()
-
-	if !login {
-		for key, value := range cookiejar.cookies { // make a copy of session
-			tempjar.cookies[key] = value
-		}
-	} else {
-		tempjar = cookiejar // copy pointers (move sessions)
-	}
-
 	client := &http.Client{
-		Jar: tempjar,
+		Jar: insta.cookiejar,
 	}
 	if proxyUrl != "" {
 		proxy, err := url.Parse(proxyUrl)
@@ -73,12 +56,9 @@ func (insta *Instagram) sendRequest(endpoint string, post string, login bool) (b
 	}
 	defer resp.Body.Close()
 
-	lastResponse = resp
-	cookie = resp.Header.Get("Set-Cookie")
+	insta.cookie = resp.Header.Get("Set-Cookie")
 
 	body, _ = ioutil.ReadAll(resp.Body)
-
-	insta.lastJson = body
 
 	if resp.StatusCode != 200 {
 		return nil, fmt.Errorf("Invalid status code %s", string(body))
