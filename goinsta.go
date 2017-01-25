@@ -19,18 +19,13 @@ import (
 	"time"
 
 	response "github.com/ahmdrz/goinsta/response"
+	"net/http/cookiejar"
 )
-
-// GetLastJson return latest json response from instagram
-func (insta *Instagram) GetLastJson() string {
-	return string(insta.lastJson)
-}
 
 // GetSessions return current instagram session and cookies
 // Maybe need for webpages that use this API
-func (insta *Instagram) GetSessions() map[string][]*http.Cookie {
-	fmt.Println()
-	return cookiejar.cookies
+func (insta *Instagram) GetSessions(url *url.URL) []*http.Cookie {
+	return insta.cookiejar.Cookies(url)
 }
 
 // Const values ,
@@ -104,7 +99,6 @@ func NewViaProxy(username, password, proxy string) *Instagram {
 // New does not try to login , it will only fill
 // Instagram struct
 func New(username, password string) *Instagram {
-	cookiejar = newJar()
 	return &Instagram{
 		Informations: Informations{
 			DeviceID: generateDeviceID(generateMD5Hash(username + password)),
@@ -118,15 +112,17 @@ func New(username, password string) *Instagram {
 // Login to Instagram.
 // return error if can't send request to instagram server
 func (insta *Instagram) Login() error {
+	insta.cookiejar, _ = cookiejar.New(nil)//newJar()
+
 	body, err := insta.sendRequest("si/fetch_headers/?challenge_type=signup&guid="+generateUUID(false), "", true)
 	if err != nil {
 		return fmt.Errorf("Login failed for %s error %s :", insta.Informations.Username, err.Error())
 	}
 
-	data := cookie[strings.Index(cookie, "csrftoken=")+10:]
+	data := insta.cookie[strings.Index(insta.cookie, "csrftoken=")+10:]
 	data = data[:strings.Index(data, ";")]
 
-	result, err := json.Marshal(map[string]interface{}{
+	result, _ := json.Marshal(map[string]interface{}{
 		"guid":                insta.Informations.UUID,
 		"login_attempt_count": 0,
 		"_csrftoken":          data,
@@ -135,9 +131,6 @@ func (insta *Instagram) Login() error {
 		"username":            insta.Informations.Username,
 		"password":            insta.Informations.Password,
 	})
-	if err != nil {
-		return err
-	}
 
 	body, err = insta.sendRequest("accounts/login/", generateSignature(string(result)), true)
 	if err != nil {
@@ -166,7 +159,7 @@ func (insta *Instagram) Login() error {
 // Logout of Instagram
 func (insta *Instagram) Logout() error {
 	_, err := insta.sendRequest("accounts/logout/", "", false)
-	cookiejar = nil
+	insta.cookiejar = nil
 	return err
 }
 
@@ -466,13 +459,13 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 	req.Header.Set("Connection", "close")
 	req.Header.Set("User-Agent", GOINSTA_USER_AGENT)
 
-	tempjar := newJar()
-	for key, value := range cookiejar.cookies { // make a copy of session
+	/*tempjar := newJar()
+	for key, value := range insta.cookiejar.cookies { // make a copy of session
 		tempjar.cookies[key] = value
-	}
+	}*/
 
 	client := &http.Client{
-		Jar: tempjar,
+		Jar: insta.cookiejar,
 	}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -480,12 +473,9 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 	}
 	defer resp.Body.Close()
 
-	lastResponse = resp
-	cookie = resp.Header.Get("Set-Cookie")
+	insta.cookie = resp.Header.Get("Set-Cookie")
 
 	body, _ := ioutil.ReadAll(resp.Body)
-
-	insta.lastJson = body
 
 	if resp.StatusCode != 200 {
 		return response.UploadPhotoResponse{}, fmt.Errorf("invalid status code" + resp.Status)
@@ -503,31 +493,29 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 			return response.UploadPhotoResponse{}, err
 		}
 
-		var config map[string]interface{} = make(map[string]interface{})
-		config["_csrftoken"] = insta.Informations.Token
-		config["media_folder"] = "Instagram"
-		config["source_type"] = 4
-		config["_uid"] = insta.Informations.UsernameId
-		config["_uuid"] = insta.Informations.UUID
-		config["caption"] = photo_caption
-		config["upload_id"] = strconv.FormatInt(upload_id, 10)
-		config["device"] = GOINSTA_DEVICE_SETTINGS
-		config["edits"] = map[string]interface{}{
-			"crop_original_size": []int{w * 1.0, h * 1.0},
-			"crop_center":        []float32{0.0, 0.0},
-			"crop_zoom":          1.0,
-			"filter_type":        filter_type,
+		var config map[string]interface{} = map[string]interface{} {
+			"_csrftoken": insta.Informations.Token,
+			"media_folder": "Instagram",
+			"source_type": 4,
+			"_uid": insta.Informations.UsernameId,
+			"_uuid": insta.Informations.UUID,
+			"caption": photo_caption,
+			"upload_id": strconv.FormatInt(upload_id, 10),
+			"device": GOINSTA_DEVICE_SETTINGS,
+			"edits": map[string]interface{} {
+				"crop_original_size": []int{w * 1.0, h * 1.0},
+				"crop_center":        []float32{0.0, 0.0},
+				"crop_zoom":          1.0,
+				"filter_type":        filter_type,
+			},
+			"extra": map[string]interface{} {
+				"source_width":  w,
+				"source_height": h,
+			},
 		}
-		config["extra"] = map[string]interface{}{
-			"source_width":  w,
-			"source_height": h,
 
-		}
+		bytes, _ := json.Marshal(config)
 
-		bytes, err := json.Marshal(config)
-		if err != nil {
-			return response.UploadPhotoResponse{}, err
-		}
 		body, err = insta.sendRequest("media/configure/?", generateSignature(string(bytes)), false)
 		if err != nil {
 			return response.UploadPhotoResponse{}, err
@@ -918,30 +906,23 @@ func (insta *Instagram) DirectMessage(recipient string, message string) (respons
 	req.Header.Set("Connection", "keep-alive")
 	req.Header.Set("User-Agent", GOINSTA_USER_AGENT)
 
-	tempjar := newJar()
-	for key, value := range cookiejar.cookies { // make a copy of session
-		tempjar.cookies[key] = value
+	client := &http.Client{
+		Jar: insta.cookiejar,
 	}
 
-	client := &http.Client{
-		Jar: tempjar,
-	}
 	resp, err := client.Do(req)
 	if err != nil {
 		return response.DirectMessageResponse{}, err
 	}
 	defer resp.Body.Close()
 
-	lastResponse = resp
-	cookie = resp.Header.Get("Set-Cookie")
+	insta.cookie = resp.Header.Get("Set-Cookie")
 
 	body, _ := ioutil.ReadAll(resp.Body)
 
 	if resp.StatusCode != 200 {
 		return response.DirectMessageResponse{}, fmt.Errorf(string(body))
 	}
-
-	insta.lastJson = body
 
 	result := response.DirectMessageResponse{}
 	json.Unmarshal(body, &result)

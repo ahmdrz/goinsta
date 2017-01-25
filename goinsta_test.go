@@ -5,6 +5,7 @@ import (
 	"os"
 	"strconv"
 	"testing"
+	"net/url"
 )
 
 var (
@@ -55,7 +56,6 @@ func TestUserFollowings(t *testing.T) {
 	}
 	resp, err := insta.UserFollowing(insta.Informations.UsernameId, "")
 	if err != nil {
-		t.Log(insta.GetLastJson())
 		t.Fatal(err)
 		return
 	}
@@ -68,7 +68,6 @@ func TestUserFollowers(t *testing.T) {
 	}
 	resp, err := insta.UserFollowers(insta.Informations.UsernameId, "")
 	if err != nil {
-		t.Log(insta.GetLastJson())
 		t.Fatal(err)
 		return
 	}
@@ -220,7 +219,7 @@ func TestCommentAndDeleteComment(t *testing.T) {
 	}
 
 	if Result.Status != "ok" {
-		t.Fatalf("Incorrect format for comment")
+		t.Fatal("Incorrect format for comment")
 		return
 	}
 
@@ -329,30 +328,16 @@ func TestSearchTags(t *testing.T) {
 	t.Log("Finished")
 }
 
-func TestGetLastJson(t *testing.T) {
-	if skip {
-		t.Skip("Empty username or password , Skipping ...")
-	}
-
-	_, err := insta.SearchTags("instagram")
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
-
-	t.Log("Finished")
-}
 
 func TestGetSessions(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	m := insta.GetSessions()
-	for _, session := range m {
-		for _, cookie := range session {
-			t.Log(generateMD5Hash(cookie.String()))
-		}
+	url, _ := url.Parse("https://instagram.com")
+	cookies := insta.GetSessions(url)
+	for _, cookie := range cookies {
+		t.Log(generateMD5Hash(cookie.String()))
 	}
 }
 
