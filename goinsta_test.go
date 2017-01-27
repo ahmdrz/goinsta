@@ -370,39 +370,6 @@ func TestUserFeedWithToManyArgs(t *testing.T) {
 	t.Log("Finished")
 }
 
-func TestSetToPrivateAndPublic(t *testing.T) {
-	if skip {
-		t.Skip("Empty username or password , Skipping ...")
-	}
-
-	if insta.LoggedInUser.IsPrivate {
-		_, err := insta.SetPublicAccount()
-		if err != nil {
-			t.Fatal(err)
-			return
-		}
-		_, err = insta.SetPrivateAccount()
-		if err != nil {
-			t.Fatal(err)
-			return
-		}
-	} else {
-		_, err := insta.SetPrivateAccount()
-		if err != nil {
-			t.Fatal(err)
-			return
-		}
-		_, err = insta.SetPublicAccount()
-		if err != nil {
-			t.Fatal(err)
-			return
-		}
-	}
-	t.Log("Finished")
-}
-
-
-
 func TestSearchTags(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
