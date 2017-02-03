@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	proxyUrl     string
+	proxyUrl string
 )
 
 func (insta *Instagram) NewRequest(endpoint string, post string) ([]byte, error) {
@@ -27,6 +27,7 @@ func (insta *Instagram) sendRequest(endpoint string, post string, login bool) (b
 	if len(post) > 0 {
 		method = "POST"
 	}
+	fmt.Println(GOINSTA_API_URL + endpoint)
 	req, err = http.NewRequest(method, GOINSTA_API_URL+endpoint, bytes.NewBuffer([]byte(post)))
 	if err != nil {
 		return
@@ -47,7 +48,7 @@ func (insta *Instagram) sendRequest(endpoint string, post string, login bool) (b
 		if err != nil {
 			return body, err
 		}
-		client.Transport = &http.Transport{Proxy: http.ProxyURL(proxy) }
+		client.Transport = &http.Transport{Proxy: http.ProxyURL(proxy)}
 	}
 
 	resp, err := client.Do(req)

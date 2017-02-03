@@ -2,10 +2,10 @@ package goinsta
 
 import (
 	"encoding/json"
+	"net/url"
 	"os"
 	"strconv"
 	"testing"
-	"net/url"
 )
 
 var (
@@ -384,7 +384,6 @@ func TestSearchTags(t *testing.T) {
 	t.Log("Finished")
 }
 
-
 func TestGetSessions(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
@@ -405,6 +404,44 @@ func TestExpose(t *testing.T) {
 	err := insta.Expose()
 	if err != nil {
 		t.Fatal(err)
+		return
+	}
+
+	t.Log("status : ok")
+}
+
+func TestUserFriendShip(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	resp, err := insta.UserFriendShip(insta.Informations.UsernameId)
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	if resp.Status != "ok" {
+		t.Fatal(resp.Status)
+		return
+	}
+
+	t.Log("status : ok")
+}
+
+func TestGetPopularFeed(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	resp, err := insta.GetPopularFeed()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	if resp.Status != "ok" {
+		t.Fatal(resp.Status)
 		return
 	}
 

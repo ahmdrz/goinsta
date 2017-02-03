@@ -18,7 +18,7 @@ import (
 	"strings"
 	"time"
 
-	response "github.com/ahmdrz/goinsta/response"
+	"github.com/ahmdrz/goinsta/response"
 	"net/http/cookiejar"
 )
 
@@ -112,7 +112,7 @@ func New(username, password string) *Instagram {
 // Login to Instagram.
 // return error if can't send request to instagram server
 func (insta *Instagram) Login() error {
-	insta.cookiejar, _ = cookiejar.New(nil)//newJar()
+	insta.cookiejar, _ = cookiejar.New(nil) //newJar()
 
 	body, err := insta.sendRequest("si/fetch_headers/?challenge_type=signup&guid="+generateUUID(false), "", true)
 	if err != nil {
@@ -493,22 +493,22 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 			return response.UploadPhotoResponse{}, err
 		}
 
-		var config map[string]interface{} = map[string]interface{} {
-			"_csrftoken": insta.Informations.Token,
+		var config map[string]interface{} = map[string]interface{}{
+			"_csrftoken":   insta.Informations.Token,
 			"media_folder": "Instagram",
-			"source_type": 4,
-			"_uid": insta.Informations.UsernameId,
-			"_uuid": insta.Informations.UUID,
-			"caption": photo_caption,
-			"upload_id": strconv.FormatInt(upload_id, 10),
-			"device": GOINSTA_DEVICE_SETTINGS,
-			"edits": map[string]interface{} {
+			"source_type":  4,
+			"_uid":         insta.Informations.UsernameId,
+			"_uuid":        insta.Informations.UUID,
+			"caption":      photo_caption,
+			"upload_id":    strconv.FormatInt(upload_id, 10),
+			"device":       GOINSTA_DEVICE_SETTINGS,
+			"edits": map[string]interface{}{
 				"crop_original_size": []int{w * 1.0, h * 1.0},
 				"crop_center":        []float32{0.0, 0.0},
 				"crop_zoom":          1.0,
 				"filter_type":        filter_type,
 			},
-			"extra": map[string]interface{} {
+			"extra": map[string]interface{}{
 				"source_width":  w,
 				"source_height": h,
 			},
@@ -939,4 +939,49 @@ func (insta *Instagram) GetTrayFeeds(id string) {
 
 func (insta *Instagram) GetUserStories(id string) {
 	insta.sendRequest("feed/user/"+id+"/reel_media", "", false)
+}
+
+func (insta *Instagram) UserFriendShip(userid interface{}) (response.UserFriendShipResponse, error) {
+	result := response.UserFriendShipResponse{}
+	data := make(map[string]interface{})
+
+	data["_uuid"] = insta.Informations.UUID
+	data["_uid"] = insta.Informations.UsernameId
+	data["user_id"] = userid
+	data["_csrftoken"] = insta.Informations.Token
+
+	bytes, err := json.Marshal(data)
+	if err != nil {
+		return result, err
+	}
+	var _userid string
+
+	if _, ok := userid.(int64); ok {
+		_userid = strconv.FormatInt(userid.(int64), 10)
+	} else if _, ok := userid.(string); ok {
+		_userid = userid.(string)
+	}
+
+	bytes, err = insta.sendRequest("friendships/show/"+_userid+"/", generateSignature(string(bytes)), false)
+	if err != nil {
+		return result, err
+	}
+	err = json.Unmarshal(bytes, &result)
+	if err != nil {
+		return result, err
+	}
+	return result, err
+}
+
+func (insta *Instagram) GetPopularFeed() (response.GetPopularFeedResponse, error) {
+	result := response.GetPopularFeedResponse{}
+	bytes, err := insta.sendRequest("feed/popular/?people_teaser_supported=1&rank_token="+insta.Informations.RankToken+"&ranked_content=true&", "", false)
+	if err != nil {
+		return result, err
+	}
+	err = json.Unmarshal(bytes, &result)
+	if err != nil {
+		return result, err
+	}
+	return result, err
 }

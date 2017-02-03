@@ -27,3 +27,5 @@ _testmain.go
 
 # ignore Intellij products technical folder
 .idea/
+
+.vscode/
