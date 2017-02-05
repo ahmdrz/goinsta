@@ -712,8 +712,15 @@ func (insta *Instagram) GetRecentRecipients() ([]byte, error) {
 	return insta.sendRequest("direct_share/recent_recipients/", "", false)
 }
 
-func (insta *Instagram) GetV2Inbox() ([]byte, error) {
-	return insta.sendRequest("direct_v2/inbox/?", "", false)
+func (insta *Instagram) GetV2Inbox() (response.DirectListResponse, error) {
+	body, err := insta.sendRequest("direct_v2/inbox/?", "", false)
+	if err != nil {
+		return response.DirectListResponse{}, err
+	}
+
+	result := response.DirectListResponse{}
+	err = json.Unmarshal(body, &result)
+	return result, err
 }
 
 func (insta *Instagram) GetDirectPendingRequests() (response.DirectPendingRequests, error) {
@@ -735,6 +742,7 @@ func (insta *Instagram) GetRankedRecipients() (response.DirectRankedRecipients, 
 
 	result := response.DirectRankedRecipients{}
 	err = json.Unmarshal(body, &result)
+	fmt.Println(string(body))
 	return result, err
 }
 
