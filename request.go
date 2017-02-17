@@ -27,7 +27,6 @@ func (insta *Instagram) sendRequest(endpoint string, post string, login bool) (b
 	if len(post) > 0 {
 		method = "POST"
 	}
-	fmt.Println(GOINSTA_API_URL + endpoint)
 	req, err = http.NewRequest(method, GOINSTA_API_URL+endpoint, bytes.NewBuffer([]byte(post)))
 	if err != nil {
 		return
