@@ -154,7 +154,7 @@ func (insta *Instagram) Login() error {
 	insta.LoggedInUser = Result.LoggedInUser
 
   // Because Instagram app does the same
-  _, err = insta.sendRequest("qe/sync/", generateExperiments(string(result)), false)
+  _, err = insta.sendRequest("qe/sync/", generateExperiments(), false)
   if err != nil {
     panic(err)
   }

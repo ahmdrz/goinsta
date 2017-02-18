@@ -42,7 +42,7 @@ func generateSignature(data string) string {
 	return "ig_sig_key_version=" + GOINSTA_SIG_KEY_VERSION + "&signed_body=" + generateHMAC(data, GOINSTA_IG_SIG_KEY) + "." + url.QueryEscape(data)
 }
 
-func generateExperiments(data string) string {
+func generateExperiments() string {
   return "experiments=" + GOINSTA_EXPERIMENTS + "&id=" + generateUUID(true)
 }
 
