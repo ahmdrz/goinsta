@@ -153,6 +153,19 @@ func (insta *Instagram) Login() error {
 	insta.IsLoggedIn = true
 	insta.LoggedInUser = Result.LoggedInUser
 
+  // Because Instagram app does the same
+  _, err = insta.sendRequest("qe/sync/", generateExperiments(string(result)), false)
+  if err != nil {
+    panic(err)
+  }
+
+  // Because Instagram app does the same
+  _, err = insta.sendRequest("friendships/autocomplete_user_list/?version=2", "", false)
+  if err != nil {
+    panic(err)
+  }
+
+
 	return nil
 }
 
