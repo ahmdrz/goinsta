@@ -153,24 +153,25 @@ func (insta *Instagram) Login() error {
 	insta.IsLoggedIn = true
 	insta.LoggedInUser = Result.LoggedInUser
 
-  bytes, err := json.Marshal(map[string]interface{}{
-    "_uuid":      insta.Informations.UUID,
-    "_uid":       insta.Informations.UsernameId,
-    "_csrftoken": insta.Informations.Token,
-  })
+	bytes, err := json.Marshal(map[string]interface{}{
+		"_uuid":       insta.Informations.UUID,
+		"_uid":        insta.Informations.UsernameId,
+		"_csrftoken":  insta.Informations.Token,
+		"id":          insta.Informations.UsernameId,
+		"experiments": GOINSTA_EXPERIMENTS,
+	})
 
-  // Because Instagram app does the same
-  _, err = insta.sendRequest("qe/sync/", generateExperiments(string(bytes)), false)
-  if err != nil {
-    panic(err)
-  }
+	// Simulate Instagram app behaviour
+	_, err = insta.sendRequest("qe/sync/", generateSignature(string(bytes)), false)
+	if err != nil {
+		panic(err)
+	}
 
-  // Because Instagram app does the same
-  _, err = insta.sendRequest("friendships/autocomplete_user_list/?version=2", "", false)
-  if err != nil {
-    panic(err)
-  }
-
+	// Simulate Instagram app behaviour
+	_, err = insta.sendRequest("friendships/autocomplete_user_list/?version=2", "", false)
+	if err != nil {
+		panic(err)
+	}
 
 	return nil
 }
