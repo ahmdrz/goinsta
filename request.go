@@ -19,10 +19,10 @@ func (insta *Instagram) NewRequest(endpoint string, post string) ([]byte, error)
 func (insta *Instagram) sendRequest(endpoint string, post string, options ...bool) (body []byte, err error) {
 	isLoggedIn := false // Optional third argument
 	checkStatus := true // Optional forth argument
-	if len(options) == 1 && options[0] == true {
-		isLoggedIn = true
-	} else if len(options) == 2 && options[1] == false {
-		checkStatus = false
+	if len(options) == 1 {
+		isLoggedIn = options[0]
+	} else if len(options) == 2 {
+		checkStatus = options[1]
 	}
 
 	if !insta.IsLoggedIn && !isLoggedIn {
