@@ -41,4 +41,3 @@ func generateUUID(replace bool) string {
 func generateSignature(data string) string {
 	return "ig_sig_key_version=" + GOINSTA_SIG_KEY_VERSION + "&signed_body=" + generateHMAC(data, GOINSTA_IG_SIG_KEY) + "." + url.QueryEscape(data)
 }
-
