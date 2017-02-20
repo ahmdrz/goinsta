@@ -22,6 +22,7 @@ func (insta *Instagram) sendRequest(endpoint string, post string, options ...boo
 	if len(options) == 1 {
 		isLoggedIn = options[0]
 	} else if len(options) == 2 {
+    isLoggedIn = options[0]
 		checkStatus = options[1]
 	}
 
