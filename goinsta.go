@@ -425,6 +425,20 @@ func (insta *Instagram) GetUsername(username string) (response.GetUsernameRespon
 	return resp, err
 }
 
+// GetTagRelated can get related tags by tags in instagram
+func (insta *Instagram) GetTagRelated(tag string) (response.TagRelatedResponse, error) {
+	visited := url.QueryEscape("[{\"id\":\"" + tag + "\",\"type\":\"hashtag\"}]")
+	relatedTypes := url.QueryEscape("[\"hashtag\"]")
+	body, err := insta.sendRequest("tags/"+tag+"/related?visited="+visited+"&related_types="+relatedTypes, "", false)
+
+	if err != nil {
+		return response.TagRelatedResponse{}, err
+	}
+	resp := response.TagRelatedResponse{}
+	err = json.Unmarshal(body, &resp)
+	return resp, err
+}
+
 // TagFeed search by tags in instagram
 func (insta *Instagram) TagFeed(tag string) (response.TagFeedsResponse, error) {
 	body, err := insta.sendRequest("feed/tag/"+tag+"/?rank_token="+insta.Informations.RankToken+"&ranked_content=true", "", false)

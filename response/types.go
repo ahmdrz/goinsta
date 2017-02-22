@@ -64,6 +64,17 @@ type TagFeedsResponse struct {
 	RankedItems []MediaItemResponse `json:"ranked_items"`
 }
 
+// TagRelatedResponse struct contains array of related tags,
+// and status
+type TagRelatedResponse struct {
+	Status  string `json:"status"`
+	Related []struct {
+		ID   string `json:"id"`
+		Name string `json:"name"`
+		Type string `json:"type"`
+	} `json:"related"`
+}
+
 // MediaItemResponse struct for each media item
 type MediaItemResponse struct {
 	TakenAt                      int64             `json:"taken_at"`
