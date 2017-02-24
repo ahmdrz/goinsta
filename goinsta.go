@@ -164,13 +164,13 @@ func (insta *Instagram) Login() error {
 	// Simulate Instagram app behaviour
 	_, err = insta.sendRequest("qe/sync/", generateSignature(string(bytes)), false)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	// Simulate Instagram app behaviour
 	_, err = insta.sendRequest("friendships/autocomplete_user_list/?version=2", "", false, false)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	return nil
