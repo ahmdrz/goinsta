@@ -109,11 +109,11 @@ type MediaItemResponse struct {
 
 // ImageVersions struct for image information , urls and etc
 type ImageVersions struct {
-	Condidates []ImageCondidate `json:"condidates"`
+	Candidates []ImageCandidate `json:"candidates"`
 }
 
-// ImageCondidate have urls and image width , height
-type ImageCondidate struct {
+// ImageCandidate have urls and image width , height
+type ImageCandidate struct {
 	Url    string `json:"url"`
 	Width  int    `json:"width"`
 	Height int    `json:"height"`
@@ -166,12 +166,12 @@ type ProfileUserResponse struct {
 	User
 	//Birthday -> what the hell is ?
 	PhoneNumber             string           `json:"phone_number"`
-	HDProfilePicVersions    []ImageCondidate `json:"hd_profile_pic_versions"`
+	HDProfilePicVersions    []ImageCandidate `json:"hd_profile_pic_versions"`
 	Gender                  int              `json:"gender"`
 	ShowConversionEditEntry bool             `json:"show_conversion_edit_entry"`
 	ExternalLynxUrl         string           `json:"external_lynx_url"`
 	Biography               string           `json:"biography"`
-	HDProfilePicUrlInfo     ImageCondidate   `json:"hd_profile_pic_url_info"`
+	HDProfilePicUrlInfo     ImageCandidate   `json:"hd_profile_pic_url_info"`
 	Email                   string           `json:"email"`
 	ExternalUrl             string           `json:"external_url"`
 }
@@ -230,7 +230,7 @@ type UsernameResponse struct {
 	User
 	ExternalUrl         string         `json:"external_url"`
 	Biography           string         `json:"biography"`
-	HDProfilePicUrlInfo ImageCondidate `json:"hd_profile_pic_url_info"`
+	HDProfilePicUrlInfo ImageCandidate `json:"hd_profile_pic_url_info"`
 	UserTagsCount       int            `json:"usertags_count"`
 	MediaCount          int            `json:"media_count"`
 	FollowingCount      int            `json:"following_count"`
