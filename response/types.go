@@ -4,23 +4,23 @@ import (
 	"strconv"
 )
 
-// Status struct point to if response is ok or not
+// StatusResponse Status struct point to if response is ok or not
 type StatusResponse struct {
 	Status string `json:"status"`
 }
 
-// Pagination every pagination have next_max_id
+// Int64Pagination Pagination every pagination have next_max_id
 type Int64Pagination struct {
 	NextMaxID int64 `json:"next_max_id"`
 }
 
-// Pagination every pagination have next_max_id
+// StringPagination Pagination every pagination have next_max_id
 type StringPagination struct {
 	NextMaxID string `json:"next_max_id"`
 }
 
 // UsersResponse
-type UsersReponse struct {
+type UsersResponse struct {
 	StatusResponse
 	BigList  bool   `json:"big_list"`
 	Users    []User `json:"users"`
@@ -31,8 +31,8 @@ type UsersReponse struct {
 // User , Instagram user informations
 type User struct {
 	Username                   string `json:"username"`
-	HasAnanymousProfilePicture bool   `json:"has_anonymouse_profile_picture"`
-	ProfilePictureId           string `json:"profile_pic_id"`
+	HasAnonymousProfilePicture bool   `json:"has_anonymouse_profile_picture"`
+	ProfilePictureID           string `json:"profile_pic_id"`
 	ProfilePictureURL          string `json:"profile_pic_url"`
 	FullName                   string `json:"full_name"`
 	PK                         int64  `json:"pk"`
@@ -41,7 +41,7 @@ type User struct {
 	IsFavorite                 bool   `json:"is_favorite"`
 }
 
-// User.String return PK as string
+// StringID return PK as string
 func (user User) StringID() string {
 	return strconv.FormatInt(user.PK, 10)
 }
@@ -94,14 +94,14 @@ type MediaItemResponse struct {
 	User                         User              `json:"user"`
 	OrganicTrackingToken         string            `json:"organic_tracking_token"`
 	LikeCount                    int               `json:"like_count"`
-	TopLikers                    []string          `json:"top_likers",omitempty`
+	TopLikers                    []string          `json:"top_likers,omitempty"`
 	HasLiked                     bool              `json:"has_liked"`
 	HasMoreComments              bool              `json:"has_more_comments"`
 	MaxNumVisiblePreviewComments int               `json:"max_num_visible_preview_comments"`
-	PreviewComments              []CommentResponse `json:"preview_comments",omitempty`
-	Comments                     []CommentResponse `json:"comments",omitempty`
+	PreviewComments              []CommentResponse `json:"preview_comments,omitempty"`
+	Comments                     []CommentResponse `json:"comments,omitempty"`
 	CommentCount                 int               `json:"comment_count"`
-	Caption                      Caption           `json:"caption",omitempty`
+	Caption                      Caption           `json:"caption,omitempty"`
 	CaptionIsEdited              bool              `json:"caption_is_edited"`
 	PhotoOfYou                   bool              `json:"photo_of_you"`
 	Int64Pagination
@@ -109,12 +109,12 @@ type MediaItemResponse struct {
 
 // ImageVersions struct for image information , urls and etc
 type ImageVersions struct {
-	Condidates []ImageCondidate `json:"condidates"`
+	Candidates []ImageCandidate `json:"candidates"`
 }
 
-// ImageCondidate have urls and image width , height
-type ImageCondidate struct {
-	Url    string `json:"url"`
+// ImageCandidate have urls and image width , height
+type ImageCandidate struct {
+	URL    string `json:"url"`
 	Width  int    `json:"width"`
 	Height int    `json:"height"`
 }
@@ -128,7 +128,7 @@ type Caption struct {
 // Location struct mean where photo or video taken
 type Location struct {
 	ExternalSource   string  `json:"external_source"`
-	City             string  `json:"city",omitempty`
+	City             string  `json:"city,omitempty"`
 	Name             string  `json:"name"`
 	FacebookPlacesID int64   `json:"facebook_places_id"`
 	Address          string  `json:"address"`
@@ -161,19 +161,19 @@ type MediaLikersResponse struct {
 
 // ProfileUserResponse struct is current logged in user profile data
 // It's very similar to User struct but have more features
-// Gender -> 1 male , 2 female , 3 unknow
+// Gender -> 1 male , 2 female , 3 unknown
 type ProfileUserResponse struct {
 	User
 	//Birthday -> what the hell is ?
 	PhoneNumber             string           `json:"phone_number"`
-	HDProfilePicVersions    []ImageCondidate `json:"hd_profile_pic_versions"`
+	HDProfilePicVersions    []ImageCandidate `json:"hd_profile_pic_versions"`
 	Gender                  int              `json:"gender"`
 	ShowConversionEditEntry bool             `json:"show_conversion_edit_entry"`
-	ExternalLynxUrl         string           `json:"external_lynx_url"`
+	ExternalLynxURL         string           `json:"external_lynx_url"`
 	Biography               string           `json:"biography"`
-	HDProfilePicUrlInfo     ImageCondidate   `json:"hd_profile_pic_url_info"`
+	HDProfilePicURLInfo     ImageCandidate   `json:"hd_profile_pic_url_info"`
 	Email                   string           `json:"email"`
-	ExternalUrl             string           `json:"external_url"`
+	ExternalURL             string           `json:"external_url"`
 }
 
 // ProfileDataResponse have StatusResponse and ProfileUserResponse
@@ -210,7 +210,7 @@ type GetUsernameResponse struct {
 		} `json:"hd_profile_pic_versions"`
 		HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
 		ProfilePicID               string `json:"profile_pic_id"`
-		UsertagsCount              int    `json:"usertags_count"`
+		UserTagsCount              int    `json:"usertags_count"`
 		Username                   string `json:"username"`
 		HdProfilePicURLInfo        struct {
 			Height int    `json:"height"`
@@ -228,9 +228,9 @@ type GetUsernameResponse struct {
 // UsernameResponse information of each instagram users
 type UsernameResponse struct {
 	User
-	ExternalUrl         string         `json:"external_url"`
+	ExternalURL         string         `json:"external_url"`
 	Biography           string         `json:"biography"`
-	HDProfilePicUrlInfo ImageCondidate `json:"hd_profile_pic_url_info"`
+	HDProfilePicURLInfo ImageCandidate `json:"hd_profile_pic_url_info"`
 	UserTagsCount       int            `json:"usertags_count"`
 	MediaCount          int            `json:"media_count"`
 	FollowingCount      int            `json:"following_count"`
@@ -241,19 +241,21 @@ type UsernameResponse struct {
 	GeoMediaCount       int            `json:"geo_media_count"`
 }
 
-// UploadResponse struct informatio of upload method
+// UploadResponse struct information of upload method
 type UploadResponse struct {
 	StatusResponse
-	UploadID string `json:"upload_id",omitempty`
+	UploadID string `json:"upload_id,omitempty"`
 	Message  string `json:"message"`
 }
 
+// UploadPhotoResponse struct is for uploaded photo response.
 type UploadPhotoResponse struct {
 	StatusResponse
 	Media    MediaItemResponse `json:"media"`
 	UploadID string            `json:"upload_id"`
 }
 
+// FriendShipResponse struct is for user friendship_status
 type FriendShipResponse struct {
 	IncomingRequest bool `json:"incoming_request"`
 	FollowedBy      bool `json:"followed_by"`
@@ -263,16 +265,19 @@ type FriendShipResponse struct {
 	IsPrivate       bool `json:"is_private"`
 }
 
+// FollowResponse contains follow response
 type FollowResponse struct {
 	StatusResponse
 	FriendShipStatus FriendShipResponse `json:"friendship_status"`
 }
 
+// UnFollowResponse contains UnFollowResponse
 type UnFollowResponse struct {
 	StatusResponse
 	FriendShipStatus FriendShipResponse `json:"friendship_status"`
 }
 
+// DirectPendingRequests contains direct pending response
 type DirectPendingRequests struct {
 	Status               string `json:"status"`
 	SeqID                int    `json:"seq_id"`
@@ -299,45 +304,33 @@ type DirectPendingRequests struct {
 				IsVerified    bool   `json:"is_verified"`
 				IsPrivate     bool   `json:"is_private"`
 			} `json:"users"`
-			ViewerID         int64  `json:"viewer_id"`
-			MoreAvailableMin bool   `json:"more_available_min"`
-			ThreadID         string `json:"thread_id"`
-			ImageVersions2   struct {
-				Candidates []struct {
-					URL    string `json:"url"`
-					Width  int    `json:"width"`
-					Height int    `json:"height"`
-				} `json:"candidates"`
-			} `json:"image_versions2"`
-			LastActivityAt int64         `json:"last_activity_at"`
-			NextMaxID      string        `json:"next_max_id"`
-			IsSpam         bool          `json:"is_spam"`
-			LeftUsers      []interface{} `json:"left_users"`
-			NextMinID      string        `json:"next_min_id"`
-			Muted          bool          `json:"muted"`
-			Items          []struct {
+			ViewerID         int64         `json:"viewer_id"`
+			MoreAvailableMin bool          `json:"more_available_min"`
+			ThreadID         string        `json:"thread_id"`
+			ImageVersions2   ImageVersions `json:"image_versions2"`
+			LastActivityAt   int64         `json:"last_activity_at"`
+			NextMaxID        string        `json:"next_max_id"`
+			IsSpam           bool          `json:"is_spam"`
+			LeftUsers        []interface{} `json:"left_users"`
+			NextMinID        string        `json:"next_min_id"`
+			Muted            bool          `json:"muted"`
+			Items            []struct {
 				ItemID     string `json:"item_id"`
 				ItemType   string `json:"item_type"`
 				MediaShare struct {
-					TakenAt         int    `json:"taken_at"`
-					Pk              int64  `json:"pk"`
-					ID              string `json:"id"`
-					DeviceTimestamp int64  `json:"device_timestamp"`
-					MediaType       int    `json:"media_type"`
-					Code            string `json:"code"`
-					ClientCacheKey  string `json:"client_cache_key"`
-					FilterType      int    `json:"filter_type"`
-					ImageVersions2  struct {
-						Candidates []struct {
-							URL    string `json:"url"`
-							Width  int    `json:"width"`
-							Height int    `json:"height"`
-						} `json:"candidates"`
-					} `json:"image_versions2"`
-					OriginalWidth  int     `json:"original_width"`
-					OriginalHeight int     `json:"original_height"`
-					ViewCount      float64 `json:"view_count"`
-					User           struct {
+					TakenAt         int           `json:"taken_at"`
+					Pk              int64         `json:"pk"`
+					ID              string        `json:"id"`
+					DeviceTimestamp int64         `json:"device_timestamp"`
+					MediaType       int           `json:"media_type"`
+					Code            string        `json:"code"`
+					ClientCacheKey  string        `json:"client_cache_key"`
+					FilterType      int           `json:"filter_type"`
+					ImageVersions2  ImageVersions `json:"image_versions2"`
+					OriginalWidth   int           `json:"original_width"`
+					OriginalHeight  int           `json:"original_height"`
+					ViewCount       float64       `json:"view_count"`
+					User            struct {
 						Username                   string `json:"username"`
 						HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
 						IsUnpublished              bool   `json:"is_unpublished"`
@@ -465,6 +458,7 @@ type DirectPendingRequests struct {
 	} `json:"inbox"`
 }
 
+// DirectRankedRecipients contains direct ranked_items recipients
 type DirectRankedRecipients struct {
 	Status           string `json:"status"`
 	Filtered         bool   `json:"filtered"`
@@ -490,6 +484,7 @@ type DirectRankedRecipients struct {
 	} `json:"ranked_recipients"`
 }
 
+// DirectThread is a thread of directs
 type DirectThread struct {
 	Status string `json:"status"`
 	Thread struct {
@@ -511,45 +506,33 @@ type DirectThread struct {
 			IsVerified    bool   `json:"is_verified"`
 			IsPrivate     bool   `json:"is_private"`
 		} `json:"users"`
-		ViewerID         int64  `json:"viewer_id"`
-		MoreAvailableMin bool   `json:"more_available_min"`
-		ThreadID         string `json:"thread_id"`
-		ImageVersions2   struct {
-			Candidates []struct {
-				URL    string `json:"url"`
-				Width  int    `json:"width"`
-				Height int    `json:"height"`
-			} `json:"candidates"`
-		} `json:"image_versions2"`
-		LastActivityAt int64         `json:"last_activity_at"`
-		NextMaxID      string        `json:"next_max_id"`
-		Canonical      bool          `json:"canonical"`
-		LeftUsers      []interface{} `json:"left_users"`
-		NextMinID      string        `json:"next_min_id"`
-		Muted          bool          `json:"muted"`
-		Items          []struct {
+		ViewerID         int64         `json:"viewer_id"`
+		MoreAvailableMin bool          `json:"more_available_min"`
+		ThreadID         string        `json:"thread_id"`
+		ImageVersions2   ImageVersions `json:"image_versions2"`
+		LastActivityAt   int64         `json:"last_activity_at"`
+		NextMaxID        string        `json:"next_max_id"`
+		Canonical        bool          `json:"canonical"`
+		LeftUsers        []interface{} `json:"left_users"`
+		NextMinID        string        `json:"next_min_id"`
+		Muted            bool          `json:"muted"`
+		Items            []struct {
 			ItemID     string `json:"item_id"`
 			ItemType   string `json:"item_type"`
 			MediaShare struct {
-				TakenAt         int    `json:"taken_at"`
-				Pk              int64  `json:"pk"`
-				ID              string `json:"id"`
-				DeviceTimestamp int    `json:"device_timestamp"`
-				MediaType       int    `json:"media_type"`
-				Code            string `json:"code"`
-				ClientCacheKey  string `json:"client_cache_key"`
-				FilterType      int    `json:"filter_type"`
-				ImageVersions2  struct {
-					Candidates []struct {
-						URL    string `json:"url"`
-						Width  int    `json:"width"`
-						Height int    `json:"height"`
-					} `json:"candidates"`
-				} `json:"image_versions2"`
-				OriginalWidth  int     `json:"original_width"`
-				OriginalHeight int     `json:"original_height"`
-				ViewCount      float64 `json:"view_count"`
-				User           struct {
+				TakenAt         int           `json:"taken_at"`
+				Pk              int64         `json:"pk"`
+				ID              string        `json:"id"`
+				DeviceTimestamp int           `json:"device_timestamp"`
+				MediaType       int           `json:"media_type"`
+				Code            string        `json:"code"`
+				ClientCacheKey  string        `json:"client_cache_key"`
+				FilterType      int           `json:"filter_type"`
+				ImageVersions2  ImageVersions `json:"image_versions2"`
+				OriginalWidth   int           `json:"original_width"`
+				OriginalHeight  int           `json:"original_height"`
+				ViewCount       float64       `json:"view_count"`
+				User            struct {
 					Username                   string `json:"username"`
 					HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
 					IsUnpublished              bool   `json:"is_unpublished"`
@@ -679,29 +662,24 @@ type DirectThread struct {
 	} `json:"thread"`
 }
 
+// UserFeedResponse contains user feeds
 type UserFeedResponse struct {
 	Status              string `json:"status"`
 	NumResults          int    `json:"num_results"`
 	AutoLoadMoreEnabled bool   `json:"auto_load_more_enabled"`
 	Items               []struct {
-		TakenAt         int64  `json:"taken_at"`
-		Pk              int64  `json:"pk"`
-		ID              string `json:"id"`
-		DeviceTimestamp int64  `json:"device_timestamp"`
-		MediaType       int    `json:"media_type"`
-		Code            string `json:"code"`
-		ClientCacheKey  string `json:"client_cache_key"`
-		FilterType      int    `json:"filter_type"`
-		ImageVersions2  struct {
-			Candidates []struct {
-				URL    string `json:"url"`
-				Width  int    `json:"width"`
-				Height int    `json:"height"`
-			} `json:"candidates"`
-		} `json:"image_versions2"`
-		OriginalWidth  int `json:"original_width"`
-		OriginalHeight int `json:"original_height"`
-		User           struct {
+		TakenAt         int64         `json:"taken_at"`
+		Pk              int64         `json:"pk"`
+		ID              string        `json:"id"`
+		DeviceTimestamp int64         `json:"device_timestamp"`
+		MediaType       int           `json:"media_type"`
+		Code            string        `json:"code"`
+		ClientCacheKey  string        `json:"client_cache_key"`
+		FilterType      int           `json:"filter_type"`
+		ImageVersions2  ImageVersions `json:"image_versions2"`
+		OriginalWidth   int           `json:"original_width"`
+		OriginalHeight  int           `json:"original_height"`
+		User            struct {
 			Username                   string `json:"username"`
 			HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
 			IsUnpublished              bool   `json:"is_unpublished"`
@@ -749,7 +727,7 @@ type UserFeedResponse struct {
 		} `json:"caption"`
 		CaptionIsEdited bool `json:"caption_is_edited"`
 		PhotoOfYou      bool `json:"photo_of_you"`
-		Usertags        struct {
+		UserTags        struct {
 			In []struct {
 				Position    []float64   `json:"position"`
 				TimeInVideo interface{} `json:"time_in_video"`
@@ -778,6 +756,7 @@ type UserFeedResponse struct {
 	NextMaxID     string `json:"next_max_id"`
 }
 
+// DirectMessageResponse contains direct messages
 type DirectMessageResponse struct {
 	Status  string `json:"status"`
 	Threads []struct {
@@ -843,6 +822,7 @@ type DirectMessageResponse struct {
 	} `json:"threads"`
 }
 
+// SearchUserResponse is for user search response
 type SearchUserResponse struct {
 	HasMore    bool   `json:"has_more"`
 	Status     string `json:"status"`
@@ -869,6 +849,7 @@ type SearchUserResponse struct {
 	} `json:"users"`
 }
 
+// ExploreResponse is data from explore in Instagram
 type ExploreResponse struct {
 	Status              string `json:"status"`
 	NumResults          int    `json:"num_results"`
@@ -906,24 +887,18 @@ type ExploreResponse struct {
 			IsPortrait bool  `json:"is_portrait"`
 		} `json:"stories,omitempty"`
 		Media struct {
-			TakenAt         int    `json:"taken_at"`
-			Pk              int64  `json:"pk"`
-			ID              string `json:"id"`
-			DeviceTimestamp int64  `json:"device_timestamp"`
-			MediaType       int    `json:"media_type"`
-			Code            string `json:"code"`
-			ClientCacheKey  string `json:"client_cache_key"`
-			FilterType      int    `json:"filter_type"`
-			ImageVersions2  struct {
-				Candidates []struct {
-					URL    string `json:"url"`
-					Width  int    `json:"width"`
-					Height int    `json:"height"`
-				} `json:"candidates"`
-			} `json:"image_versions2"`
-			OriginalWidth  int `json:"original_width"`
-			OriginalHeight int `json:"original_height"`
-			User           struct {
+			TakenAt         int           `json:"taken_at"`
+			Pk              int64         `json:"pk"`
+			ID              string        `json:"id"`
+			DeviceTimestamp int64         `json:"device_timestamp"`
+			MediaType       int           `json:"media_type"`
+			Code            string        `json:"code"`
+			ClientCacheKey  string        `json:"client_cache_key"`
+			FilterType      int           `json:"filter_type"`
+			ImageVersions2  ImageVersions `json:"image_versions2"`
+			OriginalWidth   int           `json:"original_width"`
+			OriginalHeight  int           `json:"original_height"`
+			User            struct {
 				Username                   string `json:"username"`
 				HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
 				IsUnpublished              bool   `json:"is_unpublished"`
@@ -1014,29 +989,24 @@ type ExploreResponse struct {
 	MaxID         string `json:"max_id"`
 }
 
+// MediaInfoResponse contains media information
 type MediaInfoResponse struct {
 	Status              string `json:"status"`
 	NumResults          int    `json:"num_results"`
 	AutoLoadMoreEnabled bool   `json:"auto_load_more_enabled"`
 	Items               []struct {
-		TakenAt         int    `json:"taken_at"`
-		Pk              int64  `json:"pk"`
-		ID              string `json:"id"`
-		DeviceTimestamp int    `json:"device_timestamp"`
-		MediaType       int    `json:"media_type"`
-		Code            string `json:"code"`
-		ClientCacheKey  string `json:"client_cache_key"`
-		FilterType      int    `json:"filter_type"`
-		ImageVersions2  struct {
-			Candidates []struct {
-				URL    string `json:"url"`
-				Width  int    `json:"width"`
-				Height int    `json:"height"`
-			} `json:"candidates"`
-		} `json:"image_versions2"`
-		OriginalWidth  int `json:"original_width"`
-		OriginalHeight int `json:"original_height"`
-		Location       struct {
+		TakenAt         int           `json:"taken_at"`
+		Pk              int64         `json:"pk"`
+		ID              string        `json:"id"`
+		DeviceTimestamp int           `json:"device_timestamp"`
+		MediaType       int           `json:"media_type"`
+		Code            string        `json:"code"`
+		ClientCacheKey  string        `json:"client_cache_key"`
+		FilterType      int           `json:"filter_type"`
+		ImageVersions2  ImageVersions `json:"image_versions2"`
+		OriginalWidth   int           `json:"original_width"`
+		OriginalHeight  int           `json:"original_height"`
+		Location        struct {
 			ExternalSource   string  `json:"external_source"`
 			City             string  `json:"city"`
 			Name             string  `json:"name"`
@@ -1137,6 +1107,7 @@ type MediaInfoResponse struct {
 	CommentLikesEnabled bool `json:"comment_likes_enabled"`
 }
 
+// UserFriendShipResponse is about user_friend_ship response
 type UserFriendShipResponse struct {
 	Following       bool   `json:"following"`
 	FollowedBy      bool   `json:"followed_by"`
@@ -1149,6 +1120,7 @@ type UserFriendShipResponse struct {
 	IncomingRequest bool   `json:"incoming_request"`
 }
 
+// GetPopularFeedResponse contains popular feeds
 type GetPopularFeedResponse struct {
 	MaxID               string `json:"max_id"`
 	AutoLoadMoreEnabled bool   `json:"auto_load_more_enabled"`
@@ -1156,24 +1128,18 @@ type GetPopularFeedResponse struct {
 	Status              string `json:"status"`
 	NumResults          int    `json:"num_results"`
 	Items               []struct {
-		TakenAt         int    `json:"taken_at"`
-		Pk              int64  `json:"pk"`
-		ID              string `json:"id"`
-		DeviceTimestamp int64  `json:"device_timestamp"`
-		MediaType       int    `json:"media_type"`
-		Code            string `json:"code"`
-		ClientCacheKey  string `json:"client_cache_key"`
-		FilterType      int    `json:"filter_type"`
-		ImageVersions2  struct {
-			Candidates []struct {
-				Height int    `json:"height"`
-				Width  int    `json:"width"`
-				URL    string `json:"url"`
-			} `json:"candidates"`
-		} `json:"image_versions2"`
-		OriginalWidth  int `json:"original_width"`
-		OriginalHeight int `json:"original_height"`
-		User           struct {
+		TakenAt         int           `json:"taken_at"`
+		Pk              int64         `json:"pk"`
+		ID              string        `json:"id"`
+		DeviceTimestamp int64         `json:"device_timestamp"`
+		MediaType       int           `json:"media_type"`
+		Code            string        `json:"code"`
+		ClientCacheKey  string        `json:"client_cache_key"`
+		FilterType      int           `json:"filter_type"`
+		ImageVersions2  ImageVersions `json:"image_versions2"`
+		OriginalWidth   int           `json:"original_width"`
+		OriginalHeight  int           `json:"original_height"`
+		User            struct {
 			Username                   string `json:"username"`
 			IsPrivate                  bool   `json:"is_private"`
 			FullName                   string `json:"full_name"`
@@ -1249,7 +1215,7 @@ type GetPopularFeedResponse struct {
 		} `json:"caption"`
 		CaptionIsEdited bool `json:"caption_is_edited"`
 		PhotoOfYou      bool `json:"photo_of_you"`
-		Usertags        struct {
+		UserTags        struct {
 			In []struct {
 				TimeInVideo interface{} `json:"time_in_video"`
 				User        struct {
@@ -1286,6 +1252,7 @@ type GetPopularFeedResponse struct {
 	MoreAvailable bool `json:"more_available"`
 }
 
+// DirectListResponse is list of directs
 type DirectListResponse struct {
 	PendingRequestsTotal int    `json:"pending_requests_total"`
 	SeqID                int    `json:"seq_id"`
@@ -1323,25 +1290,19 @@ type DirectListResponse struct {
 				Timestamp  int64  `json:"timestamp"`
 				ItemID     string `json:"item_id"`
 				MediaShare struct {
-					TakenAt         int    `json:"taken_at"`
-					Pk              int64  `json:"pk"`
-					ID              string `json:"id"`
-					DeviceTimestamp int    `json:"device_timestamp"`
-					MediaType       int    `json:"media_type"`
-					Code            string `json:"code"`
-					ClientCacheKey  string `json:"client_cache_key"`
-					FilterType      int    `json:"filter_type"`
-					ImageVersions2  struct {
-						Candidates []struct {
-							Width  int    `json:"width"`
-							Height int    `json:"height"`
-							URL    string `json:"url"`
-						} `json:"candidates"`
-					} `json:"image_versions2"`
-					OriginalWidth  int     `json:"original_width"`
-					OriginalHeight int     `json:"original_height"`
-					ViewCount      float64 `json:"view_count"`
-					User           struct {
+					TakenAt         int           `json:"taken_at"`
+					Pk              int64         `json:"pk"`
+					ID              string        `json:"id"`
+					DeviceTimestamp int           `json:"device_timestamp"`
+					MediaType       int           `json:"media_type"`
+					Code            string        `json:"code"`
+					ClientCacheKey  string        `json:"client_cache_key"`
+					FilterType      int           `json:"filter_type"`
+					ImageVersions2  ImageVersions `json:"image_versions2"`
+					OriginalWidth   int           `json:"original_width"`
+					OriginalHeight  int           `json:"original_height"`
+					ViewCount       float64       `json:"view_count"`
+					User            struct {
 						Username         string `json:"username"`
 						IsUnpublished    bool   `json:"is_unpublished"`
 						IsPrivate        bool   `json:"is_private"`

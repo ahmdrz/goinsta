@@ -18,8 +18,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ahmdrz/goinsta/response"
 	"net/http/cookiejar"
+
+	"github.com/ahmdrz/goinsta/response"
 )
 
 // GetSessions return current instagram session and cookies
@@ -89,7 +90,7 @@ var GOINSTA_DEVICE_SETTINGS = map[string]interface{}{
 	"android_release": "4.3",
 }
 
-// All requests will use proxy server (example http://<ip>:<port>)
+// NewViaProxy All requests will use proxy server (example http://<ip>:<port>)
 func NewViaProxy(username, password, proxy string) *Instagram {
 	proxyUrl = proxy
 	return New(username, password)
@@ -116,7 +117,7 @@ func (insta *Instagram) Login() error {
 
 	body, err := insta.sendRequest("si/fetch_headers/?challenge_type=signup&guid="+generateUUID(false), "", true)
 	if err != nil {
-		return fmt.Errorf("Login failed for %s error %s :", insta.Informations.Username, err.Error())
+		return fmt.Errorf("login failed for %s error %s", insta.Informations.Username, err.Error())
 	}
 
 	data := insta.cookie[strings.Index(insta.cookie, "csrftoken=")+10:]
@@ -161,16 +162,16 @@ func (insta *Instagram) Login() error {
 		"experiments": GOINSTA_EXPERIMENTS,
 	})
 
-	// Simulate Instagram app behaviour
+	// Simulate Instagram app behavior
 	_, err = insta.sendRequest("qe/sync/", generateSignature(string(bytes)), false)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
-	// Simulate Instagram app behaviour
+	// Simulate Instagram app behavior
 	_, err = insta.sendRequest("friendships/autocomplete_user_list/?version=2", "", false, false)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	return nil
@@ -183,15 +184,15 @@ func (insta *Instagram) Logout() error {
 	return err
 }
 
-// UserFollowings return followings of specific user
+// UserFollowing return followings of specific user
 // skip maxid with empty string for get first page
-func (insta *Instagram) UserFollowing(userid, maxid string) (response.UsersReponse, error) {
+func (insta *Instagram) UserFollowing(userid, maxid string) (response.UsersResponse, error) {
 	body, err := insta.sendRequest("friendships/"+userid+"/following/?max_id="+maxid+"&ig_sig_key_version="+GOINSTA_SIG_KEY_VERSION+"&rank_token="+insta.Informations.RankToken, "", false)
 	if err != nil {
-		return response.UsersReponse{}, err
+		return response.UsersResponse{}, err
 	}
 
-	resp := response.UsersReponse{}
+	resp := response.UsersResponse{}
 	err = json.Unmarshal(body, &resp)
 
 	return resp, err
@@ -199,13 +200,13 @@ func (insta *Instagram) UserFollowing(userid, maxid string) (response.UsersRepon
 
 // UserFollowers return followers of specific user
 // skip maxid with empty string for get first page
-func (insta *Instagram) UserFollowers(userid, maxid string) (response.UsersReponse, error) {
+func (insta *Instagram) UserFollowers(userid, maxid string) (response.UsersResponse, error) {
 	body, err := insta.sendRequest("friendships/"+userid+"/followers/?max_id="+maxid+"&ig_sig_key_version="+GOINSTA_SIG_KEY_VERSION+"&rank_token="+insta.Informations.RankToken, "", false)
 	if err != nil {
-		return response.UsersReponse{}, err
+		return response.UsersResponse{}, err
 	}
 
-	resp := response.UsersReponse{}
+	resp := response.UsersResponse{}
 	err = json.Unmarshal(body, &resp)
 
 	return resp, err
@@ -853,20 +854,20 @@ func getImageDimension(imagePath string) (int, int, error) {
 	return image.Width, image.Height, nil
 }
 
-func (insta *Instagram) SelfUserFollowers(maxid string) (response.UsersReponse, error) {
+func (insta *Instagram) SelfUserFollowers(maxid string) (response.UsersResponse, error) {
 	return insta.UserFollowers(insta.Informations.UsernameId, maxid)
 }
 
-func (insta *Instagram) SelfUserFollowing(maxid string) (response.UsersReponse, error) {
+func (insta *Instagram) SelfUserFollowing(maxid string) (response.UsersResponse, error) {
 	return insta.UserFollowing(insta.Informations.UsernameId, maxid)
 }
 
-func (insta *Instagram) SelfTotalUserFollowers() (response.UsersReponse, error) {
-	resp := response.UsersReponse{}
+func (insta *Instagram) SelfTotalUserFollowers() (response.UsersResponse, error) {
+	resp := response.UsersResponse{}
 	for {
 		temp_resp, err := insta.SelfUserFollowers(resp.NextMaxID)
 		if err != nil {
-			return response.UsersReponse{}, err
+			return response.UsersResponse{}, err
 		}
 		resp.Users = append(resp.Users, temp_resp.Users...)
 		resp.PageSize += temp_resp.PageSize
@@ -878,12 +879,12 @@ func (insta *Instagram) SelfTotalUserFollowers() (response.UsersReponse, error) 
 	}
 }
 
-func (insta *Instagram) SelfTotalUserFollowing() (response.UsersReponse, error) {
-	resp := response.UsersReponse{}
+func (insta *Instagram) SelfTotalUserFollowing() (response.UsersResponse, error) {
+	resp := response.UsersResponse{}
 	for {
 		temp_resp, err := insta.SelfUserFollowing(resp.NextMaxID)
 		if err != nil {
-			return response.UsersReponse{}, err
+			return response.UsersResponse{}, err
 		}
 		resp.Users = append(resp.Users, temp_resp.Users...)
 		resp.PageSize += temp_resp.PageSize
