@@ -190,6 +190,24 @@ func TestTagFeed(t *testing.T) {
 	t.Log(resp.Items[0])
 }
 
+func TestTagRelated(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	tags, err := insta.GetTagRelated("student")
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	for i, tag := range tags.Related {
+		t.Logf("%d: name=%s", i, tag.Name)
+	}
+
+	t.Log("Finished")
+}
+
 func TestCommentAndDeleteComment(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
