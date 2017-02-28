@@ -29,6 +29,19 @@ func (insta *Instagram) GetSessions(url *url.URL) []*http.Cookie {
 	return insta.cookiejar.Cookies(url)
 }
 
+// SetCookies can enable us to set cookie, it'll be help for webpage that use this API without Login-again.
+func (insta *Instagram) SetCookies(url *url.URL, cookies []*http.Cookie) error {
+	if insta.cookiejar == nil {
+		var err error
+		insta.cookiejar, err = cookiejar.New(nil) //newJar()
+		if err != nil {
+			return err
+		}
+	}
+	insta.cookiejar.SetCookies(url, cookies)
+	return nil
+}
+
 // Const values ,
 // GOINSTA Default variables contains API url , user agent and etc...
 // GOINSTA_IG_SIG_KEY is Instagram sign key, It's important
