@@ -227,6 +227,24 @@ func TestTagFeed(t *testing.T) {
 	t.Log(resp.Items[0])
 }
 
+func TestSearchLocation(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	res, err := insta.SearchLocation("", "", "大阪")
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	for i, venue := range res.Venues {
+		t.Logf("%d: name=%s, address=%s, lat=%f, lng=%f ", i, venue.Name, venue.Address, venue.Lat, venue.Lng)
+	}
+
+	t.Log("Finished")
+}
+
 func TestTagRelated(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")

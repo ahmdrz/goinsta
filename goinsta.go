@@ -439,6 +439,34 @@ func (insta *Instagram) GetUsername(username string) (response.GetUsernameRespon
 	return resp, err
 }
 
+// SearchLocation ...
+func (insta *Instagram) SearchLocation(lat, lng, search string) (response.SearchLocationResponse, error) {
+
+	if lat == "" {
+		lat = "37.3874"
+	}
+	if lng == "" {
+		lng = "122.0575"
+	}
+	query := "?rank_token=" + insta.Informations.RankToken + "&latitude=" + lat + "&longitude=" + lng
+
+	if search != "" {
+		query += "&search_query=" + url.QueryEscape(search)
+	} else {
+		query += "&timestamp=" + string(time.Now().Unix())
+	}
+	query += "&ranked_content=true"
+
+	body, err := insta.sendRequest("location_search/"+query, "", false)
+
+	if err != nil {
+		return response.SearchLocationResponse{}, err
+	}
+
+	resp := response.SearchLocationResponse{}
+	err = json.Unmarshal(body, &resp)
+	return resp, err
+}
 // GetTagRelated can get related tags by tags in instagram
 func (insta *Instagram) GetTagRelated(tag string) (response.TagRelatedResponse, error) {
 	visited := url.QueryEscape("[{\"id\":\"" + tag + "\",\"type\":\"hashtag\"}]")
