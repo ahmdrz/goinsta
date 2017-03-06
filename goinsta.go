@@ -913,8 +913,17 @@ func (insta *Instagram) GetRecentActivity() ([]byte, error) {
 	return insta.sendRequest("news/inbox/?", "", false)
 }
 
-func (insta *Instagram) GetFollowingRecentActivity() ([]byte, error) {
-	return insta.sendRequest("news/?", "", false)
+func (insta *Instagram) GetFollowingRecentActivity() (response.FollowingRecentActivityResponse, error) {
+	bytes, err := insta.sendRequest("news/?", "", false)
+	if err != nil {
+		return response.FollowingRecentActivityResponse{}, err
+	}
+	tmp := response.FollowingRecentActivityResponse{}
+	err = json.Unmarshal(bytes, &tmp)
+	if err != nil {
+		return response.FollowingRecentActivityResponse{}, err
+	}
+	return tmp, nil
 }
 
 func (insta *Instagram) SearchUsername(query string) (response.SearchUserResponse, error) {
