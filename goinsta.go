@@ -465,6 +465,28 @@ func (insta *Instagram) SearchLocation(lat, lng, search string) (response.Search
 	return resp, err
 }
 
+// GetLocationFeed return location feed data by locationID in Instagram
+func (insta *Instagram) GetLocationFeed(locationID int64, maxID string) (response.LocationFeedResponse, error) {
+	var query string
+	var err error
+
+	if maxID != "" {
+		query += "?max_id=" + maxID
+	}
+
+	uri := fmt.Sprintf("feed/location/%d/", locationID) + query
+
+	body, err := insta.sendRequest(uri, "", false)
+
+	if err != nil {
+		return response.LocationFeedResponse{}, err
+	}
+
+	resp := response.LocationFeedResponse{}
+	err = json.Unmarshal(body, &resp)
+	return resp, err
+}
+
 // GetTagRelated can get related tags by tags in instagram
 func (insta *Instagram) GetTagRelated(tag string) (response.TagRelatedResponse, error) {
 	visited := url.QueryEscape("[{\"id\":\"" + tag + "\",\"type\":\"hashtag\"}]")
@@ -939,8 +961,17 @@ func (insta *Instagram) GetRecentActivity() ([]byte, error) {
 	return insta.sendRequest("news/inbox/?", "", false)
 }
 
-func (insta *Instagram) GetFollowingRecentActivity() ([]byte, error) {
-	return insta.sendRequest("news/?", "", false)
+func (insta *Instagram) GetFollowingRecentActivity() (response.FollowingRecentActivityResponse, error) {
+	bytes, err := insta.sendRequest("news/?", "", false)
+	if err != nil {
+		return response.FollowingRecentActivityResponse{}, err
+	}
+	tmp := response.FollowingRecentActivityResponse{}
+	err = json.Unmarshal(bytes, &tmp)
+	if err != nil {
+		return response.FollowingRecentActivityResponse{}, err
+	}
+	return tmp, nil
 }
 
 func (insta *Instagram) SearchUsername(query string) (response.SearchUserResponse, error) {

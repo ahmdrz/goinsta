@@ -121,6 +121,18 @@ type MediaItemResponse struct {
 	Int64Pagination
 }
 
+// LocationFeedResponse ...
+type LocationFeedResponse struct {
+	Status              string              `json:"status"`
+	AutoLoadMoreEnabled bool                `json:"auto_load_more_enabled"`
+	MediaCount          int64               `json:"media_count"`
+	NumResults          int64               `json:"num_results"`
+	MoreAvailable       bool                `json:"more_available"`
+	NextMaxID           string              `json:"next_max_id"`
+	Items               []MediaItemResponse `json:"items"`
+	RankedItems         []MediaItemResponse `json:"ranked_items"`
+}
+
 // ImageVersions struct for image information , urls and etc
 type ImageVersions struct {
 	Candidates []ImageCandidate `json:"candidates"`
@@ -1429,4 +1441,33 @@ type DirectListResponse struct {
 		} `json:"threads"`
 	} `json:"inbox"`
 	PendingRequestsUsers []interface{} `json:"pending_requests_users"`
+}
+
+type FollowingRecentActivityResponse struct {
+	AutoLoadMoreEnabled bool   `json:"auto_load_more_enabled"`
+	NextMaxID           int    `json:"next_max_id"`
+	Status              string `json:"status"`
+	Stories             []struct {
+		Pk     string `json:"pk"`
+		Counts struct {
+		} `json:"counts"`
+		Type int `json:"type"`
+		Args struct {
+			Media []struct {
+				Image string `json:"image"`
+				ID    string `json:"id"`
+			} `json:"media"`
+			Text         string `json:"text"`
+			CommentID    int64  `json:"comment_id"`
+			ProfileImage string `json:"profile_image"`
+			Timestamp    int    `json:"timestamp"`
+			Links        []struct {
+				Start int    `json:"start"`
+				ID    string `json:"id"`
+				End   int    `json:"end"`
+				Type  string `json:"type"`
+			} `json:"links"`
+			ProfileID int64 `json:"profile_id"`
+		} `json:"args"`
+	} `json:"stories"`
 }

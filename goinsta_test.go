@@ -231,8 +231,8 @@ func TestSearchLocation(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
-
 	res, err := insta.SearchLocation("37.3874", "122.0575", "大阪")
+
 	if err != nil {
 		t.Fatal(err)
 		return
@@ -240,6 +240,25 @@ func TestSearchLocation(t *testing.T) {
 
 	for i, venue := range res.Venues {
 		t.Logf("%d: name=%s, address=%s, lat=%f, lng=%f ", i, venue.Name, venue.Address, venue.Lat, venue.Lng)
+	}
+}
+
+func TestGetLocationFeed(t *testing.T) {
+
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+	locationFeed, err := insta.GetLocationFeed(108164709212336, "")
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	for i, item := range locationFeed.RankedItems {
+		t.Logf("%d: code=%s", i, item.Code)
+	}
+
+	for i, item := range locationFeed.Items {
+		t.Logf("%d: code=%s", i, item.Code)
 	}
 
 	t.Log("Finished")
