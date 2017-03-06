@@ -439,15 +439,12 @@ func (insta *Instagram) GetUsername(username string) (response.GetUsernameRespon
 	return resp, err
 }
 
-// SearchLocation ...
+// SearchLocation return search location by lat & lng & search query in instagram
 func (insta *Instagram) SearchLocation(lat, lng, search string) (response.SearchLocationResponse, error) {
+	if lat == "" || lng == "" {
+		return response.SearchLocationResponse{}, fmt.Errorf("lat & lng must not be empty")
+	}
 
-	if lat == "" {
-		lat = "37.3874"
-	}
-	if lng == "" {
-		lng = "122.0575"
-	}
 	query := "?rank_token=" + insta.Informations.RankToken + "&latitude=" + lat + "&longitude=" + lng
 
 	if search != "" {
@@ -467,6 +464,7 @@ func (insta *Instagram) SearchLocation(lat, lng, search string) (response.Search
 	err = json.Unmarshal(body, &resp)
 	return resp, err
 }
+
 // GetTagRelated can get related tags by tags in instagram
 func (insta *Instagram) GetTagRelated(tag string) (response.TagRelatedResponse, error) {
 	visited := url.QueryEscape("[{\"id\":\"" + tag + "\",\"type\":\"hashtag\"}]")

@@ -75,7 +75,7 @@ type TagRelatedResponse struct {
 	} `json:"related"`
 }
 
-// SearchLocationResponse ...
+// SearchLocationResponse struct contains array of location venues and status
 type SearchLocationResponse struct {
 	Status    string `json:"status"`
 	RequestID string `json:"request_id"`

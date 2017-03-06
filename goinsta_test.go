@@ -232,7 +232,7 @@ func TestSearchLocation(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	res, err := insta.SearchLocation("", "", "大阪")
+	res, err := insta.SearchLocation("37.3874", "122.0575", "大阪")
 	if err != nil {
 		t.Fatal(err)
 		return
