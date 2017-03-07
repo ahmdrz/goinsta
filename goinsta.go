@@ -439,6 +439,28 @@ func (insta *Instagram) GetUsername(username string) (response.GetUsernameRespon
 	return resp, err
 }
 
+// GetLocationFeed return location feed data by locationID in Instagram
+func (insta *Instagram) GetLocationFeed(locationID int64, maxID string) (response.LocationFeedResponse, error) {
+	var query string
+	var err error
+
+	if maxID != "" {
+		query += "?max_id=" + maxID
+	}
+
+	uri := fmt.Sprintf("feed/location/%d/", locationID) + query
+
+	body, err := insta.sendRequest(uri, "", false)
+
+	if err != nil {
+		return response.LocationFeedResponse{}, err
+	}
+
+	resp := response.LocationFeedResponse{}
+	err = json.Unmarshal(body, &resp)
+	return resp, err
+}
+
 // GetTagRelated can get related tags by tags in instagram
 func (insta *Instagram) GetTagRelated(tag string) (response.TagRelatedResponse, error) {
 	visited := url.QueryEscape("[{\"id\":\"" + tag + "\",\"type\":\"hashtag\"}]")

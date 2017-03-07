@@ -107,6 +107,18 @@ type MediaItemResponse struct {
 	Int64Pagination
 }
 
+// LocationFeedResponse ...
+type LocationFeedResponse struct {
+	Status              string              `json:"status"`
+	AutoLoadMoreEnabled bool                `json:"auto_load_more_enabled"`
+	MediaCount          int64               `json:"media_count"`
+	NumResults          int64               `json:"num_results"`
+	MoreAvailable       bool                `json:"more_available"`
+	NextMaxID           string              `json:"next_max_id"`
+	Items               []MediaItemResponse `json:"items"`
+	RankedItems         []MediaItemResponse `json:"ranked_items"`
+}
+
 // ImageVersions struct for image information , urls and etc
 type ImageVersions struct {
 	Candidates []ImageCandidate `json:"candidates"`
