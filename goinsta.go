@@ -439,6 +439,32 @@ func (insta *Instagram) GetUsername(username string) (response.GetUsernameRespon
 	return resp, err
 }
 
+// SearchLocation return search location by lat & lng & search query in instagram
+func (insta *Instagram) SearchLocation(lat, lng, search string) (response.SearchLocationResponse, error) {
+	if lat == "" || lng == "" {
+		return response.SearchLocationResponse{}, fmt.Errorf("lat & lng must not be empty")
+	}
+
+	query := "?rank_token=" + insta.Informations.RankToken + "&latitude=" + lat + "&longitude=" + lng
+
+	if search != "" {
+		query += "&search_query=" + url.QueryEscape(search)
+	} else {
+		query += "&timestamp=" + string(time.Now().Unix())
+	}
+	query += "&ranked_content=true"
+
+	body, err := insta.sendRequest("location_search/"+query, "", false)
+
+	if err != nil {
+		return response.SearchLocationResponse{}, err
+	}
+
+	resp := response.SearchLocationResponse{}
+	err = json.Unmarshal(body, &resp)
+	return resp, err
+}
+
 // GetLocationFeed return location feed data by locationID in Instagram
 func (insta *Instagram) GetLocationFeed(locationID int64, maxID string) (response.LocationFeedResponse, error) {
 	var query string
