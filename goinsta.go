@@ -4,6 +4,7 @@ package goinsta
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"image"
 	_ "image/jpeg"
@@ -134,7 +135,11 @@ func (insta *Instagram) Login() error {
 	}
 
 	data := insta.cookie[strings.Index(insta.cookie, "csrftoken=")+10:]
-	data = data[:strings.Index(data, ";")]
+	if len(data) != 6 {
+		data = data[:strings.Index(data, ";")]
+	} else {
+		return errors.New("Instagram regected login due to many logins, try again in few minutes.")
+	}
 
 	result, _ := json.Marshal(map[string]interface{}{
 		"guid":                insta.Informations.UUID,
