@@ -555,3 +555,39 @@ func TestLogout(t *testing.T) {
 
 	t.Log("status : ok")
 }
+
+func TestSyncFeatures(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+	err := insta.SyncFeatures()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	t.Log("status : ok")
+}
+
+func TestAutoCompleteUserList(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+	err := insta.AutoCompleteUserList()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	t.Log("status : ok")
+}
+
+func TestMegaphoneLog(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+	err := insta.MegaphoneLog()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	t.Log("status : ok")
+}

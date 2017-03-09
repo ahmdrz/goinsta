@@ -274,7 +274,7 @@ func (insta *Instagram) MediaLikers(mediaId string) (response.MediaLikersRespons
 	return resp, err
 }
 
-// Simulate Instagram app behavior
+// SyncFeatures simulates Instagram app behavior
 func (insta *Instagram) SyncFeatures() error {
 	bytes, err := json.Marshal(map[string]interface{}{
 		"_uuid":       insta.Informations.UUID,
@@ -288,13 +288,13 @@ func (insta *Instagram) SyncFeatures() error {
 	return err
 }
 
-// Simulate Instagram app behavior
+// AutoCompleteUserList simulates Instagram app behavior
 func (insta *Instagram) AutoCompleteUserList() error {
 	_, err := insta.sendRequest("friendships/autocomplete_user_list/?version=2", "", false, false)
 	return err
 }
 
-// Simulate Instagram app behavior
+// MegaphoneLog simulates Instagram app behavior
 func (insta *Instagram) MegaphoneLog() error {
 	bytes, err := json.Marshal(map[string]interface{}{
 		"_uid":       insta.Informations.UsernameId,
