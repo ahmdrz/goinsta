@@ -308,7 +308,7 @@ func (insta *Instagram) MegaphoneLog() error {
 		"uuid":       generateMD5Hash(string(time.Now().Unix())),
 	})
 
-	_, err = insta.sendRequest("qe/sync/", generateSignature(string(bytes)), false)
+	_, err = insta.sendRequest("megaphone/log/", generateSignature(string(bytes)), false)
 	return err
 }
 
