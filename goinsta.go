@@ -187,6 +187,17 @@ func (insta *Instagram) Login() error {
 		return err
 	}
 
+	insta.SyncFeatures()
+	insta.AutoCompleteUserList()
+	insta.GetRankedRecipients()
+	insta.Timeline()
+	insta.GetRankedRecipients()
+	insta.GetRecentRecipients()
+	insta.MegaphoneLog()
+	insta.GetV2Inbox()
+	insta.GetRecentActivity()
+	insta.GetReelsTrayFeed()
+
 	return nil
 }
 
@@ -281,6 +292,44 @@ func (insta *Instagram) MediaLikers(mediaId string) (response.MediaLikersRespons
 	err = json.Unmarshal(body, &resp)
 
 	return resp, err
+}
+
+// Simulate Instagram app behavior
+func (insta *Instagram) SyncFeatures() error {
+	bytes, err := json.Marshal(map[string]interface{}{
+		"_uuid":       insta.Informations.UUID,
+		"_uid":        insta.Informations.UsernameId,
+		"_csrftoken":  insta.Informations.Token,
+		"id":          insta.Informations.UsernameId,
+		"experiments": GOINSTA_EXPERIMENTS,
+	})
+
+	_, err = insta.sendRequest("qe/sync/", generateSignature(string(bytes)), false)
+	return err
+}
+
+// Simulate Instagram app behavior
+func (insta *Instagram) AutoCompleteUserList() error {
+	_, err := insta.sendRequest("friendships/autocomplete_user_list/?version=2", "", false, false)
+	return err
+}
+
+// Simulate Instagram app behavior
+func (insta *Instagram) MegaphoneLog() error {
+	bytes, err := json.Marshal(map[string]interface{}{
+		"_uid":       insta.Informations.UsernameId,
+		"id":         insta.Informations.UsernameId,
+		"type":       "feed_aysf",
+		"action":     "seen",
+		"reason":     "",
+		"_uuid":      insta.Informations.UUID,
+		"device_id":  insta.Informations.DeviceID,
+		"_csrftoken": insta.Informations.Token,
+		"uuid":       generateMD5Hash(string(time.Now().Unix())),
+	})
+
+	_, err = insta.sendRequest("qe/sync/", generateSignature(string(bytes)), false)
+	return err
 }
 
 // Expose , expose instagram
