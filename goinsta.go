@@ -568,7 +568,9 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 	if _, err = io.Copy(fw, f); err != nil {
 		return response.UploadPhotoResponse{}, err
 	}
-	w.Close()
+	if err := w.Close(); err != nil {
+		return response.UploadPhotoResponse{}, err
+	}
 
 	//making post request
 	req, err := http.NewRequest("POST", GOINSTA_API_URL+"upload/photo/", &b)
@@ -600,7 +602,10 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 
 	insta.cookie = resp.Header.Get("Set-Cookie")
 
-	body, _ := ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return response.UploadPhotoResponse{}, err
+	}
 
 	if resp.StatusCode != 200 {
 		return response.UploadPhotoResponse{}, fmt.Errorf("invalid status code" + resp.Status)
@@ -639,7 +644,10 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 			},
 		}
 
-		bytes, _ := json.Marshal(config)
+		bytes, err := json.Marshal(config)
+		if err != nil {
+			return response.UploadPhotoResponse{}, err
+		}
 
 		body, err = insta.sendRequest("media/configure/?", generateSignature(string(bytes)), false)
 		if err != nil {
