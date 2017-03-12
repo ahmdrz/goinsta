@@ -67,7 +67,10 @@ func (insta *Instagram) sendRequest(endpoint string, post string, options ...boo
 
 	insta.cookie = resp.Header.Get("Set-Cookie")
 
-	body, _ = ioutil.ReadAll(resp.Body)
+	body, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return
+	}
 
 	if resp.StatusCode != 200 && checkStatus {
 		return nil, fmt.Errorf("Invalid status code %s", string(body))
