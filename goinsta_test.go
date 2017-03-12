@@ -86,6 +86,43 @@ func TestSelfUserFeed(t *testing.T) {
 	t.Log(resp.Status)
 }
 
+func TestSelfUserFeedWithoutRelogin(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	insta2 := New(username, password)
+	_, err := insta2.UserFeed()
+	if err == nil {
+		t.Fatal("there is no error, but it must be error cuz no login.")
+		return
+	}
+
+	u, _ := url.Parse(GOINSTA_API_URL)
+	cookies := insta.GetSessions(u)
+
+	insta2.IsLoggedIn = true
+	insta2.SetCookies(u, cookies)
+	insta2.Informations.UsernameId = insta.Informations.UsernameId
+
+	insta2.Informations.DeviceID = insta.Informations.DeviceID
+	insta2.Informations.UUID = insta.Informations.UUID
+	insta2.Informations.Username = insta.Informations.Username
+	insta2.Informations.RankToken = insta.Informations.RankToken
+	//insta2.LoggedInUser = insta.LoggedInUser
+
+	resp2, err := insta2.UserFeed()
+	for _, item := range resp2.Items {
+		t.Log(item.Code)
+	}
+
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	t.Log(resp2.Status)
+}
+
 func TestMediaLikers(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
@@ -188,6 +225,61 @@ func TestTagFeed(t *testing.T) {
 	}
 
 	t.Log(resp.Items[0])
+}
+
+func TestSearchLocation(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+	res, err := insta.SearchLocation("37.3874", "122.0575", "大阪")
+
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	for i, venue := range res.Venues {
+		t.Logf("%d: name=%s, address=%s, lat=%f, lng=%f ", i, venue.Name, venue.Address, venue.Lat, venue.Lng)
+	}
+}
+
+func TestGetLocationFeed(t *testing.T) {
+
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+	locationFeed, err := insta.GetLocationFeed(108164709212336, "")
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	for i, item := range locationFeed.RankedItems {
+		t.Logf("%d: code=%s", i, item.Code)
+	}
+
+	for i, item := range locationFeed.Items {
+		t.Logf("%d: code=%s", i, item.Code)
+	}
+
+	t.Log("Finished")
+}
+
+func TestTagRelated(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	tags, err := insta.GetTagRelated("student")
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	for i, tag := range tags.Related {
+		t.Logf("%d: name=%s", i, tag.Name)
+	}
+
+	t.Log("Finished")
 }
 
 func TestCommentAndDeleteComment(t *testing.T) {
@@ -461,5 +553,41 @@ func TestLogout(t *testing.T) {
 		return
 	}
 
+	t.Log("status : ok")
+}
+
+func TestSyncFeatures(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+	err := insta.SyncFeatures()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	t.Log("status : ok")
+}
+
+func TestAutoCompleteUserList(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+	err := insta.AutoCompleteUserList()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	t.Log("status : ok")
+}
+
+func TestMegaphoneLog(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+	err := insta.MegaphoneLog()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
 	t.Log("status : ok")
 }
