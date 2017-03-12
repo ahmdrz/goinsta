@@ -559,7 +559,7 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 	w.WriteField("upload_id", strconv.FormatInt(upload_id, 10))
 	w.WriteField("_uuid", insta.Informations.UUID)
 	w.WriteField("_csrftoken", insta.Informations.Token)
-	w.WriteField("image_compression", "{\"lib_name\":\"jt\",\"lib_version\":\"1.3.0\",\"quality\":\""+strconv.Itoa(quality)+"\"}")
+	w.WriteField("image_compression", `{"lib_name":"jt","lib_version":"1.3.0","quality":"`+strconv.Itoa(quality)+`"}`)
 
 	fw, err := w.CreateFormFile("photo", photo_name)
 	if err != nil {
