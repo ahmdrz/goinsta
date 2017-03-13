@@ -875,7 +875,6 @@ func (insta *Instagram) GetRankedRecipients() (response.DirectRankedRecipients, 
 
 	result := response.DirectRankedRecipients{}
 	err = json.Unmarshal(body, &result)
-	fmt.Println(string(body))
 	return result, err
 }
 

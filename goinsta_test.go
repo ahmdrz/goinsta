@@ -6,6 +6,7 @@ import (
 	"os"
 	"strconv"
 	"testing"
+	"time"
 )
 
 var (
@@ -47,6 +48,7 @@ func TestLogin(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
+	time.Sleep(3 * time.Second)
 	t.Log("status : ok")
 }
 
@@ -54,36 +56,39 @@ func TestUserFollowings(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
-	resp, err := insta.UserFollowing(insta.Informations.UsernameId, "")
+	_, err := insta.UserFollowing(insta.Informations.UsernameId, "")
 	if err != nil {
 		t.Fatal(err)
 		return
 	}
-	t.Log(resp.Status)
+	time.Sleep(3 * time.Second)
+	t.Log("ok")
 }
 
 func TestUserFollowers(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
-	resp, err := insta.UserFollowers(insta.Informations.UsernameId, "")
+	_, err := insta.UserFollowers(insta.Informations.UsernameId, "")
 	if err != nil {
 		t.Fatal(err)
 		return
 	}
-	t.Log(resp.Status)
+	time.Sleep(3 * time.Second)
+	t.Log("ok")
 }
 
 func TestSelfUserFeed(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
-	resp, err := insta.UserFeed()
+	_, err := insta.UserFeed()
 	if err != nil {
 		t.Fatal(err)
 		return
 	}
-	t.Log(resp.Status)
+	time.Sleep(3 * time.Second)
+	t.Log("ok")
 }
 
 func TestSelfUserFeedWithoutRelogin(t *testing.T) {
@@ -120,6 +125,7 @@ func TestSelfUserFeedWithoutRelogin(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
+	time.Sleep(3 * time.Second)
 	t.Log(resp2.Status)
 }
 
@@ -143,6 +149,7 @@ func TestMediaLikers(t *testing.T) {
 	} else {
 		t.Skip("Empty feed")
 	}
+	time.Sleep(3 * time.Second)
 }
 
 func TestFollow(t *testing.T) {
@@ -156,13 +163,13 @@ func TestFollow(t *testing.T) {
 		return
 	}
 
-	resp, err := insta.Follow(strconv.Itoa(user.User.Pk))
+	_, err = insta.Follow(strconv.Itoa(user.User.Pk))
 	if err != nil {
 		t.Fatal(err)
 		return
 	}
-
-	t.Log(resp.Status)
+	time.Sleep(3 * time.Second)
+	t.Log("ok")
 }
 
 func TestUnFollow(t *testing.T) {
@@ -176,13 +183,13 @@ func TestUnFollow(t *testing.T) {
 		return
 	}
 
-	resp, err := insta.UnFollow(strconv.Itoa(user.User.Pk))
+	_, err = insta.UnFollow(strconv.Itoa(user.User.Pk))
 	if err != nil {
 		t.Fatal(err)
 		return
 	}
-
-	t.Log(resp.Status)
+	time.Sleep(3 * time.Second)
+	t.Log("ok")
 }
 
 func TestLike(t *testing.T) {
@@ -195,7 +202,7 @@ func TestLike(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
-
+	time.Sleep(3 * time.Second)
 	t.Log("Finished")
 }
 
@@ -204,13 +211,13 @@ func TestMediaInfo(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	resp, err := insta.MediaInfo("1363799876794028707") // random image ! from search by tags on pizza
+	_, err := insta.MediaInfo("1363799876794028707") // random image ! from search by tags on pizza
 	if err != nil {
 		t.Fatal(err)
 		return
 	}
-
-	t.Log(resp.Status)
+	time.Sleep(3 * time.Second)
+	t.Log("ok")
 }
 
 func TestTagFeed(t *testing.T) {
@@ -223,8 +230,8 @@ func TestTagFeed(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
-
-	t.Log(resp.Items[0])
+	time.Sleep(3 * time.Second)
+	t.Log("status : ok -> length : ", len(resp.Items))
 }
 
 func TestSearchLocation(t *testing.T) {
@@ -237,7 +244,7 @@ func TestSearchLocation(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
-
+	time.Sleep(3 * time.Second)
 	for i, venue := range res.Venues {
 		t.Logf("%d: name=%s, address=%s, lat=%f, lng=%f ", i, venue.Name, venue.Address, venue.Lat, venue.Lng)
 	}
@@ -260,7 +267,7 @@ func TestGetLocationFeed(t *testing.T) {
 	for i, item := range locationFeed.Items {
 		t.Logf("%d: code=%s", i, item.Code)
 	}
-
+	time.Sleep(3 * time.Second)
 	t.Log("Finished")
 }
 
@@ -278,7 +285,7 @@ func TestTagRelated(t *testing.T) {
 	for i, tag := range tags.Related {
 		t.Logf("%d: name=%s", i, tag.Name)
 	}
-
+	time.Sleep(3 * time.Second)
 	t.Log("Finished")
 }
 
@@ -320,7 +327,7 @@ func TestCommentAndDeleteComment(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
-
+	time.Sleep(3 * time.Second)
 	t.Log("Finished")
 }
 
@@ -341,8 +348,8 @@ func TestGetUserID(t *testing.T) {
 	if resp.User.Username != "elonmusk" {
 		t.Fatalf("Username mismatch" + resp.User.Username)
 	}
-
-	t.Log(resp.Status)
+	time.Sleep(3 * time.Second)
+	t.Log("ok")
 }
 
 func TestGetUsername(t *testing.T) {
@@ -362,8 +369,8 @@ func TestGetUsername(t *testing.T) {
 	if resp.User.Username != "ahmd.rz" {
 		t.Fatalf("Incorrect username" + resp.User.Username)
 	}
-
-	t.Log(resp.Status)
+	time.Sleep(3 * time.Second)
+	t.Log("ok")
 }
 
 func TestGetProfileData(t *testing.T) {
@@ -375,7 +382,7 @@ func TestGetProfileData(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
+	time.Sleep(3 * time.Second)
 	t.Log("Finished")
 }
 
@@ -388,7 +395,7 @@ func TestRecentActivity(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
+	time.Sleep(3 * time.Second)
 	t.Log("Finished")
 }
 
@@ -402,7 +409,7 @@ func TestSearchUsername(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
-
+	time.Sleep(3 * time.Second)
 	t.Log("Finished")
 }
 
@@ -416,7 +423,7 @@ func TestFirstUserFeed(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
-
+	time.Sleep(3 * time.Second)
 	t.Log("Finished")
 }
 
@@ -430,7 +437,7 @@ func TestUserFeedWithMaxID(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
-
+	time.Sleep(3 * time.Second)
 	t.Log("Finished")
 }
 
@@ -458,7 +465,7 @@ func TestUserFeedWithToManyArgs(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
-
+	time.Sleep(3 * time.Second)
 	t.Log("Finished")
 }
 
@@ -472,7 +479,7 @@ func TestSearchTags(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
-
+	time.Sleep(3 * time.Second)
 	t.Log("Finished")
 }
 
@@ -498,7 +505,7 @@ func TestExpose(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
-
+	time.Sleep(3 * time.Second)
 	t.Log("status : ok")
 }
 
@@ -517,7 +524,7 @@ func TestUserFriendShip(t *testing.T) {
 		t.Fatal(resp.Status)
 		return
 	}
-
+	time.Sleep(3 * time.Second)
 	t.Log("status : ok")
 }
 
@@ -536,25 +543,11 @@ func TestGetPopularFeed(t *testing.T) {
 		t.Fatal(resp.Status)
 		return
 	}
-
+	time.Sleep(3 * time.Second)
 	t.Log("status : ok")
 }
 
 /////////// logout
-
-func TestLogout(t *testing.T) {
-	if skip {
-		t.Skip("Empty username or password , Skipping ...")
-	}
-
-	err := insta.Logout()
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
-
-	t.Log("status : ok")
-}
 
 func TestSyncFeatures(t *testing.T) {
 	if skip {
@@ -565,6 +558,7 @@ func TestSyncFeatures(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
+	time.Sleep(3 * time.Second)
 	t.Log("status : ok")
 }
 
@@ -577,6 +571,7 @@ func TestAutoCompleteUserList(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
+	time.Sleep(3 * time.Second)
 	t.Log("status : ok")
 }
 
@@ -589,5 +584,20 @@ func TestMegaphoneLog(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
+	time.Sleep(3 * time.Second)
+	t.Log("status : ok")
+}
+
+func TestLogout(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	err := insta.Logout()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	time.Sleep(3 * time.Second)
 	t.Log("status : ok")
 }
