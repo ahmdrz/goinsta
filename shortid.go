@@ -28,7 +28,7 @@ func bin2int(binStr string) string {
 // Base64UrlCharmap - all posible characters
 const Base64UrlCharmap = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
 
-func FromCode(code string) string {
+func MediaFromCode(code string) string {
 
 	base2 := ""
 	for i := 0; i < len(code); i++ {
