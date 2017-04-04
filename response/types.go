@@ -75,6 +75,20 @@ type TagRelatedResponse struct {
 	} `json:"related"`
 }
 
+// SearchLocationResponse struct contains array of location venues and status
+type SearchLocationResponse struct {
+	Status    string `json:"status"`
+	RequestID string `json:"request_id"`
+	Venues    []struct {
+		ExternalIDSource string  `json:"external_id_source"`
+		ExternalID       string  `json:"external_id"`
+		Lat              float64 `json:"lat"`
+		Lng              float64 `json:"lng"`
+		Address          string  `json:"address"`
+		Name             string  `json:"name"`
+	} `json:"venues"`
+}
+
 // MediaItemResponse struct for each media item
 type MediaItemResponse struct {
 	TakenAt                      int64             `json:"taken_at"`

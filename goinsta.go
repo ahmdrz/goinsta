@@ -167,25 +167,16 @@ func (insta *Instagram) Login() error {
 	insta.IsLoggedIn = true
 	insta.LoggedInUser = Result.LoggedInUser
 
-	bytes, err := json.Marshal(map[string]interface{}{
-		"_uuid":       insta.Informations.UUID,
-		"_uid":        insta.Informations.UsernameId,
-		"_csrftoken":  insta.Informations.Token,
-		"id":          insta.Informations.UsernameId,
-		"experiments": GOINSTA_EXPERIMENTS,
-	})
-
-	// Simulate Instagram app behavior
-	_, err = insta.sendRequest("qe/sync/", generateSignature(string(bytes)), false)
-	if err != nil {
-		return err
-	}
-
-	// Simulate Instagram app behavior
-	_, err = insta.sendRequest("friendships/autocomplete_user_list/?version=2", "", false, false)
-	if err != nil {
-		return err
-	}
+	insta.SyncFeatures()
+	insta.AutoCompleteUserList()
+	insta.GetRankedRecipients()
+	insta.Timeline()
+	insta.GetRankedRecipients()
+	insta.GetRecentRecipients()
+	insta.MegaphoneLog()
+	insta.GetV2Inbox()
+	insta.GetRecentActivity()
+	insta.GetReelsTrayFeed()
 
 	return nil
 }
@@ -281,6 +272,44 @@ func (insta *Instagram) MediaLikers(mediaId string) (response.MediaLikersRespons
 	err = json.Unmarshal(body, &resp)
 
 	return resp, err
+}
+
+// SyncFeatures simulates Instagram app behavior
+func (insta *Instagram) SyncFeatures() error {
+	bytes, err := json.Marshal(map[string]interface{}{
+		"_uuid":       insta.Informations.UUID,
+		"_uid":        insta.Informations.UsernameId,
+		"_csrftoken":  insta.Informations.Token,
+		"id":          insta.Informations.UsernameId,
+		"experiments": GOINSTA_EXPERIMENTS,
+	})
+
+	_, err = insta.sendRequest("qe/sync/", generateSignature(string(bytes)), false)
+	return err
+}
+
+// AutoCompleteUserList simulates Instagram app behavior
+func (insta *Instagram) AutoCompleteUserList() error {
+	_, err := insta.sendRequest("friendships/autocomplete_user_list/?version=2", "", false, false)
+	return err
+}
+
+// MegaphoneLog simulates Instagram app behavior
+func (insta *Instagram) MegaphoneLog() error {
+	bytes, err := json.Marshal(map[string]interface{}{
+		"_uid":       insta.Informations.UsernameId,
+		"id":         insta.Informations.UsernameId,
+		"type":       "feed_aysf",
+		"action":     "seen",
+		"reason":     "",
+		"_uuid":      insta.Informations.UUID,
+		"device_id":  insta.Informations.DeviceID,
+		"_csrftoken": insta.Informations.Token,
+		"uuid":       generateMD5Hash(string(time.Now().Unix())),
+	})
+
+	_, err = insta.sendRequest("megaphone/log/", generateSignature(string(bytes)), false)
+	return err
 }
 
 // Expose , expose instagram
@@ -439,6 +468,32 @@ func (insta *Instagram) GetUsername(username string) (response.GetUsernameRespon
 	return resp, err
 }
 
+// SearchLocation return search location by lat & lng & search query in instagram
+func (insta *Instagram) SearchLocation(lat, lng, search string) (response.SearchLocationResponse, error) {
+	if lat == "" || lng == "" {
+		return response.SearchLocationResponse{}, fmt.Errorf("lat & lng must not be empty")
+	}
+
+	query := "?rank_token=" + insta.Informations.RankToken + "&latitude=" + lat + "&longitude=" + lng
+
+	if search != "" {
+		query += "&search_query=" + url.QueryEscape(search)
+	} else {
+		query += "&timestamp=" + string(time.Now().Unix())
+	}
+	query += "&ranked_content=true"
+
+	body, err := insta.sendRequest("location_search/"+query, "", false)
+
+	if err != nil {
+		return response.SearchLocationResponse{}, err
+	}
+
+	resp := response.SearchLocationResponse{}
+	err = json.Unmarshal(body, &resp)
+	return resp, err
+}
+
 // GetLocationFeed return location feed data by locationID in Instagram
 func (insta *Instagram) GetLocationFeed(locationID int64, maxID string) (response.LocationFeedResponse, error) {
 	var query string
@@ -504,7 +559,7 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 	w.WriteField("upload_id", strconv.FormatInt(upload_id, 10))
 	w.WriteField("_uuid", insta.Informations.UUID)
 	w.WriteField("_csrftoken", insta.Informations.Token)
-	w.WriteField("image_compression", "{\"lib_name\":\"jt\",\"lib_version\":\"1.3.0\",\"quality\":\""+strconv.Itoa(quality)+"\"}")
+	w.WriteField("image_compression", `{"lib_name":"jt","lib_version":"1.3.0","quality":"`+strconv.Itoa(quality)+`"}`)
 
 	fw, err := w.CreateFormFile("photo", photo_name)
 	if err != nil {
@@ -513,7 +568,9 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 	if _, err = io.Copy(fw, f); err != nil {
 		return response.UploadPhotoResponse{}, err
 	}
-	w.Close()
+	if err := w.Close(); err != nil {
+		return response.UploadPhotoResponse{}, err
+	}
 
 	//making post request
 	req, err := http.NewRequest("POST", GOINSTA_API_URL+"upload/photo/", &b)
@@ -545,7 +602,10 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 
 	insta.cookie = resp.Header.Get("Set-Cookie")
 
-	body, _ := ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return response.UploadPhotoResponse{}, err
+	}
 
 	if resp.StatusCode != 200 {
 		return response.UploadPhotoResponse{}, fmt.Errorf("invalid status code" + resp.Status)
@@ -584,7 +644,10 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 			},
 		}
 
-		bytes, _ := json.Marshal(config)
+		bytes, err := json.Marshal(config)
+		if err != nil {
+			return response.UploadPhotoResponse{}, err
+		}
 
 		body, err = insta.sendRequest("media/configure/?", generateSignature(string(bytes)), false)
 		if err != nil {
@@ -812,7 +875,6 @@ func (insta *Instagram) GetRankedRecipients() (response.DirectRankedRecipients, 
 
 	result := response.DirectRankedRecipients{}
 	err = json.Unmarshal(body, &result)
-	fmt.Println(string(body))
 	return result, err
 }
 
