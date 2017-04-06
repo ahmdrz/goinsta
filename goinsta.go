@@ -134,7 +134,9 @@ func (insta *Instagram) Login() error {
 	}
 
 	data := insta.cookie[strings.Index(insta.cookie, "csrftoken=")+10:]
-	data = data[:strings.Index(data, ";")]
+	if strings.Contains(data, ";") {
+		data = data[:strings.Index(data, ";")]
+	}
 
 	result, _ := json.Marshal(map[string]interface{}{
 		"guid":                insta.Informations.UUID,
