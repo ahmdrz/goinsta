@@ -4,7 +4,6 @@ package goinsta
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"image"
 	_ "image/jpeg"
@@ -16,7 +15,6 @@ import (
 	"net/url"
 	"os"
 	"strconv"
-	"strings"
 	"time"
 
 	"net/http/cookiejar"
@@ -134,17 +132,10 @@ func (insta *Instagram) Login() error {
 		return fmt.Errorf("login failed for %s error %s", insta.Informations.Username, err.Error())
 	}
 
-	data := insta.cookie[strings.Index(insta.cookie, "csrftoken=")+10:]
-	if len(data) != 6 {
-		data = data[:strings.Index(data, ";")]
-	} else {
-		return errors.New("Instagram regected login due to many logins, try again in few minutes.")
-	}
-
 	result, _ := json.Marshal(map[string]interface{}{
 		"guid":                insta.Informations.UUID,
 		"login_attempt_count": 0,
-		"_csrftoken":          data,
+		"_csrftoken":          insta.Informations.Token,
 		"device_id":           insta.Informations.DeviceID,
 		"phone_id":            generateUUID(true),
 		"username":            insta.Informations.Username,
@@ -166,7 +157,6 @@ func (insta *Instagram) Login() error {
 		return err
 	}
 
-	insta.Informations.Token = data
 	insta.Informations.UsernameId = strconv.FormatInt(Result.LoggedInUser.PK, 10)
 	insta.Informations.RankToken = insta.Informations.UsernameId + "_" + insta.Informations.UUID
 	insta.IsLoggedIn = true
@@ -604,8 +594,6 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 		return response.UploadPhotoResponse{}, err
 	}
 	defer resp.Body.Close()
-
-	insta.cookie = resp.Header.Get("Set-Cookie")
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -1069,8 +1057,6 @@ func (insta *Instagram) DirectMessage(recipient string, message string) (respons
 		return response.DirectMessageResponse{}, err
 	}
 	defer resp.Body.Close()
-
-	insta.cookie = resp.Header.Get("Set-Cookie")
 
 	body, _ := ioutil.ReadAll(resp.Body)
 
