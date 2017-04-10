@@ -757,7 +757,7 @@ func (insta *Instagram) UnLike(mediaId string) ([]byte, error) {
 		"media_id":   mediaId,
 	})
 
-	return insta.sendRequest("media/"+mediaId+"/unlike", generateSignature(string(bytes)), false)
+	return insta.sendRequest("media/"+mediaId+"/unlike/", generateSignature(string(bytes)), false)
 }
 
 func (insta *Instagram) EditMedia(mediaId string, caption string) ([]byte, error) {
