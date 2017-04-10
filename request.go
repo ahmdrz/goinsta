@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 var (
@@ -65,7 +66,12 @@ func (insta *Instagram) sendRequest(endpoint string, post string, options ...boo
 	}
 	defer resp.Body.Close()
 
-	insta.cookie = resp.Header.Get("Set-Cookie")
+	u, _ := url.Parse(GOINSTA_API_URL)
+	for _, value := range insta.cookiejar.Cookies(u) {
+		if strings.Contains(value.Name, "csrftoken") {
+			insta.Informations.Token = value.Value
+		}
+	}
 
 	body, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
