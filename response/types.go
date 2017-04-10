@@ -224,7 +224,7 @@ type GetUsernameResponse struct {
 		AutoExpandChaining   bool   `json:"auto_expand_chaining"`
 		IsFavorite           bool   `json:"is_favorite"`
 		FullName             string `json:"full_name"`
-		Pk                   int    `json:"pk"`
+		Pk                   int64  `json:"pk"`
 		FollowingCount       int    `json:"following_count"`
 		ExternalURL          string `json:"external_url"`
 		ProfilePicURL        string `json:"profile_pic_url"`
@@ -326,7 +326,7 @@ type DirectPendingRequests struct {
 				ProfilePicURL string `json:"profile_pic_url"`
 				ProfilePicID  string `json:"profile_pic_id"`
 				FullName      string `json:"full_name"`
-				Pk            int    `json:"pk"`
+				Pk            int64  `json:"pk"`
 				IsVerified    bool   `json:"is_verified"`
 				IsPrivate     bool   `json:"is_private"`
 			} `json:"users"`
@@ -368,7 +368,7 @@ type DirectPendingRequests struct {
 						ProfilePicURL string `json:"profile_pic_url"`
 						ProfilePicID  string `json:"profile_pic_id"`
 						FullName      string `json:"full_name"`
-						Pk            int    `json:"pk"`
+						Pk            int64  `json:"pk"`
 						IsPrivate     bool   `json:"is_private"`
 					} `json:"user"`
 					OrganicTrackingToken         string `json:"organic_tracking_token"`
@@ -388,7 +388,7 @@ type DirectPendingRequests struct {
 							ProfilePicURL string `json:"profile_pic_url"`
 							ProfilePicID  string `json:"profile_pic_id"`
 							FullName      string `json:"full_name"`
-							Pk            int    `json:"pk"`
+							Pk            int64  `json:"pk"`
 							IsVerified    bool   `json:"is_verified"`
 							IsPrivate     bool   `json:"is_private"`
 						} `json:"user"`
@@ -410,7 +410,7 @@ type DirectPendingRequests struct {
 							ProfilePicURL string `json:"profile_pic_url"`
 							ProfilePicID  string `json:"profile_pic_id"`
 							FullName      string `json:"full_name"`
-							Pk            int    `json:"pk"`
+							Pk            int64  `json:"pk"`
 							IsVerified    bool   `json:"is_verified"`
 							IsPrivate     bool   `json:"is_private"`
 						} `json:"user"`
@@ -440,7 +440,7 @@ type DirectPendingRequests struct {
 							ProfilePicURL string `json:"profile_pic_url"`
 							ProfilePicID  string `json:"profile_pic_id"`
 							FullName      string `json:"full_name"`
-							Pk            int    `json:"pk"`
+							Pk            int64  `json:"pk"`
 							IsPrivate     bool   `json:"is_private"`
 						} `json:"user"`
 						ContentType    string `json:"content_type"`
@@ -474,7 +474,7 @@ type DirectPendingRequests struct {
 				ProfilePicURL              string `json:"profile_pic_url"`
 				ProfilePicID               string `json:"profile_pic_id"`
 				FullName                   string `json:"full_name"`
-				Pk                         int    `json:"pk"`
+				Pk                         int64  `json:"pk"`
 				IsVerified                 bool   `json:"is_verified"`
 				IsPrivate                  bool   `json:"is_private"`
 			} `json:"inviter"`
@@ -498,7 +498,7 @@ type DirectRankedRecipients struct {
 				ProfilePicURL              string `json:"profile_pic_url"`
 				ProfilePicID               string `json:"profile_pic_id"`
 				FullName                   string `json:"full_name"`
-				Pk                         int    `json:"pk"`
+				Pk                         int64  `json:"pk"`
 				IsVerified                 bool   `json:"is_verified"`
 				IsPrivate                  bool   `json:"is_private"`
 			} `json:"users"`
@@ -528,7 +528,7 @@ type DirectThread struct {
 			ProfilePicURL string `json:"profile_pic_url"`
 			ProfilePicID  string `json:"profile_pic_id"`
 			FullName      string `json:"full_name"`
-			Pk            int    `json:"pk"`
+			Pk            int64  `json:"pk"`
 			IsVerified    bool   `json:"is_verified"`
 			IsPrivate     bool   `json:"is_private"`
 		} `json:"users"`
@@ -570,7 +570,7 @@ type DirectThread struct {
 					ProfilePicURL string `json:"profile_pic_url"`
 					ProfilePicID  string `json:"profile_pic_id"`
 					FullName      string `json:"full_name"`
-					Pk            int    `json:"pk"`
+					Pk            int64  `json:"pk"`
 					IsPrivate     bool   `json:"is_private"`
 				} `json:"user"`
 				OrganicTrackingToken         string `json:"organic_tracking_token"`
@@ -589,7 +589,7 @@ type DirectThread struct {
 						Username      string `json:"username"`
 						ProfilePicURL string `json:"profile_pic_url"`
 						FullName      string `json:"full_name"`
-						Pk            int    `json:"pk"`
+						Pk            int64  `json:"pk"`
 						IsVerified    bool   `json:"is_verified"`
 						IsPrivate     bool   `json:"is_private"`
 					} `json:"user"`
@@ -609,7 +609,7 @@ type DirectThread struct {
 						Username      string `json:"username"`
 						ProfilePicURL string `json:"profile_pic_url"`
 						FullName      string `json:"full_name"`
-						Pk            int    `json:"pk"`
+						Pk            int64  `json:"pk"`
 						IsVerified    bool   `json:"is_verified"`
 						IsPrivate     bool   `json:"is_private"`
 					} `json:"user"`
@@ -638,7 +638,7 @@ type DirectThread struct {
 						ProfilePicURL string `json:"profile_pic_url"`
 						ProfilePicID  string `json:"profile_pic_id"`
 						FullName      string `json:"full_name"`
-						Pk            int    `json:"pk"`
+						Pk            int64  `json:"pk"`
 						IsPrivate     bool   `json:"is_private"`
 					} `json:"user"`
 					ContentType string `json:"content_type"`
@@ -680,7 +680,7 @@ type DirectThread struct {
 			ProfilePicURL              string `json:"profile_pic_url"`
 			ProfilePicID               string `json:"profile_pic_id"`
 			FullName                   string `json:"full_name"`
-			Pk                         int    `json:"pk"`
+			Pk                         int64  `json:"pk"`
 			IsVerified                 bool   `json:"is_verified"`
 			IsPrivate                  bool   `json:"is_private"`
 		} `json:"inviter"`
@@ -713,7 +713,7 @@ type UserFeedResponse struct {
 			ProfilePicURL              string `json:"profile_pic_url"`
 			ProfilePicID               string `json:"profile_pic_id"`
 			FullName                   string `json:"full_name"`
-			Pk                         int    `json:"pk"`
+			Pk                         int64  `json:"pk"`
 			IsVerified                 bool   `json:"is_verified"`
 			IsPrivate                  bool   `json:"is_private"`
 		} `json:"user"`
@@ -740,7 +740,7 @@ type UserFeedResponse struct {
 				ProfilePicURL              string `json:"profile_pic_url"`
 				ProfilePicID               string `json:"profile_pic_id"`
 				FullName                   string `json:"full_name"`
-				Pk                         int    `json:"pk"`
+				Pk                         int64  `json:"pk"`
 				IsVerified                 bool   `json:"is_verified"`
 				IsPrivate                  bool   `json:"is_private"`
 			} `json:"user"`
@@ -800,7 +800,7 @@ type DirectMessageResponse struct {
 			ProfilePicURL string `json:"profile_pic_url"`
 			ProfilePicID  string `json:"profile_pic_id"`
 			FullName      string `json:"full_name"`
-			Pk            int    `json:"pk"`
+			Pk            int64  `json:"pk"`
 			IsVerified    bool   `json:"is_verified"`
 			IsPrivate     bool   `json:"is_private"`
 		} `json:"users"`
@@ -868,7 +868,7 @@ type SearchUserResponse struct {
 		ProfilePicURL        string  `json:"profile_pic_url"`
 		FullName             string  `json:"full_name"`
 		FollowerCount        int     `json:"follower_count"`
-		Pk                   int     `json:"pk"`
+		Pk                   int64   `json:"pk"`
 		IsVerified           bool    `json:"is_verified"`
 		IsPrivate            bool    `json:"is_private"`
 		ProfilePicID         string  `json:"profile_pic_id,omitempty"`
@@ -898,7 +898,7 @@ type ExploreResponse struct {
 					ProfilePicURL string `json:"profile_pic_url"`
 					ProfilePicID  string `json:"profile_pic_id"`
 					FullName      string `json:"full_name"`
-					Pk            int    `json:"pk"`
+					Pk            int64  `json:"pk"`
 					IsVerified    bool   `json:"is_verified"`
 					IsPrivate     bool   `json:"is_private"`
 				} `json:"user"`
@@ -936,7 +936,7 @@ type ExploreResponse struct {
 				ProfilePicURL string `json:"profile_pic_url"`
 				ProfilePicID  string `json:"profile_pic_id"`
 				FullName      string `json:"full_name"`
-				Pk            int    `json:"pk"`
+				Pk            int64  `json:"pk"`
 				IsVerified    bool   `json:"is_verified"`
 				IsPrivate     bool   `json:"is_private"`
 			} `json:"user"`
@@ -957,7 +957,7 @@ type ExploreResponse struct {
 					ProfilePicURL string `json:"profile_pic_url"`
 					ProfilePicID  string `json:"profile_pic_id"`
 					FullName      string `json:"full_name"`
-					Pk            int    `json:"pk"`
+					Pk            int64  `json:"pk"`
 					IsVerified    bool   `json:"is_verified"`
 					IsPrivate     bool   `json:"is_private"`
 				} `json:"user"`
@@ -986,7 +986,7 @@ type ExploreResponse struct {
 					ProfilePicURL string `json:"profile_pic_url"`
 					ProfilePicID  string `json:"profile_pic_id"`
 					FullName      string `json:"full_name"`
-					Pk            int    `json:"pk"`
+					Pk            int64  `json:"pk"`
 					IsVerified    bool   `json:"is_verified"`
 					IsPrivate     bool   `json:"is_private"`
 				} `json:"user"`
@@ -1039,7 +1039,7 @@ type MediaInfoResponse struct {
 			FacebookPlacesID int64   `json:"facebook_places_id"`
 			Address          string  `json:"address"`
 			Lat              float64 `json:"lat"`
-			Pk               int     `json:"pk"`
+			Pk               int64   `json:"pk"`
 			Lng              float64 `json:"lng"`
 		} `json:"location"`
 		ViewCount float64 `json:"view_count"`
@@ -1057,7 +1057,7 @@ type MediaInfoResponse struct {
 			ProfilePicURL string `json:"profile_pic_url"`
 			ProfilePicID  string `json:"profile_pic_id"`
 			FullName      string `json:"full_name"`
-			Pk            int    `json:"pk"`
+			Pk            int64  `json:"pk"`
 			IsVerified    bool   `json:"is_verified"`
 			IsPrivate     bool   `json:"is_private"`
 		} `json:"user"`
@@ -1079,7 +1079,7 @@ type MediaInfoResponse struct {
 				ProfilePicURL string `json:"profile_pic_url"`
 				ProfilePicID  string `json:"profile_pic_id"`
 				FullName      string `json:"full_name"`
-				Pk            int    `json:"pk"`
+				Pk            int64  `json:"pk"`
 				IsVerified    bool   `json:"is_verified"`
 				IsPrivate     bool   `json:"is_private"`
 			} `json:"user"`
@@ -1108,7 +1108,7 @@ type MediaInfoResponse struct {
 				ProfilePicURL string `json:"profile_pic_url"`
 				ProfilePicID  string `json:"profile_pic_id"`
 				FullName      string `json:"full_name"`
-				Pk            int    `json:"pk"`
+				Pk            int64  `json:"pk"`
 				IsVerified    bool   `json:"is_verified"`
 				IsPrivate     bool   `json:"is_private"`
 			} `json:"user"`
@@ -1170,7 +1170,7 @@ type GetPopularFeedResponse struct {
 			IsPrivate                  bool   `json:"is_private"`
 			FullName                   string `json:"full_name"`
 			HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
-			Pk                         int    `json:"pk"`
+			Pk                         int64  `json:"pk"`
 			ProfilePicID               string `json:"profile_pic_id"`
 			IsVerified                 bool   `json:"is_verified"`
 			IsUnpublished              bool   `json:"is_unpublished"`
@@ -1226,7 +1226,7 @@ type GetPopularFeedResponse struct {
 				IsPrivate                  bool   `json:"is_private"`
 				FullName                   string `json:"full_name"`
 				HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
-				Pk                         int    `json:"pk"`
+				Pk                         int64  `json:"pk"`
 				ProfilePicID               string `json:"profile_pic_id"`
 				IsVerified                 bool   `json:"is_verified"`
 				IsUnpublished              bool   `json:"is_unpublished"`
@@ -1248,7 +1248,7 @@ type GetPopularFeedResponse struct {
 					Username      string `json:"username"`
 					IsPrivate     bool   `json:"is_private"`
 					FullName      string `json:"full_name"`
-					Pk            int    `json:"pk"`
+					Pk            int64  `json:"pk"`
 					ProfilePicID  string `json:"profile_pic_id"`
 					IsVerified    bool   `json:"is_verified"`
 					ProfilePicURL string `json:"profile_pic_url"`
@@ -1306,7 +1306,7 @@ type DirectListResponse struct {
 				IsPrivate                  bool   `json:"is_private"`
 				ProfilePicURL              string `json:"profile_pic_url"`
 				HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
-				Pk                         int    `json:"pk"`
+				Pk                         int64  `json:"pk"`
 				ProfilePicID               string `json:"profile_pic_id"`
 				IsVerified                 bool   `json:"is_verified"`
 				FullName                   string `json:"full_name"`
@@ -1339,7 +1339,7 @@ type DirectListResponse struct {
 						ProfilePicURL              string `json:"profile_pic_url"`
 						HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
 						IsFavorite                 bool   `json:"is_favorite"`
-						Pk                         int    `json:"pk"`
+						Pk                         int64  `json:"pk"`
 						ProfilePicID               string `json:"profile_pic_id"`
 						FullName                   string `json:"full_name"`
 					} `json:"user"`
@@ -1363,7 +1363,7 @@ type DirectListResponse struct {
 							Username      string `json:"username"`
 							IsPrivate     bool   `json:"is_private"`
 							ProfilePicURL string `json:"profile_pic_url"`
-							Pk            int    `json:"pk"`
+							Pk            int64  `json:"pk"`
 							ProfilePicID  string `json:"profile_pic_id"`
 							IsVerified    bool   `json:"is_verified"`
 							FullName      string `json:"full_name"`
@@ -1392,7 +1392,7 @@ type DirectListResponse struct {
 							ProfilePicURL              string `json:"profile_pic_url"`
 							HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
 							IsFavorite                 bool   `json:"is_favorite"`
-							Pk                         int    `json:"pk"`
+							Pk                         int64  `json:"pk"`
 							ProfilePicID               string `json:"profile_pic_id"`
 							FullName                   string `json:"full_name"`
 						} `json:"user"`
@@ -1431,7 +1431,7 @@ type DirectListResponse struct {
 				} `json:"friendship_status"`
 				ProfilePicURL              string `json:"profile_pic_url"`
 				HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
-				Pk                         int    `json:"pk"`
+				Pk                         int64  `json:"pk"`
 				ProfilePicID               string `json:"profile_pic_id"`
 				IsVerified                 bool   `json:"is_verified"`
 				FullName                   string `json:"full_name"`
