@@ -352,6 +352,23 @@ func TestGetUserID(t *testing.T) {
 	t.Log("ok")
 }
 
+func TestGetReelsTray(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	resp, err := insta.GetReelsTrayFeed()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if resp.Status != "ok" {
+		t.Fatalf("Incorrect status" + resp.Status)
+	}
+
+	t.Log(resp.Status)
+}
+
 func TestGetUsername(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")

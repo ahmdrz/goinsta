@@ -1069,16 +1069,34 @@ func (insta *Instagram) DirectMessage(recipient string, message string) (respons
 	return result, nil
 }
 
-func (insta *Instagram) GetReelsTrayFeed() {
-	insta.sendRequest("feed/reels_tray/", "", false)
+// GetTrayFeeds - Get all available Instagram stories of your friends
+func (insta *Instagram) GetReelsTrayFeed() (response.TrayResponse, error) {
+	bytes, err := insta.sendRequest("feed/reels_tray/", "", false)
+	if err != nil {
+		return response.TrayResponse{}, err
+	}
+
+	result := response.TrayResponse{}
+	json.Unmarshal([]byte(bytes), &result)
+
+	return result, nil
 }
 
-func (insta *Instagram) GetTrayFeeds(id string) {
-	insta.sendRequest("feed/reels_tray/?tray_session_id="+id, "", false)
-}
+// GetUserStories - Get all available Instagram stories for the given user id
+func (insta *Instagram) GetUserStories(id string) (response.TrayUserResponse, error) {
+	if id == "" {
+		return response.TrayUserResponse{}, nil
+	}
 
-func (insta *Instagram) GetUserStories(id string) {
-	insta.sendRequest("feed/user/"+id+"/reel_media", "", false)
+	bytes, err := insta.sendRequest("feed/user/"+id+"/reel_media/", "", false)
+	if err != nil {
+		return response.TrayUserResponse{}, err
+	}
+
+	result := response.TrayUserResponse{}
+	json.Unmarshal([]byte(bytes), &result)
+
+	return result, nil
 }
 
 func (insta *Instagram) UserFriendShip(userid interface{}) (response.UserFriendShipResponse, error) {
