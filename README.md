@@ -51,7 +51,8 @@ func main() {
 
 	defer insta.Logout()
 
-	resp, err := insta.UserFeed()
+	// Get your Instagram feed
+	resp, err := insta.LatestFeed()
 	if err != nil {
 		panic(err)
 	}

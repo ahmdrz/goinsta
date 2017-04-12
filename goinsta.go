@@ -211,47 +211,25 @@ func (insta *Instagram) UserFollowers(userid, maxid string) (response.UsersRespo
 	return resp, err
 }
 
-// FirstUserFeed latest users feed
-func (insta *Instagram) FirstUserFeed(userid string) (response.UserFeedResponse, error) {
-	body, err := insta.sendRequest("feed/user/"+userid+"/?rank_token="+insta.Informations.RankToken+"&maxid=&min_timestamp=&ranked_content=true", "", false)
-	if err != nil {
-		return response.UserFeedResponse{}, err
-	}
-	resp := response.UserFeedResponse{}
-	err = json.Unmarshal(body, &resp)
-
-	return resp, err
+// LatestFeed - Get the latest page of your own Instagram feed.
+func (insta *Instagram) LatestFeed() (response.UserFeedResponse, error) {
+	return insta.UserFeed(insta.Informations.UsernameId, "", "")
 }
 
-// UserFeed has tree mode ,
-// If input was one string that we call maxid , mode is pagination
-// If input was two string can pagination by timestamp and maxid
-// If input was empty default value will select.
-func (insta *Instagram) UserFeed(strings ...string) (response.FeedsResponse, error) {
-	var body []byte
-	var err error
+// LatestUserFeed - Get the latest Instagram feed for the given user id
+func (insta *Instagram) LatestUserFeed(userID string) (response.UserFeedResponse, error) {
+	return insta.UserFeed(userID, "", "")
+}
 
-	if len(strings) == 2 { // maxid and timestamp
-		body, err = insta.sendRequest("feed/user/"+insta.Informations.UsernameId+"/?rank_token="+insta.Informations.RankToken+"&maxid="+strings[0]+"&min_timestamp="+strings[1]+"&ranked_content=true", "", false)
-		if err != nil {
-			return response.FeedsResponse{}, err
-		}
-	} else if len(strings) == 1 { // only maxid
-		body, err = insta.sendRequest("feed/user/"+insta.Informations.UsernameId+"/?rank_token="+insta.Informations.RankToken+"&maxid="+strings[0]+"&ranked_content=true", "", false)
-		if err != nil {
-			return response.FeedsResponse{}, err
-		}
-	} else if len(strings) == 0 { // nothing (current user)
-		body, err = insta.sendRequest("feed/user/"+insta.Informations.UsernameId+"/?rank_token="+insta.Informations.RankToken+"&ranked_content=true", "", false)
-		if err != nil {
-			return response.FeedsResponse{}, err
-		}
-	} else {
-		return response.FeedsResponse{}, fmt.Errorf("invalid input")
+// UserFeed - Returns the Instagram feed for the given user id.
+// You can use maxID and minTimestamp for pagination, otherwise leave them empty to get the latest page only.
+func (insta *Instagram) UserFeed(userID, maxID, minTimestamp string) (response.UserFeedResponse, error) {
+	resp := response.UserFeedResponse{}
 
+	body, err := insta.sendRequest("feed/user/"+userID+"/?rank_token="+insta.Informations.RankToken+"&maxid="+maxID+"&min_timestamp="+minTimestamp+"&ranked_content=true", "", false)
+	if err != nil {
+		return resp, err
 	}
-
-	resp := response.FeedsResponse{}
 	err = json.Unmarshal(body, &resp)
 
 	return resp, err
