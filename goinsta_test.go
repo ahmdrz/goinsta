@@ -82,7 +82,7 @@ func TestSelfUserFeed(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
-	_, err := insta.UserFeed()
+	_, err := insta.LatestFeed()
 	if err != nil {
 		t.Fatal(err)
 		return
@@ -97,7 +97,7 @@ func TestSelfUserFeedWithoutRelogin(t *testing.T) {
 	}
 
 	insta2 := New(username, password)
-	_, err := insta2.UserFeed()
+	_, err := insta2.LatestFeed()
 	if err == nil {
 		t.Fatal("there is no error, but it must be error cuz no login.")
 		return
@@ -116,7 +116,7 @@ func TestSelfUserFeedWithoutRelogin(t *testing.T) {
 	insta2.Informations.RankToken = insta.Informations.RankToken
 	//insta2.LoggedInUser = insta.LoggedInUser
 
-	resp2, err := insta2.UserFeed()
+	resp2, err := insta2.LatestFeed()
 	for _, item := range resp2.Items {
 		t.Log(item.Code)
 	}
@@ -133,7 +133,7 @@ func TestMediaLikers(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
-	resp, err := insta.UserFeed()
+	resp, err := insta.LatestFeed()
 	if err != nil {
 		t.Fatal(err)
 		return
@@ -430,12 +430,12 @@ func TestSearchUsername(t *testing.T) {
 	t.Log("Finished")
 }
 
-func TestFirstUserFeed(t *testing.T) {
+func TestLatestUserFeed(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	_, err := insta.FirstUserFeed("25025320")
+	_, err := insta.LatestUserFeed("17644112") // ID from elonmusk
 	if err != nil {
 		t.Fatal(err)
 		return
@@ -449,7 +449,7 @@ func TestUserFeedWithMaxID(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	_, err := insta.UserFeed("25025320")
+	_, err := insta.UserFeed("17644112", "25025320", "") // ID from elonmusk
 	if err != nil {
 		t.Fatal(err)
 		return
@@ -463,26 +463,12 @@ func TestUserFeedWithMaxIDAndTimestamp(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	_, err := insta.UserFeed("25025320", "25025320")
+	_, err := insta.UserFeed("17644112", "25025320", "25025320") // ID from elonmusk
 	if err != nil {
 		t.Fatal(err)
 		return
 	}
 
-	t.Log("Finished")
-}
-
-func TestUserFeedWithToManyArgs(t *testing.T) {
-	if skip {
-		t.Skip("Empty username or password , Skipping ...")
-	}
-
-	_, err := insta.UserFeed("", "", "", "")
-	if err == nil {
-		t.Fatal(err)
-		return
-	}
-	time.Sleep(3 * time.Second)
 	t.Log("Finished")
 }
 
