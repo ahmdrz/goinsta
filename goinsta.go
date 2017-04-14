@@ -822,7 +822,11 @@ func (insta *Instagram) ChangePassword(newpassword string) ([]byte, error) {
 	if err != nil {
 		return []byte{}, err
 	}
-	return insta.sendRequest("accounts/change_password/", generateSignature(data), false)
+	bytes, err := insta.sendRequest("accounts/change_password/", generateSignature(data), false)
+	if err == nil {
+		insta.Informations.Password = newpassword
+	}
+	return bytes, err
 }
 
 func (insta *Instagram) Timeline(maxid ...string) ([]byte, error) {
