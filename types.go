@@ -7,13 +7,12 @@ import (
 )
 
 type Informations struct {
-	Username   string
-	Password   string
-	DeviceID   string
-	UUID       string
-	UsernameId string
-	RankToken  string
-	Token      string
+	Username  string
+	Password  string
+	DeviceID  string
+	UUID      string
+	RankToken string
+	Token     string
 }
 
 type Instagram struct {

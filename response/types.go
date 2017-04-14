@@ -1,9 +1,5 @@
 package response
 
-import (
-	"strconv"
-)
-
 // StatusResponse Status struct point to if response is ok or not
 type StatusResponse struct {
 	Status string `json:"status"`
@@ -35,15 +31,11 @@ type User struct {
 	ProfilePictureID           string `json:"profile_pic_id"`
 	ProfilePictureURL          string `json:"profile_pic_url"`
 	FullName                   string `json:"full_name"`
-	PK                         int64  `json:"pk"`
+	ID                         int64  `json:"pk"`
 	IsVerified                 bool   `json:"is_verified"`
 	IsPrivate                  bool   `json:"is_private"`
 	IsFavorite                 bool   `json:"is_favorite"`
-}
-
-// StringID return PK as string
-func (user User) StringID() string {
-	return strconv.FormatInt(user.PK, 10)
+	IsUnpublished              bool   `json:"is_unpublished"`
 }
 
 // FeedsResponse struct contains array of media and can pagination
@@ -92,7 +84,7 @@ type SearchLocationResponse struct {
 // MediaItemResponse struct for each media item
 type MediaItemResponse struct {
 	TakenAt                      int64             `json:"taken_at"`
-	PK                           int64             `json:"pk"`
+	Pk                           int64             `json:"pk"`
 	ID                           string            `json:"id"`
 	DeviceTimeStamp              int64             `json:"device_timestamp"`
 	MediaType                    int               `json:"media_type"`
@@ -160,7 +152,7 @@ type Location struct {
 	Address          string  `json:"address"`
 	Lat              float32 `json:"lat"`
 	Lng              float32 `json:"lng"`
-	PK               int64   `json:"pk"`
+	Pk               int64   `json:"pk"`
 }
 
 // CommentResponse struct is a object for comment under media
@@ -174,7 +166,7 @@ type CommentResponse struct {
 	ContentType  string `json:"content_type"`
 	Text         string `json:"text"`
 	MediaID      int64  `json:"media_id"`
-	PK           int64  `json:"pk"`
+	Pk           int64  `json:"pk"`
 	Type         int    `json:"type"`
 }
 
@@ -224,7 +216,7 @@ type GetUsernameResponse struct {
 		AutoExpandChaining   bool   `json:"auto_expand_chaining"`
 		IsFavorite           bool   `json:"is_favorite"`
 		FullName             string `json:"full_name"`
-		Pk                   int64  `json:"pk"`
+		ID                   int64  `json:"pk"`
 		FollowingCount       int    `json:"following_count"`
 		ExternalURL          string `json:"external_url"`
 		ProfilePicURL        string `json:"profile_pic_url"`
@@ -314,21 +306,14 @@ type DirectPendingRequests struct {
 		Threads       []struct {
 			Named bool `json:"named"`
 			Users []struct {
-				Username                   string `json:"username"`
-				HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
-				FriendshipStatus           struct {
+				User
+				FriendshipStatus struct {
 					Following       bool `json:"following"`
 					IncomingRequest bool `json:"incoming_request"`
 					OutgoingRequest bool `json:"outgoing_request"`
 					Blocking        bool `json:"blocking"`
 					IsPrivate       bool `json:"is_private"`
 				} `json:"friendship_status"`
-				ProfilePicURL string `json:"profile_pic_url"`
-				ProfilePicID  string `json:"profile_pic_id"`
-				FullName      string `json:"full_name"`
-				Pk            int64  `json:"pk"`
-				IsVerified    bool   `json:"is_verified"`
-				IsPrivate     bool   `json:"is_private"`
 			} `json:"users"`
 			ViewerID         int64         `json:"viewer_id"`
 			MoreAvailableMin bool          `json:"more_available_min"`
@@ -357,19 +342,12 @@ type DirectPendingRequests struct {
 					OriginalHeight  int           `json:"original_height"`
 					ViewCount       float64       `json:"view_count"`
 					User            struct {
-						Username                   string `json:"username"`
-						HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
-						IsUnpublished              bool   `json:"is_unpublished"`
-						IsFavorite                 bool   `json:"is_favorite"`
-						FriendshipStatus           struct {
+						User
+						IsUnpublished    bool `json:"is_unpublished"`
+						FriendshipStatus struct {
 							Following       bool `json:"following"`
 							OutgoingRequest bool `json:"outgoing_request"`
 						} `json:"friendship_status"`
-						ProfilePicURL string `json:"profile_pic_url"`
-						ProfilePicID  string `json:"profile_pic_id"`
-						FullName      string `json:"full_name"`
-						Pk            int64  `json:"pk"`
-						IsPrivate     bool   `json:"is_private"`
 					} `json:"user"`
 					OrganicTrackingToken         string `json:"organic_tracking_token"`
 					LikeCount                    int    `json:"like_count"`
@@ -378,20 +356,12 @@ type DirectPendingRequests struct {
 					NextMaxID                    int64  `json:"next_max_id"`
 					MaxNumVisiblePreviewComments int    `json:"max_num_visible_preview_comments"`
 					PreviewComments              []struct {
-						Status       string `json:"status"`
-						UserID       int    `json:"user_id"`
-						CreatedAtUtc int    `json:"created_at_utc"`
-						CreatedAt    int    `json:"created_at"`
-						BitFlags     int    `json:"bit_flags"`
-						User         struct {
-							Username      string `json:"username"`
-							ProfilePicURL string `json:"profile_pic_url"`
-							ProfilePicID  string `json:"profile_pic_id"`
-							FullName      string `json:"full_name"`
-							Pk            int64  `json:"pk"`
-							IsVerified    bool   `json:"is_verified"`
-							IsPrivate     bool   `json:"is_private"`
-						} `json:"user"`
+						Status         string `json:"status"`
+						UserID         int    `json:"user_id"`
+						CreatedAtUtc   int    `json:"created_at_utc"`
+						CreatedAt      int    `json:"created_at"`
+						BitFlags       int    `json:"bit_flags"`
+						User           User   `json:"user"`
 						ContentType    string `json:"content_type"`
 						Text           string `json:"text"`
 						MediaID        int64  `json:"media_id"`
@@ -400,20 +370,12 @@ type DirectPendingRequests struct {
 						HasTranslation bool   `json:"has_translation,omitempty"`
 					} `json:"preview_comments"`
 					Comments []struct {
-						Status       string `json:"status"`
-						UserID       int    `json:"user_id"`
-						CreatedAtUtc int    `json:"created_at_utc"`
-						CreatedAt    int    `json:"created_at"`
-						BitFlags     int    `json:"bit_flags"`
-						User         struct {
-							Username      string `json:"username"`
-							ProfilePicURL string `json:"profile_pic_url"`
-							ProfilePicID  string `json:"profile_pic_id"`
-							FullName      string `json:"full_name"`
-							Pk            int64  `json:"pk"`
-							IsVerified    bool   `json:"is_verified"`
-							IsPrivate     bool   `json:"is_private"`
-						} `json:"user"`
+						Status         string `json:"status"`
+						UserID         int    `json:"user_id"`
+						CreatedAtUtc   int    `json:"created_at_utc"`
+						CreatedAt      int    `json:"created_at"`
+						BitFlags       int    `json:"bit_flags"`
+						User           User   `json:"user"`
 						ContentType    string `json:"content_type"`
 						Text           string `json:"text"`
 						MediaID        int64  `json:"media_id"`
@@ -429,19 +391,12 @@ type DirectPendingRequests struct {
 						CreatedAt    int    `json:"created_at"`
 						BitFlags     int    `json:"bit_flags"`
 						User         struct {
-							Username                   string `json:"username"`
-							HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
-							IsUnpublished              bool   `json:"is_unpublished"`
-							IsFavorite                 bool   `json:"is_favorite"`
-							FriendshipStatus           struct {
+							User
+							IsUnpublished    bool `json:"is_unpublished"`
+							FriendshipStatus struct {
 								Following       bool `json:"following"`
 								OutgoingRequest bool `json:"outgoing_request"`
 							} `json:"friendship_status"`
-							ProfilePicURL string `json:"profile_pic_url"`
-							ProfilePicID  string `json:"profile_pic_id"`
-							FullName      string `json:"full_name"`
-							Pk            int64  `json:"pk"`
-							IsPrivate     bool   `json:"is_private"`
 						} `json:"user"`
 						ContentType    string `json:"content_type"`
 						Text           string `json:"text"`
@@ -468,17 +423,8 @@ type DirectPendingRequests struct {
 			MoreAvailableMax bool   `json:"more_available_max"`
 			ThreadTitle      string `json:"thread_title"`
 			Canonical        bool   `json:"canonical"`
-			Inviter          struct {
-				Username                   string `json:"username"`
-				HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
-				ProfilePicURL              string `json:"profile_pic_url"`
-				ProfilePicID               string `json:"profile_pic_id"`
-				FullName                   string `json:"full_name"`
-				Pk                         int64  `json:"pk"`
-				IsVerified                 bool   `json:"is_verified"`
-				IsPrivate                  bool   `json:"is_private"`
-			} `json:"inviter"`
-			Pending bool `json:"pending"`
+			Inviter          User   `json:"inviter"`
+			Pending          bool   `json:"pending"`
 		} `json:"threads"`
 		MoreAvailable bool `json:"more_available"`
 	} `json:"inbox"`
@@ -1166,17 +1112,8 @@ type GetPopularFeedResponse struct {
 		OriginalWidth   int           `json:"original_width"`
 		OriginalHeight  int           `json:"original_height"`
 		User            struct {
-			Username                   string `json:"username"`
-			IsPrivate                  bool   `json:"is_private"`
-			FullName                   string `json:"full_name"`
-			HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
-			Pk                         int64  `json:"pk"`
-			ProfilePicID               string `json:"profile_pic_id"`
-			IsVerified                 bool   `json:"is_verified"`
-			IsUnpublished              bool   `json:"is_unpublished"`
-			IsFavorite                 bool   `json:"is_favorite"`
-			ProfilePicURL              string `json:"profile_pic_url"`
-			FriendshipStatus           struct {
+			User
+			FriendshipStatus struct {
 				OutgoingRequest bool `json:"outgoing_request"`
 				Following       bool `json:"following"`
 			} `json:"friendship_status"`
@@ -1197,24 +1134,16 @@ type GetPopularFeedResponse struct {
 			Pk           int64  `json:"pk"`
 			CreatedAtUtc int    `json:"created_at_utc"`
 			CreatedAt    int    `json:"created_at"`
-			User         struct {
-				Username      string `json:"username"`
-				IsPrivate     bool   `json:"is_private"`
-				FullName      string `json:"full_name"`
-				Pk            int64  `json:"pk"`
-				ProfilePicID  string `json:"profile_pic_id"`
-				IsVerified    bool   `json:"is_verified"`
-				ProfilePicURL string `json:"profile_pic_url"`
-			} `json:"user"`
-			ContentType string `json:"content_type"`
-			UserID      int64  `json:"user_id"`
+			User         User   `json:"user"`
+			ContentType  string `json:"content_type"`
+			UserID       int64  `json:"user_id"`
 		} `json:"preview_comments"`
 		CommentCount int `json:"comment_count"`
 		Caption      struct {
 			CreatedAt      int    `json:"created_at"`
 			CreatedAtUtc   int    `json:"created_at_utc"`
 			HasTranslation bool   `json:"has_translation"`
-			UserID         int    `json:"user_id"`
+			UserID         int64  `json:"user_id"`
 			MediaID        int64  `json:"media_id"`
 			Text           string `json:"text"`
 			Type           int    `json:"type"`
@@ -1222,17 +1151,8 @@ type GetPopularFeedResponse struct {
 			Status         string `json:"status"`
 			BitFlags       int    `json:"bit_flags"`
 			User           struct {
-				Username                   string `json:"username"`
-				IsPrivate                  bool   `json:"is_private"`
-				FullName                   string `json:"full_name"`
-				HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
-				Pk                         int64  `json:"pk"`
-				ProfilePicID               string `json:"profile_pic_id"`
-				IsVerified                 bool   `json:"is_verified"`
-				IsUnpublished              bool   `json:"is_unpublished"`
-				IsFavorite                 bool   `json:"is_favorite"`
-				ProfilePicURL              string `json:"profile_pic_url"`
-				FriendshipStatus           struct {
+				User
+				FriendshipStatus struct {
 					OutgoingRequest bool `json:"outgoing_request"`
 					Following       bool `json:"following"`
 				} `json:"friendship_status"`
@@ -1244,16 +1164,8 @@ type GetPopularFeedResponse struct {
 		UserTags        struct {
 			In []struct {
 				TimeInVideo interface{} `json:"time_in_video"`
-				User        struct {
-					Username      string `json:"username"`
-					IsPrivate     bool   `json:"is_private"`
-					FullName      string `json:"full_name"`
-					Pk            int64  `json:"pk"`
-					ProfilePicID  string `json:"profile_pic_id"`
-					IsVerified    bool   `json:"is_verified"`
-					ProfilePicURL string `json:"profile_pic_url"`
-				} `json:"user"`
-				Position []float64 `json:"position"`
+				User        User        `json:"user"`
+				Position    []float64   `json:"position"`
 			} `json:"in"`
 		} `json:"usertags,omitempty"`
 		Algorithm          string `json:"algorithm"`
@@ -1261,7 +1173,7 @@ type GetPopularFeedResponse struct {
 		ExploreSourceToken string `json:"explore_source_token"`
 		Explore            struct {
 			SourceToken string `json:"source_token"`
-			ActorID     int    `json:"actor_id"`
+			ActorID     int64  `json:"actor_id"`
 			Explanation string `json:"explanation"`
 		} `json:"explore"`
 		ImpressionToken string  `json:"impression_token"`
@@ -1301,18 +1213,9 @@ type DirectListResponse struct {
 			OldestCursor string        `json:"oldest_cursor"`
 			LeftUsers    []interface{} `json:"left_users"`
 			ThreadID     string        `json:"thread_id"`
-			Inviter      struct {
-				Username                   string `json:"username"`
-				IsPrivate                  bool   `json:"is_private"`
-				ProfilePicURL              string `json:"profile_pic_url"`
-				HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
-				Pk                         int64  `json:"pk"`
-				ProfilePicID               string `json:"profile_pic_id"`
-				IsVerified                 bool   `json:"is_verified"`
-				FullName                   string `json:"full_name"`
-			} `json:"inviter"`
-			ThreadTitle string `json:"thread_title"`
-			Items       []struct {
+			Inviter      User          `json:"inviter"`
+			ThreadTitle  string        `json:"thread_title"`
+			Items        []struct {
 				Timestamp  int64  `json:"timestamp"`
 				ItemID     string `json:"item_id"`
 				MediaShare struct {
@@ -1356,7 +1259,7 @@ type DirectListResponse struct {
 						Type        int    `json:"type"`
 						Status      string `json:"status"`
 						ContentType string `json:"content_type"`
-						UserID      int    `json:"user_id"`
+						UserID      int64  `json:"user_id"`
 						CreatedAt   int    `json:"created_at"`
 						Pk          int64  `json:"pk"`
 						User        struct {
@@ -1378,7 +1281,7 @@ type DirectListResponse struct {
 						Type        int    `json:"type"`
 						Status      string `json:"status"`
 						ContentType string `json:"content_type"`
-						UserID      int    `json:"user_id"`
+						UserID      int64  `json:"user_id"`
 						CreatedAt   int    `json:"created_at"`
 						Pk          int64  `json:"pk"`
 						User        struct {

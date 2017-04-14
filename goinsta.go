@@ -157,10 +157,9 @@ func (insta *Instagram) Login() error {
 		return err
 	}
 
-	insta.Informations.UsernameId = strconv.FormatInt(Result.LoggedInUser.PK, 10)
-	insta.Informations.RankToken = insta.Informations.UsernameId + "_" + insta.Informations.UUID
-	insta.IsLoggedIn = true
 	insta.LoggedInUser = Result.LoggedInUser
+	insta.Informations.RankToken = strconv.FormatInt(Result.LoggedInUser.ID, 10) + "_" + insta.Informations.UUID
+	insta.IsLoggedIn = true
 
 	insta.SyncFeatures()
 	insta.AutoCompleteUserList()
@@ -185,8 +184,8 @@ func (insta *Instagram) Logout() error {
 
 // UserFollowing return followings of specific user
 // skip maxid with empty string for get first page
-func (insta *Instagram) UserFollowing(userid, maxid string) (response.UsersResponse, error) {
-	body, err := insta.sendRequest("friendships/"+userid+"/following/?max_id="+maxid+"&ig_sig_key_version="+GOINSTA_SIG_KEY_VERSION+"&rank_token="+insta.Informations.RankToken, "", false)
+func (insta *Instagram) UserFollowing(userID int64, maxid string) (response.UsersResponse, error) {
+	body, err := insta.sendRequest("friendships/"+strconv.FormatInt(userID, 10)+"/following/?max_id="+maxid+"&ig_sig_key_version="+GOINSTA_SIG_KEY_VERSION+"&rank_token="+insta.Informations.RankToken, "", false)
 	if err != nil {
 		return response.UsersResponse{}, err
 	}
@@ -199,8 +198,8 @@ func (insta *Instagram) UserFollowing(userid, maxid string) (response.UsersRespo
 
 // UserFollowers return followers of specific user
 // skip maxid with empty string for get first page
-func (insta *Instagram) UserFollowers(userid, maxid string) (response.UsersResponse, error) {
-	body, err := insta.sendRequest("friendships/"+userid+"/followers/?max_id="+maxid+"&ig_sig_key_version="+GOINSTA_SIG_KEY_VERSION+"&rank_token="+insta.Informations.RankToken, "", false)
+func (insta *Instagram) UserFollowers(userID int64, maxid string) (response.UsersResponse, error) {
+	body, err := insta.sendRequest("friendships/"+strconv.FormatInt(userID, 10)+"/followers/?max_id="+maxid+"&ig_sig_key_version="+GOINSTA_SIG_KEY_VERSION+"&rank_token="+insta.Informations.RankToken, "", false)
 	if err != nil {
 		return response.UsersResponse{}, err
 	}
@@ -213,20 +212,20 @@ func (insta *Instagram) UserFollowers(userid, maxid string) (response.UsersRespo
 
 // LatestFeed - Get the latest page of your own Instagram feed.
 func (insta *Instagram) LatestFeed() (response.UserFeedResponse, error) {
-	return insta.UserFeed(insta.Informations.UsernameId, "", "")
+	return insta.UserFeed(insta.LoggedInUser.ID, "", "")
 }
 
 // LatestUserFeed - Get the latest Instagram feed for the given user id
-func (insta *Instagram) LatestUserFeed(userID string) (response.UserFeedResponse, error) {
+func (insta *Instagram) LatestUserFeed(userID int64) (response.UserFeedResponse, error) {
 	return insta.UserFeed(userID, "", "")
 }
 
 // UserFeed - Returns the Instagram feed for the given user id.
 // You can use maxID and minTimestamp for pagination, otherwise leave them empty to get the latest page only.
-func (insta *Instagram) UserFeed(userID, maxID, minTimestamp string) (response.UserFeedResponse, error) {
+func (insta *Instagram) UserFeed(userID int64, maxID, minTimestamp string) (response.UserFeedResponse, error) {
 	resp := response.UserFeedResponse{}
 
-	body, err := insta.sendRequest("feed/user/"+userID+"/?rank_token="+insta.Informations.RankToken+"&maxid="+maxID+"&min_timestamp="+minTimestamp+"&ranked_content=true", "", false)
+	body, err := insta.sendRequest("feed/user/"+strconv.FormatInt(userID, 10)+"/?rank_token="+insta.Informations.RankToken+"&maxid="+maxID+"&min_timestamp="+minTimestamp+"&ranked_content=true", "", false)
 	if err != nil {
 		return resp, err
 	}
@@ -249,15 +248,15 @@ func (insta *Instagram) MediaLikers(mediaId string) (response.MediaLikersRespons
 
 // SyncFeatures simulates Instagram app behavior
 func (insta *Instagram) SyncFeatures() error {
-	bytes, err := json.Marshal(map[string]interface{}{
-		"_uuid":       insta.Informations.UUID,
-		"_uid":        insta.Informations.UsernameId,
-		"_csrftoken":  insta.Informations.Token,
-		"id":          insta.Informations.UsernameId,
+	data, err := insta.prepareData(map[string]interface{}{
+		"id":          insta.LoggedInUser.ID,
 		"experiments": GOINSTA_EXPERIMENTS,
 	})
+	if err != nil {
+		return err
+	}
 
-	_, err = insta.sendRequest("qe/sync/", generateSignature(string(bytes)), false)
+	_, err = insta.sendRequest("qe/sync/", generateSignature(data), false)
 	return err
 }
 
@@ -269,167 +268,156 @@ func (insta *Instagram) AutoCompleteUserList() error {
 
 // MegaphoneLog simulates Instagram app behavior
 func (insta *Instagram) MegaphoneLog() error {
-	bytes, err := json.Marshal(map[string]interface{}{
-		"_uid":       insta.Informations.UsernameId,
-		"id":         insta.Informations.UsernameId,
-		"type":       "feed_aysf",
-		"action":     "seen",
-		"reason":     "",
-		"_uuid":      insta.Informations.UUID,
-		"device_id":  insta.Informations.DeviceID,
-		"_csrftoken": insta.Informations.Token,
-		"uuid":       generateMD5Hash(string(time.Now().Unix())),
+	data, err := insta.prepareData(map[string]interface{}{
+		"id":        insta.LoggedInUser.ID,
+		"type":      "feed_aysf",
+		"action":    "seen",
+		"reason":    "",
+		"device_id": insta.Informations.DeviceID,
+		"uuid":      generateMD5Hash(string(time.Now().Unix())),
 	})
-
-	_, err = insta.sendRequest("megaphone/log/", generateSignature(string(bytes)), false)
+	if err != nil {
+		return err
+	}
+	_, err = insta.sendRequest("megaphone/log/", generateSignature(data), false)
 	return err
 }
 
 // Expose , expose instagram
 // return error if status was not 'ok' or runtime error
 func (insta *Instagram) Expose() error {
-	bytes, _ := json.Marshal(map[string]interface{}{
-		"_uuid":      insta.Informations.UUID,
-		"_uid":       insta.Informations.UsernameId,
-		"_csrftoken": insta.Informations.Token,
-		"id":         insta.Informations.UsernameId,
+	result := response.StatusResponse{}
+	data, err := insta.prepareData(map[string]interface{}{
+		"id":         insta.LoggedInUser.ID,
 		"experiment": "ig_android_profile_contextual_feed",
 	})
-
-	body, err := insta.sendRequest("qe/expose/", generateSignature(string(bytes)), false)
 	if err != nil {
 		return err
 	}
 
-	resp := response.StatusResponse{}
+	body, err := insta.sendRequest("qe/expose/", generateSignature(data), false)
+	if err != nil {
+		return err
+	}
 
-	err = json.Unmarshal(body, &resp)
+	fmt.Print(string(body))
+	err = json.Unmarshal(body, &result)
 
 	return err
 }
 
 // MediaInfo return media information
 func (insta *Instagram) MediaInfo(mediaId string) (response.MediaInfoResponse, error) {
-
-	bytes, _ := json.Marshal(map[string]interface{}{
-		"_uuid":      insta.Informations.UUID,
-		"_uid":       insta.Informations.UsernameId,
-		"_csrftoken": insta.Informations.Token,
-		"media_id":   mediaId,
+	result := response.MediaInfoResponse{}
+	data, err := insta.prepareData(map[string]interface{}{
+		"media_id": mediaId,
 	})
-
-	body, err := insta.sendRequest("media/"+mediaId+"/info/", generateSignature(string(bytes)), false)
 	if err != nil {
-		return response.MediaInfoResponse{}, err
+		return result, err
 	}
 
-	resp := response.MediaInfoResponse{}
+	body, err := insta.sendRequest("media/"+mediaId+"/info/", generateSignature(data), false)
+	if err != nil {
+		return result, err
+	}
 
-	err = json.Unmarshal(body, &resp)
+	err = json.Unmarshal(body, &result)
 
-	return resp, err
+	return result, err
 }
 
 // SetPublicAccount Sets account to public
 func (insta *Instagram) SetPublicAccount() (response.ProfileDataResponse, error) {
-	bytes, _ := json.Marshal(map[string]interface{}{
-		"_uuid":      insta.Informations.UUID,
-		"_uid":       insta.Informations.UsernameId,
-		"_csrftoken": insta.Informations.Token,
-	})
-
-	body, err := insta.sendRequest("accounts/set_public/", generateSignature(string(bytes)), false)
+	result := response.ProfileDataResponse{}
+	data, err := insta.prepareData()
 	if err != nil {
-		return response.ProfileDataResponse{}, err
+		return result, err
 	}
 
-	resp := response.ProfileDataResponse{}
-	err = json.Unmarshal(body, &resp)
+	body, err := insta.sendRequest("accounts/set_public/", generateSignature(data), false)
+	if err != nil {
+		return result, err
+	}
 
-	return resp, err
+	err = json.Unmarshal(body, &result)
+
+	return result, err
 }
 
 // SetPrivateAccount Sets account to private
 func (insta *Instagram) SetPrivateAccount() (response.ProfileDataResponse, error) {
-	bytes, _ := json.Marshal(map[string]interface{}{
-		"_uuid":      insta.Informations.UUID,
-		"_uid":       insta.Informations.UsernameId,
-		"_csrftoken": insta.Informations.Token,
-	})
-
-	body, err := insta.sendRequest("accounts/set_private/", generateSignature(string(bytes)), false)
+	result := response.ProfileDataResponse{}
+	data, err := insta.prepareData()
 	if err != nil {
-		return response.ProfileDataResponse{}, err
+		return result, err
 	}
 
-	resp := response.ProfileDataResponse{}
-	err = json.Unmarshal(body, &resp)
+	body, err := insta.sendRequest("accounts/set_private/", generateSignature(data), false)
+	if err != nil {
+		return result, err
+	}
 
-	return resp, err
+	err = json.Unmarshal(body, &result)
+
+	return result, err
 }
 
 // GetProfileData return current user information
 func (insta *Instagram) GetProfileData() (response.ProfileDataResponse, error) {
-	bytes, _ := json.Marshal(map[string]interface{}{
-		"_uuid":      insta.Informations.UUID,
-		"_uid":       insta.Informations.UsernameId,
-		"_csrftoken": insta.Informations.Token,
-	})
-
-	body, err := insta.sendRequest("accounts/current_user/?edit=true", generateSignature(string(bytes)), false)
+	result := response.ProfileDataResponse{}
+	data, err := insta.prepareData()
 	if err != nil {
-		return response.ProfileDataResponse{}, err
+		return result, err
 	}
 
-	resp := response.ProfileDataResponse{}
-	err = json.Unmarshal(body, &resp)
+	body, err := insta.sendRequest("accounts/current_user/?edit=true", generateSignature(data), false)
+	if err != nil {
+		return result, err
+	}
 
-	return resp, err
+	err = json.Unmarshal(body, &result)
+
+	return result, err
 }
 
 // RemoveProfilePicture will remove current logged in user profile picture
 func (insta *Instagram) RemoveProfilePicture() (response.ProfileDataResponse, error) {
-	bytes, _ := json.Marshal(map[string]interface{}{
-		"_uuid":      insta.Informations.UUID,
-		"_uid":       insta.Informations.UsernameId,
-		"_csrftoken": insta.Informations.Token,
-	})
-
-	body, err := insta.sendRequest("accounts/remove_profile_picture/", generateSignature(string(bytes)), false)
+	result := response.ProfileDataResponse{}
+	data, err := insta.prepareData()
 	if err != nil {
-		return response.ProfileDataResponse{}, err
+		return result, err
 	}
 
-	resp := response.ProfileDataResponse{}
-	err = json.Unmarshal(body, &resp)
+	body, err := insta.sendRequest("accounts/remove_profile_picture/", generateSignature(data), false)
+	if err != nil {
+		return result, err
+	}
 
-	return resp, err
+	err = json.Unmarshal(body, &result)
+
+	return result, err
 }
 
-// GetUserID return information of a user by user ID
-func (insta *Instagram) GetUserID(userid string) (response.GetUsernameResponse, error) {
-	bytes, err := json.Marshal(map[string]interface{}{
-		"_uuid":      insta.Informations.UUID,
-		"_uid":       insta.Informations.UsernameId,
-		"_csrftoken": insta.Informations.Token,
-	})
+// GetuserID return information of a user by user ID
+func (insta *Instagram) GetUserByID(userID int64) (response.GetUsernameResponse, error) {
+	result := response.GetUsernameResponse{}
+	data, err := insta.prepareData()
 	if err != nil {
-		return response.GetUsernameResponse{}, err
+		return result, err
 	}
 
-	body, err := insta.sendRequest("users/"+userid+"/info/", generateSignature(string(bytes)), false)
+	body, err := insta.sendRequest("users/"+strconv.FormatInt(userID, 10)+"/info/", generateSignature(data), false)
 	if err != nil {
-		return response.GetUsernameResponse{}, err
+		return result, err
 	}
 
-	resp := response.GetUsernameResponse{}
-	err = json.Unmarshal(body, &resp)
+	err = json.Unmarshal(body, &result)
 
-	return resp, err
+	return result, err
 }
 
 // GetUsername return information of a user by username
-func (insta *Instagram) GetUsername(username string) (response.GetUsernameResponse, error) {
+func (insta *Instagram) GetUserByUsername(username string) (response.GetUsernameResponse, error) {
 	body, err := insta.sendRequest("users/"+username+"/usernameinfo/", "", false)
 	if err != nil {
 		return response.GetUsernameResponse{}, err
@@ -559,11 +547,6 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 	req.Header.Set("Connection", "close")
 	req.Header.Set("User-Agent", GOINSTA_USER_AGENT)
 
-	/*tempjar := newJar()
-	for key, value := range insta.cookiejar.cookies { // make a copy of session
-		tempjar.cookies[key] = value
-	}*/
-
 	client := &http.Client{
 		Jar: insta.cookiejar,
 	}
@@ -594,12 +577,9 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 			return response.UploadPhotoResponse{}, err
 		}
 
-		var config map[string]interface{} = map[string]interface{}{
-			"_csrftoken":   insta.Informations.Token,
+		config := map[string]interface{}{
 			"media_folder": "Instagram",
 			"source_type":  4,
-			"_uid":         insta.Informations.UsernameId,
-			"_uuid":        insta.Informations.UUID,
 			"caption":      photo_caption,
 			"upload_id":    strconv.FormatInt(upload_id, 10),
 			"device":       GOINSTA_DEVICE_SETTINGS,
@@ -614,13 +594,12 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 				"source_height": h,
 			},
 		}
-
-		bytes, err := json.Marshal(config)
+		data, err := insta.prepareData(config)
 		if err != nil {
 			return response.UploadPhotoResponse{}, err
 		}
 
-		body, err = insta.sendRequest("media/configure/?", generateSignature(string(bytes)), false)
+		body, err = insta.sendRequest("media/configure/?", generateSignature(data), false)
 		if err != nil {
 			return response.UploadPhotoResponse{}, err
 		}
@@ -639,177 +618,139 @@ func (insta *Instagram) NewUploadID() int64 {
 	return time.Now().UnixNano()
 }
 
-// Follow one of instagram users with userid , you can find userid in GetUsername
-func (insta *Instagram) Follow(userid string) (response.FollowResponse, error) {
-	bytes, _ := json.Marshal(map[string]interface{}{
-		"_uuid":      insta.Informations.UUID,
-		"_uid":       insta.Informations.UsernameId,
-		"_csrftoken": insta.Informations.Token,
-		"user_id":    userid,
-	})
-
-	body, err := insta.sendRequest("friendships/create/"+userid+"/", generateSignature(string(bytes)), false)
-	if err != nil {
-		return response.FollowResponse{}, err
-	}
-
+// Follow one of instagram users with userID , you can find userID in GetUsername
+func (insta *Instagram) Follow(userID int64) (response.FollowResponse, error) {
 	resp := response.FollowResponse{}
+	data, err := insta.prepareData(map[string]interface{}{
+		"user_id": userID,
+	})
+	if err != nil {
+		return resp, err
+	}
+
+	body, err := insta.sendRequest("friendships/create/"+strconv.FormatInt(userID, 10)+"/", generateSignature(data), false)
+	if err != nil {
+		return resp, err
+	}
+
 	err = json.Unmarshal(body, &resp)
 
 	return resp, err
 }
 
-// UnFollow one of instagram users with userid , you can find userid in GetUsername
-func (insta *Instagram) UnFollow(userid string) (response.UnFollowResponse, error) {
-	bytes, err := json.Marshal(map[string]interface{}{
-		"_uuid":      insta.Informations.UUID,
-		"_uid":       insta.Informations.UsernameId,
-		"_csrftoken": insta.Informations.Token,
-		"user_id":    userid,
-	})
-	if err != nil {
-		return response.UnFollowResponse{}, err
-	}
-
-	body, err := insta.sendRequest("friendships/destroy/"+userid+"/", generateSignature(string(bytes)), false)
-	if err != nil {
-		return response.UnFollowResponse{}, err
-	}
-
+// UnFollow one of instagram users with userID , you can find userID in GetUsername
+func (insta *Instagram) UnFollow(userID int64) (response.UnFollowResponse, error) {
 	resp := response.UnFollowResponse{}
+	data, err := insta.prepareData(map[string]interface{}{
+		"user_id": userID,
+	})
+	if err != nil {
+		return resp, err
+	}
+
+	body, err := insta.sendRequest("friendships/destroy/"+strconv.FormatInt(userID, 10)+"/", generateSignature(data), false)
+	if err != nil {
+		return resp, err
+	}
+
 	err = json.Unmarshal(body, &resp)
 
 	return resp, err
 }
 
-func (insta *Instagram) Block(userid string) ([]byte, error) {
-	bytes, _ := json.Marshal(map[string]interface{}{
-		"_uuid":      insta.Informations.UUID,
-		"_uid":       insta.Informations.UsernameId,
-		"_csrftoken": insta.Informations.Token,
-		"user_id":    userid,
+func (insta *Instagram) Block(userID int64) ([]byte, error) {
+	data, err := insta.prepareData(map[string]interface{}{
+		"user_id": userID,
 	})
+	if err != nil {
+		return []byte{}, err
+	}
 
-	return insta.sendRequest("friendships/block/"+userid+"/", generateSignature(string(bytes)), false)
+	return insta.sendRequest("friendships/block/"+strconv.FormatInt(userID, 10)+"/", generateSignature(data), false)
 }
 
-func (insta *Instagram) UnBlock(userid string) ([]byte, error) {
-	bytes, _ := json.Marshal(map[string]interface{}{
-		"_uuid":      insta.Informations.UUID,
-		"_uid":       insta.Informations.UsernameId,
-		"_csrftoken": insta.Informations.Token,
-		"user_id":    userid,
+func (insta *Instagram) UnBlock(userID int64) ([]byte, error) {
+	data, err := insta.prepareData(map[string]interface{}{
+		"user_id": userID,
 	})
+	if err != nil {
+		return []byte{}, err
+	}
 
-	return insta.sendRequest("friendships/unblock/"+userid+"/", generateSignature(string(bytes)), false)
+	return insta.sendRequest("friendships/unblock/"+strconv.FormatInt(userID, 10)+"/", generateSignature(data), false)
 }
 
 func (insta *Instagram) Like(mediaId string) ([]byte, error) {
-	bytes, _ := json.Marshal(map[string]interface{}{
-		"_uuid":      insta.Informations.UUID,
-		"_uid":       insta.Informations.UsernameId,
-		"_csrftoken": insta.Informations.Token,
-		"media_id":   mediaId,
+	data, err := insta.prepareData(map[string]interface{}{
+		"media_id": mediaId,
 	})
+	if err != nil {
+		return []byte{}, err
+	}
 
-	return insta.sendRequest("media/"+mediaId+"/like/", generateSignature(string(bytes)), false)
+	return insta.sendRequest("media/"+mediaId+"/like/", generateSignature(data), false)
 }
 
 func (insta *Instagram) UnLike(mediaId string) ([]byte, error) {
-	bytes, _ := json.Marshal(map[string]interface{}{
-		"_uuid":      insta.Informations.UUID,
-		"_uid":       insta.Informations.UsernameId,
-		"_csrftoken": insta.Informations.Token,
-		"media_id":   mediaId,
+	data, err := insta.prepareData(map[string]interface{}{
+		"media_id": mediaId,
 	})
+	if err != nil {
+		return []byte{}, err
+	}
 
-	return insta.sendRequest("media/"+mediaId+"/unlike/", generateSignature(string(bytes)), false)
+	return insta.sendRequest("media/"+mediaId+"/unlike/", generateSignature(data), false)
 }
 
 func (insta *Instagram) EditMedia(mediaId string, caption string) ([]byte, error) {
-	var Data struct {
-		UUID        string `json:"_uuid"`
-		UID         string `json:"_uid"`
-		CaptionText string `json:"caption_text"`
-		CSRFToken   string `json:"_csrftoken"`
+	data, err := insta.prepareData(map[string]interface{}{
+		"caption_text": caption,
+	})
+	if err != nil {
+		return []byte{}, err
 	}
 
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.CaptionText = caption
-	Data.CSRFToken = insta.Informations.Token
-
-	bytes, _ := json.Marshal(Data)
-
-	return insta.sendRequest("media/"+mediaId+"/edit_media/", generateSignature(string(bytes)), false)
+	return insta.sendRequest("media/"+mediaId+"/edit_media/", generateSignature(data), false)
 }
 
 func (insta *Instagram) DeleteMedia(mediaId string) ([]byte, error) {
-	var Data struct {
-		UUID      string `json:"_uuid"`
-		UID       string `json:"_uid"`
-		MediaID   string `json:"media_id"`
-		CSRFToken string `json:"_csrftoken"`
+	data, err := insta.prepareData(map[string]interface{}{
+		"media_id": mediaId,
+	})
+	if err != nil {
+		return []byte{}, err
 	}
 
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.MediaID = mediaId
-	Data.CSRFToken = insta.Informations.Token
-
-	bytes, _ := json.Marshal(Data)
-
-	return insta.sendRequest("media/"+mediaId+"/delete/", generateSignature(string(bytes)), false)
+	return insta.sendRequest("media/"+mediaId+"/delete/", generateSignature(data), false)
 }
 
 func (insta *Instagram) RemoveSelfTag(mediaId string) ([]byte, error) {
-	var Data struct {
-		UUID      string `json:"_uuid"`
-		UID       string `json:"_uid"`
-		CSRFToken string `json:"_csrftoken"`
+	data, err := insta.prepareData()
+	if err != nil {
+		return []byte{}, err
 	}
 
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.CSRFToken = insta.Informations.Token
-
-	bytes, _ := json.Marshal(Data)
-
-	return insta.sendRequest("media/"+mediaId+"/remove/", generateSignature(string(bytes)), false)
+	return insta.sendRequest("media/"+mediaId+"/remove/", generateSignature(data), false)
 }
 
 func (insta *Instagram) Comment(mediaId, text string) ([]byte, error) {
-	var Data struct {
-		UUID        string `json:"_uuid"`
-		UID         string `json:"_uid"`
-		CSRFToken   string `json:"_csrftoken"`
-		CommentText string `json:"comment_text"`
+	data, err := insta.prepareData(map[string]interface{}{
+		"comment_text": text,
+	})
+	if err != nil {
+		return []byte{}, err
 	}
 
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.CSRFToken = insta.Informations.Token
-	Data.CommentText = text
-
-	bytes, _ := json.Marshal(Data)
-
-	return insta.sendRequest("media/"+mediaId+"/comment/", generateSignature(string(bytes)), false)
+	return insta.sendRequest("media/"+mediaId+"/comment/", generateSignature(data), false)
 }
 
 func (insta *Instagram) DeleteComment(mediaId, commentId string) ([]byte, error) {
-	var Data struct {
-		UUID      string `json:"_uuid"`
-		UID       string `json:"_uid"`
-		CSRFToken string `json:"_csrftoken"`
+	data, err := insta.prepareData()
+	if err != nil {
+		return []byte{}, err
 	}
 
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.CSRFToken = insta.Informations.Token
-
-	bytes, _ := json.Marshal(Data)
-
-	return insta.sendRequest("media/"+mediaId+"/comment/"+commentId+"/delete/", generateSignature(string(bytes)), false)
+	return insta.sendRequest("media/"+mediaId+"/comment/"+commentId+"/delete/", generateSignature(data), false)
 }
 
 func (insta *Instagram) GetRecentRecipients() ([]byte, error) {
@@ -817,81 +758,71 @@ func (insta *Instagram) GetRecentRecipients() ([]byte, error) {
 }
 
 func (insta *Instagram) GetV2Inbox() (response.DirectListResponse, error) {
+	result := response.DirectListResponse{}
 	body, err := insta.sendRequest("direct_v2/inbox/?", "", false)
 	if err != nil {
-		return response.DirectListResponse{}, err
+		return result, err
 	}
 
-	result := response.DirectListResponse{}
 	err = json.Unmarshal(body, &result)
 	return result, err
 }
 
 func (insta *Instagram) GetDirectPendingRequests() (response.DirectPendingRequests, error) {
+	result := response.DirectPendingRequests{}
 	body, err := insta.sendRequest("direct_v2/pending_inbox/?", "", false)
 	if err != nil {
-		return response.DirectPendingRequests{}, err
+		return result, err
 	}
 
-	result := response.DirectPendingRequests{}
 	err = json.Unmarshal(body, &result)
 	return result, err
 }
 
 func (insta *Instagram) GetRankedRecipients() (response.DirectRankedRecipients, error) {
+	result := response.DirectRankedRecipients{}
 	body, err := insta.sendRequest("direct_v2/ranked_recipients/?", "", false)
 	if err != nil {
-		return response.DirectRankedRecipients{}, err
+		return result, err
 	}
 
-	result := response.DirectRankedRecipients{}
 	err = json.Unmarshal(body, &result)
 	return result, err
 }
 
 func (insta *Instagram) GetDirectThread(threadid string) (response.DirectThread, error) {
+	result := response.DirectThread{}
 	body, err := insta.sendRequest("direct_v2/threads/"+threadid+"/", "", false)
 	if err != nil {
-		return response.DirectThread{}, err
+		return result, err
 	}
 
-	result := response.DirectThread{}
 	err = json.Unmarshal(body, &result)
 	return result, err
 }
 
 func (insta *Instagram) Explore() (response.ExploreResponse, error) {
+	result := response.ExploreResponse{}
 	body, err := insta.sendRequest("discover/explore/", "", false)
 	if err != nil {
-		return response.ExploreResponse{}, err
+		return result, err
 	}
 
-	result := response.ExploreResponse{}
 	err = json.Unmarshal(body, &result)
 
 	return result, err
 }
 
 func (insta *Instagram) ChangePassword(newpassword string) ([]byte, error) {
-	var Data struct {
-		UUID         string `json:"_uuid"`
-		UID          string `json:"_uid"`
-		CSRFToken    string `json:"_csrftoken"`
-		OldPassword  string `json:"old_password"`
-		NewPassword1 string `json:"new_password1"`
-		NewPassword2 string `json:"new_password2"`
+	data, err := insta.prepareData(map[string]interface{}{
+		"old_password":  insta.Informations.Password,
+		"new_password1": newpassword,
+		"new_password2": newpassword,
+	})
+	if err != nil {
+		return []byte{}, err
 	}
-
-	Data.UUID = insta.Informations.UUID
-	Data.UID = insta.Informations.UsernameId
-	Data.CSRFToken = insta.Informations.Token
-	Data.OldPassword = insta.Informations.Password
-	Data.NewPassword1 = newpassword
-	Data.NewPassword2 = newpassword
-
-	bytes, _ := json.Marshal(Data)
-
-	return insta.sendRequest("accounts/change_password/", generateSignature(string(bytes)), false)
+	return insta.sendRequest("accounts/change_password/", generateSignature(data), false)
 }
 
 func (insta *Instagram) Timeline(maxid ...string) ([]byte, error) {
@@ -923,11 +854,11 @@ func getImageDimension(imagePath string) (int, int, error) {
 }
 
 func (insta *Instagram) SelfUserFollowers(maxid string) (response.UsersResponse, error) {
-	return insta.UserFollowers(insta.Informations.UsernameId, maxid)
+	return insta.UserFollowers(insta.LoggedInUser.ID, maxid)
 }
 
 func (insta *Instagram) SelfUserFollowing(maxid string) (response.UsersResponse, error) {
-	return insta.UserFollowing(insta.Informations.UsernameId, maxid)
+	return insta.UserFollowing(insta.LoggedInUser.ID, maxid)
 }
 
 func (insta *Instagram) SelfTotalUserFollowers() (response.UsersResponse, error) {
@@ -969,25 +900,25 @@ func (insta *Instagram) GetRecentActivity() ([]byte, error) {
 }
 
 func (insta *Instagram) GetFollowingRecentActivity() (response.FollowingRecentActivityResponse, error) {
+	result := response.FollowingRecentActivityResponse{}
 	bytes, err := insta.sendRequest("news/?", "", false)
 	if err != nil {
-		return response.FollowingRecentActivityResponse{}, err
+		return result, err
 	}
-	tmp := response.FollowingRecentActivityResponse{}
-	err = json.Unmarshal(bytes, &tmp)
+	err = json.Unmarshal(bytes, &result)
 	if err != nil {
-		return response.FollowingRecentActivityResponse{}, err
+		return result, err
 	}
-	return tmp, nil
+	return result, nil
 }
 
 func (insta *Instagram) SearchUsername(query string) (response.SearchUserResponse, error) {
+	result := response.SearchUserResponse{}
 	body, err := insta.sendRequest("users/search/?ig_sig_key_version="+GOINSTA_SIG_KEY_VERSION+"&is_typeahead=true&query="+url.QueryEscape(query)+"&rank_token="+insta.Informations.RankToken, "", false)
 	if err != nil {
-		return response.SearchUserResponse{}, err
+		return result, err
 	}
 
-	result := response.SearchUserResponse{}
 	err = json.Unmarshal(body, &result)
 
 	return result, err
@@ -1002,9 +933,10 @@ func (insta *Instagram) SearchFacebookUsers(query string) ([]byte, error) {
 }
 
 func (insta *Instagram) DirectMessage(recipient string, message string) (response.DirectMessageResponse, error) {
+	result := response.DirectMessageResponse{}
 	recipients, err := json.Marshal([][]string{{recipient}})
 	if err != nil {
-		return response.DirectMessageResponse{}, err
+		return result, err
 	}
 
 	var b bytes.Buffer
@@ -1018,7 +950,7 @@ func (insta *Instagram) DirectMessage(recipient string, message string) (respons
 
 	req, err := http.NewRequest("POST", GOINSTA_API_URL+"direct_v2/threads/broadcast/text/", &b)
 	if err != nil {
-		return response.DirectMessageResponse{}, err
+		return result, err
 	}
 	req.Header.Set("Accept", "*/*")
 	req.Header.Set("Accept-Language", "en-en")
@@ -1032,17 +964,16 @@ func (insta *Instagram) DirectMessage(recipient string, message string) (respons
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return response.DirectMessageResponse{}, err
+		return result, err
 	}
 	defer resp.Body.Close()
 
 	body, _ := ioutil.ReadAll(resp.Body)
 
 	if resp.StatusCode != 200 {
-		return response.DirectMessageResponse{}, fmt.Errorf(string(body))
+		return result, fmt.Errorf(string(body))
 	}
 
-	result := response.DirectMessageResponse{}
 	json.Unmarshal(body, &result)
 	return result, nil
 }
@@ -1061,44 +992,33 @@ func (insta *Instagram) GetReelsTrayFeed() (response.TrayResponse, error) {
 }
 
 // GetUserStories - Get all available Instagram stories for the given user id
-func (insta *Instagram) GetUserStories(id string) (response.TrayUserResponse, error) {
-	if id == "" {
-		return response.TrayUserResponse{}, nil
-	}
-
-	bytes, err := insta.sendRequest("feed/user/"+id+"/reel_media/", "", false)
-	if err != nil {
-		return response.TrayUserResponse{}, err
-	}
-
+func (insta *Instagram) GetUserStories(userID int64) (response.TrayUserResponse, error) {
 	result := response.TrayUserResponse{}
+	if userID == 0 {
+		return result, nil
+	}
+
+	bytes, err := insta.sendRequest("feed/user/"+strconv.FormatInt(userID, 10)+"/reel_media/", "", false)
+	if err != nil {
+		return result, err
+	}
+
 	json.Unmarshal([]byte(bytes), &result)
 
 	return result, nil
 }
 
-func (insta *Instagram) UserFriendShip(userid interface{}) (response.UserFriendShipResponse, error) {
+func (insta *Instagram) UserFriendShip(userID int64) (response.UserFriendShipResponse, error) {
 	result := response.UserFriendShipResponse{}
-	data := make(map[string]interface{})
+	data, err := insta.prepareData(map[string]interface{}{
+		"user_id": userID,
+	})
 
-	data["_uuid"] = insta.Informations.UUID
-	data["_uid"] = insta.Informations.UsernameId
-	data["user_id"] = userid
-	data["_csrftoken"] = insta.Informations.Token
-
-	bytes, err := json.Marshal(data)
 	if err != nil {
 		return result, err
 	}
-	var _userid string
 
-	if _, ok := userid.(int64); ok {
-		_userid = strconv.FormatInt(userid.(int64), 10)
-	} else if _, ok := userid.(string); ok {
-		_userid = userid.(string)
-	}
-
-	bytes, err = insta.sendRequest("friendships/show/"+_userid+"/", generateSignature(string(bytes)), false)
+	bytes, err := insta.sendRequest("friendships/show/"+strconv.FormatInt(userID, 10)+"/", generateSignature(data), false)
 	if err != nil {
 		return result, err
 	}
@@ -1120,4 +1040,21 @@ func (insta *Instagram) GetPopularFeed() (response.GetPopularFeedResponse, error
 		return result, err
 	}
 	return result, err
+}
+
+func (insta *Instagram) prepareData(otherData ...map[string]interface{}) (string, error) {
+	data := map[string]interface{}{
+		"_uuid":      insta.Informations.UUID,
+		"_uid":       insta.LoggedInUser.ID,
+		"_csrftoken": insta.Informations.Token,
+	}
+	if len(otherData) > 0 {
+		for i := range otherData {
+			for key, value := range otherData[i] {
+				data[key] = value
+			}
+		}
+	}
+	bytes, err := json.Marshal(data)
+	return string(bytes), err
 }
