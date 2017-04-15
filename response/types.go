@@ -832,7 +832,7 @@ type ExploreResponse struct {
 				CanReply   bool `json:"can_reply"`
 				ExpiringAt int  `json:"expiring_at"`
 				User       struct {
-					Username         string `json:"username"`
+					User
 					FriendshipStatus struct {
 						IncomingRequest bool `json:"incoming_request"`
 						FollowedBy      bool `json:"followed_by"`
@@ -841,19 +841,13 @@ type ExploreResponse struct {
 						Blocking        bool `json:"blocking"`
 						IsPrivate       bool `json:"is_private"`
 					} `json:"friendship_status"`
-					ProfilePicURL string `json:"profile_pic_url"`
-					ProfilePicID  string `json:"profile_pic_id"`
-					FullName      string `json:"full_name"`
-					Pk            int64  `json:"pk"`
-					IsVerified    bool   `json:"is_verified"`
-					IsPrivate     bool   `json:"is_private"`
 				} `json:"user"`
-				SourceToken        string `json:"source_token"`
-				Seen               int    `json:"seen"`
-				LatestReelMedia    int    `json:"latest_reel_media"`
-				ID                 int    `json:"id"`
-				RankedPosition     int    `json:"ranked_position"`
-				SeenRankedPosition int    `json:"seen_ranked_position"`
+				SourceToken        string  `json:"source_token"`
+				Seen               float64 `json:"seen"`
+				LatestReelMedia    int     `json:"latest_reel_media"`
+				ID                 int64   `json:"id"`
+				RankedPosition     int     `json:"ranked_position"`
+				SeenRankedPosition int     `json:"seen_ranked_position"`
 			} `json:"tray"`
 			ID         int64 `json:"id"`
 			IsPortrait bool  `json:"is_portrait"`
@@ -871,20 +865,11 @@ type ExploreResponse struct {
 			OriginalWidth   int           `json:"original_width"`
 			OriginalHeight  int           `json:"original_height"`
 			User            struct {
-				Username                   string `json:"username"`
-				HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
-				IsUnpublished              bool   `json:"is_unpublished"`
-				IsFavorite                 bool   `json:"is_favorite"`
-				FriendshipStatus           struct {
+				User
+				FriendshipStatus struct {
 					Following       bool `json:"following"`
 					OutgoingRequest bool `json:"outgoing_request"`
 				} `json:"friendship_status"`
-				ProfilePicURL string `json:"profile_pic_url"`
-				ProfilePicID  string `json:"profile_pic_id"`
-				FullName      string `json:"full_name"`
-				Pk            int64  `json:"pk"`
-				IsVerified    bool   `json:"is_verified"`
-				IsPrivate     bool   `json:"is_private"`
 			} `json:"user"`
 			OrganicTrackingToken         string `json:"organic_tracking_token"`
 			LikeCount                    int    `json:"like_count"`
@@ -894,47 +879,30 @@ type ExploreResponse struct {
 			MaxNumVisiblePreviewComments int    `json:"max_num_visible_preview_comments"`
 			PreviewComments              []struct {
 				Status       string `json:"status"`
-				UserID       int    `json:"user_id"`
+				UserID       int64  `json:"user_id"`
 				CreatedAtUtc int    `json:"created_at_utc"`
 				CreatedAt    int    `json:"created_at"`
 				BitFlags     int    `json:"bit_flags"`
-				User         struct {
-					Username      string `json:"username"`
-					ProfilePicURL string `json:"profile_pic_url"`
-					ProfilePicID  string `json:"profile_pic_id"`
-					FullName      string `json:"full_name"`
-					Pk            int64  `json:"pk"`
-					IsVerified    bool   `json:"is_verified"`
-					IsPrivate     bool   `json:"is_private"`
-				} `json:"user"`
-				ContentType string `json:"content_type"`
-				Text        string `json:"text"`
-				MediaID     int64  `json:"media_id"`
-				Pk          int64  `json:"pk"`
-				Type        int    `json:"type"`
+				User         User   `json:"user"`
+				ContentType  string `json:"content_type"`
+				Text         string `json:"text"`
+				MediaID      int64  `json:"media_id"`
+				Pk           int64  `json:"pk"`
+				Type         int    `json:"type"`
 			} `json:"preview_comments"`
 			CommentCount int `json:"comment_count"`
 			Caption      struct {
 				Status       string `json:"status"`
-				UserID       int    `json:"user_id"`
+				UserID       int64  `json:"user_id"`
 				CreatedAtUtc int    `json:"created_at_utc"`
 				CreatedAt    int    `json:"created_at"`
 				BitFlags     int    `json:"bit_flags"`
 				User         struct {
-					Username                   string `json:"username"`
-					HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
-					IsUnpublished              bool   `json:"is_unpublished"`
-					IsFavorite                 bool   `json:"is_favorite"`
-					FriendshipStatus           struct {
+					User
+					FriendshipStatus struct {
 						Following       bool `json:"following"`
 						OutgoingRequest bool `json:"outgoing_request"`
 					} `json:"friendship_status"`
-					ProfilePicURL string `json:"profile_pic_url"`
-					ProfilePicID  string `json:"profile_pic_id"`
-					FullName      string `json:"full_name"`
-					Pk            int64  `json:"pk"`
-					IsVerified    bool   `json:"is_verified"`
-					IsPrivate     bool   `json:"is_private"`
 				} `json:"user"`
 				ContentType    string `json:"content_type"`
 				Text           string `json:"text"`
@@ -950,7 +918,7 @@ type ExploreResponse struct {
 			ExploreSourceToken string `json:"explore_source_token"`
 			Explore            struct {
 				Explanation string `json:"explanation"`
-				ActorID     int    `json:"actor_id"`
+				ActorID     int64  `json:"actor_id"`
 				SourceToken string `json:"source_token"`
 			} `json:"explore"`
 			ImpressionToken string `json:"impression_token"`

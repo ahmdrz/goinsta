@@ -205,6 +205,20 @@ func TestLike(t *testing.T) {
 	t.Log("Finished")
 }
 
+func TestUnLike(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	_, err := insta.UnLike("1363799876794028707") // random image ! from search by tags on pizza
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	time.Sleep(3 * time.Second)
+	t.Log("Finished")
+}
+
 func TestMediaInfo(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
@@ -570,6 +584,166 @@ func TestAutoCompleteUserList(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 	err := insta.AutoCompleteUserList()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	time.Sleep(3 * time.Second)
+	t.Log("status : ok")
+}
+
+func TestSetPublicAndUnPublicAccount(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+	// check account status
+	if insta.LoggedInUser.IsPrivate {
+		helperSetPublicAccount(t)
+		helperSetPrivateAccount(t)
+	} else {
+		helperSetPrivateAccount(t)
+		helperSetPublicAccount(t)
+	}
+
+}
+
+func helperSetPublicAccount(t *testing.T) {
+	_, err := insta.SetPublicAccount()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	time.Sleep(3 * time.Second)
+	t.Log("status : ok")
+}
+
+func helperSetPrivateAccount(t *testing.T) {
+	_, err := insta.SetPrivateAccount()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	time.Sleep(3 * time.Second)
+	t.Log("status : ok")
+}
+
+func TestBlock(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	_, err := insta.Block(17644112) // ID of "elonmusk"
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	time.Sleep(3 * time.Second)
+	t.Log("status : ok")
+}
+
+func TestUnBlock(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	_, err := insta.UnBlock(17644112) // ID of "elonmusk"
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	time.Sleep(3 * time.Second)
+	t.Log("status : ok")
+}
+
+var directThreadId string = ""
+
+func TestGetDirectPendingRequests(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	direct, err := insta.GetDirectPendingRequests()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	time.Sleep(3 * time.Second)
+	t.Log("status : ok")
+
+	// store threadID for other test
+	if len(direct.Inbox.Threads) > 0 {
+		directThreadId = direct.Inbox.Threads[0].ThreadID
+	}
+}
+
+func TestGetDirectThread(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	if directThreadId == "" {
+		t.Skip("Empty Direct ThreadID")
+	}
+	_, err := insta.GetDirectThread(directThreadId)
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	time.Sleep(3 * time.Second)
+	t.Log("status : ok")
+}
+
+func TestExplore(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	_, err := insta.Explore()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	time.Sleep(3 * time.Second)
+	t.Log("status : ok")
+}
+
+// NOT USE THIS TEST!!! Warning! Change the password on the old can not be!
+// func TestChangePassword(t *testing.T) {
+//         if skip {
+//                 t.Skip("Empty username or password , Skipping ...")
+//         }
+//
+//         t.Log("change password... Added \"-\"")
+//         _, err := insta.ChangePassword(insta.Informations.Password + "-")
+//         if err != nil {
+//                 t.Fatal(err)
+//                 return
+//         }
+//
+//         time.Sleep(3 * time.Second)
+//         t.Log("status : ok")
+// }
+
+func TestGetFollowingRecentActivity(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	_, err := insta.GetFollowingRecentActivity()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	time.Sleep(3 * time.Second)
+	t.Log("status : ok")
+}
+
+func TestGetUserStories(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	_, err := insta.GetUserStories(17644112) // ID of "elonmusk"
 	if err != nil {
 		t.Fatal(err)
 		return
