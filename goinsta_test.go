@@ -613,7 +613,7 @@ func helperSetPublicAccount(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
-	time.Sleep(3 * time.Second)
+	time.Sleep(10 * time.Second)
 	t.Log("status : ok")
 }
 
@@ -623,7 +623,7 @@ func helperSetPrivateAccount(t *testing.T) {
 		t.Fatal(err)
 		return
 	}
-	time.Sleep(3 * time.Second)
+	time.Sleep(10 * time.Second)
 	t.Log("status : ok")
 }
 
