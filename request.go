@@ -9,10 +9,6 @@ import (
 	"strings"
 )
 
-var (
-	proxyUrl string
-)
-
 func (insta *Instagram) NewRequest(endpoint string, post string) ([]byte, error) {
 	return insta.sendRequest(endpoint, post, false)
 }
@@ -52,8 +48,8 @@ func (insta *Instagram) sendRequest(endpoint string, post string, options ...boo
 	client := &http.Client{
 		Jar: insta.cookiejar,
 	}
-	if proxyUrl != "" {
-		proxy, err := url.Parse(proxyUrl)
+	if insta.proxy != "" {
+		proxy, err := url.Parse(insta.proxy)
 		if err != nil {
 			return body, err
 		}

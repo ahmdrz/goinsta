@@ -21,4 +21,6 @@ type Instagram struct {
 	IsLoggedIn   bool
 	Informations Informations
 	LoggedInUser response.User
+
+	proxy string
 }
