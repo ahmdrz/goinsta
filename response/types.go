@@ -663,6 +663,21 @@ type UserFeedResponse struct {
 			IsVerified                 bool   `json:"is_verified"`
 			IsPrivate                  bool   `json:"is_private"`
 		} `json:"user"`
+		CarouselMedia []struct {
+			ID            string        `json:"id"`
+			MediaType     int           `json:"media_type"`
+			ImageVersions ImageVersions `json:"image_versions2"`
+			VideoVersions []struct {
+				URL    string `json:"url"`
+				Width  int    `json:"width"`
+				Type   int    `json:"type"`
+				Height int    `json:"height"`
+			} `json:"video_versions"`
+			OriginalWidth    int    `json:"original_width"`
+			OriginalHeight   int    `json:"original_height"`
+			Pk               int64  `json:"pk"`
+			CarouselParentID string `json:"carousel_parent_id"`
+		} `json:"carousel_media"`
 		OrganicTrackingToken         string        `json:"organic_tracking_token"`
 		LikeCount                    int           `json:"like_count"`
 		TopLikers                    []interface{} `json:"top_likers"`
@@ -1003,6 +1018,21 @@ type MediaInfoResponse struct {
 			Pk          int64  `json:"pk"`
 			Type        int    `json:"type"`
 		} `json:"preview_comments"`
+		CarouselMedia []struct {
+			ID            string        `json:"id"`
+			MediaType     int           `json:"media_type"`
+			ImageVersions ImageVersions `json:"image_versions2"`
+			VideoVersions []struct {
+				URL    string `json:"url"`
+				Width  int    `json:"width"`
+				Type   int    `json:"type"`
+				Height int    `json:"height"`
+			} `json:"video_versions"`
+			OriginalWidth    int    `json:"original_width"`
+			OriginalHeight   int    `json:"original_height"`
+			Pk               int64  `json:"pk"`
+			CarouselParentID string `json:"carousel_parent_id"`
+		} `json:"carousel_media"`
 		CommentCount int `json:"comment_count"`
 		Caption      struct {
 			Status       string `json:"status"`
@@ -1242,6 +1272,21 @@ type DirectListResponse struct {
 						Text         string `json:"text"`
 						CreatedAtUtc int    `json:"created_at_utc"`
 					} `json:"preview_comments"`
+					CarouselMedia []struct {
+						ID            string        `json:"id"`
+						MediaType     int           `json:"media_type"`
+						ImageVersions ImageVersions `json:"image_versions2"`
+						VideoVersions []struct {
+							Width  int    `json:"width"`
+							Height int    `json:"height"`
+							Type   int    `json:"type"`
+							URL    string `json:"url"`
+						} `json:"video_versions"`
+						OriginalWidth    int    `json:"original_width"`
+						OriginalHeight   int    `json:"original_height"`
+						Pk               int64  `json:"pk"`
+						CarouselParentID string `json:"carousel_parent_id"`
+					} `json:"carousel_media"`
 					CommentCount int `json:"comment_count"`
 					Caption      struct {
 						MediaID     int64  `json:"media_id"`
