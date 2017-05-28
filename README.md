@@ -30,7 +30,9 @@ This repository is a copy of [Instagram-API-Python](https://github.com/LevPasha/
 ## Other programs , built with GoInsta
 
 [follow-sync](https://github.com/kirsle/follow-sync) by [@kirsle](https://github.com/kirsle)
+
 [nick_bot](https://github.com/icholy/nick_bot) by [@icholy](https://github.com/icholy)
+
 [unsplash-to-instagram](https://github.com/nguyenvanduocit/unsplash-to-instagram) by [@nguyenvanduocit](https://github.com/nguyenvanduocit)
 
 # How to use ?
