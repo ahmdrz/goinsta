@@ -8,7 +8,7 @@ Unofficial Instagram API written in Golang
 
 ## Legal
 
-@mgp25
+[@mgp25](https://github.com/mgp25)
 This code is in no way affiliated with, authorized, maintained, sponsored or endorsed by Instagram or any of its affiliates or subsidiaries. This is an independent and unofficial API. Use at your own risk.
 
 **Very simple and no-dependency Instagram API**
@@ -26,6 +26,10 @@ This library work like android version of instagram
 There is lot of methods , like uploadPhoto , follow , unfollow , comment , like and etc...
 
 This repository is a copy of [Instagram-API-Python](https://github.com/LevPasha/Instagram-API-python) , And original source is [Instagram-API](https://github.com/mgp25/Instagram-API)
+
+# Other programs , built with GoInsta
+
+[follow-sync](https://github.com/kirsle/follow-sync) by [@kirsle](https://github.com/kirsle)
 
 # How to use ?
 
