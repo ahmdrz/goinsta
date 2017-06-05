@@ -240,6 +240,21 @@ func (insta *Instagram) UserFeed(userID int64, maxID, minTimestamp string) (resp
 	return resp, err
 }
 
+// MediaComments - Returns comments of a media, input is mediaid of a media
+// You can use maxID for pagination, otherwise leave it empty to get the latest page only.
+func (insta *Instagram) MediaComments(mediaId string, maxID string) (response.MediaCommentsResponse, error) {
+	resp := response.MediaCommentsResponse{}
+
+	body, err := insta.sendRequest("media/"+mediaId+"/comments?max_id="+maxID, "", false)
+	if err != nil {
+		return resp, err
+	}
+
+	err = json.Unmarshal(body, &resp)
+
+	return resp, err
+}
+
 // MediaLikers return likers of a media , input is mediaid of a media
 func (insta *Instagram) MediaLikers(mediaId string) (response.MediaLikersResponse, error) {
 	body, err := insta.sendRequest("media/"+mediaId+"/likers/?", "", false)
