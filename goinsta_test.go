@@ -151,6 +151,29 @@ func TestMediaLikers(t *testing.T) {
 	time.Sleep(3 * time.Second)
 }
 
+func TestMediaComments(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+	resp, err := insta.LatestFeed()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	if len(resp.Items) > 0 {
+		result, err := insta.MediaComments(resp.Items[0].ID, "")
+		if err != nil {
+			t.Fatal(err)
+			return
+		}
+		t.Log(result.Status)
+	} else {
+		t.Skip("Empty feed")
+	}
+	time.Sleep(3 * time.Second)
+}
+
 func TestFollow(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
