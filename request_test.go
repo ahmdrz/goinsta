@@ -15,7 +15,7 @@ func TestRequest(t *testing.T) {
 		return
 	}
 
-	_, err = insta.sendRequest("accounts/logout/", "", false)
+	_, err = insta.sendRequest(&reqOptions{Endpoint: "accounts/logout/"})
 	if err != nil {
 		t.Fatal(err)
 		return
