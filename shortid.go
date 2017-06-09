@@ -1,17 +1,9 @@
 package goinsta
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 )
-
-func stringToBin(s string) (binString string) {
-	for _, c := range s {
-		binString = fmt.Sprintf("%s%b", binString, c)
-	}
-	return
-}
 
 func leftPad2Len(s string, padStr string, overallLen int) string {
 	var padCountInt int
