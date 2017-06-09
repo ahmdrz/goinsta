@@ -970,14 +970,13 @@ func (insta *Instagram) ChangePassword(newpassword string) ([]byte, error) {
 }
 
 func (insta *Instagram) Timeline(maxID string) ([]byte, error) {
-	query := map[string]string{
-		"max_id":         maxID,
-		"rank_token":     insta.Informations.RankToken,
-		"ranked_content": "true",
-	}
 	return insta.sendRequest(&reqOptions{
 		Endpoint: "feed/timeline/",
-		Query:    query,
+		Query: map[string]string{
+			"max_id":         maxID,
+			"rank_token":     insta.Informations.RankToken,
+			"ranked_content": "true",
+		},
 	})
 }
 
