@@ -176,7 +176,7 @@ func (insta *Instagram) Login() error {
 	insta.SyncFeatures()
 	insta.AutoCompleteUserList()
 	insta.GetRankedRecipients()
-	insta.Timeline()
+	insta.Timeline("")
 	insta.GetRankedRecipients()
 	insta.GetRecentRecipients()
 	insta.MegaphoneLog()
@@ -197,16 +197,13 @@ func (insta *Instagram) Logout() error {
 // UserFollowing return followings of specific user
 // skip maxid with empty string for get first page
 func (insta *Instagram) UserFollowing(userID int64, maxID string) (response.UsersResponse, error) {
-	query := map[string]string{
-		"ig_sig_key_version": GOINSTA_SIG_KEY_VERSION,
-		"rank_token":         insta.Informations.RankToken,
-	}
-	if maxID != "" {
-		query["max_id"] = maxID
-	}
 	body, err := insta.sendRequest(&reqOptions{
 		Endpoint: fmt.Sprintf("friendships/%d/following/", userID),
-		Query:    query,
+		Query: map[string]string{
+			"max_id":             maxID,
+			"ig_sig_key_version": GOINSTA_SIG_KEY_VERSION,
+			"rank_token":         insta.Informations.RankToken,
+		},
 	})
 	if err != nil {
 		return response.UsersResponse{}, err
@@ -257,8 +254,8 @@ func (insta *Instagram) UserFeed(userID int64, maxID, minTimestamp string) (resp
 	body, err := insta.sendRequest(&reqOptions{
 		Endpoint: fmt.Sprintf("feed/user/%d/", userID),
 		Query: map[string]string{
-			"rank_token":     insta.Informations.RankToken,
 			"maxid":          maxID,
+			"rank_token":     insta.Informations.RankToken,
 			"min_timestamp":  minTimestamp,
 			"ranked_content": "true",
 		},
@@ -556,18 +553,12 @@ func (insta *Instagram) SearchLocation(lat, lng, search string) (response.Search
 
 // GetLocationFeed return location feed data by locationID in Instagram
 func (insta *Instagram) GetLocationFeed(locationID int64, maxID string) (response.LocationFeedResponse, error) {
-	var err error
-
-	query := map[string]string{}
-	if maxID != "" {
-		query["max_id"] = maxID
-	}
-
 	body, err := insta.sendRequest(&reqOptions{
 		Endpoint: fmt.Sprintf("feed/location/%d/", locationID),
-		Query:    query,
+		Query: map[string]string{
+			"max_id": maxID,
+		},
 	})
-
 	if err != nil {
 		return response.LocationFeedResponse{}, err
 	}
@@ -978,21 +969,12 @@ func (insta *Instagram) ChangePassword(newpassword string) ([]byte, error) {
 	return bytes, err
 }
 
-func (insta *Instagram) Timeline(maxID ...string) ([]byte, error) {
-
+func (insta *Instagram) Timeline(maxID string) ([]byte, error) {
 	query := map[string]string{
+		"max_id":         maxID,
 		"rank_token":     insta.Informations.RankToken,
 		"ranked_content": "true",
 	}
-
-	if len(maxID) == 0 {
-		// do nothing
-	} else if len(maxID) == 1 {
-		query["max_id"] = maxID[0]
-	} else {
-		return []byte{}, fmt.Errorf("Incorrect input")
-	}
-
 	return insta.sendRequest(&reqOptions{
 		Endpoint: "feed/timeline/",
 		Query:    query,
