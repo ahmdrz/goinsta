@@ -196,13 +196,13 @@ func (insta *Instagram) Logout() error {
 
 // UserFollowing return followings of specific user
 // skip maxid with empty string for get first page
-func (insta *Instagram) UserFollowing(userID int64, maxid string) (response.UsersResponse, error) {
+func (insta *Instagram) UserFollowing(userID int64, maxID string) (response.UsersResponse, error) {
 	query := map[string]string{
 		"ig_sig_key_version": GOINSTA_SIG_KEY_VERSION,
 		"rank_token":         insta.Informations.RankToken,
 	}
-	if maxid != "" {
-		query["max_id"] = maxid
+	if maxID != "" {
+		query["max_id"] = maxID
 	}
 	body, err := insta.sendRequest(&reqOptions{
 		Endpoint: fmt.Sprintf("friendships/%d/following/", userID),
@@ -220,11 +220,11 @@ func (insta *Instagram) UserFollowing(userID int64, maxid string) (response.User
 
 // UserFollowers return followers of specific user
 // skip maxid with empty string for get first page
-func (insta *Instagram) UserFollowers(userID int64, maxid string) (response.UsersResponse, error) {
+func (insta *Instagram) UserFollowers(userID int64, maxID string) (response.UsersResponse, error) {
 	body, err := insta.sendRequest(&reqOptions{
 		Endpoint: fmt.Sprintf("friendships/%d/followers/", userID),
 		Query: map[string]string{
-			"max_id":             maxid,
+			"max_id":             maxID,
 			"ig_sig_key_version": GOINSTA_SIG_KEY_VERSION,
 			"rank_token":         insta.Informations.RankToken,
 		},
@@ -274,11 +274,11 @@ func (insta *Instagram) UserFeed(userID int64, maxID, minTimestamp string) (resp
 
 // MediaComments - Returns comments of a media, input is mediaid of a media
 // You can use maxID for pagination, otherwise leave it empty to get the latest page only.
-func (insta *Instagram) MediaComments(mediaId string, maxID string) (response.MediaCommentsResponse, error) {
+func (insta *Instagram) MediaComments(mediaID string, maxID string) (response.MediaCommentsResponse, error) {
 	resp := response.MediaCommentsResponse{}
 
 	body, err := insta.sendRequest(&reqOptions{
-		Endpoint: fmt.Sprintf("media/%s/comments", mediaId),
+		Endpoint: fmt.Sprintf("media/%s/comments", mediaID),
 		Query: map[string]string{
 			"max_id": maxID,
 		},
@@ -293,8 +293,8 @@ func (insta *Instagram) MediaComments(mediaId string, maxID string) (response.Me
 }
 
 // MediaLikers return likers of a media , input is mediaid of a media
-func (insta *Instagram) MediaLikers(mediaId string) (response.MediaLikersResponse, error) {
-	body, err := insta.sendSimpleRequest("media/%s/likers/?", mediaId)
+func (insta *Instagram) MediaLikers(mediaID string) (response.MediaLikersResponse, error) {
+	body, err := insta.sendSimpleRequest("media/%s/likers/?", mediaID)
 	if err != nil {
 		return response.MediaLikersResponse{}, err
 	}
@@ -379,17 +379,17 @@ func (insta *Instagram) Expose() error {
 }
 
 // MediaInfo return media information
-func (insta *Instagram) MediaInfo(mediaId string) (response.MediaInfoResponse, error) {
+func (insta *Instagram) MediaInfo(mediaID string) (response.MediaInfoResponse, error) {
 	result := response.MediaInfoResponse{}
 	data, err := insta.prepareData(map[string]interface{}{
-		"media_id": mediaId,
+		"media_id": mediaID,
 	})
 	if err != nil {
 		return result, err
 	}
 
 	body, err := insta.sendRequest(&reqOptions{
-		Endpoint: fmt.Sprintf("media/%s/info/", mediaId),
+		Endpoint: fmt.Sprintf("media/%s/info/", mediaID),
 		PostData: generateSignature(data),
 	})
 	if err != nil {
@@ -805,35 +805,35 @@ func (insta *Instagram) UnBlock(userID int64) ([]byte, error) {
 	})
 }
 
-func (insta *Instagram) Like(mediaId string) ([]byte, error) {
+func (insta *Instagram) Like(mediaID string) ([]byte, error) {
 	data, err := insta.prepareData(map[string]interface{}{
-		"media_id": mediaId,
+		"media_id": mediaID,
 	})
 	if err != nil {
 		return []byte{}, err
 	}
 
 	return insta.sendRequest(&reqOptions{
-		Endpoint: fmt.Sprintf("media/%s/like/", mediaId),
+		Endpoint: fmt.Sprintf("media/%s/like/", mediaID),
 		PostData: generateSignature(data),
 	})
 }
 
-func (insta *Instagram) UnLike(mediaId string) ([]byte, error) {
+func (insta *Instagram) UnLike(mediaID string) ([]byte, error) {
 	data, err := insta.prepareData(map[string]interface{}{
-		"media_id": mediaId,
+		"media_id": mediaID,
 	})
 	if err != nil {
 		return []byte{}, err
 	}
 
 	return insta.sendRequest(&reqOptions{
-		Endpoint: fmt.Sprintf("media/%s/unlike/", mediaId),
+		Endpoint: fmt.Sprintf("media/%s/unlike/", mediaID),
 		PostData: generateSignature(data),
 	})
 }
 
-func (insta *Instagram) EditMedia(mediaId string, caption string) ([]byte, error) {
+func (insta *Instagram) EditMedia(mediaID string, caption string) ([]byte, error) {
 	data, err := insta.prepareData(map[string]interface{}{
 		"caption_text": caption,
 	})
@@ -842,38 +842,38 @@ func (insta *Instagram) EditMedia(mediaId string, caption string) ([]byte, error
 	}
 
 	return insta.sendRequest(&reqOptions{
-		Endpoint: fmt.Sprintf("media/%s/edit_media/", mediaId),
+		Endpoint: fmt.Sprintf("media/%s/edit_media/", mediaID),
 		PostData: generateSignature(data),
 	})
 }
 
-func (insta *Instagram) DeleteMedia(mediaId string) ([]byte, error) {
+func (insta *Instagram) DeleteMedia(mediaID string) ([]byte, error) {
 	data, err := insta.prepareData(map[string]interface{}{
-		"media_id": mediaId,
+		"media_id": mediaID,
 	})
 	if err != nil {
 		return []byte{}, err
 	}
 
 	return insta.sendRequest(&reqOptions{
-		Endpoint: fmt.Sprintf("media/%s/delete/", mediaId),
+		Endpoint: fmt.Sprintf("media/%s/delete/", mediaID),
 		PostData: generateSignature(data),
 	})
 }
 
-func (insta *Instagram) RemoveSelfTag(mediaId string) ([]byte, error) {
+func (insta *Instagram) RemoveSelfTag(mediaID string) ([]byte, error) {
 	data, err := insta.prepareData()
 	if err != nil {
 		return []byte{}, err
 	}
 
 	return insta.sendRequest(&reqOptions{
-		Endpoint: fmt.Sprintf("media/%s/remove/", mediaId),
+		Endpoint: fmt.Sprintf("media/%s/remove/", mediaID),
 		PostData: generateSignature(data),
 	})
 }
 
-func (insta *Instagram) Comment(mediaId, text string) ([]byte, error) {
+func (insta *Instagram) Comment(mediaID, text string) ([]byte, error) {
 	data, err := insta.prepareData(map[string]interface{}{
 		"comment_text": text,
 	})
@@ -882,19 +882,19 @@ func (insta *Instagram) Comment(mediaId, text string) ([]byte, error) {
 	}
 
 	return insta.sendRequest(&reqOptions{
-		Endpoint: fmt.Sprintf("media/%s/comment/", mediaId),
+		Endpoint: fmt.Sprintf("media/%s/comment/", mediaID),
 		PostData: generateSignature(data),
 	})
 }
 
-func (insta *Instagram) DeleteComment(mediaId, commentId string) ([]byte, error) {
+func (insta *Instagram) DeleteComment(mediaID, commentID string) ([]byte, error) {
 	data, err := insta.prepareData()
 	if err != nil {
 		return []byte{}, err
 	}
 
 	return insta.sendRequest(&reqOptions{
-		Endpoint: fmt.Sprintf("media/%s/comment/%s/delete/", mediaId, commentId),
+		Endpoint: fmt.Sprintf("media/%s/comment/%s/delete/", mediaID, commentID),
 		PostData: generateSignature(data),
 	})
 }
@@ -978,17 +978,17 @@ func (insta *Instagram) ChangePassword(newpassword string) ([]byte, error) {
 	return bytes, err
 }
 
-func (insta *Instagram) Timeline(maxid ...string) ([]byte, error) {
+func (insta *Instagram) Timeline(maxID ...string) ([]byte, error) {
 
 	query := map[string]string{
 		"rank_token":     insta.Informations.RankToken,
 		"ranked_content": "true",
 	}
 
-	if len(maxid) == 0 {
+	if len(maxID) == 0 {
 		// do nothing
-	} else if len(maxid) == 1 {
-		query["max_id"] = maxid[0]
+	} else if len(maxID) == 1 {
+		query["max_id"] = maxID[0]
 	} else {
 		return []byte{}, fmt.Errorf("Incorrect input")
 	}
@@ -1013,12 +1013,12 @@ func getImageDimension(imagePath string) (int, int, error) {
 	return image.Width, image.Height, nil
 }
 
-func (insta *Instagram) SelfUserFollowers(maxid string) (response.UsersResponse, error) {
-	return insta.UserFollowers(insta.LoggedInUser.ID, maxid)
+func (insta *Instagram) SelfUserFollowers(maxID string) (response.UsersResponse, error) {
+	return insta.UserFollowers(insta.LoggedInUser.ID, maxID)
 }
 
-func (insta *Instagram) SelfUserFollowing(maxid string) (response.UsersResponse, error) {
-	return insta.UserFollowing(insta.LoggedInUser.ID, maxid)
+func (insta *Instagram) SelfUserFollowing(maxID string) (response.UsersResponse, error) {
+	return insta.UserFollowing(insta.LoggedInUser.ID, maxID)
 }
 
 func (insta *Instagram) SelfTotalUserFollowers() (response.UsersResponse, error) {
