@@ -5,6 +5,7 @@ import (
 	"crypto/md5"
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"net/url"
 	"strings"
 )
@@ -39,5 +40,9 @@ func generateUUID(replace bool) string {
 }
 
 func generateSignature(data string) string {
-	return "ig_sig_key_version=" + GOINSTA_SIG_KEY_VERSION + "&signed_body=" + generateHMAC(data, GOINSTA_IG_SIG_KEY) + "." + url.QueryEscape(data)
+	return fmt.Sprintf("ig_sig_key_version=%s&signed_body=%s.%s",
+		GOINSTA_SIG_KEY_VERSION,
+		generateHMAC(data, GOINSTA_IG_SIG_KEY),
+		url.QueryEscape(data),
+	)
 }
