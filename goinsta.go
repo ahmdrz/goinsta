@@ -986,6 +986,7 @@ func getImageDimension(imagePath string) (int, int, error) {
 	if err != nil {
 		return 0, 0, err
 	}
+	defer file.Close()
 
 	image, _, err := image.DecodeConfig(file)
 	if err != nil {
