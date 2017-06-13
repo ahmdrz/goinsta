@@ -113,6 +113,16 @@ Yes, you may create goinsta object using:
 insta := goinsta.NewViaProxy("USERNAME", "PASSWORD", "http://<ip>:<port>")
 ```
 
-# Thanks
+# Contributors :heart:
 
-1. [levpasha](https://github.com/LevPasha)
+1. [@sourcesoft](https://github.com/sourcesoft)
+2. [@GhostRussia](https://github.com/GhostRussia)
+3. [@icholy](https://github.com/icholy)
+4. [@rakd](https://github.com/rakd)
+5. [@kemics](https://github.com/kemics)
+6. [@sklinkert](https://github.com/sklinkert)
+7. [@vitaliikapliuk](https://github.com/vitaliikapliuk)
+8. [@glebtv](https://github.com/glebtv)
+9. [@neetkee](https://github.com/neetkee)
+10. [@daciwei](https://github.com/daciwei)
+11. [@aaronarduino](https://github.com/aaronarduino)
