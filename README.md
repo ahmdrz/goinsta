@@ -17,15 +17,75 @@ This library work like android version of instagram
 
 ***
 
-# Installation 
+## Installation 
 
 `go get -u -v github.com/ahmdrz/goinsta`
 
-# Methods 
+## Methods 
 
 There is lot of methods , like uploadPhoto , follow , unfollow , comment , like and etc...
 
 This repository is a copy of [Instagram-API-Python](https://github.com/LevPasha/Instagram-API-python) , And original source is [Instagram-API](https://github.com/mgp25/Instagram-API)
+
+## How to use ?
+
+The example is very simple !
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/ahmdrz/goinsta"
+)
+
+func main() {
+	insta := goinsta.New("USERNAME", "PASSWORD")
+
+	if err := insta.Login(); err != nil {
+		panic(err)
+	}
+
+	defer insta.Logout()
+
+	...
+}
+```
+
+## Export / Import with AES encryption
+
+```go
+package main
+
+import "github.com/ahmdrz/goinsta"
+
+func main() {
+	...
+
+	bytes, err := insta.Export([]byte("32Byte AES Key"))
+	if err != nil {
+		panic(err)
+	}
+	// save bytes to backup file
+
+	...
+
+	// read bytes from backup file
+	insta, err := goinsta.Import([]byte(bytes_from_file), []byte("32Byte AES Key"))
+	if err != nil {
+		panic(err)
+	}
+}
+```
+
+## Does `goinsta` support proxy servers ?
+Yes, you may create goinsta object using: 
+
+```go
+insta := goinsta.NewViaProxy("USERNAME", "PASSWORD", "http://<ip>:<port>")
+```
+
 
 ## Other programs , built with GoInsta
 
@@ -35,85 +95,7 @@ This repository is a copy of [Instagram-API-Python](https://github.com/LevPasha/
 
 [unsplash-to-instagram](https://github.com/nguyenvanduocit/unsplash-to-instagram) by [@nguyenvanduocit](https://github.com/nguyenvanduocit)
 
-# How to use ?
-
-The example is very simple !
-
-### GetUserFeed
-
-```go
-package main
-
-import (
-	"fmt"
-
-	"github.com/ahmdrz/goinsta"
-)
-
-func main() {
-	insta := goinsta.New("USERNAME", "PASSWORD")
-
-	if err := insta.Login(); err != nil {
-		panic(err)
-	}
-
-	defer insta.Logout()
-
-	// Get your Instagram feed
-	resp, err := insta.LatestFeed()
-	if err != nil {
-		panic(err)
-	}
-
-	if resp.Status != "ok" {
-		panic("Error occured , " + resp.Status)
-	}
-
-	for _, item := range resp.Items {
-		if len(item.Caption.Text) > 30 {
-			item.Caption.Text = item.Caption.Text[:30]
-		}
-		fmt.Println(item.ID, item.Caption.Text)
-	}
-}
-
-```
-
-### UploadPhoto
-
-```go
-package main
-
-import (
-	"fmt"
-
-	"github.com/ahmdrz/goinsta"
-)
-
-func main() {
-	insta := goinsta.New("USERNAME", "PASSWORD")
-
-	if err := insta.Login(); err != nil {
-		panic(err)
-	}
-
-	defer insta.Logout()
-
-	resp, _ := insta.UploadPhoto("PATH_TO_IMAGE", "CAPTION", insta.NewUploadID(), 87,goinsta.Filter_Lark) // default quality is 87
-
-	fmt.Println(resp.Status)
-}
-
-```
-
-# Does `goinsta` support proxy servers ?
-Yes, you may create goinsta object using: 
-
-```go
-insta := goinsta.NewViaProxy("USERNAME", "PASSWORD", "http://<ip>:<port>")
-```
-
-# Contributors :heart:
+## Contributors :heart:
 
 1. [@sourcesoft](https://github.com/sourcesoft)
 2. [@GhostRussia](https://github.com/GhostRussia)
