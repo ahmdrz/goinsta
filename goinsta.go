@@ -1003,10 +1003,18 @@ func (insta *Instagram) SelfUserFollowing(maxID string) (response.UsersResponse,
 	return insta.UserFollowing(insta.LoggedInUser.ID, maxID)
 }
 
+func (insta *Instagram) SelfTotalUserFollowing() (response.UsersResponse, error) {
+	return insta.TotalUserFollowing(insta.LoggedInUser.ID)
+}
+
 func (insta *Instagram) SelfTotalUserFollowers() (response.UsersResponse, error) {
+	return insta.TotalUserFollowers(insta.LoggedInUser.ID)
+}
+
+func (insta *Instagram) TotalUserFollowing(userID int64) (response.UsersResponse, error) {
 	resp := response.UsersResponse{}
 	for {
-		temp_resp, err := insta.SelfUserFollowers(resp.NextMaxID)
+		temp_resp, err := insta.UserFollowing(userID, resp.NextMaxID)
 		if err != nil {
 			return response.UsersResponse{}, err
 		}
@@ -1020,10 +1028,10 @@ func (insta *Instagram) SelfTotalUserFollowers() (response.UsersResponse, error)
 	}
 }
 
-func (insta *Instagram) SelfTotalUserFollowing() (response.UsersResponse, error) {
+func (insta *Instagram) TotalUserFollowers(userID int64) (response.UsersResponse, error) {
 	resp := response.UsersResponse{}
 	for {
-		temp_resp, err := insta.SelfUserFollowing(resp.NextMaxID)
+		temp_resp, err := insta.UserFollowers(userID, resp.NextMaxID)
 		if err != nil {
 			return response.UsersResponse{}, err
 		}
