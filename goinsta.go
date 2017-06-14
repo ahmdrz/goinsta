@@ -113,12 +113,15 @@ func NewViaProxy(username, password, proxy string) *Instagram {
 // New does not try to login , it will only fill
 // Instagram struct
 func New(username, password string) *Instagram {
+	information := Informations{
+		DeviceID: generateDeviceID(generateMD5Hash(username + password)),
+		Username: username,
+		Password: password,
+		UUID:     generateUUID(true),
+	}
 	return &Instagram{
-		Informations: Informations{
-			DeviceID: generateDeviceID(generateMD5Hash(username + password)),
-			Username: username,
-			Password: password,
-			UUID:     generateUUID(true),
+		InstaType: InstaType{
+			Informations: information,
 		},
 	}
 }
