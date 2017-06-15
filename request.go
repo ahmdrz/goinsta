@@ -17,6 +17,12 @@ type reqOptions struct {
 	Query        map[string]string
 }
 
+func (insta *Instagram) OptionalRequest(endpoint string, a ...interface{}) (body []byte, err error) {
+	return insta.sendRequest(&reqOptions{
+		Endpoint: fmt.Sprintf(endpoint, a...),
+	})
+}
+
 func (insta *Instagram) sendSimpleRequest(endpoint string, a ...interface{}) (body []byte, err error) {
 	return insta.sendRequest(&reqOptions{
 		Endpoint: fmt.Sprintf(endpoint, a...),
