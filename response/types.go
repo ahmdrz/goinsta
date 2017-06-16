@@ -499,6 +499,7 @@ type DirectThread struct {
 		Items            []struct {
 			ItemID     string `json:"item_id"`
 			ItemType   string `json:"item_type"`
+			Text   string `json:"text"`
 			MediaShare struct {
 				TakenAt         int           `json:"taken_at"`
 				Pk              int64         `json:"pk"`
@@ -614,6 +615,16 @@ type DirectThread struct {
 			} `json:"media_share"`
 			UserID    int   `json:"user_id"`
 			Timestamp int64 `json:"timestamp"`
+			Profile struct {
+				Username                   string `json:"username"`
+				HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
+				ProfilePicURL              string `json:"profile_pic_url"`
+				ProfilePicID               string `json:"profile_pic_id"`
+				FullName                   string `json:"full_name"`
+				Pk                         int64  `json:"pk"`
+				IsVerified                 bool   `json:"is_verified"`
+				IsPrivate                  bool   `json:"is_private"`
+			} `json:"profile"`
 		} `json:"items"`
 		ThreadType       string `json:"thread_type"`
 		MoreAvailableMax bool   `json:"more_available_max"`
