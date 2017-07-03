@@ -333,7 +333,7 @@ type DirectPendingRequests struct {
 			LeftUsers        []interface{} `json:"left_users"`
 			NextMinID        string        `json:"next_min_id"`
 			Muted            bool          `json:"muted"`
-			Items            []Items       `json:"items"`
+			Items            []Item        `json:"items"`
 			ThreadType       string        `json:"thread_type"`
 			MoreAvailableMax bool          `json:"more_available_max"`
 			ThreadTitle      string        `json:"thread_title"`
