@@ -258,11 +258,7 @@ func (insta *Instagram) UserFeed(userID int64, maxID, minTimestamp string) (resp
 	body, err := insta.sendRequest(&reqOptions{
 		Endpoint: fmt.Sprintf("feed/user/%d/", userID),
 		Query: map[string]string{
-<<<<<<< HEAD
-			"max_id":          maxID,
-=======
 			"max_id":         maxID,
->>>>>>> Add а field PhoneID to the structure Informations. To be able to change
 			"rank_token":     insta.Informations.RankToken,
 			"min_timestamp":  minTimestamp,
 			"ranked_content": "true",
