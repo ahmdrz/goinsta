@@ -118,6 +118,7 @@ func New(username, password string) *Instagram {
 		Username: username,
 		Password: password,
 		UUID:     generateUUID(true),
+		PhoneID:  generateUUID(true),
 	}
 	return &Instagram{
 		InstaType: InstaType{
@@ -148,7 +149,7 @@ func (insta *Instagram) Login() error {
 		"login_attempt_count": 0,
 		"_csrftoken":          insta.Informations.Token,
 		"device_id":           insta.Informations.DeviceID,
-		"phone_id":            generateUUID(true),
+		"phone_id":            insta.Informations.PhoneID,
 		"username":            insta.Informations.Username,
 		"password":            insta.Informations.Password,
 	})
@@ -257,7 +258,7 @@ func (insta *Instagram) UserFeed(userID int64, maxID, minTimestamp string) (resp
 	body, err := insta.sendRequest(&reqOptions{
 		Endpoint: fmt.Sprintf("feed/user/%d/", userID),
 		Query: map[string]string{
-			"max_id":          maxID,
+			"max_id":         maxID,
 			"rank_token":     insta.Informations.RankToken,
 			"min_timestamp":  minTimestamp,
 			"ranked_content": "true",
