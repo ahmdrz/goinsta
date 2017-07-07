@@ -14,6 +14,7 @@ type Informations struct {
 	UUID      string
 	RankToken string
 	Token     string
+	PhoneID   string
 }
 
 type Instagram struct {
