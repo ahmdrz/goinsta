@@ -716,6 +716,26 @@ func TestGetDirectThread(t *testing.T) {
 	t.Log("status : ok")
 }
 
+func TestGetDirectThreadMediaShare(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	if directThreadId == "" {
+		t.Skip("Empty Direct ThreadID")
+	}
+	thread, err := insta.GetDirectThread(directThreadId)
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	for _, item := range thread.Thread.Items {
+		t.Log(item.MediaShare.TakenAt)
+	}
+	time.Sleep(3 * time.Second)
+	t.Log("status : ok")
+}
+
 func TestExplore(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
