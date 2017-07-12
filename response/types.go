@@ -323,23 +323,23 @@ type DirectPendingRequests struct {
 					IsPrivate       bool `json:"is_private"`
 				} `json:"friendship_status"`
 			} `json:"users"`
-			ViewerID         int64         `json:"viewer_id"`
-			MoreAvailableMin bool          `json:"more_available_min"`
-			ThreadID         string        `json:"thread_id"`
-			ImageVersions2   ImageVersions `json:"image_versions2"`
-			LastActivityAt   int64         `json:"last_activity_at"`
-			NextMaxID        string        `json:"next_max_id"`
-			IsSpam           bool          `json:"is_spam"`
-			LeftUsers        []interface{} `json:"left_users"`
-			NextMinID        string        `json:"next_min_id"`
-			Muted            bool          `json:"muted"`
-			Items            []Item        `json:"items"`
-			ThreadType       string        `json:"thread_type"`
-			MoreAvailableMax bool          `json:"more_available_max"`
-			ThreadTitle      string        `json:"thread_title"`
-			Canonical        bool          `json:"canonical"`
-			Inviter          User          `json:"inviter"`
-			Pending          bool          `json:"pending"`
+			ViewerID         int64            `json:"viewer_id"`
+			MoreAvailableMin bool             `json:"more_available_min"`
+			ThreadID         string           `json:"thread_id"`
+			ImageVersions2   ImageVersions    `json:"image_versions2"`
+			LastActivityAt   int64            `json:"last_activity_at"`
+			NextMaxID        string           `json:"next_max_id"`
+			IsSpam           bool             `json:"is_spam"`
+			LeftUsers        []interface{}    `json:"left_users"`
+			NextMinID        string           `json:"next_min_id"`
+			Muted            bool             `json:"muted"`
+			Items            []ItemMediaShare `json:"items"`
+			ThreadType       string           `json:"thread_type"`
+			MoreAvailableMax bool             `json:"more_available_max"`
+			ThreadTitle      string           `json:"thread_title"`
+			Canonical        bool             `json:"canonical"`
+			Inviter          User             `json:"inviter"`
+			Pending          bool             `json:"pending"`
 		} `json:"threads"`
 		MoreAvailable bool `json:"more_available"`
 	} `json:"inbox"`
@@ -393,20 +393,20 @@ type DirectThread struct {
 			IsVerified    bool   `json:"is_verified"`
 			IsPrivate     bool   `json:"is_private"`
 		} `json:"users"`
-		ViewerID         int64         `json:"viewer_id"`
-		MoreAvailableMin bool          `json:"more_available_min"`
-		ThreadID         string        `json:"thread_id"`
-		ImageVersions2   ImageVersions `json:"image_versions2"`
-		LastActivityAt   int64         `json:"last_activity_at"`
-		NextMaxID        string        `json:"next_max_id"`
-		Canonical        bool          `json:"canonical"`
-		LeftUsers        []interface{} `json:"left_users"`
-		NextMinID        string        `json:"next_min_id"`
-		Muted            bool          `json:"muted"`
-		Items            []Item        `json:"items"`
-		ThreadType       string        `json:"thread_type"`
-		MoreAvailableMax bool          `json:"more_available_max"`
-		ThreadTitle      string        `json:"thread_title"`
+		ViewerID         int64            `json:"viewer_id"`
+		MoreAvailableMin bool             `json:"more_available_min"`
+		ThreadID         string           `json:"thread_id"`
+		ImageVersions2   ImageVersions    `json:"image_versions2"`
+		LastActivityAt   int64            `json:"last_activity_at"`
+		NextMaxID        string           `json:"next_max_id"`
+		Canonical        bool             `json:"canonical"`
+		LeftUsers        []interface{}    `json:"left_users"`
+		NextMinID        string           `json:"next_min_id"`
+		Muted            bool             `json:"muted"`
+		Items            []ItemMediaShare `json:"items"`
+		ThreadType       string           `json:"thread_type"`
+		MoreAvailableMax bool             `json:"more_available_max"`
+		ThreadTitle      string           `json:"thread_title"`
 		LastSeenAt       struct {
 			Num1572292791 struct {
 				ItemID    string `json:"item_id"`
@@ -681,6 +681,11 @@ type GetPopularFeedResponse struct {
 	MoreAvailable       bool   `json:"more_available"`
 }
 
+type ItemMediaShare struct {
+	Item
+	MediaShare Item `json:"media_share"`
+}
+
 // DirectListResponse is list of directs
 type DirectListResponse struct {
 	PendingRequestsTotal int    `json:"pending_requests_total"`
@@ -700,19 +705,19 @@ type DirectListResponse struct {
 					ItemID    string `json:"item_id"`
 				} `json:"4178028611"`
 			} `json:"last_seen_at"`
-			ViewerID     int64         `json:"viewer_id"`
-			OldestCursor string        `json:"oldest_cursor"`
-			LeftUsers    []interface{} `json:"left_users"`
-			ThreadID     string        `json:"thread_id"`
-			Inviter      User          `json:"inviter"`
-			ThreadTitle  string        `json:"thread_title"`
-			Items        []Item        `json:"items"`
-			Muted        bool          `json:"muted"`
-			Pending      bool          `json:"pending"`
-			HasOlder     bool          `json:"has_older"`
-			Canonical    bool          `json:"canonical"`
-			HasNewer     bool          `json:"has_newer"`
-			Named        bool          `json:"named"`
+			ViewerID     int64            `json:"viewer_id"`
+			OldestCursor string           `json:"oldest_cursor"`
+			LeftUsers    []interface{}    `json:"left_users"`
+			ThreadID     string           `json:"thread_id"`
+			Inviter      User             `json:"inviter"`
+			ThreadTitle  string           `json:"thread_title"`
+			Items        []ItemMediaShare `json:"items"`
+			Muted        bool             `json:"muted"`
+			Pending      bool             `json:"pending"`
+			HasOlder     bool             `json:"has_older"`
+			Canonical    bool             `json:"canonical"`
+			HasNewer     bool             `json:"has_newer"`
+			Named        bool             `json:"named"`
 			Users        []struct {
 				Username         string `json:"username"`
 				IsPrivate        bool   `json:"is_private"`
