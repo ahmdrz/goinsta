@@ -1092,6 +1092,7 @@ func (insta *Instagram) SearchTags(query string) ([]byte, error) {
 		Query: map[string]string{
 			"is_typeahead": "true",
 			"rank_token":   insta.Informations.RankToken,
+			"query":        query,
 		},
 	})
 }
