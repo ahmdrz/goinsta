@@ -1086,15 +1086,23 @@ func (insta *Instagram) SearchUsername(query string) (response.SearchUserRespons
 	return result, err
 }
 
-func (insta *Instagram) SearchTags(query string) ([]byte, error) {
-	return insta.sendRequest(&reqOptions{
+func (insta *Instagram) SearchTags(query string) (response.SearchTagsResponse, error) {
+	result := response.SearchTagsResponse{}
+	body, err := insta.sendRequest(&reqOptions{
 		Endpoint: "tags/search/",
 		Query: map[string]string{
 			"is_typeahead": "true",
 			"rank_token":   insta.Informations.RankToken,
-			"query":        query,
+			"q":            query,
 		},
 	})
+	if err != nil {
+		return result, err
+	}
+
+	err = json.Unmarshal(body, &result)
+
+	return result, err
 }
 
 func (insta *Instagram) SearchFacebookUsers(query string) ([]byte, error) {

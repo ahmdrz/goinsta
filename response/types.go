@@ -609,6 +609,17 @@ type DirectMessageResponse struct {
 	} `json:"threads"`
 }
 
+type SearchTagsResponse struct {
+	Results []struct {
+		Name       string `json:"name"`
+		MediaCount int    `json:"media_count"`
+		ID         int64  `json:"id"`
+	} `json:"results"`
+	HasMore   interface{} `json:"has_more"`
+	RankToken string      `json:"rank_token"`
+	Status    string      `json:"status"`
+}
+
 // SearchUserResponse is for user search response
 type SearchUserResponse struct {
 	HasMore    bool   `json:"has_more"`
