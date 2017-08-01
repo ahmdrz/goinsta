@@ -101,6 +101,8 @@ insta := goinsta.NewViaProxy("USERNAME", "PASSWORD", "http://<ip>:<port>")
 
 [unsplash-to-instagram](https://github.com/nguyenvanduocit/unsplash-to-instagram) by [@nguyenvanduocit](https://github.com/nguyenvanduocit)
 
+[go-instabot](https://github.com/tducasse/go-instabot) by [@tducasse](https://github.com/tducasse)
+
 ## Contributors :heart:
 
 1. [@sourcesoft](https://github.com/sourcesoft)
