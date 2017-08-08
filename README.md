@@ -103,6 +103,10 @@ insta := goinsta.NewViaProxy("USERNAME", "PASSWORD", "http://<ip>:<port>")
 
 [go-instabot](https://github.com/tducasse/go-instabot) by [@tducasse](https://github.com/tducasse)
 
+[gopostal](https://github.com/scisci/gopostal) by [@scisci](https://github.com/scisci)
+
+[go_toy](https://github.com/Rhadow/go_toy) by [@Rhadow](https://github.com/Rhadow)
+
 ## Contributors :heart:
 
 1. [@sourcesoft](https://github.com/sourcesoft)
