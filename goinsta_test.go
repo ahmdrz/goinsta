@@ -419,7 +419,7 @@ func TestGetUserByUsername(t *testing.T) {
 		t.Fatalf("Incorrect status" + resp.Status)
 	}
 
-	if resp.User.Username != "ahmd.rz" {
+	if resp.User.Username != "aidenzibaei" {
 		t.Fatalf("Incorrect username" + resp.User.Username)
 	}
 	time.Sleep(3 * time.Second)
