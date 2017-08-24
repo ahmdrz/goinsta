@@ -481,15 +481,15 @@ type Item struct {
 		Pk               int64  `json:"pk"`
 		CarouselParentID string `json:"carousel_parent_id"`
 	} `json:"carousel_media"`
-	OrganicTrackingToken         string        `json:"organic_tracking_token"`
-	LikeCount                    int           `json:"like_count"`
-	TopLikers                    []interface{} `json:"top_likers"`
-	HasLiked                     bool          `json:"has_liked"`
-	HasMoreComments              bool          `json:"has_more_comments"`
-	MaxNumVisiblePreviewComments int           `json:"max_num_visible_preview_comments"`
-	PreviewComments              []interface{} `json:"preview_comments"`
-	Comments                     []interface{} `json:"comments"`
-	CommentCount                 int           `json:"comment_count"`
+	OrganicTrackingToken         string            `json:"organic_tracking_token"`
+	LikeCount                    int               `json:"like_count"`
+	TopLikers                    []interface{}     `json:"top_likers"`
+	HasLiked                     bool              `json:"has_liked"`
+	HasMoreComments              bool              `json:"has_more_comments"`
+	MaxNumVisiblePreviewComments int               `json:"max_num_visible_preview_comments"`
+	PreviewComments              []CommentResponse `json:"preview_comments"`
+	Comments                     []CommentResponse `json:"comments"`
+	CommentCount                 int               `json:"comment_count"`
 	Caption                      struct {
 		Status       string `json:"status"`
 		UserID       int    `json:"user_id"`
@@ -851,35 +851,15 @@ type TrayResponse struct {
 				IsVerified    bool   `json:"is_verified"`
 				IsPrivate     bool   `json:"is_private"`
 			} `json:"user"`
-			OrganicTrackingToken         string `json:"organic_tracking_token"`
-			LikeCount                    int    `json:"like_count"`
-			HasLiked                     bool   `json:"has_liked"`
-			HasMoreComments              bool   `json:"has_more_comments"`
-			NextMaxID                    int64  `json:"next_max_id"`
-			MaxNumVisiblePreviewComments int    `json:"max_num_visible_preview_comments"`
-			PreviewComments              []struct {
-				Status       string `json:"status"`
-				UserID       int    `json:"user_id"`
-				CreatedAtUtc int    `json:"created_at_utc"`
-				CreatedAt    int    `json:"created_at"`
-				BitFlags     int    `json:"bit_flags"`
-				User         struct {
-					Username      string `json:"username"`
-					ProfilePicURL string `json:"profile_pic_url"`
-					ProfilePicID  string `json:"profile_pic_id"`
-					FullName      string `json:"full_name"`
-					Pk            int    `json:"pk"`
-					IsVerified    bool   `json:"is_verified"`
-					IsPrivate     bool   `json:"is_private"`
-				} `json:"user"`
-				ContentType string `json:"content_type"`
-				Text        string `json:"text"`
-				MediaID     int64  `json:"media_id"`
-				Pk          int64  `json:"pk"`
-				Type        int    `json:"type"`
-			} `json:"preview_comments"`
-			CommentCount int `json:"comment_count"`
-			Caption      struct {
+			OrganicTrackingToken         string            `json:"organic_tracking_token"`
+			LikeCount                    int               `json:"like_count"`
+			HasLiked                     bool              `json:"has_liked"`
+			HasMoreComments              bool              `json:"has_more_comments"`
+			NextMaxID                    int64             `json:"next_max_id"`
+			MaxNumVisiblePreviewComments int               `json:"max_num_visible_preview_comments"`
+			PreviewComments              []CommentResponse `json:"preview_comments"`
+			CommentCount                 int               `json:"comment_count"`
+			Caption                      struct {
 				Status       string `json:"status"`
 				UserID       int    `json:"user_id"`
 				CreatedAtUtc int    `json:"created_at_utc"`

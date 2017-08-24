@@ -15,6 +15,12 @@ This code is in no way affiliated with, authorized, maintained, sponsored or end
 
 This library work like android version of instagram
 
+## Donate
+
+Make me happy :)
+
+Bitcoin : `1KjcfrBPJtM4MfBSGTqpC6RcoEW1KBh15X`
+
 ***
 
 ## Installation 
@@ -95,6 +101,12 @@ insta := goinsta.NewViaProxy("USERNAME", "PASSWORD", "http://<ip>:<port>")
 
 [unsplash-to-instagram](https://github.com/nguyenvanduocit/unsplash-to-instagram) by [@nguyenvanduocit](https://github.com/nguyenvanduocit)
 
+[go-instabot](https://github.com/tducasse/go-instabot) by [@tducasse](https://github.com/tducasse)
+
+[gopostal](https://github.com/scisci/gopostal) by [@scisci](https://github.com/scisci)
+
+[go_toy](https://github.com/Rhadow/go_toy) by [@Rhadow](https://github.com/Rhadow)
+
 ## Contributors :heart:
 
 1. [@sourcesoft](https://github.com/sourcesoft)
@@ -111,3 +123,4 @@ insta := goinsta.NewViaProxy("USERNAME", "PASSWORD", "http://<ip>:<port>")
 12. [@tggo](https://github.com/tggo)
 13. [@Albina-art](https://github.com/Albina-art)
 14. [@maniack](https://github.com/maniack)
+15. [@hadidimad](https://github.com/hadidimad)
