@@ -8,6 +8,7 @@ import (
 	"image"
 	_ "image/jpeg"
 	_ "image/png"
+	"io"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
@@ -608,8 +609,8 @@ func (insta *Instagram) TagFeed(tag string) (response.TagFeedsResponse, error) {
 	return resp, err
 }
 
-// UploadPhotoFromBytes can upload your photo stored in bytes with any quality , better to use 87
-func (insta *Instagram) UploadPhotoFromBytes(photo []byte, photo_caption string, upload_id int64, quality int, filter_type int) (response.UploadPhotoResponse, error) {
+// UploadPhotoFromReader can upload your photo stored in io.Reader with any quality , better to use 87
+func (insta *Instagram) UploadPhotoFromReader(photo io.Reader, photo_caption string, upload_id int64, quality int, filter_type int) (response.UploadPhotoResponse, error) {
 	photo_name := fmt.Sprintf("pending_media_%d.jpg", upload_id)
 
 	//multipart request body
@@ -626,7 +627,11 @@ func (insta *Instagram) UploadPhotoFromBytes(photo []byte, photo_caption string,
 		return response.UploadPhotoResponse{}, err
 	}
 
-	if _, err = fw.Write(photo); err != nil {
+	var buf bytes.Buffer
+
+	rdr := io.TeeReader(photo, &buf)
+
+	if _, err = io.Copy(fw, rdr); err != nil {
 		return response.UploadPhotoResponse{}, err
 	}
 	if err := w.Close(); err != nil {
@@ -672,7 +677,7 @@ func (insta *Instagram) UploadPhotoFromBytes(photo []byte, photo_caption string,
 	}
 
 	if upresponse.Status == "ok" {
-		w, h, err := getImageDimensionFromBytes(photo)
+		w, h, err := getImageDimensionFromReader(&buf)
 		if err != nil {
 			return response.UploadPhotoResponse{}, err
 		}
@@ -724,12 +729,7 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 	}
 	defer f.Close()
 
-	data, err := ioutil.ReadAll(f)
-	if err != nil {
-		return response.UploadPhotoResponse{}, err
-	}
-
-	return insta.UploadPhotoFromBytes(data, photo_caption, upload_id, quality, filter_type)
+	return insta.UploadPhotoFromReader(f, photo_caption, upload_id, quality, filter_type)
 }
 
 // NewUploadID return unix nano time
@@ -995,9 +995,9 @@ func (insta *Instagram) Timeline(maxID string) ([]byte, error) {
 	})
 }
 
-// getImageDimensionFromBytes return image dimension , types is .jpg and .png
-func getImageDimensionFromBytes(data []byte) (int, int, error) {
-	image, _, err := image.DecodeConfig(bytes.NewReader(data))
+// getImageDimensionFromReader return image dimension , types is .jpg and .png
+func getImageDimensionFromReader(rdr io.Reader) (int, int, error) {
+	image, _, err := image.DecodeConfig(rdr)
 	if err != nil {
 		return 0, 0, err
 	}
@@ -1012,11 +1012,7 @@ func getImageDimension(imagePath string) (int, int, error) {
 	}
 	defer file.Close()
 
-	image, _, err := image.DecodeConfig(file)
-	if err != nil {
-		return 0, 0, err
-	}
-	return image.Width, image.Height, nil
+	return getImageDimensionFromReader(file)
 }
 
 func (insta *Instagram) SelfUserFollowers(maxID string) (response.UsersResponse, error) {
