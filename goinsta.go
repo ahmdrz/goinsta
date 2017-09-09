@@ -984,8 +984,8 @@ func (insta *Instagram) ChangePassword(newpassword string) ([]byte, error) {
 	return bytes, err
 }
 
-func (insta *Instagram) Timeline(maxID string) ([]byte, error) {
-	return insta.sendRequest(&reqOptions{
+func (insta *Instagram) Timeline(maxID string) (r response.FeedsResponse, err error) {
+	data, err := insta.sendRequest(&reqOptions{
 		Endpoint: "feed/timeline/",
 		Query: map[string]string{
 			"max_id":         maxID,
@@ -993,6 +993,11 @@ func (insta *Instagram) Timeline(maxID string) ([]byte, error) {
 			"ranked_content": "true",
 		},
 	})
+	if err == nil {
+		err = json.Unmarshal(data, &r)
+	}
+
+	return
 }
 
 // getImageDimensionFromReader return image dimension , types is .jpg and .png
