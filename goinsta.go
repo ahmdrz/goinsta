@@ -609,18 +609,13 @@ func (insta *Instagram) TagFeed(tag string) (response.TagFeedsResponse, error) {
 	return resp, err
 }
 
-// UploadPhoto can upload your photo with any quality , better to use 87
-func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upload_id int64, quality int, filter_type int) (response.UploadPhotoResponse, error) {
+// UploadPhotoFromReader can upload your photo stored in io.Reader with any quality , better to use 87
+func (insta *Instagram) UploadPhotoFromReader(photo io.Reader, photo_caption string, upload_id int64, quality int, filter_type int) (response.UploadPhotoResponse, error) {
 	photo_name := fmt.Sprintf("pending_media_%d.jpg", upload_id)
 
 	//multipart request body
 	var b bytes.Buffer
 	w := multipart.NewWriter(&b)
-	f, err := os.Open(photo_path)
-	if err != nil {
-		return response.UploadPhotoResponse{}, err
-	}
-	defer f.Close()
 
 	w.WriteField("upload_id", strconv.FormatInt(upload_id, 10))
 	w.WriteField("_uuid", insta.Informations.UUID)
@@ -631,7 +626,12 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 	if err != nil {
 		return response.UploadPhotoResponse{}, err
 	}
-	if _, err = io.Copy(fw, f); err != nil {
+
+	var buf bytes.Buffer
+
+	rdr := io.TeeReader(photo, &buf)
+
+	if _, err = io.Copy(fw, rdr); err != nil {
 		return response.UploadPhotoResponse{}, err
 	}
 	if err := w.Close(); err != nil {
@@ -677,7 +677,7 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 	}
 
 	if upresponse.Status == "ok" {
-		w, h, err := getImageDimension(photo_path)
+		w, h, err := getImageDimensionFromReader(&buf)
 		if err != nil {
 			return response.UploadPhotoResponse{}, err
 		}
@@ -719,6 +719,17 @@ func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upl
 	} else {
 		return response.UploadPhotoResponse{}, fmt.Errorf(upresponse.Status)
 	}
+}
+
+// UploadPhoto can upload your photo file, stored in filesystem with any quality , better to use 87
+func (insta *Instagram) UploadPhoto(photo_path string, photo_caption string, upload_id int64, quality int, filter_type int) (response.UploadPhotoResponse, error) {
+	f, err := os.Open(photo_path)
+	if err != nil {
+		return response.UploadPhotoResponse{}, err
+	}
+	defer f.Close()
+
+	return insta.UploadPhotoFromReader(f, photo_caption, upload_id, quality, filter_type)
 }
 
 // NewUploadID return unix nano time
@@ -973,8 +984,8 @@ func (insta *Instagram) ChangePassword(newpassword string) ([]byte, error) {
 	return bytes, err
 }
 
-func (insta *Instagram) Timeline(maxID string) ([]byte, error) {
-	return insta.sendRequest(&reqOptions{
+func (insta *Instagram) Timeline(maxID string) (r response.FeedsResponse, err error) {
+	data, err := insta.sendRequest(&reqOptions{
 		Endpoint: "feed/timeline/",
 		Query: map[string]string{
 			"max_id":         maxID,
@@ -982,6 +993,20 @@ func (insta *Instagram) Timeline(maxID string) ([]byte, error) {
 			"ranked_content": "true",
 		},
 	})
+	if err == nil {
+		err = json.Unmarshal(data, &r)
+	}
+
+	return
+}
+
+// getImageDimensionFromReader return image dimension , types is .jpg and .png
+func getImageDimensionFromReader(rdr io.Reader) (int, int, error) {
+	image, _, err := image.DecodeConfig(rdr)
+	if err != nil {
+		return 0, 0, err
+	}
+	return image.Width, image.Height, nil
 }
 
 // getImageDimension return image dimension , types is .jpg and .png
@@ -992,11 +1017,7 @@ func getImageDimension(imagePath string) (int, int, error) {
 	}
 	defer file.Close()
 
-	image, _, err := image.DecodeConfig(file)
-	if err != nil {
-		return 0, 0, err
-	}
-	return image.Width, image.Height, nil
+	return getImageDimensionFromReader(file)
 }
 
 func (insta *Instagram) SelfUserFollowers(maxID string) (response.UsersResponse, error) {
