@@ -214,49 +214,7 @@ func TestUnFollow(t *testing.T) {
 	t.Log("ok")
 }
 
-func TestLike(t *testing.T) {
-	if skip {
-		t.Skip("Empty username or password , Skipping ...")
-	}
-
-	_, err := insta.Like("1363799876794028707") // random image ! from search by tags on pizza
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
-	time.Sleep(3 * time.Second)
-	t.Log("Finished")
-}
-
-func TestUnLike(t *testing.T) {
-	if skip {
-		t.Skip("Empty username or password , Skipping ...")
-	}
-
-	_, err := insta.UnLike("1363799876794028707") // random image ! from search by tags on pizza
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
-	time.Sleep(3 * time.Second)
-	t.Log("Finished")
-}
-
-func TestMediaInfo(t *testing.T) {
-	if skip {
-		t.Skip("Empty username or password , Skipping ...")
-	}
-
-	_, err := insta.MediaInfo("1363799876794028707") // random image ! from search by tags on pizza
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
-	time.Sleep(3 * time.Second)
-	t.Log("ok")
-}
-
-func TestTagFeed(t *testing.T) {
+func TestFullLikeCommentOptions(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
@@ -268,6 +226,72 @@ func TestTagFeed(t *testing.T) {
 	}
 	time.Sleep(3 * time.Second)
 	t.Log("status : ok -> length : ", len(resp.Items))
+
+	for _, item := range resp.Items {
+		id := item.ID
+
+		_, err := insta.Like(id)
+		if err != nil {
+			t.Fatal(err)
+			return
+		}
+		time.Sleep(3 * time.Second)
+		t.Log("[LIKE] Finished")
+
+		_, err = insta.UnLike(id)
+		if err != nil {
+			t.Fatal(err)
+			return
+		}
+		time.Sleep(3 * time.Second)
+		t.Log("[UNLIKE] Finished")
+
+		_, err = insta.MediaInfo(id)
+		if err != nil {
+			t.Fatal(err)
+			return
+		}
+		time.Sleep(3 * time.Second)
+		t.Log("[MEDIAINFO] Finished")
+
+		bytes, err := insta.Comment(id, "Wow <3 pizza !")
+		if err != nil {
+			t.Fatal(err)
+			return
+		}
+
+		t.Log("[COMMENT] Finished")
+
+		type Comment struct {
+			ID int64 `json:"pk"`
+		}
+
+		var Result struct {
+			Comment Comment `json:"comment"`
+			Status  string  `json:"status"`
+		}
+
+		err = json.Unmarshal(bytes, &Result)
+		if err != nil {
+			t.Fatal(err)
+			return
+		}
+
+		if Result.Status != "ok" {
+			t.Fatal("Incorrect format for comment")
+			return
+		}
+
+		bytes, err = insta.DeleteComment(id, strconv.FormatInt(Result.Comment.ID, 10))
+		if err != nil {
+			t.Fatal(err)
+			return
+		}
+		time.Sleep(3 * time.Second)
+		t.Log("[DELETE] Finished")
+
+		break
+	}
 }
 
 func TestSearchLocation(t *testing.T) {
@@ -287,7 +311,6 @@ func TestSearchLocation(t *testing.T) {
 }
 
 func TestGetLocationFeed(t *testing.T) {
-
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
@@ -320,48 +343,6 @@ func TestTagRelated(t *testing.T) {
 
 	for i, tag := range tags.Related {
 		t.Logf("%d: name=%s", i, tag.Name)
-	}
-	time.Sleep(3 * time.Second)
-	t.Log("Finished")
-}
-
-func TestCommentAndDeleteComment(t *testing.T) {
-	if skip {
-		t.Skip("Empty username or password , Skipping ...")
-	}
-
-	bytes, err := insta.Comment("1363799876794028707", "Wow <3 pizza !") // random image ! from search by tags on pizza
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
-
-	t.Log("Finished")
-
-	type Comment struct {
-		ID int64 `json:"pk"`
-	}
-
-	var Result struct {
-		Comment Comment `json:"comment"`
-		Status  string  `json:"status"`
-	}
-
-	err = json.Unmarshal(bytes, &Result)
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
-
-	if Result.Status != "ok" {
-		t.Fatal("Incorrect format for comment")
-		return
-	}
-
-	bytes, err = insta.DeleteComment("1363799876794028707", strconv.FormatInt(Result.Comment.ID, 10))
-	if err != nil {
-		t.Fatal(err)
-		return
 	}
 	time.Sleep(3 * time.Second)
 	t.Log("Finished")
@@ -410,7 +391,7 @@ func TestGetUserByUsername(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	resp, err := insta.GetUserByUsername("ahmd.rz")
+	resp, err := insta.GetUserByUsername("aidenzibaei")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -678,7 +659,7 @@ func TestUnBlock(t *testing.T) {
 	t.Log("status : ok")
 }
 
-var directThreadId string = ""
+var directThreadID string
 
 func TestGetDirectPendingRequests(t *testing.T) {
 	if skip {
@@ -695,7 +676,7 @@ func TestGetDirectPendingRequests(t *testing.T) {
 
 	// store threadID for other test
 	if len(direct.Inbox.Threads) > 0 {
-		directThreadId = direct.Inbox.Threads[0].ThreadID
+		directThreadID = direct.Inbox.Threads[0].ThreadID
 	}
 }
 
@@ -704,10 +685,10 @@ func TestGetDirectThread(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	if directThreadId == "" {
+	if directThreadID == "" {
 		t.Skip("Empty Direct ThreadID")
 	}
-	_, err := insta.GetDirectThread(directThreadId)
+	_, err := insta.GetDirectThread(directThreadID)
 	if err != nil {
 		t.Fatal(err)
 		return
@@ -721,10 +702,10 @@ func TestGetDirectThreadMediaShare(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	if directThreadId == "" {
+	if directThreadID == "" {
 		t.Skip("Empty Direct ThreadID")
 	}
-	thread, err := insta.GetDirectThread(directThreadId)
+	thread, err := insta.GetDirectThread(directThreadID)
 	if err != nil {
 		t.Fatal(err)
 		return
@@ -794,20 +775,6 @@ func TestGetUserStories(t *testing.T) {
 	time.Sleep(3 * time.Second)
 	t.Log("status : ok")
 }
-
-// func TestMegaphoneLog(t *testing.T) {
-// 	if skip {
-// 		t.Skip("Empty username or password , Skipping ...")
-// 	}
-// 	err := insta.MegaphoneLog()
-// 	if err != nil {
-// 		t.Fatal(err)
-// 		return
-// 	}
-// 	time.Sleep(3 * time.Second)
-// 	t.Log("status : ok")
-// }
-
 func TestLogout(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
