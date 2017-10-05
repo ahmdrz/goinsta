@@ -19,7 +19,7 @@ import (
 
 	"net/http/cookiejar"
 
-	"github.com/ahmdrz/goinsta/response"
+	"github.com/themester/goinsta/response"
 )
 
 // GetSessions return current instagram session and cookies
@@ -1196,13 +1196,13 @@ func (insta *Instagram) GetReelsTrayFeed() (response.TrayResponse, error) {
 }
 
 // GetUserStories - Get all available Instagram stories for the given user id
-func (insta *Instagram) GetUserStories(userID int64) (response.TrayUserResponse, error) {
-	result := response.TrayUserResponse{}
+func (insta *Instagram) GetUserStories(userID int64) (response.StoryResponse, error) {
+	result := response.StoryResponse{}
 	if userID == 0 {
 		return result, nil
 	}
 
-	bytes, err := insta.sendSimpleRequest("feed/user/%d/reel_media/", userID)
+	bytes, err := insta.sendSimpleRequest("feed/user/%d/story/", userID)
 	if err != nil {
 		return result, err
 	}
