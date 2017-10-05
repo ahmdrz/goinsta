@@ -19,7 +19,7 @@ import (
 
 	"net/http/cookiejar"
 
-	"github.com/ahmdrz/goinsta/response"
+	"github.com/themester/goinsta/response"
 )
 
 // GetSessions return current instagram session and cookies
