@@ -56,3 +56,5 @@ This code is in no way affiliated with, authorized, maintained, sponsored or end
 ## Donate
 
 Bitcoin : `1KjcfrBPJtM4MfBSGTqpC6RcoEW1KBh15X`
+
+[![Analytics](https://ga-beacon.appspot.com/UA-107698067-1/readme-page)](https://github.com/igrigorik/ga-beacon)
