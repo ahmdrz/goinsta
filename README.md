@@ -40,7 +40,7 @@ func main() {
 }
 ```
 
-* [**More Examples**](https://github.com/ahmdrz/goinsta/master/examples)
+* [**More Examples**](https://github.com/ahmdrz/goinsta/tree/master/examples)
 
 ## Legal
 
