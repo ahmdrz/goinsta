@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/url"
 	"strings"
+	"uuid"
 )
 
 func generateMD5Hash(text string) string {
@@ -29,14 +30,14 @@ func generateDeviceID(seed string) string {
 }
 
 func generateUUID(replace bool) string {
-	uuid, err := newUUID()
+	tempUUID, err := uuid.NewUUID()
 	if err != nil {
 		return "cb479ee7-a50d-49e7-8b7b-60cc1a105e22" // default value when error occurred
 	}
 	if replace {
-		return strings.Replace(uuid, "-", "", -1)
+		return strings.Replace(tempUUID, "-", "", -1)
 	}
-	return uuid
+	return tempUUID
 }
 
 func generateSignature(data string) string {

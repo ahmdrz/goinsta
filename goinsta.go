@@ -12,32 +12,31 @@ import (
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
+	"net/http/cookiejar"
 	"net/url"
 	"os"
 	"strconv"
 	"time"
 
-	"net/http/cookiejar"
-
-	"github.com/ahmdrz/goinsta/response"
+	"response"
 )
 
 // GetSessions return current instagram session and cookies
 // Maybe need for webpages that use this API
 func (insta *Instagram) GetSessions(url *url.URL) []*http.Cookie {
-	return insta.cookiejar.Cookies(url)
+	return insta.Cookiejar.Cookies(url)
 }
 
 // SetCookies can enable us to set cookie, it'll be help for webpage that use this API without Login-again.
 func (insta *Instagram) SetCookies(url *url.URL, cookies []*http.Cookie) error {
-	if insta.cookiejar == nil {
+	if insta.Cookiejar == nil {
 		var err error
-		insta.cookiejar, err = cookiejar.New(nil) //newJar()
+		insta.Cookiejar, err = cookiejar.New(nil) //newJar()
 		if err != nil {
 			return err
 		}
 	}
-	insta.cookiejar.SetCookies(url, cookies)
+	insta.Cookiejar.SetCookies(url, cookies)
 	return nil
 }
 
@@ -130,7 +129,7 @@ func New(username, password string) *Instagram {
 // Login to Instagram.
 // return error if can't send request to instagram server
 func (insta *Instagram) Login() error {
-	insta.cookiejar, _ = cookiejar.New(nil) //newJar()
+	insta.Cookiejar, _ = cookiejar.New(nil) //newJar()
 
 	body, err := insta.sendRequest(&reqOptions{
 		Endpoint:   "si/fetch_headers/",
@@ -194,7 +193,7 @@ func (insta *Instagram) Login() error {
 // Logout of Instagram
 func (insta *Instagram) Logout() error {
 	_, err := insta.sendSimpleRequest("accounts/logout/")
-	insta.cookiejar = nil
+	insta.Cookiejar = nil
 	return err
 }
 
@@ -653,7 +652,7 @@ func (insta *Instagram) UploadPhotoFromReader(photo io.Reader, photo_caption str
 	req.Header.Set("User-Agent", GOINSTA_USER_AGENT)
 
 	client := &http.Client{
-		Jar: insta.cookiejar,
+		Jar: insta.Cookiejar,
 	}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -1163,7 +1162,7 @@ func (insta *Instagram) DirectMessage(recipient string, message string) (respons
 	req.Header.Set("User-Agent", GOINSTA_USER_AGENT)
 
 	client := &http.Client{
-		Jar: insta.cookiejar,
+		Jar: insta.Cookiejar,
 	}
 
 	resp, err := client.Do(req)

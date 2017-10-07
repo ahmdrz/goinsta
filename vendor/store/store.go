@@ -1,4 +1,4 @@
-package goinsta
+package store
 
 import (
 	"bytes"
@@ -12,8 +12,11 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
+
+	"github.com/ahmdrz/goinsta"
 )
 
+// Secret is main struct for strore functions
 type Secret struct {
 	c cipher.Block
 }
@@ -55,7 +58,8 @@ func (s *Secret) decryptAES(ciphertext []byte) ([]byte, error) {
 	return gcm.Open(nil, nonce, ciphertext, nil)
 }
 
-func Import(input, key []byte) (*Instagram, error) {
+// Import goinsta.Instagram
+func Import(input, key []byte) (*goinsta.Instagram, error) {
 	_bytes, err := base64.StdEncoding.DecodeString(string(input))
 	if err != nil {
 		return nil, err
@@ -68,13 +72,13 @@ func Import(input, key []byte) (*Instagram, error) {
 	if err != nil {
 		return nil, err
 	}
-	backupType := BackupType{}
+	backupType := goinsta.BackupType{}
 	writer := bytes.NewBuffer(_bytes)
 	decoder := gob.NewDecoder(writer)
 	decoder.Decode(&backupType)
 
 	_cookiejar, _ := cookiejar.New(nil)
-	u, _ := url.Parse(GOINSTA_API_URL)
+	u, _ := url.Parse(goinsta.GOINSTA_API_URL)
 
 	tmp := make([]*http.Cookie, 0)
 	for i := range backupType.Cookies {
@@ -82,20 +86,21 @@ func Import(input, key []byte) (*Instagram, error) {
 	}
 	_cookiejar.SetCookies(u, tmp)
 
-	insta := &Instagram{}
+	insta := &goinsta.Instagram{}
 	insta.InstaType = backupType.InstaType
-	insta.cookiejar = _cookiejar
+	insta.Cookiejar = _cookiejar
 
 	return insta, nil
 }
 
-func (insta *Instagram) Export(key []byte) ([]byte, error) {
-	backupType := BackupType{}
+// Export goinsta.Instgram
+func Export(insta *goinsta.Instagram, key []byte) ([]byte, error) {
+	backupType := goinsta.BackupType{}
 	backupType.InstaType = insta.InstaType
 	backupType.Cookies = make([]http.Cookie, 0)
 
-	u, _ := url.Parse(GOINSTA_API_URL)
-	for _, value := range insta.cookiejar.Cookies(u) {
+	u, _ := url.Parse(goinsta.GOINSTA_API_URL)
+	for _, value := range insta.Cookiejar.Cookies(u) {
 		backupType.Cookies = append(backupType.Cookies, *value)
 	}
 

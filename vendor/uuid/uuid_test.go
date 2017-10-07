@@ -1,4 +1,4 @@
-package goinsta
+package uuid
 
 import (
 	"regexp"
@@ -6,7 +6,7 @@ import (
 )
 
 func TestUUID(t *testing.T) {
-	uuid, err := newUUID()
+	uuid, err := NewUUID()
 	if err != nil {
 		t.Fatal(err)
 	}

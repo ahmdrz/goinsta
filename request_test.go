@@ -8,6 +8,9 @@ import (
 func TestRequest(t *testing.T) {
 	username := os.Getenv("INSTA_USERNAME")
 	password := os.Getenv("INSTA_PASSWORD")
+	if len(username)*len(password) == 0 {
+		t.Skip("Empty username or password , Skipping ...")
+	}
 	insta := New(username, password)
 	err := insta.Login()
 	if err != nil {

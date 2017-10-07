@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 
-	response "github.com/ahmdrz/goinsta/response"
+	response "response"
 )
 
 type Informations struct {
@@ -18,7 +18,7 @@ type Informations struct {
 }
 
 type Instagram struct {
-	cookiejar *cookiejar.Jar
+	Cookiejar *cookiejar.Jar
 	InstaType
 }
 

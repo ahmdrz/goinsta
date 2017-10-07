@@ -26,7 +26,7 @@ func TestHandlesNonExistingItems(t *testing.T) {
 
 	if len(username)*len(password) == 0 && !pullrequest {
 		skip = true
-		t.Fatal("Username or Password is empty")
+		t.Skip("Username or Password is empty")
 	}
 	skip = pullrequest
 }

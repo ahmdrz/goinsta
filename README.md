@@ -1,41 +1,15 @@
 # goinsta
+<p align="center"><img width=100% src="https://raw.github.com/ahmdrz/goinsta/master/resources/goinsta-image.png"></p>
 
 > Golang Instagram API , Unofficial Instagram API for Golang
 
 [![Build Status](https://travis-ci.org/ahmdrz/goinsta.svg?branch=master)](https://travis-ci.org/ahmdrz/goinsta) [![GoDoc](https://godoc.org/github.com/ahmdrz/goinsta?status.svg)](https://godoc.org/github.com/ahmdrz/goinsta) [![Go Report Card](https://goreportcard.com/badge/github.com/ahmdrz/goinsta)](https://goreportcard.com/report/github.com/ahmdrz/goinsta) [![Coverage Status](https://coveralls.io/repos/github/ahmdrz/goinsta/badge.svg?branch=master)](https://coveralls.io/github/ahmdrz/goinsta?branch=master)
 
-Unofficial Instagram API written in Golang
-
-## Legal
-
-[@mgp25](https://github.com/mgp25)
-This code is in no way affiliated with, authorized, maintained, sponsored or endorsed by Instagram or any of its affiliates or subsidiaries. This is an independent and unofficial API. Use at your own risk.
-
-**Very simple and no-dependency Instagram API**
-
-This library work like android version of instagram
-
-## Donate
-
-Make me happy :)
-
-Bitcoin : `1KjcfrBPJtM4MfBSGTqpC6RcoEW1KBh15X`
-
-***
-
 ## Installation 
 
 `go get -u -v github.com/ahmdrz/goinsta`
 
-## Methods 
-
-There is lot of methods , like uploadPhoto , follow , unfollow , comment , like and etc...
-
-This repository is a copy of [Instagram-API-Python](https://github.com/LevPasha/Instagram-API-python) , And original source is [Instagram-API](https://github.com/mgp25/Instagram-API)
-
-## How to use ?
-
-The example is very simple !
+## Example
 
 ```go
 package main
@@ -59,38 +33,9 @@ func main() {
 }
 ```
 
-## Export / Import with AES encryption
+## Legal
 
-```go
-package main
-
-import "github.com/ahmdrz/goinsta"
-
-func main() {
-	...
-
-	bytes, err := insta.Export([]byte("32Byte AES Key"))
-	if err != nil {
-		panic(err)
-	}
-	// save bytes to backup file
-
-	...
-
-	// read bytes from backup file
-	insta, err := goinsta.Import([]byte(bytes_from_file), []byte("32Byte AES Key"))
-	if err != nil {
-		panic(err)
-	}
-}
-```
-
-## Does `goinsta` support proxy servers ?
-Yes, you may create goinsta object using: 
-
-```go
-insta := goinsta.NewViaProxy("USERNAME", "PASSWORD", "http://<ip>:<port>")
-```
+This code is in no way affiliated with, authorized, maintained, sponsored or endorsed by Instagram or any of its affiliates or subsidiaries. This is an independent and unofficial API. Use at your own risk.
 
 
 ## Other programs , built with GoInsta
@@ -124,3 +69,7 @@ insta := goinsta.NewViaProxy("USERNAME", "PASSWORD", "http://<ip>:<port>")
 13. [@Albina-art](https://github.com/Albina-art)
 14. [@maniack](https://github.com/maniack)
 15. [@hadidimad](https://github.com/hadidimad)
+
+## Donate
+
+Bitcoin : `1KjcfrBPJtM4MfBSGTqpC6RcoEW1KBh15X`

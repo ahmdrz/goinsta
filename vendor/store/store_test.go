@@ -1,16 +1,18 @@
-package goinsta
+package store
 
 import (
 	"os"
 	"testing"
 	"time"
+
+	"github.com/ahmdrz/goinsta"
 )
 
 func TestExportImport(t *testing.T) {
 	username := os.Getenv("INSTA_USERNAME")
 	password := os.Getenv("INSTA_PASSWORD")
 	if len(username)*len(password) == 0 && os.Getenv("INSTA_PULL") != "true" {
-		t.Fatal("Username or Password is empty")
+		t.Skip("Username or Password is empty")
 	}
 
 	var key = []byte("RH1tCpR80AQ3WzXJ") //32byte key for AES
@@ -18,9 +20,9 @@ func TestExportImport(t *testing.T) {
 	var encoded_string string
 
 	{
-		insta := New(username, password)
+		insta := goinsta.New(username, password)
 		insta.Login()
-		bytes, err := insta.Export(key)
+		bytes, err := Export(insta, key)
 		if err != nil {
 			t.Fatal("Error on export")
 		}
