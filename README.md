@@ -1,4 +1,4 @@
-# Goinsta !
+# GoInsta !
 <p align="center"><img width=100% src="https://raw.github.com/ahmdrz/goinsta/master/resources/goinsta-image.png"></p>
 
 > Golang Instagram API , Unofficial Instagram API for Golang
@@ -44,38 +44,12 @@ func main() {
 
 This code is in no way affiliated with, authorized, maintained, sponsored or endorsed by Instagram or any of its affiliates or subsidiaries. This is an independent and unofficial API. Use at your own risk.
 
-
-## Other programs , built with GoInsta
-
-[follow-sync](https://github.com/kirsle/follow-sync) by [@kirsle](https://github.com/kirsle)
-
-[nick_bot](https://github.com/icholy/nick_bot) by [@icholy](https://github.com/icholy)
-
-[unsplash-to-instagram](https://github.com/nguyenvanduocit/unsplash-to-instagram) by [@nguyenvanduocit](https://github.com/nguyenvanduocit)
-
-[go-instabot](https://github.com/tducasse/go-instabot) by [@tducasse](https://github.com/tducasse)
-
-[gopostal](https://github.com/scisci/gopostal) by [@scisci](https://github.com/scisci)
-
-[go_toy](https://github.com/Rhadow/go_toy) by [@Rhadow](https://github.com/Rhadow)
-
 ## Contributors :heart:
 
-1. [@sourcesoft](https://github.com/sourcesoft)
-2. [@GhostRussia](https://github.com/GhostRussia)
-3. [@icholy](https://github.com/icholy)
-4. [@rakd](https://github.com/rakd)
-5. [@kemics](https://github.com/kemics)
-6. [@sklinkert](https://github.com/sklinkert)
-7. [@vitaliikapliuk](https://github.com/vitaliikapliuk)
-8. [@glebtv](https://github.com/glebtv)
-9. [@neetkee](https://github.com/neetkee)
-10. [@daciwei](https://github.com/daciwei)
-11. [@aaronarduino](https://github.com/aaronarduino)
-12. [@tggo](https://github.com/tggo)
-13. [@Albina-art](https://github.com/Albina-art)
-14. [@maniack](https://github.com/maniack)
-15. [@hadidimad](https://github.com/hadidimad)
+| [<img src="https://avatars0.githubusercontent.com/u/12181586?v=4&s=460" width="100px;"/><br /><sub>GhostRussia</sub>](https://github.com/GhostRussia) | [<img src="https://avatars3.githubusercontent.com/u/608906?v=4&s=460" width="100px;"/><br /><sub>sourcesoft</sub>](https://github.com/sourcesoft) | [<img src="https://avatars1.githubusercontent.com/u/943597?v=4&s=460" width="100px;"/><br /><sub>icholy</sub>](https://github.com/icholy) | [<img src="https://avatars3.githubusercontent.com/u/377909?v=4&s=460" width="100px;"/><br /><sub>rakd</sub>](https://github.com/rakd) | [<img src="https://avatars1.githubusercontent.com/u/14817537?v=4&s=460" width="100px;"/><br /><sub>kemics</sub>](https://github.com/kemics) | [<img src="https://avatars0.githubusercontent.com/u/4770842?v=4&s=460" width="100px;"/><br /><sub>sklinkert</sub>](https://github.com/sklinkert) | [<img src="https://avatars1.githubusercontent.com/u/3836912?v=4&s=460" width="100px;"/><br /><sub>vitaliikapliuk</sub>](https://github.com/vitaliikapliuk) |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| [<img src="https://avatars0.githubusercontent.com/u/1041407?v=4&s=460" width="100px;"/><br /><sub>glebtv</sub>](https://github.com/glebtv) | [<img src="https://avatars1.githubusercontent.com/u/7801927?v=4&s=460" width="100px;"/><br /><sub>neetkee</sub>](https://github.com/neetkee) | [<img src="https://avatars1.githubusercontent.com/u/13871989?v=4&s=460" width="100px;"/><br /><sub>daciwei</sub>](https://github.com/daciwei) | [<img src="https://avatars0.githubusercontent.com/u/321920?v=4&s=460" width="100px;"/><br /><sub>aaronarduino</sub>](https://github.com/aaronarduino) | [<img src="https://avatars3.githubusercontent.com/u/437741?v=4&s=460" width="100px;"/><br /><sub>tggo</sub>](https://github.com/tggo) | [<img src="https://avatars3.githubusercontent.com/u/10453357?v=4&s=460" width="100px;"/><br /><sub>Albina-art</sub>](https://github.com/Albina-art) | [<img src="https://avatars2.githubusercontent.com/u/7222512?v=4&s=460" width="100px;"/><br /><sub>maniack</sub>](https://github.com/maniack)<br />
+| [<img src="https://avatars2.githubusercontent.com/u/18503575?v=4&s=460" width="100px;"/><br /><sub>hadidimad</sub>](https://github.com/hadidimad) | [<img src="https://avatars2.githubusercontent.com/u/10146748?v=4&s=460" width="100px;"/><br /><sub>themester</sub>](https://github.com/themester) |
 
 ## Donate
 
