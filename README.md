@@ -1,9 +1,16 @@
-# goinsta
+# Goinsta !
 <p align="center"><img width=100% src="https://raw.github.com/ahmdrz/goinsta/master/resources/goinsta-image.png"></p>
 
 > Golang Instagram API , Unofficial Instagram API for Golang
 
 [![Build Status](https://travis-ci.org/ahmdrz/goinsta.svg?branch=master)](https://travis-ci.org/ahmdrz/goinsta) [![GoDoc](https://godoc.org/github.com/ahmdrz/goinsta?status.svg)](https://godoc.org/github.com/ahmdrz/goinsta) [![Go Report Card](https://goreportcard.com/badge/github.com/ahmdrz/goinsta)](https://goreportcard.com/report/github.com/ahmdrz/goinsta) [![Coverage Status](https://coveralls.io/repos/github/ahmdrz/goinsta/badge.svg?branch=master)](https://coveralls.io/github/ahmdrz/goinsta?branch=master)
+
+## Features
+
+* **Like Instagram mobile application**. Goinsta is very similar to Instagram official application.
+* **Simple**. Goinsta made by lazy programmer !
+* **Backup methods**. You can use `store` package to export/import `goinsta.Instagram` struct.
+* **No Dependency**. Goinsta will not use any unofficial Golang packages.
 
 ## Installation 
 
