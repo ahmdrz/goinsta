@@ -8,7 +8,12 @@ import (
 	"fmt"
 	"net/url"
 	"strings"
-	"uuid"
+
+	"github.com/ahmdrz/goinsta/uuid"
+)
+
+const (
+	volatileSeed = "12345"
 )
 
 func generateMD5Hash(text string) string {
@@ -24,8 +29,7 @@ func generateHMAC(text, key string) string {
 }
 
 func generateDeviceID(seed string) string {
-	volatile_seed := "12345"
-	hash := generateMD5Hash(seed + volatile_seed)
+	hash := generateMD5Hash(seed + volatileSeed)
 	return "android-" + hash[:16]
 }
 
