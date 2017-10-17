@@ -8,9 +8,9 @@
 ## Features
 
 * **Like Instagram mobile application**. Goinsta is very similar to Instagram official application.
-* **Simple**. Goinsta made by lazy programmer !
+* **Simple**. Goinsta is made by a lazy programmer!
 * **Backup methods**. You can use `store` package to export/import `goinsta.Instagram` struct.
-* **No Dependency**. Goinsta will not use any unofficial Golang packages.
+* **No External Dependencies**. Goinsta will not use any Go packages outside of the standard library.
 
 ## Installation 
 
@@ -40,7 +40,7 @@ func main() {
 }
 ```
 
-* [**More Examples**](https://github.com/ahmdrz/goinsta/tree/master/examples)
+* [**More Examples**](https://github.com/ahmdrz/goinsta/tree/master/_examples)
 
 ## Legal
 
