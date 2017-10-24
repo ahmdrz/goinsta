@@ -67,8 +67,8 @@ func (insta *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 	client := &http.Client{
 		Jar: insta.Cookiejar,
 	}
-	if insta.proxy != "" {
-		proxy, err := url.Parse(insta.proxy)
+	if insta.Proxy != "" {
+		proxy, err := url.Parse(insta.Proxy)
 		if err != nil {
 			return body, err
 		}
