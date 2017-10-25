@@ -27,7 +27,7 @@ type InstaType struct {
 	Informations Informations
 	LoggedInUser response.User
 
-	proxy string
+	Proxy string
 }
 
 type BackupType struct {
