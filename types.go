@@ -20,6 +20,7 @@ type Informations struct {
 type Instagram struct {
 	Cookiejar *cookiejar.Jar
 	InstaType
+	Transport http.Transport
 }
 
 type InstaType struct {
