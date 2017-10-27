@@ -838,6 +838,34 @@ func (insta *Instagram) UnLike(mediaID string) ([]byte, error) {
 	})
 }
 
+func (insta *Instagram) DisableComments(mediaID string) ([]byte, error) {
+	data, err := insta.prepareData(map[string]interface{}{
+		"media_id": mediaID,
+	})
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return insta.sendRequest(&reqOptions{
+		Endpoint: fmt.Sprintf("media/%s/disable_comments/", mediaID),
+		PostData: generateSignature(data),
+	})
+}
+
+func (insta *Instagram) EnableComments(mediaID string) ([]byte, error) {
+	data, err := insta.prepareData(map[string]interface{}{
+		"media_id": mediaID,
+	})
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return insta.sendRequest(&reqOptions{
+		Endpoint: fmt.Sprintf("media/%s/enable_comments/", mediaID),
+		PostData: generateSignature(data),
+	})
+}
+
 func (insta *Instagram) EditMedia(mediaID string, caption string) ([]byte, error) {
 	data, err := insta.prepareData(map[string]interface{}{
 		"caption_text": caption,
