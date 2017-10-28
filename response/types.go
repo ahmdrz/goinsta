@@ -1070,6 +1070,13 @@ type StoryResponse struct {
 			TotalViewerCount     int           `json:"total_viewer_count"`
 			MultiAuthorReelNames []interface{} `json:"multi_author_reel_names"`
 			StoryPollVoterInfos  []interface{} `json:"story_poll_voter_infos"`
+			VideoDuration float64 `json:"video_duration"`
+			VideoVersions []struct {
+				Height int    `json:"height"`
+				Type   int    `json:"type"`
+				URL    string `json:"url"`
+				Width  int    `json:"width"`
+			} `json:"video_versions"`
 		} `json:"items"`
 		PrefetchCount   int `json:"prefetch_count"`
 		HasBestiesMedia int `json:"has_besties_media"`
