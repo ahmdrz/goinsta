@@ -820,11 +820,7 @@ type TrayResponse struct {
 			ClientCacheKey  string `json:"client_cache_key"`
 			FilterType      int    `json:"filter_type"`
 			ImageVersions2  struct {
-				Candidates []struct {
-					URL    string `json:"url"`
-					Width  int    `json:"width"`
-					Height int    `json:"height"`
-				} `json:"candidates"`
+				Candidates []ImageCandidate `json:"candidates"`
 			} `json:"image_versions2"`
 			OriginalWidth  int  `json:"original_width"`
 			OriginalHeight int  `json:"original_height"`
@@ -941,11 +937,7 @@ type TrayUserResponse struct {
 		ClientCacheKey  string `json:"client_cache_key"`
 		FilterType      int    `json:"filter_type"`
 		ImageVersions2  struct {
-			Candidates []struct {
-				URL    string `json:"url"`
-				Width  int    `json:"width"`
-				Height int    `json:"height"`
-			} `json:"candidates"`
+			Candidates []ImageCandidate `json:"candidates"`
 		} `json:"image_versions2"`
 		OriginalWidth  int  `json:"original_width"`
 		OriginalHeight int  `json:"original_height"`
@@ -1012,11 +1004,7 @@ type StoryResponse struct {
 			ClientCacheKey  string `json:"client_cache_key"`
 			FilterType      int    `json:"filter_type"`
 			ImageVersions2  struct {
-				Candidates []struct {
-					Width  int    `json:"width"`
-					Height int    `json:"height"`
-					URL    string `json:"url"`
-				} `json:"candidates"`
+				Candidates []ImageCandidate `json:"candidates"`
 			} `json:"image_versions2"`
 			OriginalWidth   int     `json:"original_width"`
 			OriginalHeight  int     `json:"original_height"`
@@ -1070,8 +1058,8 @@ type StoryResponse struct {
 			TotalViewerCount     int           `json:"total_viewer_count"`
 			MultiAuthorReelNames []interface{} `json:"multi_author_reel_names"`
 			StoryPollVoterInfos  []interface{} `json:"story_poll_voter_infos"`
-			VideoDuration float64 `json:"video_duration"`
-			VideoVersions []struct {
+			VideoDuration        float64       `json:"video_duration"`
+			VideoVersions        []struct {
 				Height int    `json:"height"`
 				Type   int    `json:"type"`
 				URL    string `json:"url"`
