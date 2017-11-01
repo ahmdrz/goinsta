@@ -1097,10 +1097,12 @@ type RecentActivityResponse struct {
 	//"new_stories": [],
 	OldStories []struct {
 		Args struct {
+			Actions      []string `json:"actions,omitempty"`
+			CommentID    int64    `json:"comment_id,omitempty"`
+			CommentIDs   []int64  `json:"comment_ids,omitempty"`
 			InlineFollow struct {
-				Following       bool  `json:"following,omitempty"`
-				CommentID       int64 `json:"comment_id,omitempty"`
-				OutgoingRequest bool  `json:"outgoing_request,omitempty"`
+				Following       bool `json:"following,omitempty"`
+				OutgoingRequest bool `json:"outgoing_request,omitempty"`
 				UserInfo        struct {
 					ID            int64  `json:"id,omitempty"`
 					IsPrivate     bool   `json:"is_private,omitempty"`
