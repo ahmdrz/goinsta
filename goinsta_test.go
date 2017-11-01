@@ -26,7 +26,7 @@ func TestHandlesNonExistingItems(t *testing.T) {
 
 	if len(username)*len(password) == 0 && !pullrequest {
 		skip = true
-		t.Fatal("Username or Password is empty")
+		t.Skip("Username or Password is empty")
 	}
 	skip = pullrequest
 }
@@ -56,7 +56,7 @@ func TestUserFollowings(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
-	_, err := insta.UserFollowing(insta.Informations.UsernameId, "")
+	_, err := insta.UserFollowing(insta.LoggedInUser.ID, "")
 	if err != nil {
 		t.Fatal(err)
 		return
@@ -69,7 +69,7 @@ func TestUserFollowers(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
-	_, err := insta.UserFollowers(insta.Informations.UsernameId, "")
+	_, err := insta.UserFollowers(insta.LoggedInUser.ID, "")
 	if err != nil {
 		t.Fatal(err)
 		return
@@ -82,7 +82,7 @@ func TestSelfUserFeed(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
-	_, err := insta.UserFeed()
+	_, err := insta.LatestFeed()
 	if err != nil {
 		t.Fatal(err)
 		return
@@ -97,7 +97,7 @@ func TestSelfUserFeedWithoutRelogin(t *testing.T) {
 	}
 
 	insta2 := New(username, password)
-	_, err := insta2.UserFeed()
+	_, err := insta2.LatestFeed()
 	if err == nil {
 		t.Fatal("there is no error, but it must be error cuz no login.")
 		return
@@ -108,7 +108,6 @@ func TestSelfUserFeedWithoutRelogin(t *testing.T) {
 
 	insta2.IsLoggedIn = true
 	insta2.SetCookies(u, cookies)
-	insta2.Informations.UsernameId = insta.Informations.UsernameId
 
 	insta2.Informations.DeviceID = insta.Informations.DeviceID
 	insta2.Informations.UUID = insta.Informations.UUID
@@ -116,7 +115,7 @@ func TestSelfUserFeedWithoutRelogin(t *testing.T) {
 	insta2.Informations.RankToken = insta.Informations.RankToken
 	//insta2.LoggedInUser = insta.LoggedInUser
 
-	resp2, err := insta2.UserFeed()
+	resp2, err := insta2.LatestFeed()
 	for _, item := range resp2.Items {
 		t.Log(item.Code)
 	}
@@ -133,7 +132,7 @@ func TestMediaLikers(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
-	resp, err := insta.UserFeed()
+	resp, err := insta.LatestFeed()
 	if err != nil {
 		t.Fatal(err)
 		return
@@ -152,18 +151,41 @@ func TestMediaLikers(t *testing.T) {
 	time.Sleep(3 * time.Second)
 }
 
-func TestFollow(t *testing.T) {
+func TestMediaComments(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
-
-	user, err := insta.GetUsername("elonmusk")
+	resp, err := insta.LatestFeed()
 	if err != nil {
 		t.Fatal(err)
 		return
 	}
 
-	_, err = insta.Follow(strconv.Itoa(user.User.Pk))
+	if len(resp.Items) > 0 {
+		result, err := insta.MediaComments(resp.Items[0].ID, "")
+		if err != nil {
+			t.Fatal(err)
+			return
+		}
+		t.Log(result.Status)
+	} else {
+		t.Skip("Empty feed")
+	}
+	time.Sleep(3 * time.Second)
+}
+
+func TestFollow(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	user, err := insta.GetUserByUsername("elonmusk")
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	_, err = insta.Follow(user.User.ID)
 	if err != nil {
 		t.Fatal(err)
 		return
@@ -177,41 +199,13 @@ func TestUnFollow(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	user, err := insta.GetUsername("elonmusk")
+	user, err := insta.GetUserByUsername("elonmusk")
 	if err != nil {
 		t.Fatal(err)
 		return
 	}
 
-	_, err = insta.UnFollow(strconv.Itoa(user.User.Pk))
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
-	time.Sleep(3 * time.Second)
-	t.Log("ok")
-}
-
-func TestLike(t *testing.T) {
-	if skip {
-		t.Skip("Empty username or password , Skipping ...")
-	}
-
-	_, err := insta.Like("1363799876794028707") // random image ! from search by tags on pizza
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
-	time.Sleep(3 * time.Second)
-	t.Log("Finished")
-}
-
-func TestMediaInfo(t *testing.T) {
-	if skip {
-		t.Skip("Empty username or password , Skipping ...")
-	}
-
-	_, err := insta.MediaInfo("1363799876794028707") // random image ! from search by tags on pizza
+	_, err = insta.UnFollow(user.User.ID)
 	if err != nil {
 		t.Fatal(err)
 		return
@@ -220,7 +214,7 @@ func TestMediaInfo(t *testing.T) {
 	t.Log("ok")
 }
 
-func TestTagFeed(t *testing.T) {
+func TestFullLikeCommentOptions(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
@@ -232,6 +226,72 @@ func TestTagFeed(t *testing.T) {
 	}
 	time.Sleep(3 * time.Second)
 	t.Log("status : ok -> length : ", len(resp.Items))
+
+	for _, item := range resp.Items {
+		id := item.ID
+
+		_, err := insta.Like(id)
+		if err != nil {
+			t.Fatal(err)
+			return
+		}
+		time.Sleep(3 * time.Second)
+		t.Log("[LIKE] Finished")
+
+		_, err = insta.UnLike(id)
+		if err != nil {
+			t.Fatal(err)
+			return
+		}
+		time.Sleep(3 * time.Second)
+		t.Log("[UNLIKE] Finished")
+
+		_, err = insta.MediaInfo(id)
+		if err != nil {
+			t.Fatal(err)
+			return
+		}
+		time.Sleep(3 * time.Second)
+		t.Log("[MEDIAINFO] Finished")
+
+		bytes, err := insta.Comment(id, "Wow <3 pizza !")
+		if err != nil {
+			t.Fatal(err)
+			return
+		}
+
+		t.Log("[COMMENT] Finished")
+
+		type Comment struct {
+			ID int64 `json:"pk"`
+		}
+
+		var Result struct {
+			Comment Comment `json:"comment"`
+			Status  string  `json:"status"`
+		}
+
+		err = json.Unmarshal(bytes, &Result)
+		if err != nil {
+			t.Fatal(err)
+			return
+		}
+
+		if Result.Status != "ok" {
+			t.Fatal("Incorrect format for comment")
+			return
+		}
+
+		bytes, err = insta.DeleteComment(id, strconv.FormatInt(Result.Comment.ID, 10))
+		if err != nil {
+			t.Fatal(err)
+			return
+		}
+		time.Sleep(3 * time.Second)
+		t.Log("[DELETE] Finished")
+
+		break
+	}
 }
 
 func TestSearchLocation(t *testing.T) {
@@ -251,7 +311,6 @@ func TestSearchLocation(t *testing.T) {
 }
 
 func TestGetLocationFeed(t *testing.T) {
-
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
@@ -289,54 +348,12 @@ func TestTagRelated(t *testing.T) {
 	t.Log("Finished")
 }
 
-func TestCommentAndDeleteComment(t *testing.T) {
+func TestGetUserByID(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	bytes, err := insta.Comment("1363799876794028707", "Wow <3 pizza !") // random image ! from search by tags on pizza
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
-
-	t.Log("Finished")
-
-	type Comment struct {
-		ID int64 `json:"pk"`
-	}
-
-	var Result struct {
-		Comment Comment `json:"comment"`
-		Status  string  `json:"status"`
-	}
-
-	err = json.Unmarshal(bytes, &Result)
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
-
-	if Result.Status != "ok" {
-		t.Fatal("Incorrect format for comment")
-		return
-	}
-
-	bytes, err = insta.DeleteComment("1363799876794028707", strconv.FormatInt(Result.Comment.ID, 10))
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
-	time.Sleep(3 * time.Second)
-	t.Log("Finished")
-}
-
-func TestGetUserID(t *testing.T) {
-	if skip {
-		t.Skip("Empty username or password , Skipping ...")
-	}
-
-	resp, err := insta.GetUserID("17644112") // ID of "elonmusk"
+	resp, err := insta.GetUserByID(17644112) // ID of "elonmusk"
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -352,12 +369,12 @@ func TestGetUserID(t *testing.T) {
 	t.Log("ok")
 }
 
-func TestGetUsername(t *testing.T) {
+func TestGetReelsTray(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	resp, err := insta.GetUsername("ahmd.rz")
+	resp, err := insta.GetReelsTrayFeed()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -366,7 +383,24 @@ func TestGetUsername(t *testing.T) {
 		t.Fatalf("Incorrect status" + resp.Status)
 	}
 
-	if resp.User.Username != "ahmd.rz" {
+	t.Log(resp.Status)
+}
+
+func TestGetUserByUsername(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	resp, err := insta.GetUserByUsername("aidenzibaei")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if resp.Status != "ok" {
+		t.Fatalf("Incorrect status" + resp.Status)
+	}
+
+	if resp.User.Username != "aidenzibaei" {
 		t.Fatalf("Incorrect username" + resp.User.Username)
 	}
 	time.Sleep(3 * time.Second)
@@ -413,12 +447,12 @@ func TestSearchUsername(t *testing.T) {
 	t.Log("Finished")
 }
 
-func TestFirstUserFeed(t *testing.T) {
+func TestLatestUserFeed(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	_, err := insta.FirstUserFeed("25025320")
+	_, err := insta.LatestUserFeed(17644112) // ID from elonmusk
 	if err != nil {
 		t.Fatal(err)
 		return
@@ -432,7 +466,7 @@ func TestUserFeedWithMaxID(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	_, err := insta.UserFeed("25025320")
+	_, err := insta.UserFeed(17644112, "25025320", "") // ID from elonmusk
 	if err != nil {
 		t.Fatal(err)
 		return
@@ -446,26 +480,12 @@ func TestUserFeedWithMaxIDAndTimestamp(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	_, err := insta.UserFeed("25025320", "25025320")
+	_, err := insta.UserFeed(17644112, "25025320", "25025320") // ID from elonmusk
 	if err != nil {
 		t.Fatal(err)
 		return
 	}
 
-	t.Log("Finished")
-}
-
-func TestUserFeedWithToManyArgs(t *testing.T) {
-	if skip {
-		t.Skip("Empty username or password , Skipping ...")
-	}
-
-	_, err := insta.UserFeed("", "", "", "")
-	if err == nil {
-		t.Fatal(err)
-		return
-	}
-	time.Sleep(3 * time.Second)
 	t.Log("Finished")
 }
 
@@ -514,7 +534,7 @@ func TestUserFriendShip(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	resp, err := insta.UserFriendShip(insta.Informations.UsernameId)
+	resp, err := insta.UserFriendShip(insta.LoggedInUser.ID)
 	if err != nil {
 		t.Fatal(err)
 		return
@@ -543,6 +563,7 @@ func TestGetPopularFeed(t *testing.T) {
 		t.Fatal(resp.Status)
 		return
 	}
+
 	time.Sleep(3 * time.Second)
 	t.Log("status : ok")
 }
@@ -575,11 +596,47 @@ func TestAutoCompleteUserList(t *testing.T) {
 	t.Log("status : ok")
 }
 
-func TestMegaphoneLog(t *testing.T) {
+func TestSetPublicAndUnPublicAccount(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
 	}
-	err := insta.MegaphoneLog()
+	// check account status
+	if insta.LoggedInUser.IsPrivate {
+		helperSetPublicAccount(t)
+		helperSetPrivateAccount(t)
+	} else {
+		helperSetPrivateAccount(t)
+		helperSetPublicAccount(t)
+	}
+
+}
+
+func helperSetPublicAccount(t *testing.T) {
+	_, err := insta.SetPublicAccount()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	time.Sleep(10 * time.Second)
+	t.Log("status : ok")
+}
+
+func helperSetPrivateAccount(t *testing.T) {
+	_, err := insta.SetPrivateAccount()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	time.Sleep(10 * time.Second)
+	t.Log("status : ok")
+}
+
+func TestBlock(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	_, err := insta.Block(17644112) // ID of "elonmusk"
 	if err != nil {
 		t.Fatal(err)
 		return
@@ -588,6 +645,136 @@ func TestMegaphoneLog(t *testing.T) {
 	t.Log("status : ok")
 }
 
+func TestUnBlock(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	_, err := insta.UnBlock(17644112) // ID of "elonmusk"
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	time.Sleep(3 * time.Second)
+	t.Log("status : ok")
+}
+
+var directThreadID string
+
+func TestGetDirectPendingRequests(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	direct, err := insta.GetDirectPendingRequests()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	time.Sleep(3 * time.Second)
+	t.Log("status : ok")
+
+	// store threadID for other test
+	if len(direct.Inbox.Threads) > 0 {
+		directThreadID = direct.Inbox.Threads[0].ThreadID
+	}
+}
+
+func TestGetDirectThread(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	if directThreadID == "" {
+		t.Skip("Empty Direct ThreadID")
+	}
+	_, err := insta.GetDirectThread(directThreadID)
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	time.Sleep(3 * time.Second)
+	t.Log("status : ok")
+}
+
+func TestGetDirectThreadMediaShare(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	if directThreadID == "" {
+		t.Skip("Empty Direct ThreadID")
+	}
+	thread, err := insta.GetDirectThread(directThreadID)
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	for _, item := range thread.Thread.Items {
+		t.Log(item.MediaShare.TakenAt)
+	}
+	time.Sleep(3 * time.Second)
+	t.Log("status : ok")
+}
+
+func TestExplore(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	_, err := insta.Explore()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	time.Sleep(3 * time.Second)
+	t.Log("status : ok")
+}
+
+// NOT USE THIS TEST!!! Warning! Change the password on the old can not be!
+// func TestChangePassword(t *testing.T) {
+//         if skip {
+//                 t.Skip("Empty username or password , Skipping ...")
+//         }
+//
+//         t.Log("change password... Added \"-\"")
+//         _, err := insta.ChangePassword(insta.Informations.Password + "-")
+//         if err != nil {
+//                 t.Fatal(err)
+//                 return
+//         }
+//
+//         time.Sleep(3 * time.Second)
+//         t.Log("status : ok")
+// }
+
+func TestGetFollowingRecentActivity(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	_, err := insta.GetFollowingRecentActivity()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	time.Sleep(3 * time.Second)
+	t.Log("status : ok")
+}
+
+func TestGetUserStories(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	_, err := insta.GetUserStories(17644112) // ID of "elonmusk"
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	time.Sleep(3 * time.Second)
+	t.Log("status : ok")
+}
 func TestLogout(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")

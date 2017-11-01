@@ -5,8 +5,15 @@ import (
 	"crypto/md5"
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"net/url"
 	"strings"
+
+	"github.com/ahmdrz/goinsta/uuid"
+)
+
+const (
+	volatileSeed = "12345"
 )
 
 func generateMD5Hash(text string) string {
@@ -22,22 +29,25 @@ func generateHMAC(text, key string) string {
 }
 
 func generateDeviceID(seed string) string {
-	volatile_seed := "12345"
-	hash := generateMD5Hash(seed + volatile_seed)
+	hash := generateMD5Hash(seed + volatileSeed)
 	return "android-" + hash[:16]
 }
 
 func generateUUID(replace bool) string {
-	uuid, err := newUUID()
+	tempUUID, err := uuid.NewUUID()
 	if err != nil {
 		return "cb479ee7-a50d-49e7-8b7b-60cc1a105e22" // default value when error occurred
 	}
 	if replace {
-		return strings.Replace(uuid, "-", "", -1)
+		return strings.Replace(tempUUID, "-", "", -1)
 	}
-	return uuid
+	return tempUUID
 }
 
 func generateSignature(data string) string {
-	return "ig_sig_key_version=" + GOINSTA_SIG_KEY_VERSION + "&signed_body=" + generateHMAC(data, GOINSTA_IG_SIG_KEY) + "." + url.QueryEscape(data)
+	return fmt.Sprintf("ig_sig_key_version=%s&signed_body=%s.%s",
+		GOINSTA_SIG_KEY_VERSION,
+		generateHMAC(data, GOINSTA_IG_SIG_KEY),
+		url.QueryEscape(data),
+	)
 }

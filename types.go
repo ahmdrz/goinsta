@@ -1,25 +1,37 @@
 package goinsta
 
 import (
-	response "github.com/ahmdrz/goinsta/response"
+	"net/http"
 	"net/http/cookiejar"
+
+	response "github.com/ahmdrz/goinsta/response"
 )
 
 type Informations struct {
-	Username   string
-	Password   string
-	DeviceID   string
-	UUID       string
-	UsernameId string
-	RankToken  string
-	Token      string
+	Username  string
+	Password  string
+	DeviceID  string
+	UUID      string
+	RankToken string
+	Token     string
+	PhoneID   string
 }
 
 type Instagram struct {
-	cookie       string
-	cookiejar    *cookiejar.Jar
+	Cookiejar *cookiejar.Jar
+	InstaType
+	Transport http.Transport
+}
 
+type InstaType struct {
 	IsLoggedIn   bool
 	Informations Informations
 	LoggedInUser response.User
+
+	Proxy string
+}
+
+type BackupType struct {
+	Cookies []http.Cookie
+	InstaType
 }

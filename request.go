@@ -6,37 +6,53 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
-var (
-	proxyUrl string
-)
-
-func (insta *Instagram) NewRequest(endpoint string, post string) ([]byte, error) {
-	return insta.sendRequest(endpoint, post, false)
+type reqOptions struct {
+	Endpoint     string
+	PostData     string
+	IsLoggedIn   bool
+	IgnoreStatus bool
+	Query        map[string]string
 }
 
-func (insta *Instagram) sendRequest(endpoint string, post string, options ...bool) (body []byte, err error) {
-	isLoggedIn := false // Optional third argument
-	checkStatus := true // Optional forth argument
-	if len(options) == 1 {
-		isLoggedIn = options[0]
-	} else if len(options) == 2 {
-		isLoggedIn = options[0]
-		checkStatus = options[1]
-	}
+func (insta *Instagram) OptionalRequest(endpoint string, a ...interface{}) (body []byte, err error) {
+	return insta.sendRequest(&reqOptions{
+		Endpoint: fmt.Sprintf(endpoint, a...),
+	})
+}
 
-	if !insta.IsLoggedIn && !isLoggedIn {
+func (insta *Instagram) sendSimpleRequest(endpoint string, a ...interface{}) (body []byte, err error) {
+	return insta.sendRequest(&reqOptions{
+		Endpoint: fmt.Sprintf(endpoint, a...),
+	})
+}
+
+func (insta *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
+
+	if !insta.IsLoggedIn && !o.IsLoggedIn {
 		return nil, fmt.Errorf("not logged in")
 	}
 
-	var req *http.Request
-
 	method := "GET"
-	if len(post) > 0 {
+	if len(o.PostData) > 0 {
 		method = "POST"
 	}
-	req, err = http.NewRequest(method, GOINSTA_API_URL+endpoint, bytes.NewBuffer([]byte(post)))
+
+	u, err := url.Parse(GOINSTA_API_URL + o.Endpoint)
+	if err != nil {
+		return nil, err
+	}
+
+	q := u.Query()
+	for k, v := range o.Query {
+		q.Add(k, v)
+	}
+	u.RawQuery = q.Encode()
+
+	var req *http.Request
+	req, err = http.NewRequest(method, u.String(), bytes.NewBuffer([]byte(o.PostData)))
 	if err != nil {
 		return
 	}
@@ -49,14 +65,21 @@ func (insta *Instagram) sendRequest(endpoint string, post string, options ...boo
 	req.Header.Set("User-Agent", GOINSTA_USER_AGENT)
 
 	client := &http.Client{
-		Jar: insta.cookiejar,
+		Jar: insta.Cookiejar,
 	}
-	if proxyUrl != "" {
-		proxy, err := url.Parse(proxyUrl)
+
+	if insta.Proxy != "" {
+		proxy, err := url.Parse(insta.Proxy)
 		if err != nil {
 			return body, err
 		}
-		client.Transport = &http.Transport{Proxy: http.ProxyURL(proxy)}
+		insta.Transport.Proxy = http.ProxyURL(proxy)
+
+		client.Transport = &insta.Transport
+	} else {
+		// Remove proxy if insta.Proxy was removed
+		insta.Transport.Proxy = nil
+		client.Transport = &insta.Transport
 	}
 
 	resp, err := client.Do(req)
@@ -65,14 +88,19 @@ func (insta *Instagram) sendRequest(endpoint string, post string, options ...boo
 	}
 	defer resp.Body.Close()
 
-	insta.cookie = resp.Header.Get("Set-Cookie")
+	u, _ = url.Parse(GOINSTA_API_URL)
+	for _, value := range insta.Cookiejar.Cookies(u) {
+		if strings.Contains(value.Name, "csrftoken") {
+			insta.Informations.Token = value.Value
+		}
+	}
 
 	body, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return
 	}
 
-	if resp.StatusCode != 200 && checkStatus {
+	if resp.StatusCode != 200 && !o.IgnoreStatus {
 		return nil, fmt.Errorf("Invalid status code %s", string(body))
 	}
 
