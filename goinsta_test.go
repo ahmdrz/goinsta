@@ -2,7 +2,6 @@ package goinsta
 
 import (
 	"encoding/json"
-	"log"
 	"net/url"
 	"os"
 	"strconv"
@@ -430,13 +429,13 @@ func TestRecentActivity(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	log.Printf("recentActivity.Status:%s", recentActivity.Status)
-	log.Printf("recentActivity.ContinuationToken:%d", recentActivity.ContinuationToken)
-	log.Printf("recentActivity.Counts.PhotosOfYou:%d", recentActivity.Counts.PhotosOfYou)
-	log.Printf("recentActivity.Counts.Requests:%d", recentActivity.Counts.Requests)
+	t.Logf("recentActivity.Status:%s", recentActivity.Status)
+	t.Logf("recentActivity.ContinuationToken:%d", recentActivity.ContinuationToken)
+	t.Logf("recentActivity.Counts.PhotosOfYou:%d", recentActivity.Counts.PhotosOfYou)
+	t.Logf("recentActivity.Counts.Requests:%d", recentActivity.Counts.Requests)
 	if len(recentActivity.OldStories) > 0 {
 		for _, item := range recentActivity.OldStories {
-			log.Printf("PK=%s, type=%d, text=%s ", item.PK, item.Type, item.Args.Text)
+			t.Logf("PK=%s, type=%d, text=%s ", item.PK, item.Type, item.Args.Text)
 		}
 	}
 
