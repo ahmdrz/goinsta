@@ -1091,41 +1091,45 @@ type RecentActivityResponse struct {
 		PhotosOfYou int64 `json:"photos_of_you"`
 		Requests    int64 `json:"requests"`
 	} `json:"counts"`
-	Status string `json:"status"`
+	Status string `json:"status"` // ok
 	//"subscription": null
 	//"friend_request_stories": [],
 	//"new_stories": [],
 	OldStories []struct {
 		Args struct {
 			InlineFollow struct {
-				Following       bool `json:"following"`
-				OutgoingRequest bool `json:"outgoing_request"`
+				Following       bool  `json:"following,omitempty"`
+				CommentID       int64 `json:"comment_id,omitempty"`
+				OutgoingRequest bool  `json:"outgoing_request,omitempty"`
 				UserInfo        struct {
-					ID            int64  `json:"id"`
-					IsPrivate     bool   `json:"is_private"`
-					ProfilePicURL string `json:"profile_pic_url"`
-					Username      string `json:"username"`
-				} `json:"user_info"`
-			} `json:"inline_follow"`
+					ID            int64  `json:"id,omitempty"`
+					IsPrivate     bool   `json:"is_private,omitempty"`
+					ProfilePicURL string `json:"profile_pic_url,omitempty"`
+					Username      string `json:"username,omitempty"`
+				} `json:"user_info,omitempty"`
+			} `json:"inline_follow,omitempty"`
 
 			Links []struct {
-				End   int64  `json:"end"`
-				ID    string `json:"id"`
-				Start int64  `json:"start"`
-				Type  string `json:"type"` // "user" or
-			} `json:"links"`
+				End   int64  `json:"end,omitempty"`
+				ID    string `json:"id,omitempty"`
+				Start int64  `json:"start,omitempty"`
+				Type  string `json:"type,omitempty"` // "user" or
+			} `json:"links,omitempty"`
 			Media []struct {
-				ID    string `json:"id"`
-				Image string `json:"image"`
-			}
-			ProfileID    int64   `json:"profile_id"`
-			ProfileImage string  `json:"profile_image"`
-			Text         string  `json:"text"`
-			Timestamp    float64 `json:"timestamp"`
-		} `json:"args"`
+				ID    string `json:"id,omitempty"`
+				Image string `json:"image,omitempty"`
+			} `json:"media,omitempty"`
+			ProfileID    int64   `json:"profile_id,omitempty"`
+			ProfileImage string  `json:"profile_image,omitempty"`
+			Text         string  `json:"text,omitempty"`
+			Timestamp    float64 `json:"timestamp,omitempty"`
+			TUUID        string  `json:"tuuid,omitempty"`
+		} `json:"args,omitempty"`
 
 		//"counts": {},
-		PK   string `json:"pk"`
-		Type int64  `json:"type"`
-	} `json:"old_stories"`
+		PK        string `json:"pk"`
+		StoryType int64  `json:"story_type"`
+
+		Type int64 `json:"type,omitempty"`
+	} `json:"old_stories,omitempty"`
 }
