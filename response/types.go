@@ -1083,3 +1083,49 @@ type StoryResponse struct {
 	} `json:"reel"`
 	Status string `json:"status"`
 }
+
+// RecentActivityResponse ...
+type RecentActivityResponse struct {
+	ContinuationToken int64 `json:"continuation_token"`
+	Counts            struct {
+		PhotosOfYou int64 `json:"photos_of_you"`
+		Requests    int64 `json:"requests"`
+	} `json:"counts"`
+	Status string `json:"status"`
+	//"subscription": null
+	//"friend_request_stories": [],
+	//"new_stories": [],
+	OldStories []struct {
+		Args struct {
+			InlineFollow struct {
+				Following       bool `json:"following"`
+				OutgoingRequest bool `json:"outgoing_request"`
+				UserInfo        struct {
+					ID            int64  `json:"id"`
+					IsPrivate     bool   `json:"is_private"`
+					ProfilePicURL string `json:"profile_pic_url"`
+					Username      string `json:"username"`
+				} `json:"user_info"`
+			} `json:"inline_follow"`
+
+			Links []struct {
+				End   int64  `json:"end"`
+				ID    string `json:"id"`
+				Start int64  `json:"start"`
+				Type  string `json:"type"` // "user" or
+			} `json:"links"`
+			Media []struct {
+				ID    string `json:"id"`
+				Image string `json:"image"`
+			}
+			ProfileID    int64   `json:"profile_id"`
+			ProfileImage string  `json:"profile_image"`
+			Text         string  `json:"text"`
+			Timestamp    float64 `json:"timestamp"`
+		} `json:"args"`
+
+		//"counts": {},
+		PK   string `json:"pk"`
+		Type int64  `json:"type"`
+	} `json:"old_stories"`
+}

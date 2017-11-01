@@ -2,6 +2,7 @@ package goinsta
 
 import (
 	"encoding/json"
+	"log"
 	"net/url"
 	"os"
 	"strconv"
@@ -425,10 +426,20 @@ func TestRecentActivity(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	_, err := insta.GetRecentActivity()
+	recentActivity, err := insta.GetRecentActivity()
 	if err != nil {
 		t.Fatal(err)
 	}
+	log.Printf("recentActivity.Status:%s", recentActivity.Status)
+	log.Printf("recentActivity.ContinuationToken:%d", recentActivity.ContinuationToken)
+	log.Printf("recentActivity.Counts.PhotosOfYou:%d", recentActivity.Counts.PhotosOfYou)
+	log.Printf("recentActivity.Counts.Requests:%d", recentActivity.Counts.Requests)
+	if len(recentActivity.OldStories) > 0 {
+		for _, item := range recentActivity.OldStories {
+			log.Printf("PK=%s, type=%d, text=%s ", item.PK, item.Type, item.Args.Text)
+		}
+	}
+
 	time.Sleep(3 * time.Second)
 	t.Log("Finished")
 }
