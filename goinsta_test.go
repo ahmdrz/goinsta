@@ -425,10 +425,20 @@ func TestRecentActivity(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	_, err := insta.GetRecentActivity()
+	recentActivity, err := insta.GetRecentActivity()
 	if err != nil {
 		t.Fatal(err)
 	}
+	t.Logf("recentActivity.Status:%s", recentActivity.Status)
+	t.Logf("recentActivity.ContinuationToken:%d", recentActivity.ContinuationToken)
+	t.Logf("recentActivity.Counts.PhotosOfYou:%d", recentActivity.Counts.PhotosOfYou)
+	t.Logf("recentActivity.Counts.Requests:%d", recentActivity.Counts.Requests)
+	if len(recentActivity.OldStories) > 0 {
+		for _, item := range recentActivity.OldStories {
+			t.Logf("PK=%s, type=%d, text=%s ", item.PK, item.Type, item.Args.Text)
+		}
+	}
+
 	time.Sleep(3 * time.Second)
 	t.Log("Finished")
 }
