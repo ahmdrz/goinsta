@@ -1071,3 +1071,55 @@ type StoryResponse struct {
 	} `json:"reel"`
 	Status string `json:"status"`
 }
+
+// RecentActivityResponse ...
+type RecentActivityResponse struct {
+	ContinuationToken int64 `json:"continuation_token"`
+	Counts            struct {
+		PhotosOfYou int64 `json:"photos_of_you"`
+		Requests    int64 `json:"requests"`
+	} `json:"counts"`
+	Status string `json:"status"` // ok
+	//"subscription": null
+	//"friend_request_stories": [],
+	//"new_stories": [],
+	OldStories []struct {
+		Args struct {
+			Actions      []string `json:"actions,omitempty"`
+			CommentID    int64    `json:"comment_id,omitempty"`
+			CommentIDs   []int64  `json:"comment_ids,omitempty"`
+			InlineFollow struct {
+				Following       bool `json:"following,omitempty"`
+				OutgoingRequest bool `json:"outgoing_request,omitempty"`
+				UserInfo        struct {
+					ID            int64  `json:"id,omitempty"`
+					IsPrivate     bool   `json:"is_private,omitempty"`
+					ProfilePicURL string `json:"profile_pic_url,omitempty"`
+					Username      string `json:"username,omitempty"`
+				} `json:"user_info,omitempty"`
+			} `json:"inline_follow,omitempty"`
+
+			Links []struct {
+				End   int64  `json:"end,omitempty"`
+				ID    string `json:"id,omitempty"`
+				Start int64  `json:"start,omitempty"`
+				Type  string `json:"type,omitempty"` // "user" or
+			} `json:"links,omitempty"`
+			Media []struct {
+				ID    string `json:"id,omitempty"`
+				Image string `json:"image,omitempty"`
+			} `json:"media,omitempty"`
+			ProfileID    int64   `json:"profile_id,omitempty"`
+			ProfileImage string  `json:"profile_image,omitempty"`
+			Text         string  `json:"text,omitempty"`
+			Timestamp    float64 `json:"timestamp,omitempty"`
+			TUUID        string  `json:"tuuid,omitempty"`
+		} `json:"args,omitempty"`
+
+		//"counts": {},
+		PK        string `json:"pk"`
+		StoryType int64  `json:"story_type"`
+
+		Type int64 `json:"type,omitempty"`
+	} `json:"old_stories,omitempty"`
+}

@@ -1097,8 +1097,17 @@ func (insta *Instagram) TotalUserFollowers(userID int64) (response.UsersResponse
 	}
 }
 
-func (insta *Instagram) GetRecentActivity() ([]byte, error) {
-	return insta.sendSimpleRequest("news/inbox/?")
+func (insta *Instagram) GetRecentActivity() (response.RecentActivityResponse, error) {
+	result := response.RecentActivityResponse{}
+	bytes, err := insta.sendSimpleRequest("news/inbox/?")
+	if err != nil {
+		return result, err
+	}
+	err = json.Unmarshal(bytes, &result)
+	if err != nil {
+		return result, err
+	}
+	return result, nil
 }
 
 func (insta *Instagram) GetFollowingRecentActivity() (response.FollowingRecentActivityResponse, error) {
