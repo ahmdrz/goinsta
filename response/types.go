@@ -61,7 +61,7 @@ type TagFeedsResponse struct {
 type TagRelatedResponse struct {
 	Status  string `json:"status"`
 	Related []struct {
-		ID   string `json:"id"`
+		ID   int64  `json:"id"`
 		Name string `json:"name"`
 		Type string `json:"type"`
 	} `json:"related"`
@@ -754,32 +754,33 @@ type DirectListResponse struct {
 }
 
 type FollowingRecentActivityResponse struct {
-	AutoLoadMoreEnabled bool   `json:"auto_load_more_enabled"`
-	NextMaxID           int    `json:"next_max_id"`
-	Status              string `json:"status"`
+	AutoLoadMoreEnabled bool `json:"auto_load_more_enabled"`
+	NextMaxID           int  `json:"next_max_id"`
 	Stories             []struct {
-		Pk     string `json:"pk"`
-		Counts struct {
-		} `json:"counts"`
-		Type int `json:"type"`
-		Args struct {
-			Media []struct {
-				Image string `json:"image"`
-				ID    string `json:"id"`
-			} `json:"media"`
-			Text         string `json:"text"`
-			CommentID    int64  `json:"comment_id"`
-			ProfileImage string `json:"profile_image"`
-			Timestamp    int    `json:"timestamp"`
-			Links        []struct {
+		Type      int `json:"type"`
+		StoryType int `json:"story_type"`
+		Args      struct {
+			Text  string `json:"text"`
+			Links []struct {
 				Start int    `json:"start"`
-				ID    string `json:"id"`
 				End   int    `json:"end"`
 				Type  string `json:"type"`
+				ID    string `json:"id"`
 			} `json:"links"`
-			ProfileID int64 `json:"profile_id"`
+			ProfileID    int    `json:"profile_id"`
+			ProfileImage string `json:"profile_image"`
+			Media        []struct {
+				ID    string `json:"id"`
+				Image string `json:"image"`
+			} `json:"media"`
+			Timestamp int64  `json:"timestamp"`
+			UUID      string `json:"tuuid"`
 		} `json:"args"`
+		Counts struct {
+		} `json:"counts"`
+		Pk string `json:"pk"`
 	} `json:"stories"`
+	Status string `json:"status"`
 }
 
 type TrayResponse struct {
