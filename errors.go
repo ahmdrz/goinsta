@@ -67,7 +67,13 @@ func NewIGAPIError(body string, code int64) *IGAPIError {
 
 // IGAPIErrorResponse ...
 type IGAPIErrorResponse struct {
-	Message string `json:"message"`
+	Message            string `json:"message"`
+	InvalidCredentials bool   `json:"invalid_credentials"`
+	ErrorTitle         string `json:"error_title"`
+	Buttons            []struct {
+		Title  string `json:"title"`
+		Action string `json:"action"`
+	} `json:"buttons"`
 
 	Challenge struct {
 		URL               string `json:"url"`

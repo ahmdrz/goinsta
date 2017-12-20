@@ -55,11 +55,19 @@ func TestFailedLogin(t *testing.T) {
 		return
 	}
 	log.Printf("apierror.Error()=%s", apierror.Error())
+	log.Printf("apierror.ResponseBody=%s", apierror.ResponseBody)
 	log.Printf("apierror.ResponseData=%v", apierror.ResponseData)
 	log.Printf("apierror.StatusCode=%d", apierror.StatusCode)
 	log.Printf("apierror.ResponseData.Message=%s", apierror.ResponseData.Message)
 	log.Printf("apierror.ResponseData.Status=%s", apierror.ResponseData.Status)
-
+	log.Printf("apierror.ResponseData.ErrorTitle=%s", apierror.ResponseData.ErrorTitle)
+	log.Printf("apierror.ResponseData.ErrorType=%s", apierror.ResponseData.ErrorType)
+	log.Printf("apierror.ResponseData.InvalidCredentials=%v", apierror.ResponseData.InvalidCredentials)
+	if len(apierror.ResponseData.Buttons) > 0 {
+		for i, b := range apierror.ResponseData.Buttons {
+			log.Printf("apierror.ResponseData.Buttons[%d]: Title=%s, Action=%s", i, b.Title, b.Action)
+		}
+	}
 	t.Log("status : ok")
 }
 
