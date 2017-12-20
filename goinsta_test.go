@@ -55,7 +55,10 @@ func TestFailedLogin(t *testing.T) {
 		return
 	}
 	log.Printf("apierror.Error()=%s", apierror.Error())
-	log.Printf("apierror.ResponseData()=%v", apierror.ResponseData)
+	log.Printf("apierror.ResponseData=%v", apierror.ResponseData)
+	log.Printf("apierror.StatusCode=%d", apierror.StatusCode)
+	log.Printf("apierror.ResponseData.Message=%s", apierror.ResponseData.Message)
+	log.Printf("apierror.ResponseData.Status=%s", apierror.ResponseData.Status)
 
 	t.Log("status : ok")
 }
