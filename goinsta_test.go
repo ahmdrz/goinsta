@@ -44,8 +44,6 @@ func TestFailedLogin(t *testing.T) {
 
 	i := New("wrong_username", "wrong_password")
 	err := i.Login()
-	//err := insta.Login()
-	//err := instatmp.Login()
 	if err == nil {
 		t.Fatal("should be error")
 		return
