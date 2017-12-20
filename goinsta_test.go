@@ -2,6 +2,7 @@ package goinsta
 
 import (
 	"encoding/json"
+	"log"
 	"net/url"
 	"os"
 	"strconv"
@@ -37,6 +38,28 @@ func TestDeviceID(t *testing.T) {
 	}
 	insta = New(username, password)
 	t.Log(insta.Informations.DeviceID)
+}
+
+func TestFailedLogin(t *testing.T) {
+
+	i := New("wrong_username", "wrong_password")
+	err := i.Login()
+	//err := insta.Login()
+	//err := instatmp.Login()
+	if err == nil {
+		t.Fatal("should be error")
+		return
+	}
+
+	apierror, ok := err.(*IGAPIError)
+	if !ok {
+		t.Fatal("insta.Login should return error as IGAPIError")
+		return
+	}
+	log.Printf("apierror.Error()=%s", apierror.Error())
+	log.Printf("apierror.ResponseData()=%v", apierror.ResponseData)
+
+	t.Log("status : ok")
 }
 
 func TestLogin(t *testing.T) {
