@@ -158,16 +158,20 @@ type Location struct {
 // CommentResponse struct is a object for comment under media
 type CommentResponse struct {
 	StatusResponse
-	UserID       int64  `json:"user_id"`
-	CreatedAtUTC int64  `json:"created_at_utc"`
-	CreatedAt    int64  `json:"created_at"`
-	BitFlags     int    `json:"bit_flags"`
-	User         User   `json:"user"`
-	ContentType  string `json:"content_type"`
-	Text         string `json:"text"`
-	MediaID      int64  `json:"media_id"`
-	Pk           int64  `json:"pk"`
-	Type         int    `json:"type"`
+	UserID                         int64  `json:"user_id"`
+	CreatedAtUTC                   int64  `json:"created_at_utc"`
+	CreatedAt                      int64  `json:"created_at"`
+	BitFlags                       int    `json:"bit_flags"`
+	User                           User   `json:"user"`
+	ContentType                    string `json:"content_type"`
+	Text                           string `json:"text"`
+	MediaID                        int64  `json:"media_id"`
+	Pk                             int64  `json:"pk"`
+	Type                           int    `json:"type"`
+	DidReportAsSpam                *bool  `json:"did_report_as_spam"`
+	HasLikedComment                *bool  `json:"has_liked_comment"`
+	CommentLikeCount               int    `json:"comment_like_count"`
+	InlineComposerDisplayCondition string `json:"inline_composer_display_condition"`
 }
 
 // MediaCommentsResponse struct for get array of comments of a media
