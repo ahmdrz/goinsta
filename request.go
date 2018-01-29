@@ -2,6 +2,7 @@ package goinsta
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -30,9 +31,8 @@ func (insta *Instagram) sendSimpleRequest(endpoint string, a ...interface{}) (bo
 }
 
 func (insta *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
-
-	if !insta.IsLoggedIn && !o.IsLoggedIn {
-		return nil, fmt.Errorf("not logged in")
+	if !insta.isLoggedIn && !o.IsLoggedIn {
+		return nil, ErrLoggedOut
 	}
 
 	method := "GET"
@@ -65,21 +65,21 @@ func (insta *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 	req.Header.Set("User-Agent", GOINSTA_USER_AGENT)
 
 	client := &http.Client{
-		Jar: insta.Cookiejar,
+		Jar: insta.cookiejar,
 	}
 
-	if insta.Proxy != "" {
-		proxy, err := url.Parse(insta.Proxy)
+	if insta.proxy != "" {
+		proxy, err := url.Parse(insta.proxy)
 		if err != nil {
 			return body, err
 		}
-		insta.Transport.Proxy = http.ProxyURL(proxy)
+		insta.transport.Proxy = http.ProxyURL(proxy)
 
-		client.Transport = &insta.Transport
+		client.Transport = &insta.transport
 	} else {
 		// Remove proxy if insta.Proxy was removed
-		insta.Transport.Proxy = nil
-		client.Transport = &insta.Transport
+		insta.transport.Proxy = nil
+		client.Transport = &insta.transport
 	}
 
 	resp, err := client.Do(req)
@@ -89,9 +89,9 @@ func (insta *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 	defer resp.Body.Close()
 
 	u, _ = url.Parse(GOINSTA_API_URL)
-	for _, value := range insta.Cookiejar.Cookies(u) {
+	for _, value := range insta.cookiejar.Cookies(u) {
 		if strings.Contains(value.Name, "csrftoken") {
-			insta.Informations.Token = value.Value
+			insta.token = value.Value
 		}
 	}
 
@@ -112,4 +112,21 @@ func (insta *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 	}
 
 	return body, err
+}
+
+func (insta *Instagram) prepareData(otherData ...map[string]interface{}) (string, error) {
+	data := map[string]interface{}{
+		"_uuid":      insta.uuid,
+		"_uid":       insta.CurrentUser.ID,
+		"_csrftoken": insta.token,
+	}
+	if len(otherData) > 0 {
+		for i := range otherData {
+			for key, value := range otherData[i] {
+				data[key] = value
+			}
+		}
+	}
+	bytes, err := json.Marshal(data)
+	return string(bytes), err
 }

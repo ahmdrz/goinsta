@@ -3,13 +3,13 @@ package goinsta
 import (
 	"crypto/hmac"
 	"crypto/md5"
+	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"io"
 	"net/url"
 	"strings"
-
-	"github.com/ahmdrz/goinsta/uuid"
 )
 
 const (
@@ -34,14 +34,17 @@ func generateDeviceID(seed string) string {
 }
 
 func generateUUID(replace bool) string {
-	tempUUID, err := uuid.NewUUID()
-	if err != nil {
-		return "cb479ee7-a50d-49e7-8b7b-60cc1a105e22" // default value when error occurred
-	}
+	uuid := make([]byte, 16)
+	io.ReadFull(rand.Reader, uuid)
+	uuid[8] = uuid[8]&^0xc0 | 0x80
+	uuid[6] = uuid[6]&^0xf0 | 0x40
+
+	tUUID := fmt.Sprintf("%x-%x-%x-%x-%x", uuid[0:4], uuid[4:6], uuid[6:8], uuid[8:10], uuid[10:])
+
 	if replace {
-		return strings.Replace(tempUUID, "-", "", -1)
+		return strings.Replace(tUUID, "-", "", -1)
 	}
-	return tempUUID
+	return tUUID
 }
 
 func generateSignature(data string) string {
