@@ -14,25 +14,15 @@ type Instagram struct {
 	token     string
 	phoneID   string
 
-	Followers  *InstagramFollowers
-	Followings *InstagramFollowings
-	FriendShip *InstagramFriendShip
-	Users      *InstagramUsers
+	FriendShip InstagramFriendShip
+	Users      InstagramUsers
 
-	CurrentUser UserResponse
+	CurrentUser CurrentUser
 
 	isLoggedIn bool
 	cookiejar  *cookiejar.Jar
 	transport  http.Transport
 	proxy      string
-}
-
-type InstagramFollowers struct {
-	instagram *Instagram
-}
-
-type InstagramFollowings struct {
-	instagram *Instagram
 }
 
 type InstagramFriendShip struct {
@@ -113,4 +103,9 @@ type FriendShipsPendingResponse struct {
 	BigList  bool           `json:"big_list"`
 	PageSize int            `json:"page_size"`
 	Status   string         `json:"status"`
+}
+
+type CurrentUser struct {
+	instagram *Instagram
+	UserResponse
 }

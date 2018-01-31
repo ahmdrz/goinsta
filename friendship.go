@@ -127,3 +127,67 @@ func (f *InstagramFriendShip) RemoveFollower(userID int64) (output FriendShipsSh
 	output = response.FriendshipStatus
 	return
 }
+
+func (f *InstagramFriendShip) Followers(userID int64, options ...string) (output FollowerAndFollowingResponse, err error) {
+	if len(options) > 1 {
+		return output, fmt.Errorf("Bad input as options , use only maxID if you need, inputs are %v", options)
+	}
+	maxID := ""
+	if len(options) == 1 {
+		maxID = options[0]
+	}
+
+	body, err := f.instagram.sendRequest(&reqOptions{
+		Endpoint: fmt.Sprintf("friendships/%d/followers/", userID),
+		Query: map[string]string{
+			"max_id":             maxID,
+			"ig_sig_key_version": GOINSTA_SIG_KEY_VERSION,
+			"rank_token":         f.instagram.rankToken,
+		},
+	})
+	if err != nil {
+		return output, err
+	}
+
+	err = json.Unmarshal(body, &output)
+
+	return output, err
+}
+
+func (f *InstagramFriendShip) Following(userID int64, options ...string) (output FollowerAndFollowingResponse, err error) {
+	if len(options) > 1 {
+		return output, fmt.Errorf("Bad input as options , use only maxID if you need, inputs are %v", options)
+	}
+	maxID := ""
+	if len(options) == 1 {
+		maxID = options[0]
+	}
+
+	body, err := f.instagram.sendRequest(&reqOptions{
+		Endpoint: fmt.Sprintf("friendships/%d/following/", userID),
+		Query: map[string]string{
+			"max_id":             maxID,
+			"ig_sig_key_version": GOINSTA_SIG_KEY_VERSION,
+			"rank_token":         f.instagram.rankToken,
+		},
+	})
+	if err != nil {
+		return output, err
+	}
+
+	err = json.Unmarshal(body, &output)
+
+	return output, err
+}
+
+// AutoCompleteUserList simulates Instagram app behavior
+func (f *InstagramFriendShip) AutoCompleteUserList() error {
+	_, err := f.instagram.sendRequest(&reqOptions{
+		Endpoint:     "friendships/autocomplete_user_list/",
+		IgnoreStatus: true,
+		Query: map[string]string{
+			"version": "2",
+		},
+	})
+	return err
+}

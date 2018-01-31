@@ -3,6 +3,7 @@ package goinsta
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http/cookiejar"
 	"strconv"
 	"time"
@@ -17,23 +18,32 @@ func New(username, password string) *Instagram {
 		phoneID:  generateUUID(true),
 	}
 
-	instagram.Followers = &InstagramFollowers{
+	instagram.FriendShip = InstagramFriendShip{
 		instagram: instagram,
 	}
 
-	instagram.Followings = &InstagramFollowings{
-		instagram: instagram,
-	}
-
-	instagram.FriendShip = &InstagramFriendShip{
-		instagram: instagram,
-	}
-
-	instagram.Users = &InstagramUsers{
+	instagram.Users = InstagramUsers{
 		instagram: instagram,
 	}
 
 	return instagram
+}
+
+func (insta *Instagram) Export(path string) error {
+	mappedData := make(map[string]interface{})
+	mappedData["uuid"] = insta.uuid
+	mappedData["rank_token"] = insta.rankToken
+	mappedData["token"] = insta.token
+	mappedData["phone_id"] = insta.phoneID
+	mappedData["device_id"] = insta.deviceID
+	mappedData["proxy"] = insta.proxy
+	mappedData["is_logged_in"] = insta.isLoggedIn
+	mappedData["cookie_jar"] = insta.cookiejar
+	bytes, err := json.Marshal(mappedData)
+	if err != nil {
+		return err
+	}
+	return ioutil.WriteFile(path, bytes, 0755)
 }
 
 func (insta *Instagram) Login() error {
@@ -80,12 +90,12 @@ func (insta *Instagram) Login() error {
 		return err
 	}
 
-	insta.CurrentUser = Result.LoggedInUser
+	insta.CurrentUser.UserResponse = Result.LoggedInUser
 	insta.rankToken = strconv.FormatInt(Result.LoggedInUser.ID, 10) + "_" + insta.uuid
 	insta.isLoggedIn = true
 
 	insta.SyncFeatures()
-	insta.AutoCompleteUserList()
+	insta.FriendShip.AutoCompleteUserList()
 	// insta.Timeline("")
 	// insta.GetRankedRecipients()
 	// insta.GetRecentRecipients()
@@ -117,18 +127,6 @@ func (insta *Instagram) SyncFeatures() error {
 	_, err = insta.sendRequest(&reqOptions{
 		Endpoint: "qe/sync/",
 		PostData: generateSignature(data),
-	})
-	return err
-}
-
-// AutoCompleteUserList simulates Instagram app behavior
-func (insta *Instagram) AutoCompleteUserList() error {
-	_, err := insta.sendRequest(&reqOptions{
-		Endpoint:     "friendships/autocomplete_user_list/",
-		IgnoreStatus: true,
-		Query: map[string]string{
-			"version": "2",
-		},
 	})
 	return err
 }
