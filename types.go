@@ -14,10 +14,10 @@ type Instagram struct {
 	token     string
 	phoneID   string
 
-	FriendShip FriendShip
-	Users      Users
+	FriendShip *FriendShip
+	Users      *Users
 
-	CurrentUser CurrentUser
+	CurrentUser *CurrentUser
 
 	isLoggedIn bool
 	cookiejar  *cookiejar.Jar

@@ -19,19 +19,27 @@ func New(username, password string) *Instagram {
 		phoneID:  generateUUID(true),
 	}
 
-	instagram.FriendShip = FriendShip{
+	instagram.FriendShip = &FriendShip{
 		instagram: instagram,
 	}
 
-	instagram.Users = Users{
+	instagram.Users = &Users{
 		instagram: instagram,
 	}
 
 	return instagram
 }
 
+func (i *Instagram) SetUser(user string) {
+	i.username = user
+}
+
+func (i *Instagram) SetPass(pass string) {
+	i.password = pass
+}
+
 func (insta *Instagram) Export(path string) error {
-	mappedData := map[string]interface{}{
+	bytes, err := json.Marshal(map[string]interface{}{
 		"uuid":         insta.uuid,
 		"rank_token":   insta.rankToken,
 		"token":        insta.token,
@@ -40,8 +48,7 @@ func (insta *Instagram) Export(path string) error {
 		"proxy":        insta.proxy,
 		"is_logged_in": insta.isLoggedIn,
 		"cookie_jar":   insta.cookiejar,
-	}
-	bytes, err := json.Marshal(mappedData)
+	})
 	if err != nil {
 		return err
 	}
