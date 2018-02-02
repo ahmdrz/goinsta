@@ -14,8 +14,8 @@ type Instagram struct {
 	token     string
 	phoneID   string
 
-	FriendShip InstagramFriendShip
-	Users      InstagramUsers
+	FriendShip FriendShip
+	Users      Users
 
 	CurrentUser CurrentUser
 
@@ -25,11 +25,11 @@ type Instagram struct {
 	proxy      string
 }
 
-type InstagramFriendShip struct {
+type FriendShip struct {
 	instagram *Instagram
 }
 
-type InstagramUsers struct {
+type Users struct {
 	instagram *Instagram
 }
 

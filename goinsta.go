@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// New returns pointer to Instagram structure.
 func New(username, password string) *Instagram {
 	instagram := &Instagram{
 		username: username,
@@ -18,11 +19,11 @@ func New(username, password string) *Instagram {
 		phoneID:  generateUUID(true),
 	}
 
-	instagram.FriendShip = InstagramFriendShip{
+	instagram.FriendShip = FriendShip{
 		instagram: instagram,
 	}
 
-	instagram.Users = InstagramUsers{
+	instagram.Users = Users{
 		instagram: instagram,
 	}
 
@@ -30,15 +31,16 @@ func New(username, password string) *Instagram {
 }
 
 func (insta *Instagram) Export(path string) error {
-	mappedData := make(map[string]interface{})
-	mappedData["uuid"] = insta.uuid
-	mappedData["rank_token"] = insta.rankToken
-	mappedData["token"] = insta.token
-	mappedData["phone_id"] = insta.phoneID
-	mappedData["device_id"] = insta.deviceID
-	mappedData["proxy"] = insta.proxy
-	mappedData["is_logged_in"] = insta.isLoggedIn
-	mappedData["cookie_jar"] = insta.cookiejar
+	mappedData := map[string]interface{}{
+		"uuid":         insta.uuid,
+		"rank_token":   insta.rankToken,
+		"token":        insta.token,
+		"phone_id":     insta.phoneID,
+		"device_id":    insta.deviceID,
+		"proxy":        insta.proxy,
+		"is_logged_in": insta.isLoggedIn,
+		"cookie_jar":   insta.cookiejar,
+	}
 	bytes, err := json.Marshal(mappedData)
 	if err != nil {
 		return err

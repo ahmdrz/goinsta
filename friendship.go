@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (f *InstagramFriendShip) GetOne(userID int64) (output FriendShipsShowResponse, err error) {
+func (f *FriendShip) GetOne(userID int64) (output FriendShipsShowResponse, err error) {
 	body, err := f.instagram.sendSimpleRequest(fmt.Sprintf("friendships/show/%d", userID))
 	if err != nil {
 		return
@@ -15,7 +15,7 @@ func (f *InstagramFriendShip) GetOne(userID int64) (output FriendShipsShowRespon
 	return
 }
 
-func (f *InstagramFriendShip) GetMulti(userIDs ...int64) (output FriendShipsShowResponse, err error) {
+func (f *FriendShip) GetMulti(userIDs ...int64) (output FriendShipsShowResponse, err error) {
 	list := ""
 	for i, id := range userIDs {
 		list += fmt.Sprintf("%d", id)
@@ -46,7 +46,7 @@ func (f *InstagramFriendShip) GetMulti(userIDs ...int64) (output FriendShipsShow
 	return
 }
 
-func (f *InstagramFriendShip) Pending() (output FriendShipsPendingResponse, err error) {
+func (f *FriendShip) Pending() (output FriendShipsPendingResponse, err error) {
 	body, err := f.instagram.sendSimpleRequest("friendships/pending/")
 	if err != nil {
 		return
@@ -56,7 +56,7 @@ func (f *InstagramFriendShip) Pending() (output FriendShipsPendingResponse, err 
 	return
 }
 
-func (f *InstagramFriendShip) Approve(userID int64) (output FriendShipsShowResponse, err error) {
+func (f *FriendShip) Approve(userID int64) (output FriendShipsShowResponse, err error) {
 	data, err := f.instagram.prepareData(map[string]interface{}{
 		"user_id": fmt.Sprintf("%d", userID),
 	})
@@ -80,7 +80,7 @@ func (f *InstagramFriendShip) Approve(userID int64) (output FriendShipsShowRespo
 	return
 }
 
-func (f *InstagramFriendShip) Reject(userID int64) (output FriendShipsShowResponse, err error) {
+func (f *FriendShip) Reject(userID int64) (output FriendShipsShowResponse, err error) {
 	data, err := f.instagram.prepareData(map[string]interface{}{
 		"user_id": fmt.Sprintf("%d", userID),
 	})
@@ -104,7 +104,7 @@ func (f *InstagramFriendShip) Reject(userID int64) (output FriendShipsShowRespon
 	return
 }
 
-func (f *InstagramFriendShip) RemoveFollower(userID int64) (output FriendShipsShowResponse, err error) {
+func (f *FriendShip) RemoveFollower(userID int64) (output FriendShipsShowResponse, err error) {
 	data, err := f.instagram.prepareData(map[string]interface{}{
 		"user_id": fmt.Sprintf("%d", userID),
 	})
@@ -128,7 +128,7 @@ func (f *InstagramFriendShip) RemoveFollower(userID int64) (output FriendShipsSh
 	return
 }
 
-func (f *InstagramFriendShip) Followers(userID int64, options ...string) (output FollowerAndFollowingResponse, err error) {
+func (f *FriendShip) Followers(userID int64, options ...string) (output FollowerAndFollowingResponse, err error) {
 	if len(options) > 1 {
 		return output, fmt.Errorf("Bad input as options , use only maxID if you need, inputs are %v", options)
 	}
@@ -154,7 +154,7 @@ func (f *InstagramFriendShip) Followers(userID int64, options ...string) (output
 	return output, err
 }
 
-func (f *InstagramFriendShip) Following(userID int64, options ...string) (output FollowerAndFollowingResponse, err error) {
+func (f *FriendShip) Following(userID int64, options ...string) (output FollowerAndFollowingResponse, err error) {
 	if len(options) > 1 {
 		return output, fmt.Errorf("Bad input as options , use only maxID if you need, inputs are %v", options)
 	}
@@ -181,7 +181,7 @@ func (f *InstagramFriendShip) Following(userID int64, options ...string) (output
 }
 
 // AutoCompleteUserList simulates Instagram app behavior
-func (f *InstagramFriendShip) AutoCompleteUserList() error {
+func (f *FriendShip) AutoCompleteUserList() error {
 	_, err := f.instagram.sendRequest(&reqOptions{
 		Endpoint:     "friendships/autocomplete_user_list/",
 		IgnoreStatus: true,

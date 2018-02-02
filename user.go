@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (u *InstagramUsers) ByUsername(username string) (user UserResponse, err error) {
+func (u *Users) ByUsername(username string) (user UserResponse, err error) {
 	body, err := u.instagram.sendSimpleRequest("users/%s/usernameinfo/", username)
 	if err != nil {
 		return
@@ -26,7 +26,7 @@ func (u *InstagramUsers) ByUsername(username string) (user UserResponse, err err
 	return
 }
 
-func (u *InstagramUsers) ByID(userID int64) (user UserResponse, err error) {
+func (u *Users) ByID(userID int64) (user UserResponse, err error) {
 	data, err := u.instagram.prepareData()
 	if err != nil {
 		return
