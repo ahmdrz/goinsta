@@ -431,6 +431,19 @@ type DirectThread struct {
 	} `json:"thread"`
 }
 
+type UserTaggedFeedResponse struct {
+	Status              string `json:"status"`
+	NumResults          int    `json:"num_results"`
+	AutoLoadMoreEnabled bool   `json:"auto_load_more_enabled"`
+	Items               []Item `json:"items"`
+	MoreAvailable       bool   `json:"more_available"`
+	NextMaxID           int    `json:"next_max_id"`
+	TotalCount          int    `json:"total_count"`
+	RequiresReview      bool   `json:"requires_review"`
+	// maybe this is photos waiting for review?
+	// NewPhotos           []interface{} `json:"new_photos"`
+}
+
 // UserFeedResponse contains user feeds
 type UserFeedResponse struct {
 	Status              string `json:"status"`
