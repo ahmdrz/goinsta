@@ -272,6 +272,28 @@ func (insta *Instagram) UserFeed(userID int64, maxID, minTimestamp string) (resp
 	return resp, err
 }
 
+// UserTaggedFeed - Returns the feed for medua a given user is tagged in
+func (insta *Instagram) UserTaggedFeed(userID int64, maxID, minTimestamp string) (response.UserFeedResponse, error) {
+	resp := response.UserFeedResponse{}
+
+	body, err := insta.sendRequest(&reqOptions{
+		Endpoint: fmt.Sprintf("usertags/%d/feed/", userID),
+		Query: map[string]string{
+			"max_id":         maxID,
+			"rank_token":     insta.Informations.RankToken,
+			"min_timestamp":  minTimestamp,
+			"ranked_content": "true",
+		},
+	})
+	if err != nil {
+		return resp, err
+	}
+
+	err = json.Unmarshal(body, &resp)
+
+	return resp, err
+}
+
 // MediaComments - Returns comments of a media, input is mediaid of a media
 // You can use maxID for pagination, otherwise leave it empty to get the latest page only.
 func (insta *Instagram) MediaComments(mediaID string, maxID string) (response.MediaCommentsResponse, error) {
