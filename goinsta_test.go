@@ -519,7 +519,7 @@ func TestUserTaggedFeedWithMaxIDAndTimestamp(t *testing.T) {
 		t.Skip("Empty username or password , Skipping ...")
 	}
 
-	_, err := insta.UserTaggedFeed(17644112, 0, "25025320") // ID from elonmusk
+	_, err := insta.UserTaggedFeed(17644112, 25035320, "25025320") // ID from elonmusk
 	if err != nil {
 		t.Fatal(err)
 		return
