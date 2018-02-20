@@ -437,7 +437,7 @@ type UserTaggedFeedResponse struct {
 	AutoLoadMoreEnabled bool   `json:"auto_load_more_enabled"`
 	Items               []Item `json:"items"`
 	MoreAvailable       bool   `json:"more_available"`
-	NextMaxID           int    `json:"next_max_id"`
+	NextMaxID           int64  `json:"next_max_id"`
 	TotalCount          int    `json:"total_count"`
 	RequiresReview      bool   `json:"requires_review"`
 	// maybe this is photos waiting for review?
