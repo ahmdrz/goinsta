@@ -500,6 +500,34 @@ func TestUserFeedWithMaxIDAndTimestamp(t *testing.T) {
 	t.Log("Finished")
 }
 
+func TestUserTaggedFeed(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	_, err := insta.UserTaggedFeed(17644112, "", "") // ID from elonmusk
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	time.Sleep(3 * time.Second)
+	t.Log("Finished")
+}
+
+func TestUserTaggedFeedWithMaxIDAndTimestamp(t *testing.T) {
+	if skip {
+		t.Skip("Empty username or password , Skipping ...")
+	}
+
+	_, err := insta.UserTaggedFeed(17644112, "25025320", "25025320") // ID from elonmusk
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	t.Log("Finished")
+}
+
 func TestSearchTags(t *testing.T) {
 	if skip {
 		t.Skip("Empty username or password , Skipping ...")
