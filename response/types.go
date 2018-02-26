@@ -333,7 +333,13 @@ type DirectPendingRequests struct {
 			LeftUsers        []interface{}    `json:"left_users"`
 			NextMinID        string           `json:"next_min_id"`
 			Muted            bool             `json:"muted"`
-			Items            []ItemMediaShare `json:"items"`
+			Items            []struct {
+				UserID        int64  `json:"user_id"`
+				Text          string `json:"text"`
+				ItemType      string `json:"item_type"`
+				Timestamp     int64  `json:"timestamp"`
+				ItemID        string `json:"item_id"`
+			} `json:"items"`
 			ThreadType       string           `json:"thread_type"`
 			MoreAvailableMax bool             `json:"more_available_max"`
 			ThreadTitle      string           `json:"thread_title"`
@@ -403,7 +409,13 @@ type DirectThread struct {
 		LeftUsers        []interface{}    `json:"left_users"`
 		NextMinID        string           `json:"next_min_id"`
 		Muted            bool             `json:"muted"`
-		Items            []ItemMediaShare `json:"items"`
+		Items            []struct {
+			UserID        int64  `json:"user_id"`
+			Text          string `json:"text"`
+			ItemType      string `json:"item_type"`
+			Timestamp     int64  `json:"timestamp"`
+			ItemID        string `json:"item_id"`
+		} `json:"items"`
 		ThreadType       string           `json:"thread_type"`
 		MoreAvailableMax bool             `json:"more_available_max"`
 		ThreadTitle      string           `json:"thread_title"`
@@ -1092,7 +1104,13 @@ type DirectListResponse struct {
 			ThreadID     string           `json:"thread_id"`
 			Inviter      User             `json:"inviter"`
 			ThreadTitle  string           `json:"thread_title"`
-			Items        []ItemMediaShare `json:"items"`
+			Items            []struct {
+				UserID        int64  `json:"user_id"`
+				Text          string `json:"text"`
+				ItemType      string `json:"item_type"`
+				Timestamp     int64  `json:"timestamp"`
+				ItemID        string `json:"item_id"`
+			} `json:"items"`
 			Muted        bool             `json:"muted"`
 			Pending      bool             `json:"pending"`
 			HasOlder     bool             `json:"has_older"`
