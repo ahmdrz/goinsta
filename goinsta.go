@@ -273,13 +273,17 @@ func (insta *Instagram) UserFeed(userID int64, maxID, minTimestamp string) (resp
 }
 
 // UserTaggedFeed - Returns the feed for medua a given user is tagged in
-func (insta *Instagram) UserTaggedFeed(userID int64, maxID, minTimestamp string) (response.UserFeedResponse, error) {
-	resp := response.UserFeedResponse{}
+func (insta *Instagram) UserTaggedFeed(userID, maxID int64, minTimestamp string) (response.UserTaggedFeedResponse, error) {
+	resp := response.UserTaggedFeedResponse{}
+	maxid := ""
+	if maxID != 0 {
+		maxid = string(maxID)
+	}
 
 	body, err := insta.sendRequest(&reqOptions{
 		Endpoint: fmt.Sprintf("usertags/%d/feed/", userID),
 		Query: map[string]string{
-			"max_id":         maxID,
+			"max_id":         maxid,
 			"rank_token":     insta.Informations.RankToken,
 			"min_timestamp":  minTimestamp,
 			"ranked_content": "true",
