@@ -1264,7 +1264,7 @@ func (insta *Instagram) GetUserStories(userID int64) (response.StoryResponse, er
 		return result, nil
 	}
 
-	bytes, err := insta.sendSimpleRequest("feed/user/%d/story/", userID)
+	bytes, err := insta.sendSimpleRequest("feed/user/%d/reel_media/", userID)
 	if err != nil {
 		return result, err
 	}
