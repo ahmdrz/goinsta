@@ -123,6 +123,153 @@ type LocationFeedResponse struct {
 	NextMaxID           string              `json:"next_max_id"`
 	Items               []MediaItemResponse `json:"items"`
 	RankedItems         []MediaItemResponse `json:"ranked_items"`
+	Story               struct {
+		ID              string      `json:"id"`
+		LatestReelMedia int         `json:"latest_reel_media"`
+		ExpiringAt      int         `json:"expiring_at"`
+		Seen            interface{} `json:"seen"`
+		CanReply        bool        `json:"can_reply"`
+		CanReshare      bool        `json:"can_reshare"`
+		ReelType        string      `json:"reel_type"`
+		Owner           struct {
+			Type               string  `json:"type"`
+			Pk                 int     `json:"pk"`
+			Name               string  `json:"name"`
+			ProfilePicURL      string  `json:"profile_pic_url"`
+			ProfilePicUsername string  `json:"profile_pic_username"`
+			ShortName          string  `json:"short_name"`
+			Lng                float64 `json:"lng"`
+			Lat                float64 `json:"lat"`
+			LocationDict       struct {
+				Pk               int     `json:"pk"`
+				Name             string  `json:"name"`
+				Address          string  `json:"address"`
+				City             string  `json:"city"`
+				ShortName        string  `json:"short_name"`
+				Lng              float64 `json:"lng"`
+				Lat              float64 `json:"lat"`
+				ExternalSource   string  `json:"external_source"`
+				FacebookPlacesID int64   `json:"facebook_places_id"`
+			} `json:"location_dict"`
+		} `json:"owner"`
+		Location struct {
+			Type               string  `json:"type"`
+			Pk                 int     `json:"pk"`
+			Name               string  `json:"name"`
+			ProfilePicURL      string  `json:"profile_pic_url"`
+			ProfilePicUsername string  `json:"profile_pic_username"`
+			ShortName          string  `json:"short_name"`
+			Lng                float64 `json:"lng"`
+			Lat                float64 `json:"lat"`
+			LocationDict       struct {
+				Pk               int     `json:"pk"`
+				Name             string  `json:"name"`
+				Address          string  `json:"address"`
+				City             string  `json:"city"`
+				ShortName        string  `json:"short_name"`
+				Lng              float64 `json:"lng"`
+				Lat              float64 `json:"lat"`
+				ExternalSource   string  `json:"external_source"`
+				FacebookPlacesID int64   `json:"facebook_places_id"`
+			} `json:"location_dict"`
+		} `json:"location"`
+		Items []struct {
+			TakenAt         int    `json:"taken_at"`
+			Pk              int64  `json:"pk"`
+			ID              string `json:"id"`
+			DeviceTimestamp int64  `json:"device_timestamp"`
+			MediaType       int    `json:"media_type"`
+			Code            string `json:"code"`
+			ClientCacheKey  string `json:"client_cache_key"`
+			FilterType      int    `json:"filter_type"`
+			ImageVersions2  struct {
+				Candidates []struct {
+					Width  int    `json:"width"`
+					Height int    `json:"height"`
+					URL    string `json:"url"`
+				} `json:"candidates"`
+			} `json:"image_versions2"`
+			OriginalWidth   int     `json:"original_width"`
+			OriginalHeight  int     `json:"original_height"`
+			CaptionPosition float64 `json:"caption_position"`
+			IsReelMedia     bool    `json:"is_reel_media"`
+			VideoVersions   []struct {
+				Type   int    `json:"type"`
+				Width  int    `json:"width"`
+				Height int    `json:"height"`
+				URL    string `json:"url"`
+				ID     string `json:"id"`
+			} `json:"video_versions"`
+			HasAudio      bool    `json:"has_audio"`
+			VideoDuration float64 `json:"video_duration"`
+			User          struct {
+				Pk                         int    `json:"pk"`
+				Username                   string `json:"username"`
+				FullName                   string `json:"full_name"`
+				IsPrivate                  bool   `json:"is_private"`
+				ProfilePicURL              string `json:"profile_pic_url"`
+				ProfilePicID               string `json:"profile_pic_id"`
+				IsVerified                 bool   `json:"is_verified"`
+				HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
+				IsUnpublished              bool   `json:"is_unpublished"`
+				IsFavorite                 bool   `json:"is_favorite"`
+			} `json:"user"`
+			Caption              interface{}   `json:"caption"`
+			CaptionIsEdited      bool          `json:"caption_is_edited"`
+			PhotoOfYou           bool          `json:"photo_of_you"`
+			CanViewerSave        bool          `json:"can_viewer_save"`
+			OrganicTrackingToken string        `json:"organic_tracking_token"`
+			ExpiringAt           int           `json:"expiring_at"`
+			ImportedTakenAt      int           `json:"imported_taken_at"`
+			IsDashEligible       int           `json:"is_dash_eligible"`
+			VideoDashManifest    string        `json:"video_dash_manifest"`
+			NumberOfQualities    int           `json:"number_of_qualities"`
+			ReelMentions         []interface{} `json:"reel_mentions"`
+			StoryLocations       []struct {
+				X        float64 `json:"x"`
+				Y        float64 `json:"y"`
+				Z        int     `json:"z"`
+				Width    float64 `json:"width"`
+				Height   float64 `json:"height"`
+				Rotation float64 `json:"rotation"`
+				IsPinned int     `json:"is_pinned"`
+				Location struct {
+					Pk               int     `json:"pk"`
+					Name             string  `json:"name"`
+					Address          string  `json:"address"`
+					City             string  `json:"city"`
+					ShortName        string  `json:"short_name"`
+					Lng              float64 `json:"lng"`
+					Lat              float64 `json:"lat"`
+					ExternalSource   string  `json:"external_source"`
+					FacebookPlacesID int64   `json:"facebook_places_id"`
+				} `json:"location"`
+			} `json:"story_locations"`
+			StoryEvents   []interface{} `json:"story_events"`
+			StoryHashtags []struct {
+				X        float64 `json:"x"`
+				Y        float64 `json:"y"`
+				Z        int     `json:"z"`
+				Width    float64 `json:"width"`
+				Height   float64 `json:"height"`
+				Rotation float64 `json:"rotation"`
+				IsPinned int     `json:"is_pinned"`
+				Hashtag  struct {
+					Name string `json:"name"`
+					ID   int64  `json:"id"`
+				} `json:"hashtag"`
+			} `json:"story_hashtags"`
+			StoryPolls            []interface{} `json:"story_polls"`
+			StoryFeedMedia        []interface{} `json:"story_feed_media"`
+			StorySoundOn          []interface{} `json:"story_sound_on"`
+			StorySliders          []interface{} `json:"story_sliders"`
+			CanReshare            bool          `json:"can_reshare"`
+			CreativeConfig        interface{}   `json:"creative_config"`
+			SupportsReelReactions bool          `json:"supports_reel_reactions"`
+		} `json:"items"`
+		PrefetchCount       int   `json:"prefetch_count"`
+		UniqueIntegerReelID int64 `json:"unique_integer_reel_id"`
+	} `json:"story"`
 }
 
 // ImageVersions struct for image information , urls and etc
