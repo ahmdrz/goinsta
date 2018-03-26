@@ -43,7 +43,8 @@ func main() {
 	insta := goinsta.New("USERNAME", "PASSWORD")
 
 	if err := insta.Login(); err != nil {
-		panic(err)
+		fmt.Println(err)
+		return
 	}
 
 	defer insta.Logout()
