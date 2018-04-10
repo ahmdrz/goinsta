@@ -1103,6 +1103,7 @@ func (insta *Instagram) TotalUserFollowing(userID int64) (response.UsersResponse
 		}
 		resp.NextMaxID = temp_resp.NextMaxID
 		resp.Status = temp_resp.Status
+		time.Sleep(5 * time.Second)
 	}
 }
 
@@ -1120,6 +1121,7 @@ func (insta *Instagram) TotalUserFollowers(userID int64) (response.UsersResponse
 		}
 		resp.NextMaxID = temp_resp.NextMaxID
 		resp.Status = temp_resp.Status
+		time.Sleep(5 * time.Second)
 	}
 }
 
