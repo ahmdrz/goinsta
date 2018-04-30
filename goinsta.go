@@ -1198,6 +1198,8 @@ func (insta *Instagram) SearchFacebookUsers(query string) ([]byte, error) {
 	})
 }
 
+// DirectMessage sends direct message to recipient.
+// Recipient must be user id.
 func (insta *Instagram) DirectMessage(recipient string, message string) (response.DirectMessageResponse, error) {
 	result := response.DirectMessageResponse{}
 	recipients, err := json.Marshal([][]string{{recipient}})
