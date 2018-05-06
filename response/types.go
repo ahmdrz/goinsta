@@ -1227,60 +1227,84 @@ type ItemMediaShare struct {
 	MediaShare Item `json:"media_share"`
 }
 
-// DirectListResponse is list of directs
 type DirectListResponse struct {
-	PendingRequestsTotal int    `json:"pending_requests_total"`
-	SeqID                int    `json:"seq_id"`
-	Status               string `json:"status"`
-	Inbox                struct {
-		HasOlder      bool   `json:"has_older"`
-		OldestCursor  string `json:"oldest_cursor"`
-		UnseenCount   int    `json:"unseen_count"`
-		UnseenCountTs int64  `json:"unseen_count_ts"`
-		Threads       []struct {
-			ThreadType     string `json:"thread_type"`
-			LastActivityAt int64  `json:"last_activity_at"`
-			LastSeenAt     struct {
-				Num4178028611 struct {
-					Timestamp string `json:"timestamp"`
-					ItemID    string `json:"item_id"`
-				} `json:"4178028611"`
-			} `json:"last_seen_at"`
-			ViewerID     int64            `json:"viewer_id"`
-			OldestCursor string           `json:"oldest_cursor"`
-			LeftUsers    []interface{}    `json:"left_users"`
-			ThreadID     string           `json:"thread_id"`
-			Inviter      User             `json:"inviter"`
-			ThreadTitle  string           `json:"thread_title"`
-			Items        []ItemMediaShare `json:"items"`
-			Muted        bool             `json:"muted"`
-			Pending      bool             `json:"pending"`
-			HasOlder     bool             `json:"has_older"`
-			Canonical    bool             `json:"canonical"`
-			HasNewer     bool             `json:"has_newer"`
-			Named        bool             `json:"named"`
-			Users        []struct {
+	Inbox struct {
+		Threads []struct {
+			ThreadID   string `json:"thread_id"`
+			ThreadV2ID int64  `json:"thread_v2_id"`
+			Users      []struct {
+				Pk               int64  `json:"pk"`
 				Username         string `json:"username"`
+				FullName         string `json:"full_name"`
 				IsPrivate        bool   `json:"is_private"`
+				ProfilePicURL    string `json:"profile_pic_url"`
+				ProfilePicID     string `json:"profile_pic_id"`
 				FriendshipStatus struct {
-					IsPrivate       bool `json:"is_private"`
-					OutgoingRequest bool `json:"outgoing_request"`
 					Following       bool `json:"following"`
 					Blocking        bool `json:"blocking"`
+					IsPrivate       bool `json:"is_private"`
 					IncomingRequest bool `json:"incoming_request"`
+					OutgoingRequest bool `json:"outgoing_request"`
+					IsBestie        bool `json:"is_bestie"`
 				} `json:"friendship_status"`
-				ProfilePicURL              string `json:"profile_pic_url"`
-				HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
+				IsVerified                 bool `json:"is_verified"`
+				HasAnonymousProfilePicture bool `json:"has_anonymous_profile_picture"`
+			} `json:"users"`
+			LeftUsers []interface{} `json:"left_users"`
+			Items     []struct {
+				ItemID        string `json:"item_id"`
+				UserID        int64  `json:"user_id"`
+				Timestamp     int64  `json:"timestamp"`
+				ItemType      string `json:"item_type"`
+				Text          string `json:"text"`
+				ClientContext string `json:"client_context"`
+			} `json:"items"`
+			LastActivityAt            int64  `json:"last_activity_at"`
+			Muted                     bool   `json:"muted"`
+			IsPin                     bool   `json:"is_pin"`
+			Named                     bool   `json:"named"`
+			Canonical                 bool   `json:"canonical"`
+			Pending                   bool   `json:"pending"`
+			ValuedRequest             bool   `json:"valued_request"`
+			ThreadType                string `json:"thread_type"`
+			ViewerID                  int64  `json:"viewer_id"`
+			ThreadTitle               string `json:"thread_title"`
+			PendingScore              int64  `json:"pending_score"`
+			ReshareSendCount          int    `json:"reshare_send_count"`
+			ReshareReceiveCount       int    `json:"reshare_receive_count"`
+			ExpiringMediaSendCount    int    `json:"expiring_media_send_count"`
+			ExpiringMediaReceiveCount int    `json:"expiring_media_receive_count"`
+			Inviter                   struct {
 				Pk                         int64  `json:"pk"`
+				Username                   string `json:"username"`
+				FullName                   string `json:"full_name"`
+				IsPrivate                  bool   `json:"is_private"`
+				ProfilePicURL              string `json:"profile_pic_url"`
 				ProfilePicID               string `json:"profile_pic_id"`
 				IsVerified                 bool   `json:"is_verified"`
-				FullName                   string `json:"full_name"`
-			} `json:"users"`
-			IsSpam       bool   `json:"is_spam"`
+				HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
+				ReelAutoArchive            string `json:"reel_auto_archive"`
+			} `json:"inviter"`
+			HasOlder   bool `json:"has_older"`
+			HasNewer   bool `json:"has_newer"`
+			LastSeenAt struct {
+				Num6107347699 struct {
+					Timestamp string `json:"timestamp"`
+					ItemID    string `json:"item_id"`
+				} `json:"6107347699"`
+			} `json:"last_seen_at"`
 			NewestCursor string `json:"newest_cursor"`
+			OldestCursor string `json:"oldest_cursor"`
+			IsSpam       bool   `json:"is_spam"`
 		} `json:"threads"`
+		HasOlder            bool  `json:"has_older"`
+		UnseenCount         int   `json:"unseen_count"`
+		UnseenCountTs       int64 `json:"unseen_count_ts"`
+		BlendedInboxEnabled bool  `json:"blended_inbox_enabled"`
 	} `json:"inbox"`
-	PendingRequestsUsers []interface{} `json:"pending_requests_users"`
+	SeqID                int    `json:"seq_id"`
+	PendingRequestsTotal int    `json:"pending_requests_total"`
+	Status               string `json:"status"`
 }
 
 type FollowingRecentActivityResponse struct {
