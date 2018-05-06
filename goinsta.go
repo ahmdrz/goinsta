@@ -183,9 +183,6 @@ func (insta *Instagram) Login() error {
 	insta.GetRankedRecipients()
 	insta.GetRecentRecipients()
 	insta.MegaphoneLog()
-	insta.GetV2Inbox()
-	insta.GetRecentActivity()
-	insta.GetReelsTrayFeed()
 
 	return nil
 }
@@ -962,9 +959,15 @@ func (insta *Instagram) GetRecentRecipients() ([]byte, error) {
 	return insta.sendSimpleRequest("direct_share/recent_recipients/")
 }
 
-func (insta *Instagram) GetV2Inbox() (response.DirectListResponse, error) {
+func (insta *Instagram) GetV2Inbox(cursor string) (response.DirectListResponse, error) {
 	result := response.DirectListResponse{}
-	body, err := insta.sendSimpleRequest("direct_v2/inbox/?")
+
+	body, err := insta.sendRequest(&reqOptions{
+		Endpoint: "direct_v2/inbox/",
+		Query: map[string]string{
+			"cursor": cursor,
+		},
+	})
 	if err != nil {
 		return result, err
 	}
