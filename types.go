@@ -6,23 +6,28 @@ import (
 )
 
 type Instagram struct {
-	username  string
-	password  string
-	deviceID  string
-	uuid      string
+	user string
+	pass string
+	// device id
+	dID string
+	// uuid
+	uuid string
+	// rankToken
 	rankToken string
-	token     string
-	phoneID   string
+	// token
+	token string
+	// phone id
+	pid string
 
 	FriendShip *FriendShip
 	Users      *Users
 
-	CurrentUser *CurrentUser
+	// Account stores all personal data of the user and his/her options.
+	Account *Account
 
-	isLoggedIn bool
-	cookiejar  *cookiejar.Jar
-	transport  http.Transport
-	proxy      string
+	logged bool
+
+	c *http.Client
 }
 
 type FriendShip struct {
