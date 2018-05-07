@@ -10,5 +10,5 @@ func NewAccount(inst *Instagram) (*Account, error) {
 	account := &Account{
 		inst: inst,
 	}
-	return account, err
+	return account, nil
 }
