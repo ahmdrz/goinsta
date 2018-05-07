@@ -9,33 +9,54 @@ import (
 	"time"
 )
 
-// New returns pointer to Instagram structure.
-func New(username, password string) *Instagram {
-	instagram := &Instagram{
-		username: username,
-		password: password,
-		deviceID: generateDeviceID(generateMD5Hash(username + password)),
-		uuid:     generateUUID(true),
-		phoneID:  generateUUID(true),
+// New creates Instagram structure
+func New(username, password string) (*Instagram, error) {
+	jar, err := cookiejar.New(nil)
+	if err != nil {
+		return nil, err
 	}
 
-	instagram.FriendShip = &FriendShip{
-		instagram: instagram,
+	inst := &Instagram{
+		user: username,
+		pass: password,
+		dID:  generateDeviceID(generateMD5Hash(username + password)),
+		uuid: generateUUID(true),
+		pid:  generateUUID(true),
+		c: &http.Client{
+			Jar: jar,
+		},
 	}
 
-	instagram.Users = &Users{
-		instagram: instagram,
+	inst.FriendShip = &FriendShip{
+		inst: ist,
 	}
 
-	return instagram
+	inst.Users = &Users{
+		inst: ist,
+	}
+
+	return inst, err
 }
 
-func (i *Instagram) SetUser(user string) {
-	i.username = user
+func NewWithProxy(user, pass, url string) (*Instagram, error) {
+	inst, err := New(user, pass)
+	if err == nil {
+		uri, err := url.Parse(url)
+		if err == nil {
+			inst.c.Transport = http.ProxyURL(uri)
+		}
+	}
+	return inst, err
 }
 
-func (i *Instagram) SetPass(pass string) {
-	i.password = pass
+// ChangeTo logouts from the current account and login into another
+func (inst *Instagram) ChangeTo(user, pass string) (err error) {
+	inst.Logout()
+	inst, err = inst.New(user, pass)
+	if err == nil {
+		err = inst.Login()
+	}
+	return
 }
 
 func (insta *Instagram) Export(path string) error {
@@ -56,8 +77,6 @@ func (insta *Instagram) Export(path string) error {
 }
 
 func (insta *Instagram) Login() error {
-	insta.cookiejar, _ = cookiejar.New(nil)
-
 	body, err := insta.sendRequest(&reqOptions{
 		Endpoint:   "si/fetch_headers/",
 		IsLoggedIn: true,
