@@ -110,11 +110,9 @@ func (insta *Instagram) prepareData(otherData ...map[string]interface{}) (string
 		"_uid":       insta.CurrentUser.ID,
 		"_csrftoken": insta.token,
 	}
-	if len(otherData) > 0 {
-		for i := range otherData {
-			for key, value := range otherData[i] {
-				data[key] = value
-			}
+	for i := range otherData {
+		for key, value := range otherData[i] {
+			data[key] = value
 		}
 	}
 	bytes, err := json.Marshal(data)
