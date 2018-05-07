@@ -2,7 +2,6 @@ package goinsta
 
 import (
 	"net/http"
-	"net/http/cookiejar"
 )
 
 type Instagram struct {
@@ -19,23 +18,16 @@ type Instagram struct {
 	// phone id
 	pid string
 
-	FriendShip *FriendShip
-	Users      *Users
+	// Instagram objects
 
+	// Users is the user interaction
+	Users *Users
 	// Account stores all personal data of the user and his/her options.
 	Account *Account
 
 	logged bool
 
 	c *http.Client
-}
-
-type FriendShip struct {
-	instagram *Instagram
-}
-
-type Users struct {
-	instagram *Instagram
 }
 
 type UserResponse struct {

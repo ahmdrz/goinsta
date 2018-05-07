@@ -32,7 +32,7 @@ func (insta *Instagram) sendSimpleRequest(uri string, a ...interface{}) (body []
 }
 
 func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
-	if !inst.isLoggedIn && !o.IsLoggedIn {
+	if !inst.logged {
 		return nil, ErrLoggedOut
 	}
 
@@ -72,7 +72,7 @@ func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 	req.Header.Set("Accept-Language", "en-US")
 	req.Header.Set("User-Agent", goInstaUserAgent)
 
-	resp, err := client.Do(req)
+	resp, err := inst.c.Do(req)
 	if err != nil {
 		return body, err
 	}
@@ -106,8 +106,8 @@ func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 
 func (insta *Instagram) prepareData(otherData ...map[string]interface{}) (string, error) {
 	data := map[string]interface{}{
-		"_uuid":      insta.uuid,
-		"_uid":       insta.CurrentUser.ID,
+		"_uuid": insta.uuid,
+		//"_uid":       insta.CurrentUser.ID,
 		"_csrftoken": insta.token,
 	}
 	for i := range otherData {

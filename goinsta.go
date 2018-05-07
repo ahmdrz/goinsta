@@ -1,10 +1,12 @@
-package goinst
+package goinsta
 
 import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"net/http/cookiejar"
+	neturl "net/url"
 	"strconv"
 	"time"
 )
@@ -27,13 +29,7 @@ func New(username, password string) (*Instagram, error) {
 		},
 	}
 
-	inst.FriendShip = &FriendShip{
-		inst: ist,
-	}
-
-	inst.Users = &Users{
-		inst: ist,
-	}
+	inst.Users, err = NewUsers(inst)
 
 	return inst, err
 }
@@ -41,9 +37,11 @@ func New(username, password string) (*Instagram, error) {
 func NewWithProxy(user, pass, url string) (*Instagram, error) {
 	inst, err := New(user, pass)
 	if err == nil {
-		uri, err := url.Parse(url)
+		uri, err := neturl.Parse(url)
+		_ = uri
 		if err == nil {
-			inst.c.Transport = http.ProxyURL(uri)
+			// TODO
+			//inst.c.Transport = proxhttp.ProxyURL(uri)
 		}
 	}
 	return inst, err
@@ -52,27 +50,29 @@ func NewWithProxy(user, pass, url string) (*Instagram, error) {
 // ChangeTo logouts from the current account and login into another
 func (inst *Instagram) ChangeTo(user, pass string) (err error) {
 	inst.Logout()
-	inst, err = inst.New(user, pass)
+	inst, err = New(user, pass)
 	if err == nil {
 		err = inst.Login()
 	}
 	return
 }
 
+// Export ...
+// TODO: Import and export (in other good readable format)
 func (inst *Instagram) Export(path string) error {
-	bytes, err := json.Marshal(map[string]interface{}{
-		"uuid":         inst.uuid,
-		"rank_token":   inst.rankToken,
-		"token":        inst.token,
-		"phone_id":     inst.phoneID,
-		"device_id":    inst.deviceID,
-		"proxy":        inst.proxy,
-		"is_logged_in": inst.isLoggedIn,
-		"cookie_jar":   inst.cookiejar,
-	})
+	bytes, err := json.Marshal(
+		map[string]interface{}{
+			"uuid":       inst.uuid,
+			"rank_token": inst.rankToken,
+			"token":      inst.token,
+			"phone_id":   inst.pid,
+			"device_id":  inst.dID,
+			"client":     inst.c,
+		})
 	if err != nil {
 		return err
 	}
+
 	return ioutil.WriteFile(path, bytes, 0755)
 }
 
@@ -85,23 +85,23 @@ func (inst *Instagram) Login() error {
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("login failed for %s error %s", inst.username, err.Error())
+		return fmt.Errorf("login failed for %s error %s", inst.user, err.Error())
 	}
 
 	result, _ := json.Marshal(map[string]interface{}{
 		"guid":                inst.uuid,
 		"login_attempt_count": 0,
 		"_csrftoken":          inst.token,
-		"device_id":           inst.deviceID,
-		"phone_id":            inst.phoneID,
-		"username":            inst.username,
-		"password":            inst.password,
+		"device_id":           inst.dID,
+		"phone_id":            inst.pid,
+		"username":            inst.user,
+		"password":            inst.pass,
 	})
 
 	body, err = inst.sendRequest(&reqOptions{
-		Endpoint:  "accounts/login/",
-		QueryData: generateSignature(string(result)),
-		IsPost:    true,
+		Endpoint: "accounts/login/",
+		Query:    generateSignature(string(result)),
+		IsPost:   true,
 	})
 	if err != nil {
 		return err
@@ -117,12 +117,10 @@ func (inst *Instagram) Login() error {
 		return err
 	}
 
-	inst.CurrentUser.UserResponse = Result.LoggedInUser
 	inst.rankToken = strconv.FormatInt(Result.LoggedInUser.ID, 10) + "_" + inst.uuid
-	inst.isLoggedIn = true
+	inst.logged = true
 
 	inst.SyncFeatures()
-	inst.FriendShip.AutoCompleteUserList()
 	// inst.Timeline("")
 	// inst.GetRankedRecipients()
 	// inst.GetRecentRecipients()
@@ -137,6 +135,7 @@ func (inst *Instagram) Login() error {
 // Logout closes current session
 func (inst *Instagram) Logout() error {
 	_, err := inst.sendSimpleRequest("accounts/logout/")
+	inst.logged = false
 	inst.c.Jar = nil
 	inst.c = nil
 	return err
@@ -146,8 +145,8 @@ func (inst *Instagram) Logout() error {
 func (inst *Instagram) SyncFeatures() error {
 	data, err := inst.prepareData(
 		map[string]interface{}{
-			"id":          inst.CurrentUser.ID,
-			"experiments": GOINSTA_EXPERIMENTS,
+			//"id":          inst.CurrentUser.ID,
+			"experiments": goInstaExperiments,
 		},
 	)
 	if err != nil {
@@ -155,9 +154,9 @@ func (inst *Instagram) SyncFeatures() error {
 	}
 
 	_, err = inst.sendRequest(&reqOptions{
-		Endpoint:  "qe/sync/",
-		QueryData: generateSignature(data),
-		IsPost:    true,
+		Endpoint: "qe/sync/",
+		Query:    generateSignature(data),
+		IsPost:   true,
 	})
 	return err
 }
@@ -166,11 +165,11 @@ func (inst *Instagram) SyncFeatures() error {
 func (inst *Instagram) MegaphoneLog() error {
 	data, err := inst.prepareData(
 		map[string]interface{}{
-			"id":        inst.CurrentUser.ID,
+			//"id":        inst.CurrentUser.ID,
 			"type":      "feed_aysf",
 			"action":    "seen",
 			"reason":    "",
-			"device_id": inst.deviceID,
+			"device_id": inst.dID,
 			"uuid":      generateMD5Hash(string(time.Now().Unix())),
 		},
 	)
@@ -178,9 +177,9 @@ func (inst *Instagram) MegaphoneLog() error {
 		return err
 	}
 	_, err = inst.sendRequest(&reqOptions{
-		Endpoint:  "megaphone/log/",
-		QueryData: generateSignature(data),
-		IsPost:    true,
+		Endpoint: "megaphone/log/",
+		Query:    generateSignature(data),
+		IsPost:   true,
 	})
 	return err
 }
@@ -189,7 +188,7 @@ func (inst *Instagram) MegaphoneLog() error {
 // return error if status was not 'ok' or runtime error
 func (inst *Instagram) Expose() error {
 	data, err := inst.prepareData(map[string]interface{}{
-		"id":         inst.CurrentUser.ID,
+		//"id":         inst.CurrentUser.ID,
 		"experiment": "ig_android_profile_contextual_feed",
 	})
 	if err != nil {
@@ -197,9 +196,9 @@ func (inst *Instagram) Expose() error {
 	}
 
 	_, err = inst.sendRequest(&reqOptions{
-		Endpoint:  "qe/expose/",
-		QueryData: generateSignature(data),
-		IsPost:    true,
+		Endpoint: "qe/expose/",
+		Query:    generateSignature(data),
+		IsPost:   true,
 	})
 
 	return err

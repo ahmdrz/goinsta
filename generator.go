@@ -47,10 +47,13 @@ func generateUUID(replace bool) string {
 	return tUUID
 }
 
-func generateSignature(data string) string {
-	return fmt.Sprintf("ig_sig_key_version=%s&signed_body=%s.%s",
-		GOINSTA_SIG_KEY_VERSION,
-		generateHMAC(data, GOINSTA_IG_SIG_KEY),
-		url.QueryEscape(data),
-	)
+func generateSignature(data string) map[string]string {
+	return map[string]string{
+		"ig_sig_key_version": fmt.Sprintf(
+			"%s&signed_body=%s.%s",
+			goInstaSigKeyVersion,
+			generateHMAC(data, goInstaIGSigKey),
+			url.QueryEscape(data),
+		),
+	}
 }
