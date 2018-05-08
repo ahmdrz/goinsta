@@ -10,5 +10,7 @@ const (
 
 // Endpoints (with format vars)
 const (
-	urlUserByName = "users/%s/usernameinfo/"
+	urlUserByName   = "users/%s/usernameinfo/"
+	urlFetchHeaders = "si/fetch_headers/"
+	urlLogin        = "accounts/login/"
 )
