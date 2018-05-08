@@ -12,12 +12,7 @@ import (
 )
 
 // New creates Instagram structure
-func New(username, password string) (*Instagram, error) {
-	jar, err := cookiejar.New(nil)
-	if err != nil {
-		return nil, err
-	}
-
+func New(username, password string) *Instagram {
 	inst := &Instagram{
 		user: username,
 		pass: password,
@@ -26,15 +21,13 @@ func New(username, password string) (*Instagram, error) {
 		),
 		uuid: generateUUID(true),
 		pid:  generateUUID(true),
-		c: &http.Client{
-			Jar: jar,
-		},
+		c:    &http.Client{},
 	}
 
 	inst.User = NewUser(inst)
 	inst.Account = NewAccount(inst)
 
-	return inst, err
+	return inst
 }
 
 func NewWithProxy(user, pass, url string) (*Instagram, error) {
@@ -83,6 +76,12 @@ func (inst *Instagram) Export(path string) error {
 //
 // Password will be deleted after login
 func (inst *Instagram) Login() error {
+	jar, err := cookiejar.New(nil)
+	if err != nil {
+		return err
+	}
+	inst.c.Jar = jar
+
 	body, err := inst.sendRequest(
 		&reqOptions{
 			Endpoint: urlFetchHeaders,
@@ -175,6 +174,18 @@ func (inst *Instagram) SyncFeatures() error {
 			IsPost:   true,
 		},
 	)
+	if err != nil {
+		return err
+	}
+
+	_, err = inst.sendRequest(
+		&reqOptions{
+			Endpoint: urlAutoComplete,
+			Query: map[string]string{
+				"version": "2",
+			},
+		},
+	)
 	return err
 }
 
@@ -187,7 +198,7 @@ func (inst *Instagram) MegaphoneLog() error {
 			"action":    "seen",
 			"reason":    "",
 			"device_id": inst.dID,
-			"uuid":      generateMD5Hash(string(time.Now().Unix())),
+			"uuid":      generateMD5Hash(b2s(time.Now().Unix())),
 		},
 	)
 	if err != nil {

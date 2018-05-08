@@ -45,3 +45,9 @@ type PicURLInfo struct {
 	URL    string `json:"url"`
 	Width  int    `json:"width"`
 }
+
+type instaError struct {
+	Message   string `json:"message"`
+	Status    string `json:"status"`
+	ErrorType string `json:"error_type"`
+}

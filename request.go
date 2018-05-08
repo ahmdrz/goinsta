@@ -46,11 +46,6 @@ func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 
 	bf := bytes.NewBuffer([]byte{})
 
-	q := u.Query()
-	for k, v := range o.Query {
-		q.Add(k, v)
-	}
-
 	if o.IsPost {
 		bf.WriteString(q.Encode())
 	} else {
