@@ -34,10 +34,6 @@ func (insta *Instagram) sendSimpleRequest(uri string, a ...interface{}) (body []
 }
 
 func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
-	if !inst.logged {
-		return nil, ErrLoggedOut
-	}
-
 	method := "GET"
 	if o.IsPost {
 		method = "POST"
