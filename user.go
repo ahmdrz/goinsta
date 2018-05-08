@@ -1,5 +1,14 @@
 package goinsta
 
+import (
+	"encoding/json"
+)
+
+type userResp struct {
+	Status string `json:"status"`
+	User   User   `json:"user"`
+}
+
 // User is the representation of instagram's user profile
 type User struct {
 	//Feed *Feed
@@ -69,4 +78,22 @@ func NewUser(inst *Instagram) *User {
 // SetInstagram sets new instagram to user structure
 func (user *User) SetInstagram(inst *Instagram) {
 	user.inst = inst
+}
+
+// ByName stores name information in *User structure (Instagram.User)
+//
+// Last *User data will be remove and replace by the new one
+func (user *User) ByName(name string) error {
+	insta := user.inst
+	body, err := insta.sendSimpleRequest(urlUserByName, name)
+	if err == nil {
+		resp := userResp{}
+		err = json.Unmarshal(body, &resp)
+		if err == nil {
+			// TODO: check status
+			user = &resp.User
+			user.inst = insta
+		}
+	}
+	return err
 }
