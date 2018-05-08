@@ -22,8 +22,8 @@ func generateMD5Hash(text string) string {
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
-func generateHMAC(text, key []byte) string {
-	hasher := hmac.New(sha256.New, key)
+func generateHMAC(text []byte, key string) string {
+	hasher := hmac.New(sha256.New, []byte(key))
 	hasher.Write(text)
 	return hex.EncodeToString(hasher.Sum(nil))
 }
@@ -48,12 +48,9 @@ func generateUUID(replace bool) string {
 }
 
 func generateSignature(data []byte) map[string]string {
-	return map[string]string{
-		"ig_sig_key_version": fmt.Sprintf(
-			"%s&signed_body=%s.%s",
-			goInstaSigKeyVersion,
-			generateHMAC(data, []byte(goInstaIGSigKey)),
-			url.QueryEscape(b2s(data)),
-		),
-	}
+	data := make(map[string]string)
+	data["ig_sig_key_version"] = goInstaSigKeyVersion
+	data["signed_body"] = fmt.Sprintf(
+		"%s.%s", generateHMAC(data, goInstaIGSigKey), url.QueryEscape(b2s(data)),
+	)
 }
