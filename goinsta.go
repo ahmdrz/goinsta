@@ -79,6 +79,9 @@ func (inst *Instagram) Export(path string) error {
 	return ioutil.WriteFile(path, bytes, 0755)
 }
 
+// Login performs instagram login.
+//
+// Password will be deleted after login
 func (inst *Instagram) Login() error {
 	body, err := inst.sendRequest(&reqOptions{
 		Endpoint: "si/fetch_headers/",
@@ -103,6 +106,7 @@ func (inst *Instagram) Login() error {
 		},
 	)
 	if err == nil {
+		inst.pass = ""
 		body, err = inst.sendRequest(
 			&reqOptions{
 				Endpoint: "accounts/login/",

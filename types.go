@@ -27,6 +27,8 @@ type Instagram struct {
 	User *User
 	// Account stores all personal data of the user and his/her options.
 	Account *Account
+	// Search performs searching of multiple things (users, locations...)
+	Search *Search
 
 	logged bool
 
