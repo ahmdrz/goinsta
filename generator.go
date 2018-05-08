@@ -22,9 +22,9 @@ func generateMD5Hash(text string) string {
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
-func generateHMAC(text, key string) string {
-	hasher := hmac.New(sha256.New, []byte(key))
-	hasher.Write([]byte(text))
+func generateHMAC(text, key []byte) string {
+	hasher := hmac.New(sha256.New, key)
+	hasher.Write(text)
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
@@ -47,13 +47,13 @@ func generateUUID(replace bool) string {
 	return tUUID
 }
 
-func generateSignature(data string) map[string]string {
+func generateSignature(data []byte) map[string]string {
 	return map[string]string{
 		"ig_sig_key_version": fmt.Sprintf(
 			"%s&signed_body=%s.%s",
 			goInstaSigKeyVersion,
-			generateHMAC(data, goInstaIGSigKey),
-			url.QueryEscape(data),
+			generateHMAC(data, []byte(goInstaIGSigKey)),
+			url.QueryEscape(b2s(data)),
 		),
 	}
 }
