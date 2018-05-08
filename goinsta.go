@@ -31,14 +31,12 @@ func New(username, password string) *Instagram {
 }
 
 func NewWithProxy(user, pass, url string) (*Instagram, error) {
-	inst, err := New(user, pass)
+	inst := New(user, pass)
+	uri, err := neturl.Parse(url)
+	_ = uri
 	if err == nil {
-		uri, err := neturl.Parse(url)
-		_ = uri
-		if err == nil {
-			// TODO
-			//inst.c.Transport = proxhttp.ProxyURL(uri)
-		}
+		// TODO
+		//inst.c.Transport = proxhttp.ProxyURL(uri)
 	}
 	return inst, err
 }
@@ -46,11 +44,8 @@ func NewWithProxy(user, pass, url string) (*Instagram, error) {
 // ChangeTo logouts from the current account and login into another
 func (inst *Instagram) ChangeTo(user, pass string) (err error) {
 	inst.Logout()
-	inst, err = New(user, pass)
-	if err == nil {
-		err = inst.Login()
-	}
-	return
+	inst = New(user, pass)
+	return inst.Login()
 }
 
 // Export ...
@@ -198,7 +193,7 @@ func (inst *Instagram) MegaphoneLog() error {
 			"action":    "seen",
 			"reason":    "",
 			"device_id": inst.dID,
-			"uuid":      generateMD5Hash(b2s(time.Now().Unix())),
+			"uuid":      generateMD5Hash(string(time.Now().Unix())),
 		},
 	)
 	if err != nil {
