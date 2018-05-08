@@ -7,20 +7,25 @@
 
 ## Features
 
+* **Object independency. Can handle multiple instagram accounts.**
 * **Like Instagram mobile application**. Goinsta is very similar to Instagram official application.
-* **Simple**. Goinsta is made by a lazy programmer!
-* **Backup methods**. You can use `store` package to export/import `goinsta.Instagram` struct.
+* **Simple**. Goinsta is made by lazy programmers!
+* **Backup methods**. You can use `store` package to export/import `goinsta.Instagram` structures (profile information or something else).
 * **No External Dependencies**. Goinsta will not use any Go packages outside of the standard library.
 
 ## New Version !
 
-We are working on `v2` branch , Try it and tell us your suggestions.
+We are working on `alpha` branch. Try it and tell us your suggestions!
 
 ## Installation 
 
+Unstable
+---------
+
 `go get -u -v github.com/ahmdrz/goinsta`
 
-Or
+Stable
+-------
 
 `go get gopkg.in/ahmdrz/goinsta.v1`
 
@@ -72,8 +77,6 @@ Bitcoin : `1KjcfrBPJtM4MfBSGTqpC6RcoEW1KBh15X`
 
 [![Analytics](https://ga-beacon.appspot.com/UA-107698067-1/readme-page)](https://github.com/igrigorik/ga-beacon)
 
-## Features
-- Object independency. Can handle multiple instagram accounts.
 
 ## Schema
 
