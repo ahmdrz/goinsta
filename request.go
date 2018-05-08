@@ -26,9 +26,11 @@ type reqOptions struct {
 }
 
 func (insta *Instagram) sendSimpleRequest(uri string, a ...interface{}) (body []byte, err error) {
-	return insta.sendRequest(&reqOptions{
-		Endpoint: fmt.Sprintf(uri, a...),
-	})
+	return insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(uri, a...),
+		},
+	)
 }
 
 func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
@@ -91,30 +93,29 @@ func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 	}
 
 	if resp.StatusCode != 200 {
-		e := fmt.Errorf("Invalid status code %s", string(body))
 		switch resp.StatusCode {
 		case 400:
-			e = ErrLoggedOut
+			err = ErrLoggedOut
 		case 404:
-			e = ErrNotFound
+			err = ErrNotFound
+		default:
+			err = fmt.Errorf("Invalid status code %s", string(body))
 		}
-		return nil, e
 	}
 
 	return body, err
 }
 
-func (insta *Instagram) prepareData(otherData ...map[string]interface{}) (string, error) {
+func (insta *Instagram) prepareData(other ...map[string]interface{}) ([]byte, error) {
 	data := map[string]interface{}{
-		"_uuid": insta.uuid,
-		//"_uid":       insta.CurrentUser.ID,
+		"_uuid":      insta.uuid,
+		"_uid":       insta.Account.ID,
 		"_csrftoken": insta.token,
 	}
-	for i := range otherData {
-		for key, value := range otherData[i] {
+	for i := range other {
+		for key, value := range other[i] {
 			data[key] = value
 		}
 	}
-	bytes, err := json.Marshal(data)
-	return string(bytes), err
+	return json.Marshal(data)
 }
