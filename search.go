@@ -15,4 +15,5 @@ func NewSearch(inst *Instagram) *Search {
 // ByUser performs a search by username
 func (search *Search) User(user string) error {
 	// TODO
+	return nil
 }
