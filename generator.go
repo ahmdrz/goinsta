@@ -48,9 +48,10 @@ func generateUUID(replace bool) string {
 }
 
 func generateSignature(data []byte) map[string]string {
-	data := make(map[string]string)
-	data["ig_sig_key_version"] = goInstaSigKeyVersion
-	data["signed_body"] = fmt.Sprintf(
+	m := make(map[string]string)
+	m["ig_sig_key_version"] = goInstaSigKeyVersion
+	m["signed_body"] = fmt.Sprintf(
 		"%s.%s", generateHMAC(data, goInstaIGSigKey), url.QueryEscape(b2s(data)),
 	)
+	return m
 }
