@@ -3,13 +3,13 @@ package goinsta
 import (
 	"crypto/hmac"
 	"crypto/md5"
-	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"io"
 	"net/url"
 	"strings"
+
+	"github.com/ahmdrz/goinsta/uuid"
 )
 
 const (
@@ -22,9 +22,9 @@ func generateMD5Hash(text string) string {
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
-func generateHMAC(text []byte, key string) string {
+func generateHMAC(text, key string) string {
 	hasher := hmac.New(sha256.New, []byte(key))
-	hasher.Write(text)
+	hasher.Write([]byte(text))
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
@@ -34,24 +34,21 @@ func generateDeviceID(seed string) string {
 }
 
 func generateUUID(replace bool) string {
-	uuid := make([]byte, 16)
-	io.ReadFull(rand.Reader, uuid)
-	uuid[8] = uuid[8]&^0xc0 | 0x80
-	uuid[6] = uuid[6]&^0xf0 | 0x40
-
-	tUUID := fmt.Sprintf("%x-%x-%x-%x-%x", uuid[0:4], uuid[4:6], uuid[6:8], uuid[8:10], uuid[10:])
-
-	if replace {
-		return strings.Replace(tUUID, "-", "", -1)
+	tempUUID, err := uuid.NewUUID()
+	if err != nil {
+		return "cb479ee7-a50d-49e7-8b7b-60cc1a105e22" // default value when error occurred
 	}
-	return tUUID
+	if replace {
+		return strings.Replace(tempUUID, "-", "", -1)
+	}
+	return tempUUID
 }
 
-func generateSignature(data []byte) map[string]string {
+func generateSignature(data string) map[string]string {
 	m := make(map[string]string)
 	m["ig_sig_key_version"] = goInstaSigKeyVersion
 	m["signed_body"] = fmt.Sprintf(
-		"%s.%s", generateHMAC(data, goInstaIGSigKey), url.QueryEscape(b2s(data)),
+		"%s.%s", generateHMAC(data, goInstaIGSigKey), url.QueryEscape(data),
 	)
 	return m
 }

@@ -83,13 +83,15 @@ func (inst *Instagram) Export(path string) error {
 //
 // Password will be deleted after login
 func (inst *Instagram) Login() error {
-	body, err := inst.sendRequest(&reqOptions{
-		Endpoint: "si/fetch_headers/",
-		Query: map[string]string{
-			"challenge_type": "signup",
-			"guid":           generateUUID(false),
+	body, err := inst.sendRequest(
+		&reqOptions{
+			Endpoint: urlFetchHeaders,
+			Query: map[string]string{
+				"challenge_type": "signup",
+				"guid":           generateUUID(false),
+			},
 		},
-	})
+	)
 	if err != nil {
 		return fmt.Errorf("login failed for %s: %s", inst.user, err.Error())
 	}
@@ -108,8 +110,8 @@ func (inst *Instagram) Login() error {
 	if err == nil {
 		body, err = inst.sendRequest(
 			&reqOptions{
-				Endpoint: "accounts/login/",
-				Query:    generateSignature(result),
+				Endpoint: urlLogin,
+				Query:    generateSignature(b2s(result)),
 				IsPost:   true,
 			},
 		)
@@ -169,7 +171,7 @@ func (inst *Instagram) SyncFeatures() error {
 	_, err = inst.sendRequest(
 		&reqOptions{
 			Endpoint: "qe/sync/",
-			Query:    generateSignature(data),
+			Query:    generateSignature(b2s(data)),
 			IsPost:   true,
 		},
 	)
@@ -194,7 +196,7 @@ func (inst *Instagram) MegaphoneLog() error {
 	_, err = inst.sendRequest(
 		&reqOptions{
 			Endpoint: "megaphone/log/",
-			Query:    generateSignature(data),
+			Query:    generateSignature(b2s(data)),
 			IsPost:   true,
 		},
 	)
@@ -217,7 +219,7 @@ func (inst *Instagram) Expose() error {
 	_, err = inst.sendRequest(
 		&reqOptions{
 			Endpoint: "qe/expose/",
-			Query:    generateSignature(data),
+			Query:    generateSignature(b2s(data)),
 			IsPost:   true,
 		},
 	)

@@ -88,15 +88,14 @@ func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 		return
 	}
 
-	if resp.StatusCode != 200 {
-		switch resp.StatusCode {
-		case 400:
-			err = ErrLoggedOut
-		case 404:
-			err = ErrNotFound
-		default:
-			err = fmt.Errorf("Invalid status code %s", string(body))
-		}
+	switch resp.StatusCode {
+	case 200:
+	case 400:
+		err = ErrLoggedOut
+	case 404:
+		err = ErrNotFound
+	default:
+		err = fmt.Errorf("Invalid status code %s", string(body))
 	}
 
 	return body, err
