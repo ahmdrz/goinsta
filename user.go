@@ -9,20 +9,25 @@ type User struct {
 	//Story *Story
 	//Messages *Messages
 
-	ID                         int64        `json:"pk"`
-	Username                   string       `json:"username"`
-	FullName                   string       `json:"full_name"`
+	// User values shared between user and account
+	ID            int64  `json:"pk"`
+	Username      string `json:"username"`
+	FullName      string `json:"full_name"`
+	Biography     string `json:"biography"`
+	ProfilePicURL string `json:"profile_pic_url"`
+	Email         string `json:"email"`
+	PhoneNumber   string `json:"phone_number"`
+	IsBusiness    bool   `json:"is_business"`
+	Gender        int    `json:"gender"`
+
+	ProfilePicID               string       `json:"profile_pic_id"`
 	HasAnonymousProfilePicture bool         `json:"has_anonymous_profile_picture"`
 	IsPrivate                  bool         `json:"is_private"`
 	IsVerified                 bool         `json:"is_verified"`
-	ProfilePicURL              string       `json:"profile_pic_url"`
-	ProfilePicID               string       `json:"profile_pic_id"`
 	MediaCount                 int          `json:"media_count"`
 	FollowerCount              int          `json:"follower_count"`
 	FollowingCount             int          `json:"following_count"`
 	GeoMediaCount              int          `json:"geo_media_count"`
-	IsBusiness                 bool         `json:"is_business"`
-	Biography                  string       `json:"biography"`
 	ExternalURL                string       `json:"external_url"`
 	HasBiographyTranslation    bool         `json:"has_biography_translation"`
 	ExternalLynxURL            string       `json:"external_lynx_url"`
