@@ -1,37 +1,52 @@
 package goinsta
 
 type User struct {
-	 Json objects and user data
-  Username                   string `json:"username"`
-  Biography                  string `json:"biography"`
-  HasAnonymousProfilePicture bool   `json:"has_anonymouse_profile_picture"`
-  ProfilePictureID           string `json:"profile_pic_id"`
-  ProfilePictureURL          string `json:"profile_pic_url"`
-  FullName                   string `json:"full_name"`
-  ID                         int64  `json:"pk"`
-  IDStr                      string `json:"-"`
-  IsVerified                 bool   `json:"is_verified"`
-  IsPrivate                  bool   `json:"is_private"`
-  IsFavorite                 bool   `json:"is_favorite"`
-  IsUnpublished              bool   `json:"is_unpublished"`
-  IsBusiness                 bool   `json:"is_business"`
-  ExternalLynxURL            string `json:"external_lynx_url"`
-  MediaCount                 int    `json:"media_count"`
-  AutoExpandChaining         bool   `json:"auto_expand_chaining"`
-  FollowingCount             int    `json:"following_count"`
-  FollowerCount              int    `json:"follower_count"`
-  ExternalURL                string `json:"external_url"`
-  HdProfilePicVersions       []struct {
-    Height int    `json:"height"`
-    Width  int    `json:"width"`
-    URL    string `json:"url"`
-  } `json:"hd_profile_pic_versions"`
-  UserTagsCount       int `json:"usertags_count"`
-  HdProfilePicURLInfo struct {
-    Height int    `json:"height"`
-    Width  int    `json:"width"`
-    URL    string `json:"url"`
-  } `json:"hd_profile_pic_url_info"`
-  GeoMediaCount int  `json:"geo_media_count"`
-  HasChaining   bool `json:"has_chaining"`
+	ID                         int64  `json:"pk"`
+	Username                   string `json:"username"`
+	FullName                   string `json:"full_name"`
+	HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
+	IsPrivate                  bool   `json:"is_private"`
+	IsVerified                 bool   `json:"is_verified"`
+	ProfilePicURL              string `json:"profile_pic_url"`
+	ProfilePicID               string `json:"profile_pic_id"`
+	MediaCount                 int    `json:"media_count"`
+	FollowerCount              int    `json:"follower_count"`
+	FollowingCount             int    `json:"following_count"`
+	GeoMediaCount              int    `json:"geo_media_count"`
+	IsBusiness                 bool   `json:"is_business"`
+	Biography                  string `json:"biography"`
+	ExternalURL                string `json:"external_url"`
+	HasBiographyTranslation    bool   `json:"has_biography_translation"`
+	ExternalLynxURL            string `json:"external_lynx_url"`
+	HdProfilePicURLInfo        struct {
+		Height int    `json:"height"`
+		URL    string `json:"url"`
+		Width  int    `json:"width"`
+	} `json:"hd_profile_pic_url_info"`
+	HdProfilePicVersions []struct {
+		Height int    `json:"height"`
+		URL    string `json:"url"`
+		Width  int    `json:"width"`
+	} `json:"hd_profile_pic_versions"`
+	UsertagsCount   int    `json:"usertags_count"`
+	HasChaining     bool   `json:"has_chaining"`
+	IsFavorite      bool   `json:"is_favorite"`
+	ReelAutoArchive string `json:"reel_auto_archive"`
+	School          struct {
+	} `json:"school"`
+	PublicEmail            string  `json:"public_email"`
+	PublicPhoneNumber      string  `json:"public_phone_number"`
+	PublicPhoneCountryCode string  `json:"public_phone_country_code"`
+	ContactPhoneNumber     string  `json:"contact_phone_number"`
+	CityID                 int     `json:"city_id"`
+	CityName               string  `json:"city_name"`
+	AddressStreet          string  `json:"address_street"`
+	DirectMessaging        string  `json:"direct_messaging"`
+	Latitude               float64 `json:"latitude"`
+	Longitude              float64 `json:"longitude"`
+	Category               string  `json:"category"`
+	BusinessContactMethod  string  `json:"business_contact_method"`
+	IsCallToActionEnabled  bool    `json:"is_call_to_action_enabled"`
+	FbPageCallToActionID   string  `json:"fb_page_call_to_action_id"`
+	Zip                    string  `json:"zip"`
 }
