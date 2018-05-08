@@ -2,6 +2,13 @@ package goinsta
 
 // User is the representation of instagram's user profile
 type User struct {
+	//Feed *Feed
+	//Followers *Followers
+	//Following *Following
+	//Status *Friendship
+	//Story *Story
+	//Messages *Messages
+
 	ID                         int64        `json:"pk"`
 	Username                   string       `json:"username"`
 	FullName                   string       `json:"full_name"`
