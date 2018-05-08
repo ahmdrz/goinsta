@@ -106,7 +106,6 @@ func (inst *Instagram) Login() error {
 		},
 	)
 	if err == nil {
-		inst.pass = ""
 		body, err = inst.sendRequest(
 			&reqOptions{
 				Endpoint: "accounts/login/",
@@ -117,6 +116,7 @@ func (inst *Instagram) Login() error {
 		if err != nil {
 			goto end
 		}
+		inst.pass = ""
 
 		var Result struct {
 			User   User   `json:"logged_in_user"`
