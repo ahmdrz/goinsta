@@ -9,7 +9,9 @@ type User struct {
 	//Story *Story
 	//Messages *Messages
 
-	// User values shared between user and account
+	inst *Instagram
+
+	// User values shared between User and Account
 	ID            int64  `json:"pk"`
 	Username      string `json:"username"`
 	FullName      string `json:"full_name"`
@@ -53,4 +55,18 @@ type User struct {
 	IsCallToActionEnabled      bool         `json:"is_call_to_action_enabled"`
 	FbPageCallToActionID       string       `json:"fb_page_call_to_action_id"`
 	Zip                        string       `json:"zip"`
+}
+
+// NewUser creates new user struct to interact with user functions.
+//
+// ...
+func NewUser(inst *Instagram) *User {
+	user := &User{inst: inst}
+
+	return user
+}
+
+// SetInstagram sets new instagram to user structure
+func (user *User) SetInstagram(inst *Instagram) {
+	user.inst = inst
 }
