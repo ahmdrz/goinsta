@@ -11,6 +11,7 @@ const (
 // Endpoints (with format vars)
 const (
 	urlUserByName   = "users/%s/usernameinfo/"
+	urlUserById     = "users/%d/info/"
 	urlFetchHeaders = "si/fetch_headers/"
 	urlLogin        = "accounts/login/"
 	urlAutoComplete = "friendships/autocomplete_user_list/"
