@@ -87,7 +87,7 @@ type StoryMedia struct {
 	Items           []Item   `json:"items"`
 	ReelMentions    []string `json:"reel_mentions"`
 	PrefetchCount   int      `json:"prefetch_count"`
-	HasBestiesMedia int      `json:"has_besties_media"`
+	HasBestiesMedia bool     `json:"has_besties_media"`
 	Status          string   `json:"status"`
 }
 
