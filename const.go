@@ -15,6 +15,10 @@ const (
 	urlSetPrivate = "accounts/set_private/"
 	urlSetPublic  = "accounts/set_public/"
 
+	// account and profile
+	urlFollowers = "friendships/%d/followers/"
+	urlFollowing = "friendships/%d/following/"
+
 	urlUserByName   = "users/%s/usernameinfo/"
 	urlUserById     = "users/%d/info/"
 	urlFetchHeaders = "si/fetch_headers/"
