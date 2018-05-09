@@ -4,8 +4,8 @@ type Search struct {
 	inst *Instagram
 }
 
-// NewSearch creates new Search structure
-func NewSearch(inst *Instagram) *Search {
+// newSearch creates new Search structure
+func newSearch(inst *Instagram) *Search {
 	search := &Search{
 		inst: inst,
 	}

@@ -9,10 +9,10 @@ type Users struct {
 	inst *Instagram
 }
 
-// NewUsers creates new users struct to interact with user functions.
+// newUsers creates new users struct to interact with user functions.
 //
 // ...
-func NewUsers(inst *Instagram) *Users {
+func newUsers(inst *Instagram) *Users {
 	users := &Users{inst: inst}
 
 	return users
