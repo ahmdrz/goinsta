@@ -53,7 +53,7 @@ type instaError struct {
 	ErrorType string `json:"error_type"`
 }
 
-func errToInstagram(ierr instaError) error {
+func instaToErr(ierr instaError) error {
 	return fmt.Errorf("%s: %s | %s", ierr.Status, ierr.Message, ierr.ErrorType)
 }
 

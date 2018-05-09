@@ -124,7 +124,7 @@ func (inst *Instagram) Login() error {
 			ierr := instaError{}
 			err = json.Unmarshal(body, &ierr)
 			if err != nil {
-				err = errToInstagram(ierr)
+				err = instaToErr(ierr)
 			}
 			return err
 		}
