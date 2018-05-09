@@ -10,10 +10,14 @@ const (
 
 // Endpoints (with format vars)
 const (
+	// account
+	urlChangePass = "accounts/change_password/"
+	urlSetPrivate = "accounts/set_private/"
+	urlSetPublic  = "account/set_public/"
+
 	urlUserByName   = "users/%s/usernameinfo/"
 	urlUserById     = "users/%d/info/"
 	urlFetchHeaders = "si/fetch_headers/"
 	urlLogin        = "accounts/login/"
 	urlAutoComplete = "friendships/autocomplete_user_list/"
-	urlChangePass   = "accounts/change_password/"
 )
