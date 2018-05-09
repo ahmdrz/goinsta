@@ -24,8 +24,10 @@ func New(username, password string) *Instagram {
 		c:    &http.Client{},
 	}
 
-	inst.User = NewUser(inst)
-	inst.Account = NewAccount(inst)
+	inst.Users = NewUsers(inst)
+	// not needed
+	// this object is created after login
+	// inst.Account = NewAccount(inst)
 
 	return inst
 }
@@ -114,17 +116,16 @@ func (inst *Instagram) Login() error {
 		}
 		inst.pass = ""
 
-		var Result struct {
-			User   User   `json:"logged_in_user"`
-			Status string `json:"status"`
-		}
+		res := accountResp{}
 
-		err = json.Unmarshal(body, &Result)
+		err = json.Unmarshal(body, &res)
 		if err != nil {
 			return err
 		}
+		inst.Account = &res.User
+		inst.Account.inst = inst
 
-		inst.rankToken = strconv.FormatInt(Result.User.ID, 10) + "_" + inst.uuid
+		inst.rankToken = strconv.FormatInt(inst.Account.ID, 10) + "_" + inst.uuid
 		inst.logged = true
 
 		inst.SyncFeatures()

@@ -9,6 +9,10 @@ type userResp struct {
 	User   User   `json:"user"`
 }
 
+type Users struct {
+	inst *Instagram
+}
+
 // User is the representation of instagram's user profile
 type User struct {
 	//Feed *Feed
@@ -18,19 +22,15 @@ type User struct {
 	//Story *Story
 	//Messages *Messages
 
-	inst *Instagram
-
-	// User values shared between User and Account
-	ID            int64  `json:"pk"`
-	Username      string `json:"username"`
-	FullName      string `json:"full_name"`
-	Biography     string `json:"biography"`
-	ProfilePicURL string `json:"profile_pic_url"`
-	Email         string `json:"email"`
-	PhoneNumber   string `json:"phone_number"`
-	IsBusiness    bool   `json:"is_business"`
-	Gender        int    `json:"gender"`
-
+	ID                         int64        `json:"pk"`
+	Username                   string       `json:"username"`
+	FullName                   string       `json:"full_name"`
+	Biography                  string       `json:"biography"`
+	ProfilePicURL              string       `json:"profile_pic_url"`
+	Email                      string       `json:"email"`
+	PhoneNumber                string       `json:"phone_number"`
+	IsBusiness                 bool         `json:"is_business"`
+	Gender                     int          `json:"gender"`
 	ProfilePicID               string       `json:"profile_pic_id"`
 	HasAnonymousProfilePicture bool         `json:"has_anonymous_profile_picture"`
 	IsPrivate                  bool         `json:"is_private"`
@@ -66,34 +66,32 @@ type User struct {
 	Zip                        string       `json:"zip"`
 }
 
-// NewUser creates new user struct to interact with user functions.
+// NewUsers creates new users struct to interact with user functions.
 //
 // ...
-func NewUser(inst *Instagram) *User {
-	user := &User{inst: inst}
+func NewUsers(inst *Instagram) *Users {
+	users := &Users{inst: inst}
 
-	return user
+	return users
 }
 
 // SetInstagram sets new instagram to user structure
-func (user *User) SetInstagram(inst *Instagram) {
-	user.inst = inst
+func (users *Users) SetInstagram(inst *Instagram) {
+	users.inst = inst
 }
 
 // ByName stores name information in *User structure (Instagram.User)
 //
 // Last *User data will be remove and replace by the new one
-func (user *User) ByName(name string) error {
-	insta := user.inst
-	body, err := insta.sendSimpleRequest(urlUserByName, name)
+func (users *Users) ByName(name string) (*User, error) {
+	body, err := users.inst.sendSimpleRequest(urlUserByName, name)
 	if err == nil {
 		resp := userResp{}
 		err = json.Unmarshal(body, &resp)
 		if err == nil {
-			// TODO: check status
-			user = &resp.User
-			user.inst = insta
+			user := &resp.User
+			return user, nil
 		}
 	}
-	return err
+	return nil, err
 }
