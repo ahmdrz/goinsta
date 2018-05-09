@@ -134,3 +134,15 @@ type Videos struct {
 	URL    string `json:"url"`
 	ID     string `json:"id"`
 }
+
+type Location struct {
+	ID               int     `json:"pk"`
+	Name             string  `json:"name"`
+	Address          string  `json:"address"`
+	City             string  `json:"city"`
+	ShortName        string  `json:"short_name"`
+	Lng              float64 `json:"lng"`
+	Lat              float64 `json:"lat"`
+	ExternalSource   string  `json:"external_source"`
+	FacebookPlacesID int64   `json:"facebook_places_id"`
+}
