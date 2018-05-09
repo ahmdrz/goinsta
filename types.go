@@ -54,7 +54,7 @@ type instaError struct {
 }
 
 func instaToErr(ierr instaError) error {
-	return fmt.Errorf("%s: %s | %s", ierr.Status, ierr.Message, ierr.ErrorType)
+	return fmt.Errorf("%s: %s (%s)", ierr.Status, ierr.Message, ierr.ErrorType)
 }
 
 type Nametag struct {
