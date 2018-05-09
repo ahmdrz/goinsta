@@ -127,8 +127,9 @@ type FeedMedia struct {
 	MoreAvailable       bool   `json:"more_available"`
 	AutoLoadMoreEnabled bool   `json:"auto_load_more_enabled"`
 	Status              string `json:"status"`
-	NextID              int64  `json:"next_max_id"`
-	NextIDStr           string `json:"next_max_id,string"`
+	// Can be int64 and string
+	// this is why recomend Next() usage :')
+	NextID interface{} `json:"next_max_id"`
 }
 
 // Next allows to paginate after calling:
@@ -141,11 +142,11 @@ func (media *FeedMedia) Next() (err error) {
 	endpoint := media.endpoint
 	next := ""
 
-	switch {
-	case media.NextID == 0:
-		next = media.NextIDStr
-	case media.NextIDStr == "":
-		next = strconv.FormatInt(media.NextID, 10)
+	switch s := media.NextID.(type) {
+	case string:
+		next = s
+	case int64:
+		next = strconv.FormatInt(s, 10)
 	}
 
 	if media.uid != 0 {
@@ -170,7 +171,7 @@ func (media *FeedMedia) Next() (err error) {
 			*media = m
 			media.inst = insta
 			media.endpoint = endpoint
-			if m.NextID == 0 || m.MoreAvailable {
+			if m.NextID == 0 || !m.MoreAvailable {
 				err = ErrNoMore
 			}
 		}
