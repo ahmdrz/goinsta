@@ -13,7 +13,7 @@ const (
 	// account
 	urlChangePass = "accounts/change_password/"
 	urlSetPrivate = "accounts/set_private/"
-	urlSetPublic  = "account/set_public/"
+	urlSetPublic  = "accounts/set_public/"
 
 	urlUserByName   = "users/%s/usernameinfo/"
 	urlUserById     = "users/%d/info/"
