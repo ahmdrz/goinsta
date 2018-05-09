@@ -84,13 +84,12 @@ Instagram
 - Account
 - User:
   - Feed
+  - Tags
   - Followers
   - Following
-  - FriendShip # Relation
+  - FriendShip
   - Story
-  - Threads # Private messages
 - Media:
-  - Info
   - Comments
   - Likes
   - Likers
