@@ -2,15 +2,65 @@ package goinsta
 
 import (
 	"encoding/json"
+	"fmt"
 )
+
+type Users struct {
+	inst *Instagram
+}
+
+// NewUsers creates new users struct to interact with user functions.
+//
+// ...
+func NewUsers(inst *Instagram) *Users {
+	users := &Users{inst: inst}
+
+	return users
+}
+
+// SetInstagram sets new instagram to user structure
+func (users *Users) SetInstagram(inst *Instagram) {
+	users.inst = inst
+}
+
+// ByName return a *User structure parsed by username
+func (users *Users) ByName(name string) (*User, error) {
+	body, err := users.inst.sendSimpleRequest(urlUserByName, name)
+	if err == nil {
+		resp := userResp{}
+		err = json.Unmarshal(body, &resp)
+		if err == nil {
+			user := &resp.User
+			return user, nil
+		}
+	}
+	return nil, err
+}
+
+// ByID returns a *User structure parsed by user id
+func (users *Users) ByID(id int64) (*User, error) {
+	data, err := users.inst.prepareData()
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := users.inst.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlUserById, id),
+			Query:    generateSignature(data),
+		},
+	)
+	if err == nil {
+		user := userResp{}
+		err = json.Unmarshal(body, &user)
+		return &user.User, err
+	}
+	return nil, err
+}
 
 type userResp struct {
 	Status string `json:"status"`
 	User   User   `json:"user"`
-}
-
-type Users struct {
-	inst *Instagram
 }
 
 // User is the representation of instagram's user profile
@@ -64,34 +114,4 @@ type User struct {
 	IsCallToActionEnabled      bool         `json:"is_call_to_action_enabled"`
 	FbPageCallToActionID       string       `json:"fb_page_call_to_action_id"`
 	Zip                        string       `json:"zip"`
-}
-
-// NewUsers creates new users struct to interact with user functions.
-//
-// ...
-func NewUsers(inst *Instagram) *Users {
-	users := &Users{inst: inst}
-
-	return users
-}
-
-// SetInstagram sets new instagram to user structure
-func (users *Users) SetInstagram(inst *Instagram) {
-	users.inst = inst
-}
-
-// ByName stores name information in *User structure (Instagram.User)
-//
-// Last *User data will be remove and replace by the new one
-func (users *Users) ByName(name string) (*User, error) {
-	body, err := users.inst.sendSimpleRequest(urlUserByName, name)
-	if err == nil {
-		resp := userResp{}
-		err = json.Unmarshal(body, &resp)
-		if err == nil {
-			user := &resp.User
-			return user, nil
-		}
-	}
-	return nil, err
 }
