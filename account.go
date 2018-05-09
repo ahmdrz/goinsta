@@ -31,11 +31,3 @@ type Account struct {
 	AllowContactsSync          bool    `json:"allow_contacts_sync"`
 	PhoneNumber                string  `json:"phone_number"`
 }
-
-// NewAccount creates new account structure
-func NewAccount(inst *Instagram) *Account {
-	account := &Account{
-		inst: inst,
-	}
-	return account
-}
