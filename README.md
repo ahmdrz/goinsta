@@ -7,6 +7,7 @@
 
 ## Features
 
+* **HTTP2 by default. Goinsta uses HTTP2 client enhancing performance.**
 * **Object independency. Can handle multiple instagram accounts.**
 * **Like Instagram mobile application**. Goinsta is very similar to Instagram official application.
 * **Simple**. Goinsta is made by lazy programmers!
@@ -51,7 +52,6 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-
 	defer insta.Logout()
 
 	...
