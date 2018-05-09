@@ -61,7 +61,7 @@ func generateSignature(data string) map[string]string {
 	m := make(map[string]string)
 	m["ig_sig_key_version"] = goInstaSigKeyVersion
 	m["signed_body"] = fmt.Sprintf(
-		"%s.%s", generateHMAC(data, goInstaIGSigKey), url.QueryEscape(data),
+		"%s.%s", generateHMAC(data, goInstaIGSigKey), data,
 	)
 	return m
 }
