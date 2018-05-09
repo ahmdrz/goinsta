@@ -263,3 +263,30 @@ func (user *User) Follow() error {
 	}
 	return err
 }
+
+// Unfollow unfollows user
+//
+// User.Friendship will be updated
+func (user *User) Unfollow() error {
+	insta := user.inst
+	data, err := insta.prepareData(
+		map[string]interface{}{
+			"user_id": user.ID,
+		},
+	)
+	if err == nil {
+		body, err := insta.sendRequest(
+			&reqOptions{
+				Endpoint: fmt.Sprintf(urlUserUnfollow, user.ID),
+				Query:    generateSignature(data),
+				IsPost:   true,
+			},
+		)
+		if err == nil {
+			resp := friendResp{}
+			err = json.Unmarshal(body, &resp)
+			user.Friendship = resp.Friendship
+		}
+	}
+	return err
+}
