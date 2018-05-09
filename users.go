@@ -77,12 +77,6 @@ type userResp struct {
 
 // User is the representation of instagram's user profile
 type User struct {
-	//Feed *Feed
-	//Followers *Followers
-	//Following *Following
-	//Status *Friendship
-	//Story *Story
-	//Messages *Messages
 	inst *Instagram
 
 	ID                         int64        `json:"pk"`
@@ -211,7 +205,7 @@ func (user *User) Block() error {
 
 // Unblock unblocks user
 //
-// This function updates current User structure.
+// This function updates current User.Friendship structure.
 func (user *User) Unblock() error {
 	insta := user.inst
 	data, err := insta.prepareData(
@@ -289,6 +283,30 @@ func (user *User) Unfollow() error {
 			err = json.Unmarshal(body, &resp)
 			user.Friendship = resp.Friendship
 		}
+	}
+	return err
+}
+
+func (user *User) friendShip() error {
+	insta := user.insta
+	data, err := insta.prepareData(
+		map[string]interface{}{
+			"user_id", user.ID,
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlFriendship, user.ID),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	if err == nil {
+		err = json.Unmarshal(body, &user.Friendship)
 	}
 	return err
 }
