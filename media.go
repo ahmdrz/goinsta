@@ -21,7 +21,7 @@ type Item struct {
 	CanViewerReshare             bool         `json:"can_viewer_reshare"`
 	Caption                      Caption      `json:"caption"`
 	CaptionIsEdited              bool         `json:"caption_is_edited"`
-	LikeCount                    int          `json:"like_count"`
+	Likes                        int          `json:"like_count"`
 	HasLiked                     bool         `json:"has_liked"`
 	TopLikers                    []User       `json:"top_likers"`
 	CommentLikesEnabled          bool         `json:"comment_likes_enabled"`
