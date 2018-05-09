@@ -33,4 +33,5 @@ const (
 	urlUserUnblock  = "friendships/unblock/%d/"
 	urlUserFollow   = "friendships/create/%d/"
 	urlUserUnfollow = "friendships/destroy/%d/"
+	urlUserFeed     = "feed/user/%d/"
 )
