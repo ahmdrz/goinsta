@@ -1,8 +1,8 @@
 package goinsta
 
 type accountResp struct {
-	Status string  `json:"status"`
-	User   Account `json:"user"`
+	Status  string  `json:"status"`
+	Account Account `json:"user"`
 }
 
 // Account is personal account object

@@ -1,6 +1,7 @@
 package goinsta
 
 import (
+	"fmt"
 	"net/http"
 )
 
@@ -50,4 +51,8 @@ type instaError struct {
 	Message   string `json:"message"`
 	Status    string `json:"status"`
 	ErrorType string `json:"error_type"`
+}
+
+func errToInstagram(ierr instaError) error {
+	return fmt.Errorf("%s: %s | %s", ierr.Status, ierr.Message, ierr.ErrorType)
 }

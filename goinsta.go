@@ -116,13 +116,19 @@ func (inst *Instagram) Login() error {
 		}
 		inst.pass = ""
 
+		// getting account data
 		res := accountResp{}
 
 		err = json.Unmarshal(body, &res)
 		if err != nil {
+			ierr := instaError{}
+			err = json.Unmarshal(body, &ierr)
+			if err != nil {
+				err = errToInstagram(ierr)
+			}
 			return err
 		}
-		inst.Account = &res.User
+		inst.Account = &res.Account
 		inst.Account.inst = inst
 
 		inst.rankToken = strconv.FormatInt(inst.Account.ID, 10) + "_" + inst.uuid
