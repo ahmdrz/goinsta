@@ -15,4 +15,5 @@ const (
 	urlFetchHeaders = "si/fetch_headers/"
 	urlLogin        = "accounts/login/"
 	urlAutoComplete = "friendships/autocomplete_user_list/"
+	urlChangePass   = "account/change_password/"
 )
