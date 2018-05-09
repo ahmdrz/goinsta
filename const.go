@@ -10,6 +10,11 @@ const (
 
 // Endpoints (with format vars)
 const (
+	// login
+	urlFetchHeaders = "si/fetch_headers/"
+	urlLogin        = "accounts/login/"
+	urlAutoComplete = "friendships/autocomplete_user_list/"
+
 	// account
 	urlChangePass    = "accounts/change_password/"
 	urlSetPrivate    = "accounts/set_private/"
@@ -21,9 +26,8 @@ const (
 	urlFollowers = "friendships/%d/followers/"
 	urlFollowing = "friendships/%d/following/"
 
-	urlUserByName   = "users/%s/usernameinfo/"
-	urlUserById     = "users/%d/info/"
-	urlFetchHeaders = "si/fetch_headers/"
-	urlLogin        = "accounts/login/"
-	urlAutoComplete = "friendships/autocomplete_user_list/"
+	// username
+	urlUserByName = "users/%s/usernameinfo/"
+	urlUserById   = "users/%d/info/"
+	urlUserBlock  = "friendships/block/%d/"
 )

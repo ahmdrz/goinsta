@@ -178,3 +178,33 @@ func (user *User) Followers() (*Users, error) {
 	}
 	return nil, err
 }
+
+// Block blocks user
+//
+// This function updates current User structure.
+func (user *User) Block() error {
+	insta := user.inst
+	data, err := insta.prepareData(
+		map[string]interface{}{
+			"user_id": user.ID,
+		},
+	)
+	if err == nil {
+		body, err := insta.sendRequest(
+			&reqOptions{
+				Endpoint: fmt.Sprintf(urlUserBlock, user.ID),
+				Query:    generateSignature(data),
+				IsPost:   true,
+			},
+		)
+		if err == nil {
+			usr := User{}
+			err = json.Unmarshal(body, &usr)
+			if err == nil {
+				*user = usr
+				user.inst = insta
+			}
+		}
+	}
+	return err
+}
