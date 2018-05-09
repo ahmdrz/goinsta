@@ -35,4 +35,5 @@ const (
 	urlUserUnfollow = "friendships/destroy/%d/"
 	urlUserFeed     = "feed/user/%d/"
 	urlFriendship   = "frienships/show/%d/"
+	urlUserStories  = "feed/user/%d/reel_media/"
 )
