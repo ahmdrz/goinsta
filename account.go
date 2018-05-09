@@ -79,7 +79,7 @@ func (account *Account) RemoveProfilePic() error {
 
 	body, err := insta.sendRequest(
 		&reqOptions{
-			Endpoint: urlremoveProfPic,
+			Endpoint: urlRemoveProfPic,
 			Query:    generateSignature(data),
 			IsPost:   true,
 		},
@@ -92,6 +92,7 @@ func (account *Account) RemoveProfilePic() error {
 			account.inst = insta
 		}
 	}
+	return err
 }
 
 // SetPrivate sets account to private mode.
