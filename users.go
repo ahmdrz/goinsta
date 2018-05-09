@@ -290,3 +290,31 @@ func (user *User) Unfollow() error {
 	}
 	return err
 }
+
+// Feed returns user feeds (media)
+//
+// minTime is the minimum timestamp of media.
+//
+// For pagination use Media.Next()
+func (user *User) Feed(minTime []byte) (*Media, error) {
+	insta := user.inst
+	timestamp := b2s(minTime)
+
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlUserFeed, user.ID),
+			Query: map[string]string{
+				"max_id":         "",
+				"rank_token":     insta.rankToken,
+				"min_timestamp":  timestamp,
+				"ranked_content": "true",
+			},
+		},
+	)
+	if err == nil {
+		media := &Media{}
+		err = json.Unmarshal(body, media)
+		return media, err
+	}
+	return nil, err
+}
