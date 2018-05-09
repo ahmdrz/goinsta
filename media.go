@@ -40,8 +40,54 @@ type Item struct {
 	OriginalHeight               int          `json:"original_height,omitempty"`
 }
 
+type Media interface {
+	Next() error
+}
+
+type StoryMedia struct {
+	inst     *Instagram
+	endpoint string
+	uid      int64
+
+	LatestReelMedia int      `json:"latest_reel_media"`
+	ExpiringAt      int      `json:"expiring_at"`
+	Seen            float64  `json:"seen"`
+	CanReply        bool     `json:"can_reply"`
+	CanReshare      bool     `json:"can_reshare"`
+	ReelType        string   `json:"reel_type"`
+	User            User     `json:"user"`
+	Items           []Item   `json:"items"`
+	ReelMentions    []string `json:"reel_mentions"`
+	PrefetchCount   int      `json:"prefetch_count"`
+	HasBestiesMedia int      `json:"has_besties_media"`
+	Status          string   `json:"status"`
+}
+
+// Next allows to paginate after calling:
+// User.Stories
+func (media *StoryMedia) Next() (err error) {
+	var body []byte
+	insta := media.inst
+	endpoint := media.endpoint
+
+	body, err = insta.sendSimpleRequest(
+		endpoint, media.uid,
+	)
+	if err == nil {
+		m := StoryMedia{}
+		err = json.Unmarshal(body, &m)
+		if err == nil {
+			*media = m
+			media.inst = insta
+			media.endpoint = endpoint
+			// TODO check NextID media
+		}
+	}
+	return err
+}
+
 // Media represent a set of media items
-type Media struct {
+type FeedMedia struct {
 	inst *Instagram
 
 	uid      int64
@@ -59,11 +105,12 @@ type Media struct {
 // User.Feed
 //
 // returns ErrNoMore when list reach the end.
-func (media *Media) Next() error {
+func (media *FeedMedia) Next() (err error) {
+	var body []byte
 	insta := media.inst
 	endpoint := media.endpoint
 
-	body, err := insta.sendRequest(
+	body, err = insta.sendRequest(
 		&reqOptions{
 			Endpoint: fmt.Sprintf(endpoint, media.uid),
 			Query: map[string]string{
@@ -75,7 +122,7 @@ func (media *Media) Next() error {
 		},
 	)
 	if err == nil {
-		m := Media{}
+		m := FeedMedia{}
 		err = json.Unmarshal(body, &m)
 		if err == nil {
 			*media = m
