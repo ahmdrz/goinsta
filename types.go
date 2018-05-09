@@ -78,7 +78,8 @@ type Friendship struct {
 	IsPrivate       bool `json:"is_private"`
 }
 
-type ImageVersion struct {
+// Images are different quality images
+type Images struct {
 	Candidates []Candidate
 }
 
@@ -125,7 +126,8 @@ type Mentions struct {
 	User     User    `json:"user"`
 }
 
-type VideoVersion struct {
+// Videos are different quality videos
+type Videos struct {
 	Type   int    `json:"type"`
 	Width  int    `json:"width"`
 	Height int    `json:"height"`

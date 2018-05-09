@@ -7,39 +7,38 @@ import (
 
 // Item represents media items
 type Item struct {
-	TakenAt                      int          `json:"taken_at"`
-	ID                           int64        `json:"pk"`
-	IDStr                        string       `json:"id"`
-	DeviceTimestamp              int64        `json:"device_timestamp"`
-	MediaType                    int          `json:"media_type"`
-	Code                         string       `json:"code"`
-	ClientCacheKey               string       `json:"client_cache_key"`
-	FilterType                   int          `json:"filter_type"`
-	CarouselParentID             string       `json:"carousel_parent_id"`
-	CarouselMedia                []Item       `json:"carousel_media,omitempty"`
-	User                         User         `json:"user"`
-	CanViewerReshare             bool         `json:"can_viewer_reshare"`
-	Caption                      Caption      `json:"caption"`
-	CaptionIsEdited              bool         `json:"caption_is_edited"`
-	Likes                        int          `json:"like_count"`
-	HasLiked                     bool         `json:"has_liked"`
-	TopLikers                    []User       `json:"top_likers"`
-	CommentLikesEnabled          bool         `json:"comment_likes_enabled"`
-	CommentThreadingEnabled      bool         `json:"comment_threading_enabled"`
-	HasMoreComments              bool         `json:"has_more_comments"`
-	MaxNumVisiblePreviewComments int          `json:"max_num_visible_preview_comments"`
-	PreviewComments              []string     `json:"preview_comments"`
-	CommentCount                 int          `json:"comment_count"`
-	PhotoOfYou                   bool         `json:"photo_of_you"`
-	Usertags                     Tag          `json:"usertags,omitempty"`
-	FbUserTags                   Tag          `json:"fb_user_tags"`
-	CanViewerSave                bool         `json:"can_viewer_save"`
-	OrganicTrackingToken         string       `json:"organic_tracking_token"`
-	ImageVersions                ImageVersion `json:"image_versions2,omitempty"`
-	OriginalWidth                int          `json:"original_width,omitempty"`
-	OriginalHeight               int          `json:"original_height,omitempty"`
-	CaptionIsEdited              bool         `json:"caption_is_edited"`
-	ImportedTakenAt              int          `json:"imported_taken_at,omitempty"`
+	TakenAt                      int      `json:"taken_at"`
+	ID                           int64    `json:"pk"`
+	IDStr                        string   `json:"id"`
+	DeviceTimestamp              int64    `json:"device_timestamp"`
+	MediaType                    int      `json:"media_type"`
+	Code                         string   `json:"code"`
+	ClientCacheKey               string   `json:"client_cache_key"`
+	FilterType                   int      `json:"filter_type"`
+	CarouselParentID             string   `json:"carousel_parent_id"`
+	CarouselMedia                []Item   `json:"carousel_media,omitempty"`
+	User                         User     `json:"user"`
+	CanViewerReshare             bool     `json:"can_viewer_reshare"`
+	Caption                      Caption  `json:"caption"`
+	CaptionIsEdited              bool     `json:"caption_is_edited"`
+	Likes                        int      `json:"like_count"`
+	HasLiked                     bool     `json:"has_liked"`
+	TopLikers                    []User   `json:"top_likers"`
+	CommentLikesEnabled          bool     `json:"comment_likes_enabled"`
+	CommentThreadingEnabled      bool     `json:"comment_threading_enabled"`
+	HasMoreComments              bool     `json:"has_more_comments"`
+	MaxNumVisiblePreviewComments int      `json:"max_num_visible_preview_comments"`
+	PreviewComments              []string `json:"preview_comments"`
+	CommentCount                 int      `json:"comment_count"`
+	PhotoOfYou                   bool     `json:"photo_of_you"`
+	Usertags                     Tag      `json:"usertags,omitempty"`
+	FbUserTags                   Tag      `json:"fb_user_tags"`
+	CanViewerSave                bool     `json:"can_viewer_save"`
+	OrganicTrackingToken         string   `json:"organic_tracking_token"`
+	Images                       Images   `json:"image_versions2,omitempty"`
+	OriginalWidth                int      `json:"original_width,omitempty"`
+	OriginalHeight               int      `json:"original_height,omitempty"`
+	ImportedTakenAt              int      `json:"imported_taken_at,omitempty"`
 
 	// Only for stories
 	StoryEvents              []interface{} `json:"story_events"`
@@ -56,12 +55,12 @@ type Item struct {
 	ShowOneTapFbShareTooltip bool          `json:"show_one_tap_fb_share_tooltip"`
 	HasSharedToFb            int           `json:"has_shared_to_fb"`
 	Mentions                 []Mentions
-	VideoVersions            []VideoVersion `json:"video_versions,omitempty"`
-	HasAudio                 bool           `json:"has_audio,omitempty"`
-	VideoDuration            float64        `json:"video_duration,omitempty"`
-	IsDashEligible           int            `json:"is_dash_eligible,omitempty"`
-	VideoDashManifest        string         `json:"video_dash_manifest,omitempty"`
-	NumberOfQualities        int            `json:"number_of_qualities,omitempty"`
+	Videos                   []Videos `json:"video_versions,omitempty"`
+	HasAudio                 bool     `json:"has_audio,omitempty"`
+	VideoDuration            float64  `json:"video_duration,omitempty"`
+	IsDashEligible           int      `json:"is_dash_eligible,omitempty"`
+	VideoDashManifest        string   `json:"video_dash_manifest,omitempty"`
+	NumberOfQualities        int      `json:"number_of_qualities,omitempty"`
 }
 
 type Media interface {
@@ -73,8 +72,7 @@ type StoryMedia struct {
 	endpoint string
 	uid      int64
 
-	ID int `json:"id"`
-
+	ID              int      `json:"id"`
 	LatestReelMedia int      `json:"latest_reel_media"`
 	ExpiringAt      int      `json:"expiring_at"`
 	Seen            float64  `json:"seen"`
