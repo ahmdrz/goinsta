@@ -40,4 +40,5 @@ const (
 
 	// timeline
 	urlTimeline = "feed/timeline/"
+	urlStories  = "feed/reels_tray/"
 )
