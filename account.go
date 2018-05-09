@@ -12,11 +12,6 @@ type accountResp struct {
 
 // Account is personal account object
 type Account struct {
-	// Activity is recent activity
-	//Activity *Activity
-	// Tray is your disponible friend's stories
-	//Tray *Tray
-
 	inst *Instagram
 
 	CanSeeOrganicInsights      bool    `json:"can_see_organic_insights"`

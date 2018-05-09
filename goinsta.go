@@ -28,6 +28,9 @@ func New(username, password string) *Instagram {
 	// not needed
 	// this object is created after login
 	// inst.Account = NewAccount(inst)
+	inst.Activity = newActivity(inst)
+	inst.Timeline = newTimeline(inst)
+	inst.Search = newSearch(inst)
 
 	return inst
 }

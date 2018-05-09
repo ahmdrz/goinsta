@@ -37,4 +37,7 @@ const (
 	urlFriendship   = "frienships/show/%d/"
 	urlUserStories  = "feed/user/%d/reel_media/"
 	urlUserTags     = "usertags/%d/feed/"
+
+	// timeline
+	urlTimeline = "feed/timeline/"
 )

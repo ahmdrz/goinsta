@@ -30,6 +30,10 @@ type Instagram struct {
 	Account *Account
 	// Search performs searching of multiple things (users, locations...)
 	Search *Search
+	//
+	Timeline *Timeline
+	//
+	Activity *Activity
 
 	logged bool
 
