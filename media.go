@@ -147,9 +147,14 @@ func (media *FeedMedia) Next() (err error) {
 	case media.NextIDStr == "":
 		next = strconv.FormatInt(media.NextID, 10)
 	}
+
+	if media.uid != 0 {
+		endpoint = fmt.Sprintf(endpoint, media.uid)
+	}
+
 	body, err = insta.sendRequest(
 		&reqOptions{
-			Endpoint: fmt.Sprintf(endpoint, media.uid),
+			Endpoint: endpoint,
 			Query: map[string]string{
 				"max_id":         next,
 				"rank_token":     insta.rankToken,
