@@ -1,5 +1,9 @@
 package goinsta
 
+import (
+	"encoding/json"
+)
+
 type accountResp struct {
 	Status  string  `json:"status"`
 	Account Account `json:"logged_in_user"`
@@ -53,6 +57,67 @@ func (account *Account) ChangePassword(old, new string) error {
 				IsPost:   true,
 			},
 		)
+	}
+	return err
+}
+
+type profResp struct {
+	Status  string  `json:"status"`
+	Account Account `json:"user"`
+}
+
+// SetPrivate sets account to private mode.
+//
+// This function updates current Account information.
+func (account *Account) SetPrivate() error {
+	insta := account.inst
+	data, err := insta.prepareData()
+	if err != nil {
+		return err
+	}
+
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: urlSetPrivate,
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	if err == nil {
+		resp := profResp{}
+		err = json.Unmarshal(body, &resp)
+		if err == nil {
+			*account = resp.Account
+			account.inst = insta
+		}
+	}
+	return err
+}
+
+// SetPublic sets account to public mode.
+//
+// This function updates current Account information.
+func (account *Account) SetPublic() error {
+	insta := account.inst
+	data, err := insta.prepareData()
+	if err != nil {
+		return err
+	}
+
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: urlSetPublic,
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	if err == nil {
+		resp := profResp{}
+		err = json.Unmarshal(body, &resp)
+		if err == nil {
+			*account = resp.Account
+			account.inst = insta
+		}
 	}
 	return err
 }
