@@ -38,6 +38,30 @@ type Item struct {
 	ImageVersions                ImageVersion `json:"image_versions2,omitempty"`
 	OriginalWidth                int          `json:"original_width,omitempty"`
 	OriginalHeight               int          `json:"original_height,omitempty"`
+	CaptionIsEdited              bool         `json:"caption_is_edited"`
+	ImportedTakenAt              int          `json:"imported_taken_at,omitempty"`
+
+	// Only for stories
+	StoryEvents              []interface{} `json:"story_events"`
+	StoryHashtags            []interface{} `json:"story_hashtags"`
+	StoryPolls               []interface{} `json:"story_polls"`
+	StoryFeedMedia           []interface{} `json:"story_feed_media"`
+	StorySoundOn             []interface{} `json:"story_sound_on"`
+	CreativeConfig           interface{}   `json:"creative_config"`
+	StoryLocations           []interface{} `json:"story_locations"`
+	StorySliders             []interface{} `json:"story_sliders"`
+	StoryQuestions           []interface{} `json:"story_questions"`
+	StoryProductItems        []interface{} `json:"story_product_items"`
+	SupportsReelReactions    bool          `json:"supports_reel_reactions"`
+	ShowOneTapFbShareTooltip bool          `json:"show_one_tap_fb_share_tooltip"`
+	HasSharedToFb            int           `json:"has_shared_to_fb"`
+	Mentions                 []Mentions
+	VideoVersions            []VideoVersion `json:"video_versions,omitempty"`
+	HasAudio                 bool           `json:"has_audio,omitempty"`
+	VideoDuration            float64        `json:"video_duration,omitempty"`
+	IsDashEligible           int            `json:"is_dash_eligible,omitempty"`
+	VideoDashManifest        string         `json:"video_dash_manifest,omitempty"`
+	NumberOfQualities        int            `json:"number_of_qualities,omitempty"`
 }
 
 type Media interface {
@@ -48,6 +72,8 @@ type StoryMedia struct {
 	inst     *Instagram
 	endpoint string
 	uid      int64
+
+	ID int `json:"id"`
 
 	LatestReelMedia int      `json:"latest_reel_media"`
 	ExpiringAt      int      `json:"expiring_at"`
