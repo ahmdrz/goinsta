@@ -288,10 +288,10 @@ func (user *User) Unfollow() error {
 }
 
 func (user *User) friendShip() error {
-	insta := user.insta
+	insta := user.inst
 	data, err := insta.prepareData(
 		map[string]interface{}{
-			"user_id", user.ID,
+			"user_id": user.ID,
 		},
 	)
 	if err != nil {
@@ -316,7 +316,7 @@ func (user *User) friendShip() error {
 // minTime is the minimum timestamp of media.
 //
 // For pagination use Media.Next()
-func (user *User) Feed(minTime []byte) (*Media, error) {
+func (user *User) Feed(minTime []byte) (*FeedMedia, error) {
 	insta := user.inst
 	timestamp := b2s(minTime)
 
@@ -332,11 +332,27 @@ func (user *User) Feed(minTime []byte) (*Media, error) {
 		},
 	)
 	if err == nil {
-		media := &Media{}
+		media := &FeedMedia{}
 		err = json.Unmarshal(body, media)
 		media.inst = insta
 		media.endpoint = urlUserFeed
 		media.uid = user.ID
+		return media, err
+	}
+	return nil, err
+}
+
+// Stories returns user stories
+func (user *User) Stories() (*StoryMedia, error) {
+	body, err := user.inst.sendSimpleRequest(
+		urlUserStories, user.ID,
+	)
+	if err == nil {
+		media := &StoryMedia{}
+		err = json.Unmarshal(body, media)
+		media.uid = user.ID
+		media.inst = user.inst
+		media.endpoint = urlUserStories
 		return media, err
 	}
 	return nil, err
