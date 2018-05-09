@@ -42,11 +42,11 @@ func (time *Timeline) Get() (*FeedMedia, error) {
 }
 
 func (time *Timeline) Stories() (*StoryMedia, error) {
-	body, err := user.inst.sendSimpleRequest(urlStories)
+	body, err := time.inst.sendSimpleRequest(urlStories)
 	if err == nil {
 		media := &StoryMedia{}
 		err = json.Unmarshal(body, media)
-		media.inst = user.inst
+		media.inst = time.inst
 		media.endpoint = urlStories
 		return media, err
 	}
