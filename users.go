@@ -3,6 +3,7 @@ package goinsta
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 )
 
 type Users struct {
@@ -82,6 +83,7 @@ type User struct {
 	//Status *Friendship
 	//Story *Story
 	//Messages *Messages
+	inst *Instagram
 
 	ID                         int64        `json:"pk"`
 	Username                   string       `json:"username"`
@@ -125,4 +127,54 @@ type User struct {
 	IsCallToActionEnabled      bool         `json:"is_call_to_action_enabled"`
 	FbPageCallToActionID       string       `json:"fb_page_call_to_action_id"`
 	Zip                        string       `json:"zip"`
+}
+
+// Following returns a list of user following.
+//
+// Users.Next can be used to paginate
+func (user *User) Following() (*Users, error) {
+	endpoint := fmt.Sprintf(urlFollowing, user.ID)
+	body, err := user.inst.sendRequest(
+		&reqOptions{
+			Endpoint: endpoint,
+			Query: map[string]string{
+				"max_id":             "",
+				"ig_sig_key_version": goInstaSigKeyVersion,
+				"rank_token":         user.inst.rankToken,
+			},
+		},
+	)
+	if err == nil {
+		users := &Users{}
+		err = json.Unmarshal(body, users)
+		users.inst = user.inst
+		users.endpoint = endpoint
+		return users, err
+	}
+	return nil, err
+}
+
+// Followers returns a list of user followers.
+//
+// Users.Next can be used to paginate
+func (user *User) Followers() (*Users, error) {
+	endpoint := fmt.Sprintf(urlFollowers, user.ID)
+	body, err := user.inst.sendRequest(
+		&reqOptions{
+			Endpoint: endpoint,
+			Query: map[string]string{
+				"max_id":             "",
+				"ig_sig_key_version": goInstaSigKeyVersion,
+				"rank_token":         user.inst.rankToken,
+			},
+		},
+	)
+	if err == nil {
+		users := &Users{}
+		err = json.Unmarshal(body, users)
+		users.inst = user.inst
+		users.endpoint = endpoint
+		return users, err
+	}
+	return nil, err
 }
