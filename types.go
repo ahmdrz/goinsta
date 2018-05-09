@@ -140,6 +140,6 @@ type Videos struct {
 }
 
 type timeStoryResp struct {
-	Status string     `json:"status"`
-	Media  StoryMedia `json:"tray"`
+	Status string       `json:"status"`
+	Media  []StoryMedia `json:"tray"`
 }

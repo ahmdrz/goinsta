@@ -41,7 +41,7 @@ func (time *Timeline) Get() (*FeedMedia, error) {
 	return nil, err
 }
 
-func (time *Timeline) Stories() (*StoryMedia, error) {
+func (time *Timeline) Stories() ([]StoryMedia, error) {
 	body, err := time.inst.sendSimpleRequest(urlStories)
 	if err == nil {
 		resp := &timeStoryResp{}
@@ -49,10 +49,11 @@ func (time *Timeline) Stories() (*StoryMedia, error) {
 		if err != nil {
 			return nil, err
 		}
-		media := &resp.Media
-		media.inst = time.inst
-		media.endpoint = urlStories
-		return media, nil
+		for i := range resp.Media {
+			resp.Media[i].inst = time.inst
+			resp.Media[i].endpoint = urlStories
+		}
+		return resp.Media, nil
 	}
 	return nil, err
 }
