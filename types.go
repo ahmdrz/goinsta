@@ -63,3 +63,17 @@ type Nametag struct {
 	Emoji         string `json:"emoji"`
 	SelfieSticker int    `json:"selfie_sticker"`
 }
+
+type friendResp struct {
+	Status     string `json:"status"`
+	Friendship `json:"friendship_status"`
+}
+
+type Friendship struct {
+	IncomingRequest bool `json:"incoming_request"`
+	FollowedBy      bool `json:"followed_by"`
+	OutgoingRequest bool `json:"outgoing_request"`
+	Following       bool `json:"following"`
+	Blocking        bool `json:"blocking"`
+	IsPrivate       bool `json:"is_private"`
+}

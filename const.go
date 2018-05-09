@@ -27,8 +27,10 @@ const (
 	urlFollowing = "friendships/%d/following/"
 
 	// username
-	urlUserByName  = "users/%s/usernameinfo/"
-	urlUserById    = "users/%d/info/"
-	urlUserBlock   = "friendships/block/%d/"
-	urlUserUnblock = "friendships/unblock/%d/"
+	urlUserByName   = "users/%s/usernameinfo/"
+	urlUserById     = "users/%d/info/"
+	urlUserBlock    = "friendships/block/%d/"
+	urlUserUnblock  = "friendships/unblock/%d/"
+	urlUserFollow   = "friendships/create/%d/"
+	urlUserUnfollow = "friendships/destroy/%d/"
 )
