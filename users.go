@@ -316,6 +316,7 @@ func (user *User) Feed(minTime []byte) (*Media, error) {
 	if err == nil {
 		media := &Media{}
 		err = json.Unmarshal(body, media)
+		media.inst = insta
 		media.endpoint = urlUserFeed
 		media.uid = user.ID
 		return media, err
