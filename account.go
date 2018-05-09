@@ -2,7 +2,7 @@ package goinsta
 
 type accountResp struct {
 	Status  string  `json:"status"`
-	Account Account `json:"user"`
+	Account Account `json:"logged_in_user"`
 }
 
 // Account is personal account object
@@ -14,26 +14,22 @@ type Account struct {
 
 	inst *Instagram
 
-	// User values shared between User and Account
-	ID            int64  `json:"pk"`
-	Username      string `json:"username"`
-	FullName      string `json:"full_name"`
-	Biography     string `json:"biography"`
-	ProfilePicURL string `json:"profile_pic_url"`
-	Email         string `json:"email"`
-	PhoneNumber   string `json:"phone_number"`
-	IsBusiness    bool   `json:"is_business"`
-	Gender        int    `json:"gender"`
-
-	ProfilePicID               string `json:"profile_pic_id"`
-	HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
-	IsPrivate                  bool   `json:"is_private"`
-	IsVerified                 bool   `json:"is_verified"`
-	MediaCount                 int    `json:"media_count"`
-	FollowerCount              int    `json:"follower_count"`
-	FollowingCount             int    `json:"following_count"`
-	GeoMediaCount              int    `json:"geo_media_count"`
-	ExternalURL                string `json:"external_url"`
+	CanSeeOrganicInsights      bool    `json:"can_see_organic_insights"`
+	ShowInsightsTerms          bool    `json:"show_insights_terms"`
+	IsBusiness                 bool    `json:"is_business"`
+	Nametag                    Nametag `json:"nametag"`
+	ID                         int64   `json:"pk"`
+	Username                   string  `json:"username"`
+	FullName                   string  `json:"full_name"`
+	HasAnonymousProfilePicture bool    `json:"has_anonymous_profile_picture"`
+	IsPrivate                  bool    `json:"is_private"`
+	IsVerified                 bool    `json:"is_verified"`
+	ProfilePicURL              string  `json:"profile_pic_url"`
+	ProfilePicID               string  `json:"profile_pic_id"`
+	AllowedCommenterType       string  `json:"allowed_commenter_type"`
+	ReelAutoArchive            string  `json:"reel_auto_archive"`
+	AllowContactsSync          bool    `json:"allow_contacts_sync"`
+	PhoneNumber                string  `json:"phone_number"`
 }
 
 // NewAccount creates new account structure
