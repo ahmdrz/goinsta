@@ -65,8 +65,8 @@ type Nametag struct {
 }
 
 type friendResp struct {
-	Status     string `json:"status"`
-	Friendship `json:"friendship_status"`
+	Status     string     `json:"status"`
+	Friendship Friendship `json:"friendship_status"`
 }
 
 type Friendship struct {
@@ -133,16 +133,4 @@ type Videos struct {
 	Height int    `json:"height"`
 	URL    string `json:"url"`
 	ID     string `json:"id"`
-}
-
-type Location struct {
-	ID               int     `json:"pk"`
-	Name             string  `json:"name"`
-	Address          string  `json:"address"`
-	City             string  `json:"city"`
-	ShortName        string  `json:"short_name"`
-	Lng              float64 `json:"lng"`
-	Lat              float64 `json:"lat"`
-	ExternalSource   string  `json:"external_source"`
-	FacebookPlacesID int64   `json:"facebook_places_id"`
 }
