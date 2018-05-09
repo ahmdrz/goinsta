@@ -98,9 +98,10 @@ func (media *StoryMedia) Next() (err error) {
 	insta := media.inst
 	endpoint := media.endpoint
 
-	body, err = insta.sendSimpleRequest(
-		endpoint, media.uid,
-	)
+	if media.uid != 0 {
+		endpoint = fmt.Sprintf(endpoint, media.uid)
+	}
+	body, err = insta.sendSimpleRequest(endpoint)
 	if err == nil {
 		m := StoryMedia{}
 		err = json.Unmarshal(body, &m)

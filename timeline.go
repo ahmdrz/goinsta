@@ -40,3 +40,15 @@ func (time *Timeline) Get() (*FeedMedia, error) {
 	}
 	return nil, err
 }
+
+func (time *Timeline) Stories() (*StoryMedia, error) {
+	body, err := user.inst.sendSimpleRequest(urlStories)
+	if err == nil {
+		media := &StoryMedia{}
+		err = json.Unmarshal(body, media)
+		media.inst = user.inst
+		media.endpoint = urlStories
+		return media, err
+	}
+	return nil, err
+}
