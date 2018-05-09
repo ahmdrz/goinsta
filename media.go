@@ -142,7 +142,7 @@ func (media *FeedMedia) Next() (err error) {
 	next := ""
 
 	switch {
-	case media.NextID != 0:
+	case media.NextID == 0:
 		next = media.NextIDStr
 	case media.NextIDStr == "":
 		next = strconv.FormatInt(media.NextID, 10)
