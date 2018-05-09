@@ -182,7 +182,7 @@ func (user *User) Followers() (*Users, error) {
 
 // Block blocks user
 //
-// This function updates current User structure.
+// This function updates current User.Friendship structure.
 func (user *User) Block() error {
 	insta := user.inst
 	data, err := insta.prepareData(
@@ -199,12 +199,9 @@ func (user *User) Block() error {
 			},
 		)
 		if err == nil {
-			usr := User{}
-			err = json.Unmarshal(body, &usr)
-			if err == nil {
-				*user = usr
-				user.inst = insta
-			}
+			resp := friendResp{}
+			err = json.Unmarshal(body, &resp)
+			user.Friendship = resp.Friendship
 		}
 	}
 	return err
@@ -229,12 +226,9 @@ func (user *User) Unblock() error {
 			},
 		)
 		if err == nil {
-			usr := User{}
-			err = json.Unmarshal(body, &usr)
-			if err == nil {
-				*user = usr
-				user.inst = insta
-			}
+			resp := friendResp{}
+			err = json.Unmarshal(body, &resp)
+			user.Friendship = resp.Friendship
 		}
 	}
 	return err
