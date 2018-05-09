@@ -134,11 +134,11 @@ func (inst *Instagram) Login() error {
 		inst.rankToken = strconv.FormatInt(inst.Account.ID, 10) + "_" + inst.uuid
 		inst.logged = true
 
-		inst.SyncFeatures()
+		inst.syncFeatures()
 		// inst.Timeline("")
 		// inst.GetRankedRecipients()
 		// inst.GetRecentRecipients()
-		inst.MegaphoneLog()
+		inst.megaphoneLog()
 		// inst.GetV2Inbox()
 		// inst.GetRecentActivity()
 		// inst.GetReelsTrayFeed()
@@ -157,8 +157,7 @@ func (inst *Instagram) Logout() error {
 	return err
 }
 
-// SyncFeatures simulates Instagram app behavior
-func (inst *Instagram) SyncFeatures() error {
+func (inst *Instagram) syncFeatures() error {
 	data, err := inst.prepareData(
 		map[string]interface{}{
 			"id":          inst.Account.ID,
@@ -191,8 +190,7 @@ func (inst *Instagram) SyncFeatures() error {
 	return err
 }
 
-// MegaphoneLog simulates Instagram app behavior
-func (inst *Instagram) MegaphoneLog() error {
+func (inst *Instagram) megaphoneLog() error {
 	data, err := inst.prepareData(
 		map[string]interface{}{
 			"id":        inst.Account.ID,
@@ -216,9 +214,7 @@ func (inst *Instagram) MegaphoneLog() error {
 	return err
 }
 
-// Expose , expose instgram
-// return error if status was not 'ok' or runtime error
-func (inst *Instagram) Expose() error {
+func (inst *Instagram) expose() error {
 	data, err := inst.prepareData(
 		map[string]interface{}{
 			"id":         inst.Account.ID,
