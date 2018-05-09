@@ -135,13 +135,7 @@ func (inst *Instagram) Login() error {
 		inst.logged = true
 
 		inst.syncFeatures()
-		// inst.Timeline("")
-		// inst.GetRankedRecipients()
-		// inst.GetRecentRecipients()
 		inst.megaphoneLog()
-		// inst.GetV2Inbox()
-		// inst.GetRecentActivity()
-		// inst.GetReelsTrayFeed()
 	}
 
 end:
