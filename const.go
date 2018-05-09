@@ -15,6 +15,7 @@ const (
 	urlSetPrivate    = "accounts/set_private/"
 	urlSetPublic     = "accounts/set_public/"
 	urlRemoveProfPic = "accounts/remove_profile_picture/"
+	urlSyncProfile   = "accounts/current_user/"
 
 	// account and profile
 	urlFollowers = "friendships/%d/followers/"
