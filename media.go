@@ -103,6 +103,7 @@ func (media *StoryMedia) Next() (err error) {
 		m := StoryMedia{}
 		err = json.Unmarshal(body, &m)
 		if err == nil {
+			err = ErrNoMore
 			*media = m
 			media.inst = insta
 			media.endpoint = endpoint
