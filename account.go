@@ -35,6 +35,7 @@ type Account struct {
 	ReelAutoArchive            string  `json:"reel_auto_archive"`
 	AllowContactsSync          bool    `json:"allow_contacts_sync"`
 	PhoneNumber                string  `json:"phone_number"`
+	CanBoostPost               bool    `json:"can_boost_post"`
 }
 
 // Sync updates account information

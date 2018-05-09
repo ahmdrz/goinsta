@@ -97,6 +97,8 @@ type User struct {
 	ProfilePicID               string       `json:"profile_pic_id"`
 	HasAnonymousProfilePicture bool         `json:"has_anonymous_profile_picture"`
 	IsPrivate                  bool         `json:"is_private"`
+	IsUnpublished              bool         `json:"is_unpublished"`
+	AllowedCommenterType       string       `json:"allowed_commenter_type"`
 	IsVerified                 bool         `json:"is_verified"`
 	MediaCount                 int          `json:"media_count"`
 	FollowerCount              int          `json:"follower_count"`
@@ -314,6 +316,8 @@ func (user *User) Feed(minTime []byte) (*Media, error) {
 	if err == nil {
 		media := &Media{}
 		err = json.Unmarshal(body, media)
+		media.endpoint = urlUserFeed
+		media.uid = user.ID
 		return media, err
 	}
 	return nil, err

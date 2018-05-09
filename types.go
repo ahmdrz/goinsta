@@ -77,3 +77,39 @@ type Friendship struct {
 	Blocking        bool `json:"blocking"`
 	IsPrivate       bool `json:"is_private"`
 }
+
+type ImageVersion struct {
+	Candidates []Candidate
+}
+
+type Candidate struct {
+	Width  int    `json:"width"`
+	Height int    `json:"height"`
+	URL    string `json:"url"`
+}
+
+type Tag struct {
+	In []struct {
+		User                  User        `json:"user"`
+		Position              []float64   `json:"position"`
+		StartTimeInVideoInSec interface{} `json:"start_time_in_video_in_sec"`
+		DurationInVideoInSec  interface{} `json:"duration_in_video_in_sec"`
+	} `json:"in"`
+}
+
+// Caption is media caption
+type Caption struct {
+	ID              int64  `json:"pk"`
+	UserID          int    `json:"user_id"`
+	Text            string `json:"text"`
+	Type            int    `json:"type"`
+	CreatedAt       int    `json:"created_at"`
+	CreatedAtUtc    int    `json:"created_at_utc"`
+	ContentType     string `json:"content_type"`
+	Status          string `json:"status"`
+	BitFlags        int    `json:"bit_flags"`
+	User            User   `json:"user"`
+	DidReportAsSpam bool   `json:"did_report_as_spam"`
+	MediaID         int64  `json:"media_id"`
+	HasTranslation  bool   `json:"has_translation"`
+}
