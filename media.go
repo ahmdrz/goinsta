@@ -25,7 +25,7 @@ type Item struct {
 	Likes            int     `json:"like_count"`
 	HasLiked         bool    `json:"has_liked"`
 	// TopLikers can be multiple data
-	TopLikersStr                 `json:"top_likers,string"`
+	TopLikersStr                 string `json:"top_likers,string"`
 	TopLikers                    []User `json:"top_likers"`
 	CommentLikesEnabled          bool   `json:"comment_likes_enabled"`
 	CommentThreadingEnabled      bool   `json:"comment_threading_enabled"`
