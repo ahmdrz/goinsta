@@ -67,6 +67,33 @@ type profResp struct {
 	Account Account `json:"user"`
 }
 
+// RemoveProfilePic removes current profile picture
+//
+// This function updates current Account information.
+func (account *Account) RemoveProfilePic() error {
+	insta := account.inst
+	data, err := insta.prepareData()
+	if err != nil {
+		return err
+	}
+
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: urlremoveProfPic,
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	if err == nil {
+		resp := profResp{}
+		err = json.Unmarshal(body, &resp)
+		if err == nil {
+			*account = resp.Account
+			account.inst = insta
+		}
+	}
+}
+
 // SetPrivate sets account to private mode.
 //
 // This function updates current Account information.

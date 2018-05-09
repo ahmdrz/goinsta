@@ -11,9 +11,10 @@ const (
 // Endpoints (with format vars)
 const (
 	// account
-	urlChangePass = "accounts/change_password/"
-	urlSetPrivate = "accounts/set_private/"
-	urlSetPublic  = "accounts/set_public/"
+	urlChangePass    = "accounts/change_password/"
+	urlSetPrivate    = "accounts/set_private/"
+	urlSetPublic     = "accounts/set_public/"
+	urlRemoveProfPic = "accounts/remove_profile_picture/"
 
 	// account and profile
 	urlFollowers = "friendships/%d/followers/"
