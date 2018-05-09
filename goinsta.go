@@ -172,7 +172,7 @@ func (inst *Instagram) SyncFeatures() error {
 	_, err = inst.sendRequest(
 		&reqOptions{
 			Endpoint: "qe/sync/",
-			Query:    generateSignature(b2s(data)),
+			Query:    generateSignature(data),
 			IsPost:   true,
 		},
 	)
@@ -209,7 +209,7 @@ func (inst *Instagram) MegaphoneLog() error {
 	_, err = inst.sendRequest(
 		&reqOptions{
 			Endpoint: "megaphone/log/",
-			Query:    generateSignature(b2s(data)),
+			Query:    generateSignature(data),
 			IsPost:   true,
 		},
 	)
@@ -232,7 +232,7 @@ func (inst *Instagram) Expose() error {
 	_, err = inst.sendRequest(
 		&reqOptions{
 			Endpoint: "qe/expose/",
-			Query:    generateSignature(b2s(data)),
+			Query:    generateSignature(data),
 			IsPost:   true,
 		},
 	)

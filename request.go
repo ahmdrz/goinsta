@@ -101,7 +101,7 @@ func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 	return body, err
 }
 
-func (insta *Instagram) prepareData(other ...map[string]interface{}) ([]byte, error) {
+func (insta *Instagram) prepareData(other ...map[string]interface{}) (string, error) {
 	data := map[string]interface{}{
 		"_uuid":      insta.uuid,
 		"_uid":       insta.Account.ID,
@@ -112,5 +112,9 @@ func (insta *Instagram) prepareData(other ...map[string]interface{}) ([]byte, er
 			data[key] = value
 		}
 	}
-	return json.Marshal(data)
+	b, err := json.Marshal(data)
+	if err == nil {
+		return b2s(b), err
+	}
+	return "", err
 }
