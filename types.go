@@ -56,3 +56,10 @@ type instaError struct {
 func errToInstagram(ierr instaError) error {
 	return fmt.Errorf("%s: %s | %s", ierr.Status, ierr.Message, ierr.ErrorType)
 }
+
+type Nametag struct {
+	Mode          int    `json:"mode"`
+	Gradient      int    `json:"gradient"`
+	Emoji         string `json:"emoji"`
+	SelfieSticker int    `json:"selfie_sticker"`
+}
