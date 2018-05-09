@@ -27,8 +27,8 @@ func (prof *Profiles) ByName(name string) (*User, error) {
 			user := &resp.User
 			user.inst = prof.inst
 			user.friendShip()
+			return user, err
 		}
-		return user, err
 	}
 	return nil, err
 }
@@ -53,8 +53,8 @@ func (prof *Profiles) ByID(id int64) (*User, error) {
 			user := &resp.User
 			user.inst = prof.inst
 			user.friendShip()
+			return user, err
 		}
-		return user, err
 	}
 	return nil, err
 }
