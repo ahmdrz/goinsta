@@ -39,7 +39,7 @@ var ErrNoMore = errors.New("list ends reached")
 //
 // New user list is stored inside Users
 //
-// returns ErrNoMore when list reach the end
+// returns ErrNoMore when list reach the end.
 func (users *Users) Next() error {
 	insta := users.inst
 	endpoint := users.endpoint
@@ -58,6 +58,9 @@ func (users *Users) Next() error {
 		usrs := Users{}
 		err = json.Unmarshal(body, &usrs)
 		if err == nil {
+			if !usrs.BigList || usrs.NextID == "" {
+				err = ErrNoMore
+			}
 			*users = usrs
 			users.inst = insta
 			users.endpoint = endpoint
