@@ -227,3 +227,78 @@ func (account *Account) Following() (*Users, error) {
 	}
 	return nil, err
 }
+
+// Feed returns current account feed
+//
+// minTime is the minimum timestamp of media.
+//
+// For pagination use FeedMedia.Next()
+func (account *Account) Feed(minTime []byte) (*FeedMedia, error) {
+	insta := account.inst
+	timestamp := b2s(minTime)
+
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlUserFeed, account.ID),
+			Query: map[string]string{
+				"max_id":         "",
+				"rank_token":     insta.rankToken,
+				"min_timestamp":  timestamp,
+				"ranked_content": "true",
+			},
+		},
+	)
+	if err == nil {
+		media := &FeedMedia{}
+		err = json.Unmarshal(body, media)
+		media.inst = insta
+		media.endpoint = urlUserFeed
+		media.uid = account.ID
+		return media, err
+	}
+	return nil, err
+}
+
+// Stories returns account stories
+func (account *Account) Stories() (*StoryMedia, error) {
+	body, err := account.inst.sendSimpleRequest(
+		urlUserStories, account.ID,
+	)
+	if err == nil {
+		media := &StoryMedia{}
+		err = json.Unmarshal(body, media)
+		media.uid = account.ID
+		media.inst = account.inst
+		media.endpoint = urlUserStories
+		return media, err
+	}
+	return nil, err
+}
+
+// Tags returns media where account is tagged in
+//
+// For pagination use FeedMedia.Next()
+func (account *Account) Tags(minTimestamp []byte) (*FeedMedia, error) {
+	timestamp := b2s(minTimestamp)
+	body, err := account.inst.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlUserTags, account.ID),
+			Query: map[string]string{
+				"max_id":         "",
+				"rank_token":     account.inst.rankToken,
+				"min_timestamp":  timestamp,
+				"ranked_content": "true",
+			},
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	media := &FeedMedia{}
+	err = json.Unmarshal(body, media)
+	media.inst = account.inst
+	media.endpoint = urlUserTags
+	media.uid = account.ID
+	return media, err
+}
