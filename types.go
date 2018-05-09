@@ -138,3 +138,8 @@ type Videos struct {
 	URL    string `json:"url"`
 	ID     string `json:"id"`
 }
+
+type timeStoryResp struct {
+	Status string     `json:"status"`
+	Media  StoryMedia `json:"tray"`
+}

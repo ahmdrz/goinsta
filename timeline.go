@@ -44,11 +44,15 @@ func (time *Timeline) Get() (*FeedMedia, error) {
 func (time *Timeline) Stories() (*StoryMedia, error) {
 	body, err := time.inst.sendSimpleRequest(urlStories)
 	if err == nil {
-		media := &StoryMedia{}
-		err = json.Unmarshal(body, media)
+		resp := &timeStoryResp{}
+		err = json.Unmarshal(body, &resp)
+		if err != nil {
+			return nil, err
+		}
+		media := &resp.Media
 		media.inst = time.inst
 		media.endpoint = urlStories
-		return media, err
+		return media, nil
 	}
 	return nil, err
 }
