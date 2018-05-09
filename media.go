@@ -8,27 +8,29 @@ import (
 
 // Item represents media items
 type Item struct {
-	TakenAt                      int     `json:"taken_at"`
-	ID                           int64   `json:"pk"`
-	IDStr                        string  `json:"id"`
-	DeviceTimestamp              int64   `json:"device_timestamp"`
-	MediaType                    int     `json:"media_type"`
-	Code                         string  `json:"code"`
-	ClientCacheKey               string  `json:"client_cache_key"`
-	FilterType                   int     `json:"filter_type"`
-	CarouselParentID             string  `json:"carousel_parent_id"`
-	CarouselMedia                []Item  `json:"carousel_media,omitempty"`
-	User                         User    `json:"user"`
-	CanViewerReshare             bool    `json:"can_viewer_reshare"`
-	Caption                      Caption `json:"caption"`
-	CaptionIsEdited              bool    `json:"caption_is_edited"`
-	Likes                        int     `json:"like_count"`
-	HasLiked                     bool    `json:"has_liked"`
-	TopLikers                    []User  `json:"top_likers"`
-	CommentLikesEnabled          bool    `json:"comment_likes_enabled"`
-	CommentThreadingEnabled      bool    `json:"comment_threading_enabled"`
-	HasMoreComments              bool    `json:"has_more_comments"`
-	MaxNumVisiblePreviewComments int     `json:"max_num_visible_preview_comments"`
+	TakenAt          int     `json:"taken_at"`
+	ID               int64   `json:"pk"`
+	IDStr            string  `json:"id"`
+	DeviceTimestamp  int64   `json:"device_timestamp"`
+	MediaType        int     `json:"media_type"`
+	Code             string  `json:"code"`
+	ClientCacheKey   string  `json:"client_cache_key"`
+	FilterType       int     `json:"filter_type"`
+	CarouselParentID string  `json:"carousel_parent_id"`
+	CarouselMedia    []Item  `json:"carousel_media,omitempty"`
+	User             User    `json:"user"`
+	CanViewerReshare bool    `json:"can_viewer_reshare"`
+	Caption          Caption `json:"caption"`
+	CaptionIsEdited  bool    `json:"caption_is_edited"`
+	Likes            int     `json:"like_count"`
+	HasLiked         bool    `json:"has_liked"`
+	// TopLikers can be multiple data
+	TopLikersStr                 `json:"top_likers,string"`
+	TopLikers                    []User `json:"top_likers"`
+	CommentLikesEnabled          bool   `json:"comment_likes_enabled"`
+	CommentThreadingEnabled      bool   `json:"comment_threading_enabled"`
+	HasMoreComments              bool   `json:"has_more_comments"`
+	MaxNumVisiblePreviewComments int    `json:"max_num_visible_preview_comments"`
 	// PreviewComments can be `string` or `[]string`
 	PreviewComments      []interface{} `json:"preview_comments,omitempty"`
 	CommentCount         int           `json:"comment_count"`
