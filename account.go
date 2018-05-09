@@ -31,3 +31,27 @@ type Account struct {
 	AllowContactsSync          bool    `json:"allow_contacts_sync"`
 	PhoneNumber                string  `json:"phone_number"`
 }
+
+// ChangePassword changes current password.
+//
+// GoInsta does not store current instagram password (for security reasons)
+// If you want to change your password you must parse old and new password.
+func (account *Account) ChangePassword(old, new string) error {
+	insta := account.inst
+	data, err := insta.prepareData(
+		map[string]interface{}{
+			"old_password":  old,
+			"new_password1": new,
+			"new_password2": new,
+		},
+	)
+	if err == nil {
+		_, err = insta.sendRequest(
+			&reqOptions{
+				Endpoint: urlChangePass,
+				Query:    generateSignature(data),
+			},
+		)
+	}
+	return err
+}
