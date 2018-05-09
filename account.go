@@ -50,6 +50,7 @@ func (account *Account) ChangePassword(old, new string) error {
 			&reqOptions{
 				Endpoint: urlChangePass,
 				Query:    generateSignature(data),
+				IsPost:   true,
 			},
 		)
 	}
