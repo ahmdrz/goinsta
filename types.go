@@ -25,7 +25,7 @@ type Instagram struct {
 	// Instagram objects
 
 	// Users is the user interaction
-	Users *Users
+	Profiles *Profiles
 	// Account stores all personal data of the user and his/her options.
 	Account *Account
 	// Search performs searching of multiple things (users, locations...)

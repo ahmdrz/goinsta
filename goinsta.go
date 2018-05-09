@@ -24,7 +24,7 @@ func New(username, password string) *Instagram {
 		c:    &http.Client{},
 	}
 
-	inst.Users = newUsers(inst)
+	inst.Profiles = newProfiles(inst)
 	// not needed
 	// this object is created after login
 	// inst.Account = NewAccount(inst)

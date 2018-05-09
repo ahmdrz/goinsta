@@ -3,7 +3,6 @@ package goinsta
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 )
 
 type Users struct {
@@ -22,9 +21,6 @@ type Users struct {
 	NextID   string `json:"next_max_id"`
 }
 
-// newUsers creates new users struct to interact with user functions.
-//
-// ...
 func newUsers(inst *Instagram) *Users {
 	users := &Users{inst: inst}
 
@@ -68,46 +64,6 @@ func (users *Users) Next() error {
 		}
 	}
 	return err
-}
-
-// Profile allows user function interactions
-type Profile struct {
-	inst *Instagram
-}
-
-// ByName return a *User structure parsed by username
-func (prof *Profile) ByName(name string) (*User, error) {
-	body, err := prof.inst.sendSimpleRequest(urlUserByName, name)
-	if err == nil {
-		resp := userResp{}
-		err = json.Unmarshal(body, &resp)
-		if err == nil {
-			user := &resp.User
-			return user, nil
-		}
-	}
-	return nil, err
-}
-
-// ByID returns a *User structure parsed by user id
-func (prof *Profile) ByID(id int64) (*User, error) {
-	data, err := prof.inst.prepareData()
-	if err != nil {
-		return nil, err
-	}
-
-	body, err := prof.inst.sendRequest(
-		&reqOptions{
-			Endpoint: fmt.Sprintf(urlUserById, id),
-			Query:    generateSignature(data),
-		},
-	)
-	if err == nil {
-		user := userResp{}
-		err = json.Unmarshal(body, &user)
-		return &user.User, err
-	}
-	return nil, err
 }
 
 type userResp struct {
