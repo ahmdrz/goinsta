@@ -2,11 +2,24 @@ package goinsta
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 )
 
 type Users struct {
 	inst *Instagram
+
+	// It's a bit confusing have the same structure
+	// in the Instagram strucure and in the multiple users
+	// calls
+
+	endpoint string
+
+	Status   string `json:"status"`
+	BigList  bool   `json:"big_list"`
+	Users    []User `json:"users"`
+	PageSize int    `json:"page_size"`
+	NextID   string `json:"next_max_id"`
 }
 
 // newUsers creates new users struct to interact with user functions.
@@ -23,9 +36,48 @@ func (users *Users) SetInstagram(inst *Instagram) {
 	users.inst = inst
 }
 
+var ErrNoMore = errors.New("list ends reached")
+
+// Next allows to paginate after calling:
+// Account.Follow* and User.Follow*
+//
+// New user list is stored inside Users
+//
+// returns ErrNoMore when list reach the end
+func (users *Users) Next() error {
+	insta := users.inst
+	endpoint := users.endpoint
+
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: endpoint,
+			Query: map[string]string{
+				"max_id":             users.NextID,
+				"ig_sig_key_version": goInstaSigKeyVersion,
+				"rank_token":         insta.rankToken,
+			},
+		},
+	)
+	if err == nil {
+		usrs := Users{}
+		err = json.Unmarshal(body, &usrs)
+		if err == nil {
+			*users = usrs
+			users.inst = insta
+			users.endpoint = endpoint
+		}
+	}
+	return err
+}
+
+// Profile allows user function interactions
+type Profile struct {
+	inst *Instagram
+}
+
 // ByName return a *User structure parsed by username
-func (users *Users) ByName(name string) (*User, error) {
-	body, err := users.inst.sendSimpleRequest(urlUserByName, name)
+func (prof *Profile) ByName(name string) (*User, error) {
+	body, err := prof.inst.sendSimpleRequest(urlUserByName, name)
 	if err == nil {
 		resp := userResp{}
 		err = json.Unmarshal(body, &resp)
@@ -38,13 +90,13 @@ func (users *Users) ByName(name string) (*User, error) {
 }
 
 // ByID returns a *User structure parsed by user id
-func (users *Users) ByID(id int64) (*User, error) {
-	data, err := users.inst.prepareData()
+func (prof *Profile) ByID(id int64) (*User, error) {
+	data, err := prof.inst.prepareData()
 	if err != nil {
 		return nil, err
 	}
 
-	body, err := users.inst.sendRequest(
+	body, err := prof.inst.sendRequest(
 		&reqOptions{
 			Endpoint: fmt.Sprintf(urlUserById, id),
 			Query:    generateSignature(data),
