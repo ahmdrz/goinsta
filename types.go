@@ -113,3 +113,22 @@ type Caption struct {
 	MediaID         int64  `json:"media_id"`
 	HasTranslation  bool   `json:"has_translation"`
 }
+
+type Mentions struct {
+	X        float64 `json:"x"`
+	Y        float64 `json:"y"`
+	Z        int     `json:"z"`
+	Width    float64 `json:"width"`
+	Height   float64 `json:"height"`
+	Rotation float64 `json:"rotation"`
+	IsPinned int     `json:"is_pinned"`
+	User     User    `json:"user"`
+}
+
+type VideoVersion struct {
+	Type   int    `json:"type"`
+	Width  int    `json:"width"`
+	Height int    `json:"height"`
+	URL    string `json:"url"`
+	ID     string `json:"id"`
+}
