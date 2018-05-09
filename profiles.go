@@ -23,10 +23,10 @@ func (prof *Profiles) ByName(name string) (*User, error) {
 	if err == nil {
 		resp := userResp{}
 		err = json.Unmarshal(body, &resp)
-		if err == nil {
-			user := &resp.User
-			return user, nil
-		}
+		// user is not nil at this point
+		user := &resp.User
+		user.inst = prof.inst
+		return user, err
 	}
 	return nil, err
 }
@@ -45,9 +45,11 @@ func (prof *Profiles) ByID(id int64) (*User, error) {
 		},
 	)
 	if err == nil {
-		user := userResp{}
-		err = json.Unmarshal(body, &user)
-		return &user.User, err
+		resp := userResp{}
+		err = json.Unmarshal(body, &resp)
+		user := &resp.User
+		user.inst = prof.inst
+		return user, err
 	}
 	return nil, err
 }
