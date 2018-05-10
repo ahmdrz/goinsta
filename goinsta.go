@@ -104,13 +104,17 @@ func Import(path string) (*Instagram, error) {
 		pid:       config.PhoneID,
 		c:         &http.Client{},
 	}
+	inst.c.Jar, err = cookiejar.New(nil)
+	if err != nil {
+		return inst, err
+	}
 	inst.c.Jar.SetCookies(url, config.Cookies)
 
 	inst.Profiles = newProfiles(inst)
 	inst.Activity = newActivity(inst)
 	inst.Timeline = newTimeline(inst)
 	inst.Search = newSearch(inst)
-	inst.Account.inst = inst
+	inst.Account = &Account{inst: inst}
 
 	return inst, nil
 }
