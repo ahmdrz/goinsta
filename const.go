@@ -43,7 +43,7 @@ const (
 	urlStories  = "feed/reels_tray/"
 
 	// search
-	urlSearchUser     = "/users/search/"
+	urlSearchUser     = "users/search/"
 	urlSearchTag      = "tags/search/"
 	urlSearchLocation = "location_search/"
 )
