@@ -84,7 +84,7 @@ type Friendship struct {
 
 // Images are different quality images
 type Images struct {
-	Versions []Candidate
+	Versions []Candidate `json:"candidates"`
 }
 
 type Candidate struct {
