@@ -9,37 +9,45 @@ import (
 //
 // ...
 type Instagram struct {
-	user string `json:"username"`
+	user string
 	pass string
 	// device id
-	dID string `json:"device_id"`
+	dID string
 	// uuid
-	uuid string `json:"uuid"`
+	uuid string
 	// rankToken
-	rankToken string `json:"rank_token"`
+	rankToken string
 	// token
-	token string `json:"token"`
+	token string
 	// phone id
-	pid string `json:"phone_id"`
-	// this field must be nil
-	cookies []*http.Cookie `json:"cookies"`
+	pid string
 
 	// Instagram objects
 
 	// Users is the user interaction
-	Profiles *Profiles `json:"-"`
+	Profiles *Profiles
 	// Account stores all personal data of the user and his/her options.
-	Account *Account `json:"-"`
+	Account *Account
 	// Search performs searching of multiple things (users, locations...)
-	Search *Search `json:"-"`
+	Search *Search
 	//
-	Timeline *Timeline `json:"-"`
+	Timeline *Timeline
 	//
-	Activity *Activity `json:"-"`
+	Activity *Activity
 
-	logged bool `json:"-"`
+	logged bool
 
-	c *http.Client `json:"-"`
+	c *http.Client
+}
+
+type ConfigFile struct {
+	User      string         `json:"username"`
+	DeviceID  string         `json:"device_id"`
+	UUID      string         `json:"uuid"`
+	RankToken string         `json:"rank_token"`
+	Token     string         `json:"token"`
+	PhoneID   string         `json:"phone_id"`
+	Cookies   []*http.Cookie `json:"cookies"`
 }
 
 // School is void structure (yet).

@@ -60,8 +60,16 @@ func (inst *Instagram) Export(path string) error {
 		return err
 	}
 
-	inst.cookies = inst.c.Jar.Cookies(url)
-	bytes, err := json.Marshal(inst)
+	config := ConfigFile{
+		User:      inst.user,
+		DeviceID:  inst.dID,
+		UUID:      inst.uuid,
+		RankToken: inst.rankToken,
+		Token:     inst.token,
+		PhoneID:   inst.pid,
+		Cookies:   inst.c.Jar.Cookies(url),
+	}
+	bytes, err := json.Marshal(config)
 	if err != nil {
 		return err
 	}
@@ -81,16 +89,22 @@ func Import(path string) (*Instagram, error) {
 		return nil, err
 	}
 
-	inst := new(Instagram)
+	config := ConfigFile{}
 
-	err = json.Unmarshal(bytes, inst)
+	err = json.Unmarshal(bytes, &config)
 	if err != nil {
-		inst = nil
 		return nil, err
 	}
-	inst.c = &http.Client{}
-	inst.c.Jar.SetCookies(url, inst.cookies)
-	inst.cookies = nil
+	inst := &Instagram{
+		user:      config.User,
+		dID:       config.DeviceID,
+		uuid:      config.UUID,
+		rankToken: config.RankToken,
+		token:     config.Token,
+		pid:       config.PhoneID,
+		c:         &http.Client{},
+	}
+	inst.c.Jar.SetCookies(url, config.Cookies)
 
 	inst.Profiles = newProfiles(inst)
 	inst.Activity = newActivity(inst)
