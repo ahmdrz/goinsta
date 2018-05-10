@@ -8,7 +8,8 @@ import (
 
 // Item represents media items
 //
-// All Item has
+// All Item has Images or Videos objects which contains the url(s).
+// You can use Download function to get the best quality Image or Video from Item.
 type Item struct {
 	TakenAt          int     `json:"taken_at"`
 	ID               int64   `json:"pk"`
@@ -48,6 +49,19 @@ type Item struct {
 	OriginalWidth   int    `json:"original_width,omitempty"`
 	OriginalHeight  int    `json:"original_height,omitempty"`
 	ImportedTakenAt int    `json:"imported_taken_at,omitempty"`
+	Location        struct {
+		Pk               int     `json:"pk"`
+		Name             string  `json:"name"`
+		Address          string  `json:"address"`
+		City             string  `json:"city"`
+		ShortName        string  `json:"short_name"`
+		Lng              float64 `json:"lng"`
+		Lat              float64 `json:"lat"`
+		ExternalSource   string  `json:"external_source"`
+		FacebookPlacesID int64   `json:"facebook_places_id"`
+	} `json:"location,omitempty"`
+	Lat float64 `json:"lat,omitempty"`
+	Lng float64 `json:"lng,omitempty"`
 
 	// Only for stories
 	StoryEvents              []interface{} `json:"story_events"`
@@ -70,6 +84,28 @@ type Item struct {
 	IsDashEligible           int      `json:"is_dash_eligible,omitempty"`
 	VideoDashManifest        string   `json:"video_dash_manifest,omitempty"`
 	NumberOfQualities        int      `json:"number_of_qualities,omitempty"`
+}
+
+// Download downloads media item (video or image) with the best quality.
+//
+// Input parameters are folder and filename. If filename is "" will be saved with
+// the default value name.
+func (item *Item) Download(folder, name string) error {
+	/*
+		for _, image := range item.Images {
+			for _, c := range image.Versions {
+				if name == "" {
+					name =
+				}
+				if err := os.Stat(
+			}
+		}
+
+		for _, video := range item.Videos {
+
+		}
+	*/
+	return nil
 }
 
 // TopLikers returns string slice or single string (inside string slice)

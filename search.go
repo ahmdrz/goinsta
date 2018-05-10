@@ -2,6 +2,7 @@ package goinsta
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"time"
 )
@@ -145,6 +146,7 @@ func (search *Search) Location(lat, lng, location string) (*SearchResult, error)
 	return res, err
 }
 
+// Facebook search by facebook user.
 func (search *Search) Facebook(user string) (*SearchResult, error) {
 	insta := search.inst
 	body, err := insta.sendRequest(
@@ -162,4 +164,40 @@ func (search *Search) Facebook(user string) (*SearchResult, error) {
 	res := &SearchResult{}
 	err = json.Unmarshal(body, res)
 	return res, err
+}
+
+// FeedTags search by Tag in user Feed
+//
+// (sorry for returning FeedTag. See #FeedTag)
+func (search *Search) FeedTags(tag string) (*FeedTag, error) {
+	insta := search.inst
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlSearchFeedTag, tag),
+			Query: map[string]string{
+				"rank_token":     insta.rankToken,
+				"ranked_content": "true",
+			},
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	res := &FeedTag{}
+	err = json.Unmarshal(body, res)
+	return res, err
+}
+
+// Instagram's database is f*cking shit.
+// We all hate nodejs (seems that they uses nodejs and mongoldb)
+// I don't know why FeedTags returns this aberration structure.
+type FeedTag struct {
+	RankedItems         []Item     `json:"ranked_items"`
+	Images              []Item     `json:"items"`
+	NumResults          int        `json:"num_results"`
+	NextID              string     `json:"next_max_id"`
+	MoreAvailable       bool       `json:"more_available"`
+	AutoLoadMoreEnabled bool       `json:"auto_load_more_enabled"`
+	Story               StoryMedia `json:"story"`
+	Status              string     `json:"status"`
 }
