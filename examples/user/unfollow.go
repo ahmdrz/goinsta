@@ -25,22 +25,22 @@ func main() {
 	inst := goinsta.New(os.Args[1], string(pass))
 
 	err = inst.Login()
-	checkErr(err)
+	e.CheckErr(err)
 	fmt.Printf("Hello %s!\n", inst.Account.Username)
 
 	user, err := inst.Profiles.ByName(os.Args[2])
-	checkErr(err)
+	e.CheckErr(err)
 
 	fmt.Printf("Unfollowing: %v\n", user.Friendship.Unfollowing)
 	err = user.Unfollow()
-	checkErr(err)
+	e.CheckErr(err)
 	fmt.Printf("After func call: Unfollowing: %v\n", user.Friendship.Unfollowing)
 
 	err = inst.Logout()
-	checkErr(err)
+	e.CheckErr(err)
 }
 
-func checkErr(err error) {
+func e.CheckErr(err error) {
 	if err != nil {
 		panic(err)
 	}

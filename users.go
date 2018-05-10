@@ -13,6 +13,7 @@ type Users struct {
 	// in the Instagram strucure and in the multiple users
 	// calls
 
+	err      error
 	endpoint string
 
 	Status   string `json:"status"`
@@ -40,8 +41,12 @@ var ErrNoMore = errors.New("User list end reached")
 //
 // New user list is stored inside Users
 //
-// returns ErrNoMore when list reach the end.
-func (users *Users) Next() error {
+// returns false when list reach the end.
+func (users *Users) Next() bool {
+	if users.err != nil {
+		return false
+	}
+
 	insta := users.inst
 	endpoint := users.endpoint
 
@@ -59,15 +64,17 @@ func (users *Users) Next() error {
 		usrs := Users{}
 		err = json.Unmarshal(body, &usrs)
 		if err == nil {
-			if !usrs.BigList || usrs.NextID == "" {
-				err = ErrNoMore
-			}
 			*users = usrs
+			if !usrs.BigList || usrs.NextID == "" {
+				users.err = ErrNoMore
+			}
 			users.inst = insta
 			users.endpoint = endpoint
+			return true
 		}
 	}
-	return err
+	users.err = err
+	return false
 }
 
 type userResp struct {
@@ -129,51 +136,21 @@ type User struct {
 // Following returns a list of user following.
 //
 // Users.Next can be used to paginate
-func (user *User) Following() (*Users, error) {
-	endpoint := fmt.Sprintf(urlFollowing, user.ID)
-	body, err := user.inst.sendRequest(
-		&reqOptions{
-			Endpoint: endpoint,
-			Query: map[string]string{
-				"max_id":             "",
-				"ig_sig_key_version": goInstaSigKeyVersion,
-				"rank_token":         user.inst.rankToken,
-			},
-		},
-	)
-	if err == nil {
-		users := &Users{}
-		err = json.Unmarshal(body, users)
-		users.inst = user.inst
-		users.endpoint = endpoint
-		return users, err
-	}
-	return nil, err
+func (user *User) Following() *Users {
+	users := &Users{}
+	users.inst = user.inst
+	users.endpoint = fmt.Sprintf(urlFollowing, user.ID)
+	return users
 }
 
 // Followers returns a list of user followers.
 //
 // Users.Next can be used to paginate
-func (user *User) Followers() (*Users, error) {
-	endpoint := fmt.Sprintf(urlFollowers, user.ID)
-	body, err := user.inst.sendRequest(
-		&reqOptions{
-			Endpoint: endpoint,
-			Query: map[string]string{
-				"max_id":             "",
-				"ig_sig_key_version": goInstaSigKeyVersion,
-				"rank_token":         user.inst.rankToken,
-			},
-		},
-	)
-	if err == nil {
-		users := &Users{}
-		err = json.Unmarshal(body, users)
-		users.inst = user.inst
-		users.endpoint = endpoint
-		return users, err
-	}
-	return nil, err
+func (user *User) Followers() *Users {
+	users := &Users{}
+	users.inst = user.inst
+	users.endpoint = fmt.Sprintf(urlFollowers, user.ID)
+	return users
 }
 
 // Block blocks user

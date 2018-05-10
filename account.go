@@ -176,51 +176,23 @@ func (account *Account) SetPublic() error {
 // Followers returns a list of user followers.
 //
 // Users.Next can be used to paginate
-func (account *Account) Followers() (*Users, error) {
+func (account *Account) Followers() *Users {
 	endpoint := fmt.Sprintf(urlFollowers, account.ID)
-	body, err := account.inst.sendRequest(
-		&reqOptions{
-			Endpoint: endpoint,
-			Query: map[string]string{
-				"max_id":             "",
-				"ig_sig_key_version": goInstaSigKeyVersion,
-				"rank_token":         account.inst.rankToken,
-			},
-		},
-	)
-	if err == nil {
-		users := &Users{}
-		err = json.Unmarshal(body, users)
-		users.inst = account.inst
-		users.endpoint = endpoint
-		return users, err
-	}
-	return nil, err
+	users := &Users{}
+	users.inst = account.inst
+	users.endpoint = endpoint
+	return users
 }
 
 // Following returns a list of user following.
 //
 // Users.Next can be used to paginate
-func (account *Account) Following() (*Users, error) {
+func (account *Account) Following() *Users {
 	endpoint := fmt.Sprintf(urlFollowing, account.ID)
-	body, err := account.inst.sendRequest(
-		&reqOptions{
-			Endpoint: endpoint,
-			Query: map[string]string{
-				"max_id":             "",
-				"ig_sig_key_version": goInstaSigKeyVersion,
-				"rank_token":         account.inst.rankToken,
-			},
-		},
-	)
-	if err == nil {
-		users := &Users{}
-		err = json.Unmarshal(body, users)
-		users.inst = account.inst
-		users.endpoint = endpoint
-		return users, err
-	}
-	return nil, err
+	users := &Users{}
+	users.inst = account.inst
+	users.endpoint = endpoint
+	return users
 }
 
 // Feed returns current account feed

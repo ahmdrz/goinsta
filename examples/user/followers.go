@@ -4,57 +4,32 @@ package main
 
 import (
 	"fmt"
-	"os"
 
-	"github.com/ahmdrz/goinsta"
-	"github.com/howeyc/gopass"
+	e "github.com/ahmdrz/goinsta/examples"
 )
 
 func main() {
-	if len(os.Args) < 3 {
-		fmt.Printf("%s <your user> <another user>\n", os.Args[0])
-		return
-	}
-
-	fmt.Print("Password: ")
-	pass, err := gopass.GetPasswd()
-	if err != nil {
-		panic(err)
-	}
-
-	inst := goinsta.New(os.Args[1], string(pass))
-
-	err = inst.Login()
-	checkErr(err)
-	fmt.Printf("Hello %s!\n", inst.Account.Username)
+	inst, err := e.InitGoinsta(3, "<your username> <target user>")
+	e.CheckErr(err)
 
 	user, err := inst.Profiles.ByName(os.Args[2])
-	checkErr(err)
+	e.CheckErr(err)
 
 	users, err := user.Followers()
-	checkErr(err)
+	e.CheckErr(err)
 
 	i := 1
-	for {
+	for users.Next() {
 		fmt.Println("Next:", users.NextID)
 		for _, user := range users.Users {
 			i++
 			fmt.Printf("  - %s\n", user.Username)
 		}
-
-		if err = users.Next(); err != nil {
-			fmt.Println(err)
-			break
-		}
 	}
 	fmt.Println("Followers:", i)
 
-	err = inst.Logout()
-	checkErr(err)
-}
-
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
+	if !e.UsingSession {
+		err = inst.Logout()
+		e.CheckErr(err)
 	}
 }
