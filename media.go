@@ -42,10 +42,12 @@ type Item struct {
 	FbUserTags           Tag         `json:"fb_user_tags"`
 	CanViewerSave        bool        `json:"can_viewer_save"`
 	OrganicTrackingToken string      `json:"organic_tracking_token"`
-	Images               Images      `json:"image_versions2,omitempty"`
-	OriginalWidth        int         `json:"original_width,omitempty"`
-	OriginalHeight       int         `json:"original_height,omitempty"`
-	ImportedTakenAt      int         `json:"imported_taken_at,omitempty"`
+	// Images contains URL images in different versions.
+	// Version = quality.
+	Images          Images `json:"image_versions2,omitempty"`
+	OriginalWidth   int    `json:"original_width,omitempty"`
+	OriginalHeight  int    `json:"original_height,omitempty"`
+	ImportedTakenAt int    `json:"imported_taken_at,omitempty"`
 
 	// Only for stories
 	StoryEvents              []interface{} `json:"story_events"`
