@@ -3,6 +3,8 @@ package goinsta
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
+	"time"
 )
 
 type Search struct {
@@ -11,18 +13,26 @@ type Search struct {
 
 type SearchResult struct {
 	HasMore    bool   `json:"has_more"`
+	RankToken  string `json:"rank_token"`
 	Status     string `json:"status"`
 	NumResults int    `json:"num_results"`
-	RankToken  string `json:"rank_token"`
 
 	// User search results
 	Users []User `json:"users"`
 
 	// Tag search results
 	Tags []struct {
-		Name       string `json:"name"`
-		MediaCount int    `json:"media_count"`
-		ID         int64  `json:"id"`
+		ID               int64       `json:"id"`
+		Name             string      `json:"name"`
+		MediaCount       int         `json:"media_count"`
+		FollowStatus     interface{} `json:"follow_status"`
+		Following        interface{} `json:"following"`
+		AllowFollowing   interface{} `json:"allow_following"`
+		AllowMutingStory interface{} `json:"allow_muting_story"`
+		ProfilePicURL    interface{} `json:"profile_pic_url"`
+		NonViolating     interface{} `json:"non_violating"`
+		RelatedTags      interface{} `json:"related_tags"`
+		DebugInfo        interface{} `json:"debug_info"`
 	} `json:"results"`
 
 	// Location search result
@@ -94,7 +104,7 @@ func (search *Search) Tags(tag string) (*SearchResult, error) {
 }
 
 // Location search by location.
-//
+// DEPRECATED - Instagram does not allow Location search method.
 // Lat and Lng (Latitude & Longitude) cannot be ""
 func (search *Search) Location(lat, lng, location string) (*SearchResult, error) {
 	insta := search.inst
