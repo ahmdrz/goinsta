@@ -2,38 +2,22 @@ package main
 
 import (
 	"fmt"
-	"os"
 
-	"github.com/ahmdrz/goinsta"
-	"github.com/howeyc/gopass"
+	e "github.com/ahmdrz/goinsta/examples"
 )
 
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Printf("%s <your user>\n", os.Args[0])
-		return
-	}
-
-	fmt.Print("Password: ")
-	pass, err := gopass.GetPasswd()
-	if err != nil {
-		panic(err)
-	}
-
-	inst := goinsta.New(os.Args[1], string(pass))
-
-	err = inst.Login()
-	checkErr(err)
-	fmt.Printf("Hello %s!\n", inst.Account.Username)
+	inst, err := e.InitGoinsta(2, "<username>")
+	e.CheckErr(err)
 
 	stories, err := inst.Timeline.Stories()
-	checkErr(err)
+	e.CheckErr(err)
 
 	for _, story := range stories {
 		// getting images URL
 		for _, item := range story.Items {
-			if len(item.Images.Candidates) > 0 {
-				fmt.Printf("  Image - %s\n", item.Images.Candidates[0].URL)
+			if len(item.Images.Versions) > 0 {
+				fmt.Printf("  Image - %s\n", item.Images.Versions[0].URL)
 			}
 			if len(item.Videos) > 0 {
 				fmt.Printf("  Video - %s\n", item.Videos[0].URL)
@@ -41,12 +25,8 @@ func main() {
 		}
 	}
 
-	err = inst.Logout()
-	checkErr(err)
-}
-
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
+	if !e.UsingSession {
+		err = inst.Logout()
+		e.CheckErr(err)
 	}
 }
