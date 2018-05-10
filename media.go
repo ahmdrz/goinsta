@@ -198,7 +198,6 @@ func getBest(obj interface{}) []string {
 //
 // If file exists it will be saved
 func (item *Item) Download(inst *Instagram, folder, name string) error {
-	// TODO: Download in best quality
 	os.MkdirAll(folder, 0777)
 	for _, url := range getBest(item.Images.Versions) {
 		nname := name
@@ -267,13 +266,16 @@ func (item *Item) PreviewComments() []string {
 }
 
 type Media interface {
-	Next() error
+	Next() bool
+	Error() error
 }
 
 type StoryMedia struct {
 	inst     *Instagram
 	endpoint string
 	uid      int64
+
+	err error
 
 	ID              int      `json:"id"`
 	LatestReelMedia int      `json:"latest_reel_media"`
@@ -290,34 +292,49 @@ type StoryMedia struct {
 	Status          string   `json:"status"`
 }
 
+// Error returns error happend any error
+func (media StoryMedia) Error() error {
+	return media.err
+}
+
 // Next allows to paginate after calling:
 // User.Stories
-func (media *StoryMedia) Next() (err error) {
-	var body []byte
+//
+// returns false when list reach the end
+// if StoryMedia.Error() is ErrNoMore no problem have been occurred.
+func (media *StoryMedia) Next() bool {
+	if media.err != nil {
+		return false
+	}
+
 	insta := media.inst
 	endpoint := media.endpoint
 	if media.uid != 0 {
 		endpoint = fmt.Sprintf(endpoint, media.uid)
 	}
 
-	body, err = insta.sendSimpleRequest(endpoint)
+	body, err := insta.sendSimpleRequest(endpoint)
 	if err == nil {
 		m := StoryMedia{}
 		err = json.Unmarshal(body, &m)
 		if err == nil {
 			// TODO check NextID media
-			err = ErrNoMore
 			*media = m
 			media.inst = insta
 			media.endpoint = endpoint
+			media.err = ErrNoMore
+			return true
 		}
 	}
-	return err
+	media.err = err
+	return false
 }
 
 // Media represent a set of media items
 type FeedMedia struct {
 	inst *Instagram
+
+	err error
 
 	uid       int64
 	endpoint  string
@@ -333,12 +350,20 @@ type FeedMedia struct {
 	NextID interface{} `json:"next_max_id"`
 }
 
+func (media FeedMedia) Error() error {
+	return media.err
+}
+
 // Next allows to paginate after calling:
 // User.Feed
 //
-// returns ErrNoMore when list reach the end.
-func (media *FeedMedia) Next() (err error) {
-	var body []byte
+// returns false when list reach the end.
+// if FeedMedia.Error() is ErrNoMore no problem have been occurred.
+func (media *FeedMedia) Next() bool {
+	if media.err != nil {
+		return false
+	}
+
 	insta := media.inst
 	endpoint := media.endpoint
 	next := ""
@@ -354,7 +379,7 @@ func (media *FeedMedia) Next() (err error) {
 		endpoint = fmt.Sprintf(endpoint, media.uid)
 	}
 
-	body, err = insta.sendRequest(
+	body, err := insta.sendRequest(
 		&reqOptions{
 			Endpoint: endpoint,
 			Query: map[string]string{
@@ -373,9 +398,10 @@ func (media *FeedMedia) Next() (err error) {
 			media.inst = insta
 			media.endpoint = endpoint
 			if m.NextID == 0 || !m.MoreAvailable {
-				err = ErrNoMore
+				media.err = ErrNoMore
 			}
+			return true
 		}
 	}
-	return err
+	return false
 }
