@@ -58,7 +58,7 @@ func main() {
 }
 ```
 
-* [**More Examples**](https://github.com/ahmdrz/goinsta/tree/master/_examples)
+* [**More Examples**](https://github.com/ahmdrz/goinsta/tree/master/examples)
 
 ## Legal
 

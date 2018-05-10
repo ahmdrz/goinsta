@@ -2,6 +2,7 @@ package goinsta
 
 import ()
 
+// Activity is the activity of your instagram account
 type Activity struct {
 	inst *Instagram
 }
