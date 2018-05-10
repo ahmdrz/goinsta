@@ -72,7 +72,7 @@ func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 
 	resp, err := inst.c.Do(req)
 	if err != nil {
-		return body, err
+		return nil, err
 	}
 	defer resp.Body.Close()
 

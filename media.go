@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	neturl "net/url"
 	"os"
 	"path"
 	"strconv"
+	"strings"
 )
 
 // Item represents media items
@@ -91,13 +93,18 @@ type Item struct {
 
 func getname(name string) string {
 	nname := name
-	i := 0
+	i := 1
 	for {
+		ext := path.Ext(name)
+
 		_, err := os.Stat(name)
 		if err != nil {
 			break
 		}
-		name = fmt.Sprintf("%s.%d", nname, i)
+		if ext != "" {
+			nname = strings.Replace(nname, ext, "", -1)
+		}
+		name = fmt.Sprintf("%s.%d%s", nname, i, ext)
 		i++
 	}
 	return name
@@ -123,31 +130,45 @@ func download(inst *Instagram, url, dst string) error {
 //
 // Input parameters are folder and filename. If filename is "" will be saved with
 // the default value name.
+//
+// If file exists it will be saved
 func (item *Item) Download(inst *Instagram, folder, name string) error {
 	os.MkdirAll(folder, 0777)
 	for _, c := range item.Images.Versions {
-		if name == "" {
-			name = fmt.Sprintf("%s%c%s", folder, os.PathSeparator, path.Base(c.URL))
-		} else {
-			name = fmt.Sprintf("%s%c%s", folder, os.PathSeparator, name)
-		}
-		name = getname(name)
+		nname := name
+		if nname == "" {
+			u, err := neturl.Parse(c.URL)
+			if err != nil {
+				return err
+			}
 
-		err := download(inst, c.URL, name)
+			nname = fmt.Sprintf("%s%c%s", folder, os.PathSeparator, path.Base(u.Path))
+		} else {
+			nname = fmt.Sprintf("%s%c%s", folder, os.PathSeparator, nname)
+		}
+		nname = getname(nname)
+
+		err := download(inst, c.URL, nname)
 		if err != nil {
 			return err
 		}
 	}
 
 	for _, video := range item.Videos {
-		if name == "" {
-			name = fmt.Sprintf("%s%c%s", folder, os.PathSeparator, path.Base(video.URL))
-		} else {
-			name = fmt.Sprintf("%s%c%s", folder, os.PathSeparator, name)
-		}
-		name = getname(name)
+		nname := name
+		if nname == "" {
+			u, err := neturl.Parse(video.URL)
+			if err != nil {
+				return err
+			}
 
-		err := download(inst, video.URL, name)
+			nname = fmt.Sprintf("%s%c%s", folder, os.PathSeparator, path.Base(u.Path))
+		} else {
+			nname = fmt.Sprintf("%s%c%s", folder, os.PathSeparator, nname)
+		}
+		nname = getname(nname)
+
+		err := download(inst, video.URL, nname)
 		if err != nil {
 			return err
 		}
