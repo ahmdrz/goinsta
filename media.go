@@ -126,6 +126,71 @@ func download(inst *Instagram, url, dst string) error {
 	return err
 }
 
+type bestMedia struct {
+	w, h int
+	url  string
+}
+
+func getBest(obj interface{}) []string {
+	m := make(map[string]bestMedia)
+
+	switch t := obj.(type) {
+	// getting best video
+	case []Video:
+		for _, video := range t {
+			v, ok := m[video.ID]
+			if !ok {
+				m[video.ID] = bestMedia{
+					w:   video.Width,
+					h:   video.Height,
+					url: video.URL,
+				}
+			} else {
+				if v.w < video.Width && video.Height > v.h {
+					m[video.ID] = bestMedia{
+						w:   video.Width,
+						h:   video.Height,
+						url: video.URL,
+					}
+				}
+			}
+		}
+		// getting best image
+	case []Candidate:
+		for _, image := range t {
+			url, err := neturl.Parse(image.URL)
+			if err != nil {
+				continue
+			}
+
+			base := path.Base(url.Path)
+			i, ok := m[base]
+			if !ok {
+				m[base] = bestMedia{
+					w:   image.Width,
+					h:   image.Height,
+					url: image.URL,
+				}
+			} else {
+				if i.w < image.Width && image.Height > i.h {
+					m[base] = bestMedia{
+						w:   image.Width,
+						h:   image.Height,
+						url: image.URL,
+					}
+				}
+			}
+		}
+	}
+	s := []string{}
+	// getting best to return in string slice
+	for _, v := range m {
+		s = append(s, v.url)
+	}
+	m = nil
+	return s
+}
+
 // Download downloads media item (video or image) with the best quality.
 //
 // Input parameters are folder and filename. If filename is "" will be saved with
@@ -135,10 +200,10 @@ func download(inst *Instagram, url, dst string) error {
 func (item *Item) Download(inst *Instagram, folder, name string) error {
 	// TODO: Download in best quality
 	os.MkdirAll(folder, 0777)
-	for _, c := range item.Images.Versions {
+	for _, url := range getBest(item.Images.Versions) {
 		nname := name
 		if nname == "" {
-			u, err := neturl.Parse(c.URL)
+			u, err := neturl.Parse(url)
 			if err != nil {
 				return err
 			}
@@ -149,16 +214,16 @@ func (item *Item) Download(inst *Instagram, folder, name string) error {
 		}
 		nname = getname(nname)
 
-		err := download(inst, c.URL, nname)
+		err := download(inst, url, nname)
 		if err != nil {
 			return err
 		}
 	}
 
-	for _, video := range item.Videos {
+	for _, url := range getBest(item.Videos) {
 		nname := name
 		if nname == "" {
-			u, err := neturl.Parse(video.URL)
+			u, err := neturl.Parse(url)
 			if err != nil {
 				return err
 			}
@@ -169,7 +234,7 @@ func (item *Item) Download(inst *Instagram, folder, name string) error {
 		}
 		nname = getname(nname)
 
-		err := download(inst, video.URL, nname)
+		err := download(inst, url, nname)
 		if err != nil {
 			return err
 		}
