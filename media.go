@@ -126,20 +126,20 @@ func (media *StoryMedia) Next() (err error) {
 	var body []byte
 	insta := media.inst
 	endpoint := media.endpoint
-
 	if media.uid != 0 {
 		endpoint = fmt.Sprintf(endpoint, media.uid)
 	}
+
 	body, err = insta.sendSimpleRequest(endpoint)
 	if err == nil {
 		m := StoryMedia{}
 		err = json.Unmarshal(body, &m)
 		if err == nil {
+			// TODO check NextID media
 			err = ErrNoMore
 			*media = m
 			media.inst = insta
 			media.endpoint = endpoint
-			// TODO check NextID media
 		}
 	}
 	return err
@@ -149,8 +149,9 @@ func (media *StoryMedia) Next() (err error) {
 type FeedMedia struct {
 	inst *Instagram
 
-	uid      int64
-	endpoint string
+	uid       int64
+	endpoint  string
+	timestamp string
 
 	Items               []Item `json:"items"`
 	NumResults          int    `json:"num_results"`
@@ -189,7 +190,7 @@ func (media *FeedMedia) Next() (err error) {
 			Query: map[string]string{
 				"max_id":         next,
 				"rank_token":     insta.rankToken,
-				"min_timestamp":  "",
+				"min_timestamp":  media.timestamp,
 				"ranked_content": "true",
 			},
 		},
