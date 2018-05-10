@@ -316,46 +316,25 @@ func (user *User) friendShip() error {
 // minTime is the minimum timestamp of media.
 //
 // For pagination use FeedMedia.Next()
-func (user *User) Feed(minTime []byte) (*FeedMedia, error) {
+func (user *User) Feed(minTime []byte) *FeedMedia {
 	insta := user.inst
 	timestamp := b2s(minTime)
 
-	body, err := insta.sendRequest(
-		&reqOptions{
-			Endpoint: fmt.Sprintf(urlUserFeed, user.ID),
-			Query: map[string]string{
-				"max_id":         "",
-				"rank_token":     insta.rankToken,
-				"min_timestamp":  timestamp,
-				"ranked_content": "true",
-			},
-		},
-	)
-	if err == nil {
-		media := &FeedMedia{}
-		err = json.Unmarshal(body, media)
-		media.inst = insta
-		media.endpoint = urlUserFeed
-		media.uid = user.ID
-		return media, err
-	}
-	return nil, err
+	media := &FeedMedia{}
+	media.timestamp = timestamp
+	media.inst = insta
+	media.endpoint = urlUserFeed
+	media.uid = user.ID
+	return media
 }
 
 // Stories returns user stories
-func (user *User) Stories() (*StoryMedia, error) {
-	body, err := user.inst.sendSimpleRequest(
-		urlUserStories, user.ID,
-	)
-	if err == nil {
-		media := &StoryMedia{}
-		err = json.Unmarshal(body, media)
-		media.uid = user.ID
-		media.inst = user.inst
-		media.endpoint = urlUserStories
-		return media, err
-	}
-	return nil, err
+func (user *User) Stories() *StoryMedia {
+	media := &StoryMedia{}
+	media.uid = user.ID
+	media.inst = user.inst
+	media.endpoint = urlUserStories
+	return media
 }
 
 // Tags returns media where user is tagged in
