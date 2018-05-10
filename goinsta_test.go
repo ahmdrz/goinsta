@@ -2,6 +2,7 @@ package goinsta
 
 import (
 	"encoding/json"
+	"log"
 	"net/url"
 	"os"
 	"strconv"
@@ -37,6 +38,37 @@ func TestDeviceID(t *testing.T) {
 	}
 	insta = New(username, password)
 	t.Log(insta.Informations.DeviceID)
+}
+
+func TestFailedLogin(t *testing.T) {
+
+	i := New("wrong_username", "wrong_password")
+	err := i.Login()
+	if err == nil {
+		t.Fatal("should be error")
+		return
+	}
+
+	apierror, ok := err.(*IGAPIError)
+	if !ok {
+		t.Fatal("insta.Login should return error as IGAPIError")
+		return
+	}
+	log.Printf("apierror.Error()=%s", apierror.Error())
+	log.Printf("apierror.ResponseBody=%s", apierror.ResponseBody)
+	log.Printf("apierror.ResponseData=%v", apierror.ResponseData)
+	log.Printf("apierror.StatusCode=%d", apierror.StatusCode)
+	log.Printf("apierror.ResponseData.Message=%s", apierror.ResponseData.Message)
+	log.Printf("apierror.ResponseData.Status=%s", apierror.ResponseData.Status)
+	log.Printf("apierror.ResponseData.ErrorTitle=%s", apierror.ResponseData.ErrorTitle)
+	log.Printf("apierror.ResponseData.ErrorType=%s", apierror.ResponseData.ErrorType)
+	log.Printf("apierror.ResponseData.InvalidCredentials=%v", apierror.ResponseData.InvalidCredentials)
+	if len(apierror.ResponseData.Buttons) > 0 {
+		for i, b := range apierror.ResponseData.Buttons {
+			log.Printf("apierror.ResponseData.Buttons[%d]: Title=%s, Action=%s", i, b.Title, b.Action)
+		}
+	}
+	t.Log("status : ok")
 }
 
 func TestLogin(t *testing.T) {
