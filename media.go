@@ -3,6 +3,9 @@ package goinsta
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"os"
+	"path"
 	"strconv"
 )
 
@@ -78,33 +81,76 @@ type Item struct {
 	ShowOneTapFbShareTooltip bool          `json:"show_one_tap_fb_share_tooltip"`
 	HasSharedToFb            int           `json:"has_shared_to_fb"`
 	Mentions                 []Mentions
-	Videos                   []Videos `json:"video_versions,omitempty"`
-	HasAudio                 bool     `json:"has_audio,omitempty"`
-	VideoDuration            float64  `json:"video_duration,omitempty"`
-	IsDashEligible           int      `json:"is_dash_eligible,omitempty"`
-	VideoDashManifest        string   `json:"video_dash_manifest,omitempty"`
-	NumberOfQualities        int      `json:"number_of_qualities,omitempty"`
+	Videos                   []Video `json:"video_versions,omitempty"`
+	HasAudio                 bool    `json:"has_audio,omitempty"`
+	VideoDuration            float64 `json:"video_duration,omitempty"`
+	IsDashEligible           int     `json:"is_dash_eligible,omitempty"`
+	VideoDashManifest        string  `json:"video_dash_manifest,omitempty"`
+	NumberOfQualities        int     `json:"number_of_qualities,omitempty"`
+}
+
+func getname(name string) string {
+	nname := name
+	i := 0
+	for {
+		_, err := os.Stat(name)
+		if err != nil {
+			break
+		}
+		name = fmt.Sprintf("%s.%d", nname, i)
+		i++
+	}
+	return name
+}
+
+func download(inst *Instagram, url, dst string) error {
+	file, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	resp, err := inst.c.Get(url)
+	if err != nil {
+		return err
+	}
+
+	_, err = io.Copy(file, resp.Body)
+	return err
 }
 
 // Download downloads media item (video or image) with the best quality.
 //
 // Input parameters are folder and filename. If filename is "" will be saved with
 // the default value name.
-func (item *Item) Download(folder, name string) error {
-	/*
-		for _, image := range item.Images {
-			for _, c := range image.Versions {
-				if name == "" {
-					name =
-				}
-				if err := os.Stat(
-			}
+func (item *Item) Download(inst *Instagram, folder, name string) error {
+	for _, c := range item.Images.Versions {
+		if name == "" {
+			name = fmt.Sprintf("%s%c%s", folder, os.PathSeparator, path.Base(c.URL))
+		} else {
+			name = fmt.Sprintf("%s%c%s", folder, os.PathSeparator, name)
 		}
+		name = getname(name)
 
-		for _, video := range item.Videos {
-
+		err := download(inst, c.URL, name)
+		if err != nil {
+			return err
 		}
-	*/
+	}
+
+	for _, video := range item.Videos {
+		if name == "" {
+			name = fmt.Sprintf("%s%c%s", folder, os.PathSeparator, path.Base(video.URL))
+		} else {
+			name = fmt.Sprintf("%s%c%s", folder, os.PathSeparator, name)
+		}
+		name = getname(name)
+
+		err := download(inst, video.URL, name)
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 

@@ -130,8 +130,8 @@ type Mentions struct {
 	User     User    `json:"user"`
 }
 
-// Videos are different quality videos
-type Videos struct {
+// Video are different quality videos
+type Video struct {
 	Type   int    `json:"type"`
 	Width  int    `json:"width"`
 	Height int    `json:"height"`
