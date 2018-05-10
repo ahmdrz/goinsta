@@ -133,6 +133,7 @@ func download(inst *Instagram, url, dst string) error {
 //
 // If file exists it will be saved
 func (item *Item) Download(inst *Instagram, folder, name string) error {
+	// TODO: Download in best quality
 	os.MkdirAll(folder, 0777)
 	for _, c := range item.Images.Versions {
 		nname := name
@@ -220,7 +221,7 @@ type StoryMedia struct {
 	Items           []Item   `json:"items"`
 	ReelMentions    []string `json:"reel_mentions"`
 	PrefetchCount   int      `json:"prefetch_count"`
-	HasBestiesMedia bool     `json:"has_besties_media"`
+	HasBestiesMedia int      `json:"has_besties_media"`
 	Status          string   `json:"status"`
 }
 

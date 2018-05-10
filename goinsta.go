@@ -53,23 +53,52 @@ func (inst *Instagram) ChangeTo(user, pass string) (err error) {
 	return inst.Login()
 }
 
-// Export ...
-// TODO: Import and export (in other good readable format)
+// Export exports *Instagram object options
 func (inst *Instagram) Export(path string) error {
-	bytes, err := json.Marshal(
-		map[string]interface{}{
-			"uuid":       inst.uuid,
-			"rank_token": inst.rankToken,
-			"token":      inst.token,
-			"phone_id":   inst.pid,
-			"device_id":  inst.dID,
-			"client":     inst.c,
-		})
+	url, err := neturl.Parse(goInstaAPIUrl)
 	if err != nil {
 		return err
 	}
 
-	return ioutil.WriteFile(path, bytes, 0755)
+	inst.cookies = inst.c.Jar.Cookies(url)
+	bytes, err := json.Marshal(inst)
+	if err != nil {
+		return err
+	}
+
+	return ioutil.WriteFile(path, bytes, 0644)
+}
+
+// Import imports instagram configuration
+func Import(path string) (*Instagram, error) {
+	url, err := neturl.Parse(goInstaAPIUrl)
+	if err != nil {
+		return nil, err
+	}
+
+	bytes, err := ioutil.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	inst := new(Instagram)
+
+	err = json.Unmarshal(bytes, inst)
+	if err != nil {
+		inst = nil
+		return nil, err
+	}
+	inst.c = &http.Client{}
+	inst.c.Jar.SetCookies(url, inst.cookies)
+	inst.cookies = nil
+
+	inst.Profiles = newProfiles(inst)
+	inst.Activity = newActivity(inst)
+	inst.Timeline = newTimeline(inst)
+	inst.Search = newSearch(inst)
+	inst.Account.inst = inst
+
+	return inst, nil
 }
 
 // Login performs instagram login.

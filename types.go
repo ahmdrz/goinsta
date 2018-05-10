@@ -9,35 +9,37 @@ import (
 //
 // ...
 type Instagram struct {
-	user string
+	user string `json:"username"`
 	pass string
 	// device id
-	dID string
+	dID string `json:"device_id"`
 	// uuid
-	uuid string
+	uuid string `json:"uuid"`
 	// rankToken
-	rankToken string
+	rankToken string `json:"rank_token"`
 	// token
-	token string
+	token string `json:"token"`
 	// phone id
-	pid string
+	pid string `json:"phone_id"`
+	// this field must be nil
+	cookies []*http.Cookie `json:"cookies"`
 
 	// Instagram objects
 
 	// Users is the user interaction
-	Profiles *Profiles
+	Profiles *Profiles `json:"-"`
 	// Account stores all personal data of the user and his/her options.
-	Account *Account
+	Account *Account `json:"-"`
 	// Search performs searching of multiple things (users, locations...)
-	Search *Search
+	Search *Search `json:"-"`
 	//
-	Timeline *Timeline
+	Timeline *Timeline `json:"-"`
 	//
-	Activity *Activity
+	Activity *Activity `json:"-"`
 
-	logged bool
+	logged bool `json:"-"`
 
-	c *http.Client
+	c *http.Client `json:"-"`
 }
 
 // School is void structure (yet).
