@@ -116,7 +116,7 @@ func Import(path string) (*Instagram, error) {
 	inst.Search = newSearch(inst)
 	inst.Account = &Account{inst: inst}
 
-	inst.Sync()
+	inst.Account.Sync()
 
 	return inst, nil
 }
