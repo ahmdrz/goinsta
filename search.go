@@ -149,7 +149,7 @@ func (search *Search) Facebook(user string) (*SearchResult, error) {
 	insta := search.inst
 	body, err := insta.sendRequest(
 		&reqOptions{
-			Endpoint: "fbsearch/topsearch/",
+			Endpoint: urlSearchFacebook,
 			Query: map[string]string{
 				"query":      user,
 				"rank_token": insta.rankToken,

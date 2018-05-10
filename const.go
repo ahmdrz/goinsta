@@ -46,4 +46,5 @@ const (
 	urlSearchUser     = "users/search/"
 	urlSearchTag      = "tags/search/"
 	urlSearchLocation = "location_search/"
+	urlSearchFacebook = "fbsearch/topsearch/"
 )
