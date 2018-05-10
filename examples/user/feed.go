@@ -42,7 +42,9 @@ func main() {
 
 		fmt.Println("Next:", media.NextID)
 		for _, item := range media.Items {
-			fmt.Printf("  - %s has %d likes\n", item.Caption.Text, item.Likes)
+			if len(item.Images.Versions) != 0 {
+				fmt.Printf("  - %s\n", item.Images.Versions[0].URL)
+			}
 		}
 	}
 	fmt.Println(err)
