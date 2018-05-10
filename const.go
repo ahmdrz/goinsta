@@ -47,4 +47,5 @@ const (
 	urlSearchTag      = "tags/search/"
 	urlSearchLocation = "location_search/"
 	urlSearchFacebook = "fbsearch/topsearch/"
+	urlSearchFeedTag  = "feed/tag/%s/"
 )
