@@ -8,6 +8,8 @@ import (
 	"github.com/howeyc/gopass"
 )
 
+var UsingSession bool
+
 func CheckErr(err error) {
 	if err != nil {
 		fmt.Printf("error: %s\n")
@@ -33,7 +35,9 @@ func InitGoinsta(min int, msg string) (*goinsta.Instagram, error) {
 
 	if config != "" {
 		inst, err = goinsta.Import(config)
-		if err != nil {
+		if err == nil {
+			UsingSession = true
+		} else {
 			fmt.Println(err)
 			fmt.Print("Using password to login")
 			config = ""
