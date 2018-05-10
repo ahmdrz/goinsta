@@ -35,17 +35,17 @@ func main() {
 	checkErr(err)
 
 	for {
+		err = media.Next()
+		if err != nil {
+			break
+		}
+
 		fmt.Println("Next:", media.NextID)
 		for _, item := range media.Items {
 			fmt.Printf("  - %s has %d likes\n", item.Caption.Text, item.Likes)
 		}
-		if err != nil {
-			fmt.Println(err)
-			break
-		}
-
-		err = media.Next()
 	}
+	fmt.Println(err)
 
 	err = inst.Logout()
 	checkErr(err)

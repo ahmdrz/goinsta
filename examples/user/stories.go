@@ -35,6 +35,11 @@ func main() {
 	checkErr(err)
 
 	for {
+		err := stories.Next()
+		if err != nil {
+			break
+		}
+
 		// getting images URL
 		for _, item := range stories.Items {
 			if len(item.Images.Candidates) > 0 {
@@ -44,13 +49,8 @@ func main() {
 				fmt.Printf("  Video - %s\n", item.Videos[0].URL)
 			}
 		}
-		if err != nil {
-			fmt.Println(err)
-			break
-		}
-
-		err = stories.Next()
 	}
+	fmt.Println(err)
 
 	err = inst.Logout()
 	checkErr(err)
