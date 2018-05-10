@@ -12,7 +12,7 @@ var UsingSession bool
 
 func CheckErr(err error) {
 	if err != nil {
-		fmt.Printf("error: %s\n")
+		fmt.Printf("error: %s\n", err)
 		os.Exit(1)
 	}
 }
