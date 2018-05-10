@@ -7,6 +7,8 @@ import (
 )
 
 // Item represents media items
+//
+// All Item has
 type Item struct {
 	TakenAt          int     `json:"taken_at"`
 	ID               int64   `json:"pk"`
@@ -24,25 +26,26 @@ type Item struct {
 	CaptionIsEdited  bool    `json:"caption_is_edited"`
 	Likes            int     `json:"like_count"`
 	HasLiked         bool    `json:"has_liked"`
-	// TopLikers can be multiple data
-	TopLikersStr                 string `json:"top_likers,string"`
-	TopLikers                    []User `json:"top_likers"`
-	CommentLikesEnabled          bool   `json:"comment_likes_enabled"`
-	CommentThreadingEnabled      bool   `json:"comment_threading_enabled"`
-	HasMoreComments              bool   `json:"has_more_comments"`
-	MaxNumVisiblePreviewComments int    `json:"max_num_visible_preview_comments"`
-	// PreviewComments can be `string` or `[]string`
-	PreviewComments      []interface{} `json:"preview_comments,omitempty"`
-	CommentCount         int           `json:"comment_count"`
-	PhotoOfYou           bool          `json:"photo_of_you"`
-	Usertags             Tag           `json:"usertags,omitempty"`
-	FbUserTags           Tag           `json:"fb_user_tags"`
-	CanViewerSave        bool          `json:"can_viewer_save"`
-	OrganicTrackingToken string        `json:"organic_tracking_token"`
-	Images               Images        `json:"image_versions2,omitempty"`
-	OriginalWidth        int           `json:"original_width,omitempty"`
-	OriginalHeight       int           `json:"original_height,omitempty"`
-	ImportedTakenAt      int           `json:"imported_taken_at,omitempty"`
+	// _TopLikers can be `string` or `[]string`.
+	// Use TopLikers function instead of getting it directly.
+	_TopLikers                   interface{} `json:"top_likers"`
+	CommentLikesEnabled          bool        `json:"comment_likes_enabled"`
+	CommentThreadingEnabled      bool        `json:"comment_threading_enabled"`
+	HasMoreComments              bool        `json:"has_more_comments"`
+	MaxNumVisiblePreviewComments int         `json:"max_num_visible_preview_comments"`
+	// _PreviewComments can be `string` or `[]string`.
+	// Use PreviewComments function instead of getting it directly.
+	_PreviewComments     interface{} `json:"preview_comments,omitempty"`
+	CommentCount         int         `json:"comment_count"`
+	PhotoOfYou           bool        `json:"photo_of_you"`
+	Usertags             Tag         `json:"usertags,omitempty"`
+	FbUserTags           Tag         `json:"fb_user_tags"`
+	CanViewerSave        bool        `json:"can_viewer_save"`
+	OrganicTrackingToken string      `json:"organic_tracking_token"`
+	Images               Images      `json:"image_versions2,omitempty"`
+	OriginalWidth        int         `json:"original_width,omitempty"`
+	OriginalHeight       int         `json:"original_height,omitempty"`
+	ImportedTakenAt      int         `json:"imported_taken_at,omitempty"`
 
 	// Only for stories
 	StoryEvents              []interface{} `json:"story_events"`
@@ -65,6 +68,30 @@ type Item struct {
 	IsDashEligible           int      `json:"is_dash_eligible,omitempty"`
 	VideoDashManifest        string   `json:"video_dash_manifest,omitempty"`
 	NumberOfQualities        int      `json:"number_of_qualities,omitempty"`
+}
+
+// TopLikers returns string slice or single string (inside string slice)
+// Depending on TopLikers parameter.
+func (item *Item) TopLikers() []string {
+	switch s := item._TopLikers.(type) {
+	case string:
+		return []string{s}
+	case []string:
+		return s
+	}
+	return nil
+}
+
+// PreviewComments returns string slice or single string (inside string slice)
+// Depending on PreviewComments parameter.
+func (item *Item) PreviewComments() []string {
+	switch s := item._PreviewComments.(type) {
+	case string:
+		return []string{s}
+	case []string:
+		return s
+	}
+	return nil
 }
 
 type Media interface {
