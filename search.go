@@ -1,5 +1,10 @@
 package goinsta
 
+import (
+	"encoding/json"
+	"fmt"
+)
+
 type Search struct {
 	inst *Instagram
 }
@@ -53,7 +58,7 @@ func (search *Search) User(user string) (*SearchResult, error) {
 				"ig_sig_key_version": goInstaSigKeyVersion,
 				"is_typeahead":       "true",
 				"query":              user,
-				"rank_token":         search.insta.rankToken,
+				"rank_token":         insta.rankToken,
 			},
 		},
 	)
@@ -74,7 +79,7 @@ func (search *Search) Tags(tag string) (*SearchResult, error) {
 			Endpoint: urlSearchTag,
 			Query: map[string]string{
 				"is_typeahead": "true",
-				"rank_token":   search.insta.rankToken,
+				"rank_token":   insta.rankToken,
 				"q":            tag,
 			},
 		},
@@ -91,17 +96,17 @@ func (search *Search) Tags(tag string) (*SearchResult, error) {
 // Location search by location.
 //
 // Lat and Lng (Latitude & Longitude) cannot be ""
-func (search *Search) Location(lat, lng, search string) (*SearchResult, error) {
+func (search *Search) Location(lat, lng, location string) (*SearchResult, error) {
 	insta := search.inst
 	q := map[string]string{
-		"rank_token":     search.inst.rankToken,
+		"rank_token":     insta.rankToken,
 		"latitude":       lat,
 		"longitude":      lng,
 		"ranked_content": "true",
 	}
 
-	if search != "" {
-		q["search_query"] = search
+	if location != "" {
+		q["search_query"] = location
 	} else {
 		q["timestamp"] = strconv.FormatInt(time.Now().Unix(), 10)
 	}
