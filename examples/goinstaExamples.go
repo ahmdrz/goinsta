@@ -5,27 +5,27 @@ import (
 	"os"
 
 	"github.com/ahmdrz/goinsta"
-	"github.com/ahmdrz/goinsta/examples"
 	"github.com/howeyc/gopass"
 )
 
 func CheckErr(err error) {
 	if err != nil {
-		panic(err)
+		fmt.Printf("error: %s\n")
+		os.Exit(1)
 	}
 }
 
-func InitGoinsta(min int, msg string) (*Instagram, error) {
+func InitGoinsta(min int, msg string) (*goinsta.Instagram, error) {
 	var (
 		nargs  = len(os.Args)
 		config string
-		inst   *Instagram
+		inst   *goinsta.Instagram
 	)
 	switch {
 	// this parameters changes
 	case nargs < min:
 		fmt.Printf("%s %s [config file]\n", os.Args[0], msg)
-		return
+		os.Exit(0)
 	case nargs == min+1:
 		config = os.Args[3]
 	}
@@ -43,12 +43,17 @@ func InitGoinsta(min int, msg string) (*Instagram, error) {
 		fmt.Print("Password: ")
 		pass, err := gopass.GetPasswd()
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 
 		inst = goinsta.New(os.Args[1], string(pass))
 
 		err = inst.Login()
-		checkErr(err)
+		if err != nil {
+			return inst, err
+		}
 	}
+
+	fmt.Printf("Hello %s!\n", inst.Account.Username)
+	return inst, nil
 }
