@@ -124,7 +124,7 @@ func download(inst *Instagram, url, dst string) error {
 // Input parameters are folder and filename. If filename is "" will be saved with
 // the default value name.
 func (item *Item) Download(inst *Instagram, folder, name string) error {
-	os.MkdirAll(folder)
+	os.MkdirAll(folder, 0777)
 	for _, c := range item.Images.Versions {
 		if name == "" {
 			name = fmt.Sprintf("%s%c%s", folder, os.PathSeparator, path.Base(c.URL))
