@@ -2,7 +2,6 @@ package goinsta
 
 import (
 	"encoding/json"
-	"fmt"
 	"strconv"
 	"time"
 )
@@ -47,7 +46,17 @@ type SearchResult struct {
 	} `json:"venues"`
 
 	// Facebook
-	// TODO
+	// Facebook also uses `Users`
+	Places   []interface{} `json:"places"`
+	Hashtags []struct {
+		Position int `json:"position"`
+		Hashtag  struct {
+			Name       string `json:"name"`
+			ID         int64  `json:"id"`
+			MediaCount int    `json:"media_count"`
+		} `json:"hashtag"`
+	} `json:"hashtags"`
+	ClearClientCache bool `json:"clear_client_cache"`
 }
 
 // newSearch creates new Search structure
@@ -137,6 +146,20 @@ func (search *Search) Location(lat, lng, location string) (*SearchResult, error)
 }
 
 func (search *Search) Facebook(user string) (*SearchResult, error) {
-	// TODO
-	return nil, nil
+	insta := search.inst
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: "fbsearch/topsearch/",
+			Query: map[string]string{
+				"query":      user,
+				"rank_token": insta.rankToken,
+			},
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	res := &SearchResult{}
+	err = json.Unmarshal(body, res)
+	return res, err
 }
