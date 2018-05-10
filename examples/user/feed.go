@@ -4,6 +4,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	e "github.com/ahmdrz/goinsta/examples"
 )

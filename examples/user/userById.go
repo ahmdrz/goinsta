@@ -7,40 +7,22 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/ahmdrz/goinsta"
-	"github.com/howeyc/gopass"
+	e "github.com/ahmdrz/goinsta/examples"
 )
 
 func main() {
-	if len(os.Args) < 3 {
-		fmt.Printf("%s <your user> <target user>\n", os.Args[0])
-		return
-	}
+	inst, err := e.InitGoinsta(3, "<your user> <another user>")
+	e.CheckErr(err)
 
-	fmt.Print("Password: ")
-	pass, err := gopass.GetPasswd()
-	if err != nil {
-		panic(err)
-	}
 	id, err := strconv.Atoi(os.Args[2])
 	e.CheckErr(err)
 
-	inst := goinsta.New(os.Args[1], string(pass))
-
-	err = inst.Login()
-	e.CheckErr(err)
-	fmt.Printf("Hello %s!\n", inst.Account.Username)
-
-	user, err := inst.Users.ByID(int64(id))
+	user, err := inst.Profiles.ByID(int64(id))
 	e.CheckErr(err)
 	fmt.Printf("Target username is %s with the id: %d\n", user.Username, user.ID)
 
-	err = inst.Logout()
-	e.CheckErr(err)
-}
-
-func e.CheckErr(err error) {
-	if err != nil {
-		panic(err)
+	if !e.UsingSession {
+		err = inst.Logout()
+		e.CheckErr(err)
 	}
 }

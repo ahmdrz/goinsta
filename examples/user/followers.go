@@ -4,6 +4,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	e "github.com/ahmdrz/goinsta/examples"
 )
@@ -15,7 +16,7 @@ func main() {
 	user, err := inst.Profiles.ByName(os.Args[2])
 	e.CheckErr(err)
 
-	users, err := user.Followers()
+	users := user.Followers()
 	e.CheckErr(err)
 
 	i := 1

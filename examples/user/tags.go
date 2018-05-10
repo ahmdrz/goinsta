@@ -6,27 +6,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ahmdrz/goinsta"
-	"github.com/howeyc/gopass"
+	e "github.com/ahmdrz/goinsta/examples"
 )
 
 func main() {
-	if len(os.Args) < 3 {
-		fmt.Printf("%s <your user> <another user>\n", os.Args[0])
-		return
-	}
-
-	fmt.Print("Password: ")
-	pass, err := gopass.GetPasswd()
-	if err != nil {
-		panic(err)
-	}
-
-	inst := goinsta.New(os.Args[1], string(pass))
-
-	err = inst.Login()
+	inst, err := e.InitGoinsta(3, "<your user> <another user>")
 	e.CheckErr(err)
-	fmt.Printf("Hello %s!\n", inst.Account.Username)
 
 	user, err := inst.Profiles.ByName(os.Args[2])
 	e.CheckErr(err)
@@ -34,25 +19,15 @@ func main() {
 	media, err := user.Tags(nil)
 	e.CheckErr(err)
 
-	for {
+	for media.Next() {
 		fmt.Println("Next:", media.NextID)
 		for _, item := range media.Items {
 			fmt.Printf("  - %s has %d likes\n", item.Caption.Text, item.Likes)
 		}
-		if err != nil {
-			fmt.Println(err)
-			break
-		}
-
-		err = media.Next()
 	}
 
-	err = inst.Logout()
-	e.CheckErr(err)
-}
-
-func e.CheckErr(err error) {
-	if err != nil {
-		panic(err)
+	if !e.UsingSession {
+		err = inst.Logout()
+		e.CheckErr(err)
 	}
 }
