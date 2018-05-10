@@ -45,6 +45,7 @@ func newSearch(inst *Instagram) *Search {
 
 // User search by username
 func (search *Search) User(user string) (*SearchResult, error) {
+	insta := search.inst
 	body, err := insta.sendRequest(
 		&reqOptions{
 			Endpoint: urlSearchUser,
@@ -67,6 +68,7 @@ func (search *Search) User(user string) (*SearchResult, error) {
 
 // Tags search by tag
 func (search *Search) Tags(tag string) (*SearchResult, error) {
+	insta := search.inst
 	body, err := insta.sendRequest(
 		&reqOptions{
 			Endpoint: urlSearchTag,
@@ -90,6 +92,7 @@ func (search *Search) Tags(tag string) (*SearchResult, error) {
 //
 // Lat and Lng (Latitude & Longitude) cannot be ""
 func (search *Search) Location(lat, lng, search string) (*SearchResult, error) {
+	insta := search.inst
 	q := map[string]string{
 		"rank_token":     search.inst.rankToken,
 		"latitude":       lat,
