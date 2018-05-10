@@ -31,7 +31,7 @@ func main() {
 	user, err := inst.Profiles.ByName(os.Args[2])
 	checkErr(err)
 
-	stories, err := user.Stories()
+	stories := user.Stories()
 	checkErr(err)
 
 	for {

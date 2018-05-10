@@ -31,7 +31,7 @@ func main() {
 	user, err := inst.Profiles.ByName(os.Args[2])
 	checkErr(err)
 
-	media, err := user.Feed(nil)
+	media := user.Feed(nil)
 	checkErr(err)
 
 	for {
