@@ -51,4 +51,5 @@ const (
 
 	// media
 	urlMediaComment = "media/%s/comment/"
+	urlMediaInfo    = "media/%s/info/"
 )

@@ -398,6 +398,39 @@ type FeedMedia struct {
 	NextID interface{} `json:"next_max_id"`
 }
 
+// Sync updates media values.
+func (media *FeedMedia) Sync() error {
+	id := media.getid()
+	insta := media.inst
+
+	data, err := insta.prepareData(
+		map[string]interface{}{
+			"media_id": id,
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlMediaInfo, id),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	m := FeedMedia{}
+	err = json.Unmarshal(body, &m)
+	m.inst = media.inst
+	m.endpoint = urlMediaInfo
+	*media = m
+	return err
+}
+
 func (media *FeedMedia) setValues() {
 	for i := range media.Items {
 		setToItem(&media.Items[i], feedItem, media.inst)
@@ -406,6 +439,16 @@ func (media *FeedMedia) setValues() {
 
 func (media FeedMedia) Error() error {
 	return media.err
+}
+
+func (media *FeedMedia) getid() string {
+	switch s := media.NextID.(type) {
+	case string:
+		return s
+	case int64:
+		return strconv.FormatInt(s, 10)
+	}
+	return ""
 }
 
 // Next allows to paginate after calling:
@@ -420,14 +463,7 @@ func (media *FeedMedia) Next() bool {
 
 	insta := media.inst
 	endpoint := media.endpoint
-	next := ""
-
-	switch s := media.NextID.(type) {
-	case string:
-		next = s
-	case int64:
-		next = strconv.FormatInt(s, 10)
-	}
+	next := media.getid()
 
 	if media.uid != 0 {
 		endpoint = fmt.Sprintf(endpoint, media.uid)
