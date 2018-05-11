@@ -48,4 +48,7 @@ const (
 	urlSearchLocation = "location_search/"
 	urlSearchFacebook = "fbsearch/topsearch/"
 	urlSearchFeedTag  = "feed/tag/%s/"
+
+	// media
+	urlMediaComment = "media/%s/comment/"
 )
