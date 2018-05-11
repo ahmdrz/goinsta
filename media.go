@@ -11,11 +11,21 @@ import (
 	"strings"
 )
 
+type mediaType byte
+
+const (
+	feedItem = iota
+	storyItem
+)
+
 // Item represents media items
 //
 // All Item has Images or Videos objects which contains the url(s).
 // You can use Download function to get the best quality Image or Video from Item.
 type Item struct {
+	inst   *Instagram `json:"-"`
+	father mediaType  `json:"-"`
+
 	TakenAt          int     `json:"taken_at"`
 	ID               int64   `json:"pk"`
 	IDStr            string  `json:"id"`
@@ -89,6 +99,37 @@ type Item struct {
 	IsDashEligible           int     `json:"is_dash_eligible,omitempty"`
 	VideoDashManifest        string  `json:"video_dash_manifest,omitempty"`
 	NumberOfQualities        int     `json:"number_of_qualities,omitempty"`
+}
+
+// Comment push a comment in media.
+//
+// If media is a Story this function will send a private message
+// replying the Instagram story.
+func (item *Item) Comment(msg string) error {
+	insta := item.inst
+	data, err := insta.prepareData(
+		map[string]interface{}{
+			"comment_text": msg,
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	// TODO
+	_, err = insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlMediaComment, item.ID),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	return err
+}
+
+func setToItem(item *Item, t mediaType, inst *Instagram) {
+	item.father = t
+	item.inst = inst
 }
 
 func getname(name string) string {
@@ -292,6 +333,12 @@ type StoryMedia struct {
 	Status          string   `json:"status"`
 }
 
+func (media *StoryMedia) setValues() {
+	for i := range media.Items {
+		setToItem(&media.Items[i], storyItem, media.inst)
+	}
+}
+
 // Error returns error happend any error
 func (media StoryMedia) Error() error {
 	return media.err
@@ -323,6 +370,7 @@ func (media *StoryMedia) Next() bool {
 			media.inst = insta
 			media.endpoint = endpoint
 			media.err = ErrNoMore
+			media.setValues()
 			return true
 		}
 	}
@@ -348,6 +396,12 @@ type FeedMedia struct {
 	// Can be int64 and string
 	// this is why recomend Next() usage :')
 	NextID interface{} `json:"next_max_id"`
+}
+
+func (media *FeedMedia) setValues() {
+	for i := range media.Items {
+		setToItem(&media.Items[i], feedItem, media.inst)
+	}
 }
 
 func (media FeedMedia) Error() error {
@@ -400,6 +454,7 @@ func (media *FeedMedia) Next() bool {
 			if m.NextID == 0 || !m.MoreAvailable {
 				media.err = ErrNoMore
 			}
+			media.setValues()
 			return true
 		}
 	}
