@@ -30,3 +30,4 @@ _testmain.go
 
 .vscode/
 .tests/
+examples/config.json
