@@ -11,7 +11,8 @@
 * **Object independency. Can handle multiple instagram accounts.**
 * **Like Instagram mobile application**. Goinsta is very similar to Instagram official application.
 * **Simple**. Goinsta is made by lazy programmers!
-* **Backup methods**. You can use `store` package to export/import `goinsta.Instagram` structures (profile information or something else).
+* **Backup methods**. You can use `Export` and `Import` functions.
+* **Security**. Your password is only required to login. After login your password is deleted.
 * **No External Dependencies**. Goinsta will not use any Go packages outside of the standard library.
 
 ## New Version !
