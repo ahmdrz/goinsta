@@ -209,7 +209,24 @@ func getBest(obj interface{}) []string {
 func (item *Item) Delete() error {
 	switch m := item.media.(type) {
 	case *FeedMedia:
-		// ... TODO
+		insta := item.media.instagram()
+		data, err := insta.prepareData(
+			map[string]interface{}{
+				"media_id": strconv.FormatInt(item.ID, 10),
+			},
+		)
+		if err != nil {
+			return err
+		}
+
+		_, err = insta.sendRequest(
+			&reqOptions{
+				Endpoint: fmt.Sprintf(urlMediaDelete, item.ID),
+				Query:    generateSignature(data),
+				IsPost:   true,
+			},
+		)
+		return err
 	case *StoryMedia:
 		return m.Delete()
 	}
@@ -430,7 +447,9 @@ type FeedMedia struct {
 
 // Delete deletes all items in media. Take care...
 func (media *FeedMedia) Delete() error {
-	// TODO
+	for i := range media.Items {
+		media.Items[i].Delete()
+	}
 	return nil
 }
 
