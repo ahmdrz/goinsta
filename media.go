@@ -126,7 +126,6 @@ func (item *Item) Comment(msg string) error {
 			IsPost:   true,
 		},
 	)
-	fmt.Printf("COMMENT: %s\n", body)
 	return err
 }
 
@@ -435,7 +434,6 @@ func (media *FeedMedia) Sync() error {
 			IsPost:   true,
 		},
 	)
-	fmt.Printf("%s\n", body)
 	if err != nil {
 		return err
 	}
