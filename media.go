@@ -11,8 +11,6 @@ import (
 	"strings"
 )
 
-type mediaType byte
-
 const (
 	feedItem = iota
 	storyItem
@@ -23,9 +21,8 @@ const (
 // All Item has Images or Videos objects which contains the url(s).
 // You can use Download function to get the best quality Image or Video from Item.
 type Item struct {
-	inst     *Instagram `json:"-"`
-	father   mediaType  `json:"-"`
-	Comments *Comments  `json:"-"`
+	media    Media     `json:"-"`
+	Comments *Comments `json:"-"`
 
 	TakenAt          int     `json:"taken_at"`
 	ID               int64   `json:"pk"`
@@ -103,9 +100,8 @@ type Item struct {
 	NumberOfQualities        int     `json:"number_of_qualities,omitempty"`
 }
 
-func setToItem(item *Item, t mediaType, media Media) {
-	item.father = t
-	item.inst = media.instagram()
+func setToItem(item *Item, media Media) {
+	item.media = media
 	item.Comments = newComments(media)
 }
 
@@ -209,13 +205,27 @@ func getBest(obj interface{}) []string {
 	return s
 }
 
+// Delete deletes your media item. StoryMedia or FeedMedia
+func (item *Item) Delete() error {
+	switch m := item.media.(type) {
+	case *FeedMedia:
+		// ...
+	case *StoryMedia:
+		return m.Delete()
+	}
+	return nil
+}
+
 // Download downloads media item (video or image) with the best quality.
 //
 // Input parameters are folder and filename. If filename is "" will be saved with
 // the default value name.
 //
 // If file exists it will be saved
-func (item *Item) Download(inst *Instagram, folder, name string) error {
+//
+// See example: examples/media/itemDownload.go
+func (item *Item) Download(folder, name string) error {
+	inst := item.media.instagram()
 	os.MkdirAll(folder, 0777)
 	for _, url := range getBest(item.Images.Versions) {
 		nname := name
@@ -304,6 +314,8 @@ type Media interface {
 	Error() error
 	// ID returns media id
 	ID() string
+	// Delete removes media
+	Delete() error
 
 	instagram() *Instagram
 }
@@ -341,7 +353,7 @@ func (media *StoryMedia) instagram() *Instagram {
 
 func (media *StoryMedia) setValues() {
 	for i := range media.Items {
-		setToItem(&media.Items[i], storyItem, media)
+		setToItem(&media.Items[i], media)
 	}
 }
 
@@ -464,7 +476,7 @@ func (media *FeedMedia) Sync() error {
 
 func (media *FeedMedia) setValues() {
 	for i := range media.Items {
-		setToItem(&media.Items[i], feedItem, media)
+		setToItem(&media.Items[i], media)
 	}
 }
 
