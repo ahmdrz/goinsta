@@ -23,8 +23,9 @@ const (
 // All Item has Images or Videos objects which contains the url(s).
 // You can use Download function to get the best quality Image or Video from Item.
 type Item struct {
-	inst   *Instagram `json:"-"`
-	father mediaType  `json:"-"`
+	inst     *Instagram `json:"-"`
+	father   mediaType  `json:"-"`
+	Comments *Comments  `json:"-"`
 
 	TakenAt          int     `json:"taken_at"`
 	ID               int64   `json:"pk"`
@@ -46,12 +47,11 @@ type Item struct {
 	// Use TopLikers function instead of getting it directly.
 	_TopLikers                   interface{} `json:"top_likers"`
 	Likers                       []User      `json:"likers"`
-	PreviewComments              []Comment   `json:"preview_comments"`
 	CommentLikesEnabled          bool        `json:"comment_likes_enabled"`
 	CommentThreadingEnabled      bool        `json:"comment_threading_enabled"`
 	HasMoreComments              bool        `json:"has_more_comments"`
 	MaxNumVisiblePreviewComments int         `json:"max_num_visible_preview_comments"`
-	// _PreviewComments can be `string` or `[]string`.
+	// _PreviewComments can be `string` or `[]string` or `[]Comment`.
 	// Use PreviewComments function instead of getting it directly.
 	_PreviewComments     interface{} `json:"preview_comments,omitempty"`
 	CommentCount         int         `json:"comment_count"`
@@ -103,12 +103,107 @@ type Item struct {
 	NumberOfQualities        int     `json:"number_of_qualities,omitempty"`
 }
 
-// Comment push a comment in media.
+// Comments allows user to interact with media (item) comments.
+// You can Add or Delete by index or by user name.
+type Comments struct {
+	inst *Instagram
+
+	media    Media
+	endpoint string
+	err      error
+
+	Items                          []Comment `json:"comments"`
+	CommentCount                   int       `json:"comment_count"`
+	Caption                        Caption   `json:"caption"`
+	CaptionIsEdited                bool      `json:"caption_is_edited"`
+	HasMoreComments                bool      `json:"has_more_comments"`
+	HasMoreHeadloadComments        bool      `json:"has_more_headload_comments"`
+	MediaHeaderDisplay             string    `json:"media_header_display"`
+	DisplayRealtimeTypingIndicator bool      `json:"display_realtime_typing_indicator"`
+	NextID                         string    `json:"next_max_id"`
+	LastID                         string    `json:"next_min_id"`
+	Status                         string    `json:"status"`
+
+	//PreviewComments                []Comment   `json:"preview_comments"`
+}
+
+func newComments(media Media) *Comments {
+	c := &Comments{
+		media: media,
+	}
+	return c
+}
+
+func (comments Comments) Error() error {
+	return comments.err
+}
+
+// Next allows comment pagination.
 //
-// If media is a Story this function will send a private message
-// replying the Instagram story.
-func (item *Item) Comment(msg string) error {
-	insta := item.inst
+// This function support concurrency methods to get comments using Last and Next ID
+//
+// New comments are stored in Comments.Items
+func (comments *Comments) Next() bool {
+	if comments.err != nil {
+		return false
+	}
+
+	insta := comments.media.instagram()
+	data, err := insta.prepareData(
+		map[string]interface{}{
+			"can_support_threading": true,
+			"max_id":                comments.NextID,
+			"min_id":                comments.LastID,
+		},
+	)
+	if err != nil {
+		comments.err = err
+		return false
+	}
+
+	media := comments.media
+	endpoint := comments.endpoint
+
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: endpoint,
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	if err == nil {
+		c := Comments{}
+		err = json.Unmarshal(body, &c)
+		if err == nil {
+			*comments = c
+			comments.endpoint = endpoint
+			comments.media = media
+			if !comments.HasMoreComments || comments.NextID == "" {
+				comments.err = ErrNoMore
+			}
+			return true
+		}
+	}
+	comments.err = err
+	return false
+}
+
+// Sync prepare Comments to receive comments.
+// Use Next to receive comments.
+func (comments *Comments) Sync() {
+	media := comments.media
+	endpoint := fmt.Sprintf(urlCommentSync, comments.media.ID())
+	comments.media = media
+	comments.endpoint = endpoint
+	return
+}
+
+// Add push a comment in media.
+//
+// If parent media is a Story this function will send a private message
+// replying the Instagram story. TODO
+func (comments *Comments) Add(msg string) error {
+	insta := comments.media.instagram()
 	data, err := insta.prepareData(
 		map[string]interface{}{
 			"comment_text": msg,
@@ -118,10 +213,9 @@ func (item *Item) Comment(msg string) error {
 		return err
 	}
 
-	// TODO
-	body, err := insta.sendRequest(
+	_, err = insta.sendRequest(
 		&reqOptions{
-			Endpoint: fmt.Sprintf(urlMediaComment, item.ID),
+			Endpoint: fmt.Sprintf(urlCommentAdd, comments.media.ID()),
 			Query:    generateSignature(data),
 			IsPost:   true,
 		},
@@ -129,9 +223,68 @@ func (item *Item) Comment(msg string) error {
 	return err
 }
 
-func setToItem(item *Item, t mediaType, inst *Instagram) {
+// Del deletes comment.
+func (comments *Comments) Del(comment *Comment) error {
+	insta := comments.media.instagram()
+
+	data, err := insta.prepareData()
+	if err != nil {
+		return err
+	}
+	id := comment.getid()
+
+	_, err = insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlCommentDelete, comments.media.ID(), id),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	return err
+}
+
+// DelByID removes comment using id.
+//
+// See example: examples/media/commentsDelByID.go
+func (comments *Comments) DelByID(id string) error {
+	return comments.Del(&Comment{idstr: id})
+}
+
+// DelMine removes all of your comments limited by parsed parameter.
+//
+// If limit is <= 0 DelMine will delete all your comments.
+//
+// See example: examples/media/commentsDelMine.go
+func (comments *Comments) DelMine(limit int) error {
+	i := 0
+	if limit <= 0 {
+		i = limit - 1
+	}
+	comments.Sync()
+
+	insta := comments.media.instagram()
+floop:
+	for comments.Next() {
+		for _, c := range comments.Items {
+			if c.UserID == insta.Account.ID || c.User.ID == insta.Account.ID {
+				if i >= limit {
+					break floop
+				}
+				comments.Del(&c)
+				i++
+			}
+		}
+	}
+	if err := comments.Error(); err != nil && err != ErrNoMore {
+		return err
+	}
+	return nil
+}
+
+func setToItem(item *Item, t mediaType, media Media) {
 	item.father = t
-	item.inst = inst
+	item.inst = media.instagram()
+	item.Comments = newComments(media)
 }
 
 func getname(name string) string {
@@ -296,21 +449,41 @@ func (item *Item) TopLikers() []string {
 	return nil
 }
 
-// PreviewComments returns string slice or single string (inside string slice)
+// PreviewComments returns string slice or single string (inside Comment slice)
 // Depending on PreviewComments parameter.
-func (item *Item) PreviewComments() []string {
+// If PreviewComments are string or []string only the Text field will be filled.
+func (item *Item) PreviewComments() []Comment {
 	switch s := item._PreviewComments.(type) {
-	case string:
-		return []string{s}
-	case []string:
+	case []Comment:
 		return s
+	case []string:
+		comments := make([]Comment, 0)
+		for i := range s {
+			comments = append(comments, Comment{
+				Text: s[i],
+			})
+		}
+		return comments
+	case string:
+		comments := []Comment{
+			Comment{
+				Text: s,
+			},
+		}
+		return comments
 	}
 	return nil
 }
 
 type Media interface {
+	// Next allows pagination
 	Next() bool
+	// Error returns error (in case it have been occurred)
 	Error() error
+	// ID returns media id
+	ID() string
+
+	instagram() *Instagram
 }
 
 type StoryMedia struct {
@@ -320,10 +493,10 @@ type StoryMedia struct {
 
 	err error
 
-	ID              int      `json:"id"`
-	LatestReelMedia int      `json:"latest_reel_media"`
-	ExpiringAt      int      `json:"expiring_at"`
-	Seen            float64  `json:"seen"`
+	Pk              int64 `json:"id"`
+	LatestReelMedia int   `json:"latest_reel_media"`
+	ExpiringAt      int   `json:"expiring_at"`
+	//Seen            float64  `json:"seen"`
 	CanReply        bool     `json:"can_reply"`
 	CanReshare      bool     `json:"can_reshare"`
 	ReelType        string   `json:"reel_type"`
@@ -335,15 +508,30 @@ type StoryMedia struct {
 	Status          string   `json:"status"`
 }
 
+// ID returns Story id
+func (media *StoryMedia) ID() string {
+	return strconv.FormatInt(media.Pk, 10)
+}
+
+func (media *StoryMedia) instagram() *Instagram {
+	return media.inst
+}
+
 func (media *StoryMedia) setValues() {
 	for i := range media.Items {
-		setToItem(&media.Items[i], storyItem, media.inst)
+		setToItem(&media.Items[i], storyItem, media)
 	}
 }
 
 // Error returns error happend any error
 func (media StoryMedia) Error() error {
 	return media.err
+}
+
+// Seen marks story as seen.
+func (media *StoryMedia) Seen() error {
+	// TODO
+	return nil
 }
 
 // Next allows to paginate after calling:
@@ -400,6 +588,10 @@ type FeedMedia struct {
 	NextID interface{} `json:"next_max_id"`
 }
 
+func (media *FeedMedia) instagram() *Instagram {
+	return media.inst
+}
+
 // AcquireFeed returns initilised FeedMedia
 //
 // Use FeedMedia.Sync() to update FeedMedia information.
@@ -415,7 +607,7 @@ func (media *FeedMedia) SetID(id interface{}) {
 
 // Sync updates media values.
 func (media *FeedMedia) Sync() error {
-	id := media.getid()
+	id := media.ID()
 	insta := media.inst
 
 	data, err := insta.prepareData(
@@ -450,7 +642,7 @@ func (media *FeedMedia) Sync() error {
 
 func (media *FeedMedia) setValues() {
 	for i := range media.Items {
-		setToItem(&media.Items[i], feedItem, media.inst)
+		setToItem(&media.Items[i], feedItem, media)
 	}
 }
 
@@ -458,7 +650,8 @@ func (media FeedMedia) Error() error {
 	return media.err
 }
 
-func (media *FeedMedia) getid() string {
+// ID returns media id.
+func (media *FeedMedia) ID() string {
 	switch s := media.NextID.(type) {
 	case string:
 		return s
@@ -480,7 +673,7 @@ func (media *FeedMedia) Next() bool {
 
 	insta := media.inst
 	endpoint := media.endpoint
-	next := media.getid()
+	next := media.ID()
 
 	if media.uid != 0 {
 		endpoint = fmt.Sprintf(endpoint, media.uid)

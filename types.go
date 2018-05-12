@@ -3,6 +3,7 @@ package goinsta
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 )
 
 // Instagram represent the main API handler
@@ -104,7 +105,8 @@ type Candidate struct {
 }
 
 type Comment struct {
-	Pk              int64  `json:"pk"`
+	ID              int64  `json:"pk"`
+	idstr           string `json:"-"`
 	UserID          int64  `json:"user_id"`
 	Text            string `json:"text"`
 	Type            int    `json:"type"`
@@ -116,6 +118,16 @@ type Comment struct {
 	User            User   `json:"user"`
 	DidReportAsSpam bool   `json:"did_report_as_spam"`
 	MediaID         int64  `json:"media_id"`
+}
+
+func (c Comment) getid() string {
+	switch {
+	case c.ID == 0:
+		return c.idstr
+	case c.idstr == "":
+		return strconv.FormatInt(c.ID, 10)
+	}
+	return ""
 }
 
 type Tag struct {
