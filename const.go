@@ -50,6 +50,6 @@ const (
 	urlSearchFeedTag  = "feed/tag/%s/"
 
 	// media
-	urlMediaComment = "media/%s/comment/"
+	urlMediaComment = "media/%d/comment/"
 	urlMediaInfo    = "media/%s/info/"
 )
