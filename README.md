@@ -29,11 +29,7 @@ Unstable
 Stable
 -------
 
-`go get gopkg.in/ahmdrz/goinsta.v1`
-
-and then 
-
-`import "gopkg.in/ahmdrz/goinsta.v1"`
+`import "gopkg.in/ahmdrz/goinsta.v3"`
 
 ## Example
 
