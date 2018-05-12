@@ -209,7 +209,7 @@ func getBest(obj interface{}) []string {
 func (item *Item) Delete() error {
 	switch m := item.media.(type) {
 	case *FeedMedia:
-		// ...
+		// ... TODO
 	case *StoryMedia:
 		return m.Delete()
 	}
@@ -342,6 +342,12 @@ type StoryMedia struct {
 	Status          string   `json:"status"`
 }
 
+// Delete removes instragram story.
+func (media *StoryMedia) Delete() error {
+	// TODO
+	return nil
+}
+
 // ID returns Story id
 func (media *StoryMedia) ID() string {
 	return strconv.FormatInt(media.Pk, 10)
@@ -420,6 +426,12 @@ type FeedMedia struct {
 	// Can be int64 and string
 	// this is why we recomend Next() usage :')
 	NextID interface{} `json:"next_max_id"`
+}
+
+// Delete deletes all items in media. Take care...
+func (media *FeedMedia) Delete() error {
+	// TODO
+	return nil
 }
 
 func (media *FeedMedia) instagram() *Instagram {
