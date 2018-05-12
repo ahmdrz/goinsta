@@ -23,7 +23,7 @@ func main() {
 		fmt.Println("Next:", media.NextID)
 		for _, item := range media.Items {
 			if len(item.Images.Versions) != 0 {
-				fmt.Printf("  - %s\n", item.Images.Versions[0].URL)
+				fmt.Printf("  %v - %s\n", item.ID, item.Images.Versions[0].URL)
 			}
 		}
 	}
