@@ -103,6 +103,21 @@ type Candidate struct {
 	URL    string `json:"url"`
 }
 
+type PreviewComment struct {
+	Pk              int64  `json:"pk"`
+	UserID          int64  `json:"user_id"`
+	Text            string `json:"text"`
+	Type            int    `json:"type"`
+	CreatedAt       int    `json:"created_at"`
+	CreatedAtUtc    int    `json:"created_at_utc"`
+	ContentType     string `json:"content_type"`
+	Status          string `json:"status"`
+	BitFlags        int    `json:"bit_flags"`
+	User            User   `json:"user"`
+	DidReportAsSpam bool   `json:"did_report_as_spam"`
+	MediaID         int64  `json:"media_id"`
+}
+
 type Tag struct {
 	In []struct {
 		User                  User        `json:"user"`

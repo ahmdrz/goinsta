@@ -44,11 +44,13 @@ type Item struct {
 	HasLiked         bool    `json:"has_liked"`
 	// _TopLikers can be `string` or `[]string`.
 	// Use TopLikers function instead of getting it directly.
-	_TopLikers                   interface{} `json:"top_likers"`
-	CommentLikesEnabled          bool        `json:"comment_likes_enabled"`
-	CommentThreadingEnabled      bool        `json:"comment_threading_enabled"`
-	HasMoreComments              bool        `json:"has_more_comments"`
-	MaxNumVisiblePreviewComments int         `json:"max_num_visible_preview_comments"`
+	_TopLikers                   interface{}      `json:"top_likers"`
+	Likers                       []User           `json:"likers"`
+	PreviewComments              []PreviewComment `json:"preview_comments"`
+	CommentLikesEnabled          bool             `json:"comment_likes_enabled"`
+	CommentThreadingEnabled      bool             `json:"comment_threading_enabled"`
+	HasMoreComments              bool             `json:"has_more_comments"`
+	MaxNumVisiblePreviewComments int              `json:"max_num_visible_preview_comments"`
 	// _PreviewComments can be `string` or `[]string`.
 	// Use PreviewComments function instead of getting it directly.
 	_PreviewComments     interface{} `json:"preview_comments,omitempty"`
@@ -117,13 +119,14 @@ func (item *Item) Comment(msg string) error {
 	}
 
 	// TODO
-	_, err = insta.sendRequest(
+	body, err := insta.sendRequest(
 		&reqOptions{
 			Endpoint: fmt.Sprintf(urlMediaComment, item.ID),
 			Query:    generateSignature(data),
 			IsPost:   true,
 		},
 	)
+	fmt.Printf("COMMENT: %s\n", body)
 	return err
 }
 
@@ -432,6 +435,7 @@ func (media *FeedMedia) Sync() error {
 			IsPost:   true,
 		},
 	)
+	fmt.Printf("%s\n", body)
 	if err != nil {
 		return err
 	}
