@@ -44,13 +44,13 @@ type Item struct {
 	HasLiked         bool    `json:"has_liked"`
 	// _TopLikers can be `string` or `[]string`.
 	// Use TopLikers function instead of getting it directly.
-	_TopLikers                   interface{}      `json:"top_likers"`
-	Likers                       []User           `json:"likers"`
-	PreviewComments              []PreviewComment `json:"preview_comments"`
-	CommentLikesEnabled          bool             `json:"comment_likes_enabled"`
-	CommentThreadingEnabled      bool             `json:"comment_threading_enabled"`
-	HasMoreComments              bool             `json:"has_more_comments"`
-	MaxNumVisiblePreviewComments int              `json:"max_num_visible_preview_comments"`
+	_TopLikers                   interface{} `json:"top_likers"`
+	Likers                       []User      `json:"likers"`
+	PreviewComments              []Comment   `json:"preview_comments"`
+	CommentLikesEnabled          bool        `json:"comment_likes_enabled"`
+	CommentThreadingEnabled      bool        `json:"comment_threading_enabled"`
+	HasMoreComments              bool        `json:"has_more_comments"`
+	MaxNumVisiblePreviewComments int         `json:"max_num_visible_preview_comments"`
 	// _PreviewComments can be `string` or `[]string`.
 	// Use PreviewComments function instead of getting it directly.
 	_PreviewComments     interface{} `json:"preview_comments,omitempty"`

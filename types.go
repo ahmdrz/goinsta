@@ -103,7 +103,7 @@ type Candidate struct {
 	URL    string `json:"url"`
 }
 
-type PreviewComment struct {
+type Comment struct {
 	Pk              int64  `json:"pk"`
 	UserID          int64  `json:"user_id"`
 	Text            string `json:"text"`
