@@ -394,8 +394,21 @@ type FeedMedia struct {
 	AutoLoadMoreEnabled bool   `json:"auto_load_more_enabled"`
 	Status              string `json:"status"`
 	// Can be int64 and string
-	// this is why recomend Next() usage :')
+	// this is why we recomend Next() usage :')
 	NextID interface{} `json:"next_max_id"`
+}
+
+// AcquireFeed returns initilised FeedMedia
+//
+// Use FeedMedia.Sync() to update FeedMedia information.
+func AcquireFeed(inst *Instagram) *FeedMedia {
+	return &FeedMedia{inst: inst}
+}
+
+// SetID sets media ID
+// this value can be int64 or string
+func (media *FeedMedia) SetID(id interface{}) {
+	media.NextID = id
 }
 
 // Sync updates media values.
@@ -425,9 +438,11 @@ func (media *FeedMedia) Sync() error {
 
 	m := FeedMedia{}
 	err = json.Unmarshal(body, &m)
-	m.inst = media.inst
-	m.endpoint = urlMediaInfo
 	*media = m
+	media.endpoint = urlMediaInfo
+	media.inst = insta
+	media.NextID = id
+	media.setValues()
 	return err
 }
 
