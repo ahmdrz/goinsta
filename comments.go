@@ -1,5 +1,10 @@
 package goinsta
 
+import (
+	"encoding/json"
+	"fmt"
+)
+
 // Comments allows user to interact with media (item) comments.
 // You can Add or Delete by index or by user name.
 type Comments struct {
