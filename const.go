@@ -61,4 +61,8 @@ const (
 	urlCommentSync    = "media/%d/comments/"
 	urlCommentDisable = "media/%d/disable_comments/"
 	urlCommentEnable  = "media/%d/enable_comments/"
+
+	// activity
+	urlActivityFollowing = "news/?"
+	urlActivityRecent    = "news/inbox/?"
 )
