@@ -31,9 +31,9 @@ type Instagram struct {
 	Account *Account
 	// Search performs searching of multiple things (users, locations...)
 	Search *Search
-	//
+	// Timeline allows to receive timeline media.
 	Timeline *Timeline
-	//
+	// Activity ...
 	Activity *Activity
 
 	logged bool

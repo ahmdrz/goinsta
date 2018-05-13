@@ -19,17 +19,11 @@
 
 We are working on `alpha` branch. Try it and tell us your suggestions!
 
+The newer versions will be exported into v2 branch when new features will be well tested.
+
 ## Installation 
 
-Unstable
----------
-
-`go get -u -v github.com/ahmdrz/goinsta`
-
-Stable
--------
-
-`import "gopkg.in/ahmdrz/goinsta.v3"`
+`go get -u -v gopkg.in/ahmdrz/goinsta.v2`
 
 ## Example
 
@@ -81,10 +75,13 @@ This code is in no way affiliated with, authorized, maintained, sponsored or end
 ## Schema
 
 Instagram
-- Account
-- User:
+- Account: Personal information and account interactions.
+  - Followers
+  - Following
   - Feed
+  - Stories
   - Tags
+- Profiles: User interaction.
   - Followers
   - Following
   - FriendShip
@@ -97,10 +94,11 @@ Instagram
   - Location
   - Username
   - Tags
+  - Location **Deprecated**
   - Facebook
-- Inbox:
-  - Messages
-  - Pending
+- Activity:
+  - Following
+  - Recent
 
 
 # TODO
