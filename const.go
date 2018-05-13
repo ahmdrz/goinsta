@@ -54,7 +54,8 @@ const (
 	urlMediaDelete = "media/%d/delete/"
 
 	// comments
-	urlCommentAdd    = "media/%d/comment/"
-	urlCommentDelete = "media/%d/comment/%s/delete/"
-	urlCommentSync   = "media/%d/comments/"
+	urlCommentAdd     = "media/%d/comment/"
+	urlCommentDelete  = "media/%d/comment/%s/delete/"
+	urlCommentSync    = "media/%d/comments/"
+	urlCommentDisable = "media/%d/disable_comments/"
 )

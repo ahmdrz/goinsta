@@ -38,7 +38,35 @@ func (comments Comments) Error() error {
 	return comments.err
 }
 
-// Disable disables comments in item
+// Disable disables comments in FeedMedia.
+//
+// See example: examples/media/commentDisable.go
+func (comments *Comments) Disable() error {
+	switch comments.item.media.(type) {
+	case *StoryMedia:
+		return fmt.Errorf("Incompatible type. Cannot use Disable() with StoryMedia type")
+	default:
+	}
+
+	insta := comments.item.media.instagram()
+	data, err := insta.prepareData(
+		map[string]interface{}{
+			"media_id": comments.item.ID,
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	_, err = insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlCommentDisable, comments.item.ID),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	return err
+}
 
 // Next allows comment pagination.
 //
