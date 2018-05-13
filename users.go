@@ -306,6 +306,10 @@ func (user *User) Feed(minTime []byte) *FeedMedia {
 }
 
 // Stories returns user stories
+//
+// Use StoryMedia.Next for pagination.
+//
+// See example: examples/user/stories.go
 func (user *User) Stories() *StoryMedia {
 	media := &StoryMedia{}
 	media.uid = user.ID

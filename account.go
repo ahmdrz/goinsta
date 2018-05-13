@@ -226,20 +226,17 @@ func (account *Account) Feed(minTime []byte) (*FeedMedia, error) {
 	return nil, err
 }
 
-// Stories returns account stories
-func (account *Account) Stories() (*StoryMedia, error) {
-	body, err := account.inst.sendSimpleRequest(
-		urlUserStories, account.ID,
-	)
-	if err == nil {
-		media := &StoryMedia{}
-		err = json.Unmarshal(body, media)
-		media.uid = account.ID
-		media.inst = account.inst
-		media.endpoint = urlUserStories
-		return media, err
-	}
-	return nil, err
+// Stories returns account stories.
+//
+// Use StoryMedia.Next for pagination.
+//
+// See example: examples/account/stories.go
+func (account *Account) Stories() *StoryMedia {
+	media := &StoryMedia{}
+	media.uid = account.ID
+	media.inst = account.inst
+	media.endpoint = urlUserStories
+	return media
 }
 
 // Tags returns media where account is tagged in
