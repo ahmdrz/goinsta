@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	inst, err := e.InitGoinsta(5, "<your user> <lat> <lng> <query>")
+	inst, err := e.InitGoinsta("<lat> <lng> <query>")
 	e.CheckErr(err)
 
 	res, err := inst.Search.Location(

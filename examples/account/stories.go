@@ -4,19 +4,15 @@ package main
 
 import (
 	"fmt"
-	"os"
 
 	e "github.com/ahmdrz/goinsta/examples"
 )
 
 func main() {
-	inst, err := e.InitGoinsta("<another user>")
+	inst, err := e.InitGoinsta("")
 	e.CheckErr(err)
 
-	user, err := inst.Profiles.ByName(os.Args[2])
-	e.CheckErr(err)
-
-	stories := user.Stories()
+	stories := inst.Account.Stories()
 	e.CheckErr(err)
 
 	for stories.Next() {

@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	inst, err := e.InitGoinsta(2, "<username>")
+	inst, err := e.InitGoinsta("")
 	e.CheckErr(err)
 
 	fmt.Printf("Is private: %v\n", inst.Account.IsPrivate)

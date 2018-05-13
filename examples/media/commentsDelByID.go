@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	inst, err := e.InitGoinsta(4, "<username> <media id> <comment id>")
+	inst, err := e.InitGoinsta("<media id> <comment id>")
 	e.CheckErr(err)
 
 	media := inst.AcquireFeed()

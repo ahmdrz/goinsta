@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	inst, err := e.InitGoinsta(3, "<username> <query>")
+	inst, err := e.InitGoinsta("<query>")
 	e.CheckErr(err)
 
 	res, err := inst.Search.User(os.Args[2])

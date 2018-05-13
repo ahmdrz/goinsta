@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	inst, err := e.InitGoinsta(3, "<your user> <another user>")
+	inst, err := e.InitGoinsta("<another user>")
 	e.CheckErr(err)
 
 	user, err := inst.Profiles.ByName(os.Args[2])

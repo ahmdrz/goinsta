@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	inst, err := e.InitGoinsta(2, "<your username>")
+	inst, err := e.InitGoinsta("")
 	e.CheckErr(err)
 
 	media, err := inst.Timeline.Get()
