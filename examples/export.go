@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ahmdrz/goinsta"
+	"gopkg.in/ahmdrz/goinsta.v2"
 	"github.com/howeyc/gopass"
 )
 
