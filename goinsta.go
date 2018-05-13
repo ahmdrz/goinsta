@@ -281,3 +281,10 @@ func (inst *Instagram) expose() error {
 
 	return err
 }
+
+// AcquireFeed returns initilised FeedMedia
+//
+// Use FeedMedia.Sync() to update FeedMedia information. Do not forget to set id (you can use FeedMedia.SetID)
+func (inst *Instagram) AcquireFeed() *FeedMedia {
+	return &FeedMedia{inst: inst}
+}

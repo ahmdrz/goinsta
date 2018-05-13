@@ -507,13 +507,6 @@ func (media *FeedMedia) instagram() *Instagram {
 	return media.inst
 }
 
-// AcquireFeed returns initilised FeedMedia
-//
-// Use FeedMedia.Sync() to update FeedMedia information.
-func AcquireFeed(inst *Instagram) *FeedMedia {
-	return &FeedMedia{inst: inst}
-}
-
 // SetID sets media ID
 // this value can be int64 or string
 func (media *FeedMedia) SetID(id interface{}) {
