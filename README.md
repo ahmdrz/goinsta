@@ -51,7 +51,7 @@ func main() {
 
 In the next examples you can use an optional argument to use cache config.
 
-* [**More Examples**](https://github.com/ahmdrz/goinsta/tree/master/examples)
+* [**More Examples**](https://github.com/ahmdrz/goinsta/tree/v2/examples)
 
 ## Legal
 
