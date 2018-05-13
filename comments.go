@@ -68,6 +68,36 @@ func (comments *Comments) Disable() error {
 	return err
 }
 
+// Enable enables comments in FeedMedia
+//
+// See example: examples/media/commentEnable.go
+func (comments *Comments) Enable() error {
+	switch comments.item.media.(type) {
+	case *StoryMedia:
+		return fmt.Errorf("Incompatible type. Cannot use Enable() with StoryMedia type")
+	default:
+	}
+
+	insta := comments.item.media.instagram()
+	data, err := insta.prepareData(
+		map[string]interface{}{
+			"media_id": comments.item.ID,
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	_, err = insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlCommentEnable, comments.item.ID),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	return err
+}
+
 // Next allows comment pagination.
 //
 // This function support concurrency methods to get comments using Last and Next ID

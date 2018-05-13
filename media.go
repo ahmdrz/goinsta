@@ -22,6 +22,7 @@ type Item struct {
 	TakenAt          int     `json:"taken_at"`
 	ID               int64   `json:"pk"`
 	IDStr            string  `json:"id"`
+	CommentsDisabled bool    `json:"comments_disabled"`
 	DeviceTimestamp  int64   `json:"device_timestamp"`
 	MediaType        int     `json:"media_type"`
 	Code             string  `json:"code"`

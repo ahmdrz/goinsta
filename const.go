@@ -58,4 +58,5 @@ const (
 	urlCommentDelete  = "media/%d/comment/%s/delete/"
 	urlCommentSync    = "media/%d/comments/"
 	urlCommentDisable = "media/%d/disable_comments/"
+	urlCommentEnable  = "media/%d/enable_comments/"
 )
