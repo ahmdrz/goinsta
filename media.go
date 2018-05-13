@@ -231,6 +231,54 @@ func (item *Item) Delete() error {
 	return nil
 }
 
+// Unlike mark media item as unliked.
+//
+// See example: examples/media/unlike.go
+func (item *Item) Unlike() error {
+	insta := item.media.instagram()
+	data, err := insta.prepareData(
+		map[string]interface{}{
+			"media_id": item.ID,
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	_, err = insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlMediaUnlike, item.ID),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	return err
+}
+
+// Like mark media item as liked.
+//
+// See example: examples/media/like.go
+func (item *Item) Like() error {
+	insta := item.media.instagram()
+	data, err := insta.prepareData(
+		map[string]interface{}{
+			"media_id": item.ID,
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	_, err = insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlMediaLike, item.ID),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	return err
+}
+
 // Download downloads media item (video or image) with the best quality.
 //
 // Input parameters are folder and filename. If filename is "" will be saved with

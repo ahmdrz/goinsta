@@ -52,6 +52,8 @@ const (
 	// media
 	urlMediaInfo   = "media/%s/info/"
 	urlMediaDelete = "media/%d/delete/"
+	urlMediaLike   = "media/%d/like/"
+	urlMediaUnlike = "media/%d/unlike/"
 
 	// comments
 	urlCommentAdd     = "media/%d/comment/"
