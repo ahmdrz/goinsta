@@ -1,5 +1,3 @@
-// +build ignore
-
 package main
 
 import (
@@ -17,16 +15,11 @@ func main() {
 	media.SetID(os.Args[2])
 	media.Sync()
 
-	fmt.Println("Deleting", os.Args[2])
-	err = media.Items[0].Delete()
-	e.CheckErr(err)
+	fmt.Printf("Liked: %v\n", media.Items[0].HasLiked)
+	media.Items[0].Like()
 
-	err = media.Sync()
-	if err != nil {
-		fmt.Println("Deleted!")
-	} else {
-		fmt.Println("error deleting...")
-	}
+	media.Sync()
+	fmt.Printf("Liked: %v\n", media.Items[0].HasLiked)
 
 	if !e.UsingSession {
 		err = inst.Logout()

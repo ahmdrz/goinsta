@@ -7,7 +7,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/ahmdrz/goinsta"
 	e "github.com/ahmdrz/goinsta/examples"
 )
 
@@ -15,7 +14,7 @@ func main() {
 	inst, err := e.InitGoinsta(3, "<username> <media id>")
 	e.CheckErr(err)
 
-	media := goinsta.AcquireFeed(inst)
+	media := inst.AcquireFeed()
 	media.SetID(os.Args[2])
 	media.Sync()
 
