@@ -20,7 +20,7 @@ func main() {
 	media.Sync()
 
 	fmt.Printf("Comments: %d\n", media.Items[0].CommentCount)
-	err = media.Items[0].Comments.Add("adf")
+	err = media.Items[0].Comments.Add("Awesome pic!")
 	e.CheckErr(err)
 
 	fmt.Println("wait 5 seconds...")
