@@ -206,6 +206,8 @@ func getBest(obj interface{}) []string {
 }
 
 // Delete deletes your media item. StoryMedia or FeedMedia
+//
+// See example: examples/media/mediaDelete.go
 func (item *Item) Delete() error {
 	switch m := item.media.(type) {
 	case *FeedMedia:
@@ -360,6 +362,8 @@ type StoryMedia struct {
 }
 
 // Delete removes instragram story.
+//
+// See example: examples/media/mediaDelete.go
 func (media *StoryMedia) Delete() error {
 	// TODO
 	return nil
@@ -446,6 +450,8 @@ type FeedMedia struct {
 }
 
 // Delete deletes all items in media. Take care...
+//
+// See example: examples/media/mediaDelete.go
 func (media *FeedMedia) Delete() error {
 	for i := range media.Items {
 		media.Items[i].Delete()
