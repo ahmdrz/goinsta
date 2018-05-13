@@ -65,15 +65,13 @@ This code is in no way affiliated with, authorized, maintained, sponsored or end
 
 ## Donate
 
-Ahmdrz:
--------
+**Ahmdrz**
 
-Bitcoin : `1KjcfrBPJtM4MfBSGTqpC6RcoEW1KBh15X`
+![btc](https://raw.githubusercontent.com/reek/anti-adblock-killer/gh-pages/images/bitcoin.png) Bitcoin: `1KjcfrBPJtM4MfBSGTqpC6RcoEW1KBh15X`
 
-Mester:
--------
+**Mester**
 
-Bitcoin: `37aogDJYBFkdSJTWG7TgcpgNweGHPCy1Ks`
+![btc](https://raw.githubusercontent.com/reek/anti-adblock-killer/gh-pages/images/bitcoin.png) Bitcoin: `37aogDJYBFkdSJTWG7TgcpgNweGHPCy1Ks`
 
 
 
