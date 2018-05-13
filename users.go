@@ -136,6 +136,8 @@ type User struct {
 // Following returns a list of user following.
 //
 // Users.Next can be used to paginate
+//
+// See example: examples/user/following.go
 func (user *User) Following() *Users {
 	users := &Users{}
 	users.inst = user.inst
@@ -146,6 +148,8 @@ func (user *User) Following() *Users {
 // Followers returns a list of user followers.
 //
 // Users.Next can be used to paginate
+//
+// See example: examples/user/followers.go
 func (user *User) Followers() *Users {
 	users := &Users{}
 	users.inst = user.inst
@@ -156,6 +160,8 @@ func (user *User) Followers() *Users {
 // Block blocks user
 //
 // This function updates current User.Friendship structure.
+//
+// See example: examples/user/block.go
 func (user *User) Block() error {
 	insta := user.inst
 	data, err := insta.prepareData(
@@ -183,6 +189,8 @@ func (user *User) Block() error {
 // Unblock unblocks user
 //
 // This function updates current User.Friendship structure.
+//
+// See example: examples/user/unblock.go
 func (user *User) Unblock() error {
 	insta := user.inst
 	data, err := insta.prepareData(
@@ -213,6 +221,8 @@ func (user *User) Unblock() error {
 // you have to wait until he/she accepts you.
 //
 // If the account is public User.Friendship will be updated
+//
+// See example: examples/user/follow.go
 func (user *User) Follow() error {
 	insta := user.inst
 	data, err := insta.prepareData(
@@ -240,6 +250,8 @@ func (user *User) Follow() error {
 // Unfollow unfollows user
 //
 // User.Friendship will be updated
+//
+// See example: examples/user/unfollow.go
 func (user *User) Unfollow() error {
 	insta := user.inst
 	data, err := insta.prepareData(
@@ -293,6 +305,8 @@ func (user *User) friendShip() error {
 // minTime is the minimum timestamp of media.
 //
 // For pagination use FeedMedia.Next()
+//
+// See example: examples/user/feed.go
 func (user *User) Feed(minTime []byte) *FeedMedia {
 	insta := user.inst
 	timestamp := b2s(minTime)
@@ -321,6 +335,8 @@ func (user *User) Stories() *StoryMedia {
 // Tags returns media where user is tagged in
 //
 // For pagination use FeedMedia.Next()
+//
+// See example: examples/user/tags.go
 func (user *User) Tags(minTimestamp []byte) (*FeedMedia, error) {
 	timestamp := b2s(minTimestamp)
 	body, err := user.inst.sendRequest(
