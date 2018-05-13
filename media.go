@@ -11,11 +11,6 @@ import (
 	"strings"
 )
 
-const (
-	feedItem = iota
-	storyItem
-)
-
 // Item represents media items
 //
 // All Item has Images or Videos objects which contains the url(s).
@@ -102,7 +97,7 @@ type Item struct {
 
 func setToItem(item *Item, media Media) {
 	item.media = media
-	item.Comments = newComments(media)
+	item.Comments = newComments(item)
 }
 
 func getname(name string) string {
@@ -395,7 +390,7 @@ func (media *StoryMedia) Seen() error {
 	return nil
 }
 
-// Next allows to paginate after calling:
+// Next allows pagination after calling:
 // User.Stories
 //
 // returns false when list reach the end
@@ -532,7 +527,7 @@ func (media *FeedMedia) ID() string {
 	return ""
 }
 
-// Next allows to paginate after calling:
+// Next allows pagination after calling:
 // User.Feed
 //
 // returns false when list reach the end.

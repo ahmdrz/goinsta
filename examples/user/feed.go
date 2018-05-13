@@ -20,7 +20,7 @@ func main() {
 	e.CheckErr(err)
 
 	for media.Next() {
-		fmt.Println("Next:", media.NextID)
+		fmt.Printf("Printing %d items\n", len(media.Items))
 		for _, item := range media.Items {
 			if len(item.Images.Versions) != 0 {
 				fmt.Printf("  %v - %s\n", item.ID, item.Images.Versions[0].URL)

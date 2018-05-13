@@ -8,9 +8,7 @@ import (
 // Comments allows user to interact with media (item) comments.
 // You can Add or Delete by index or by user name.
 type Comments struct {
-	inst *Instagram
-
-	media    Media
+	item     *Item
 	endpoint string
 	err      error
 
@@ -29,9 +27,9 @@ type Comments struct {
 	//PreviewComments                []Comment   `json:"preview_comments"`
 }
 
-func newComments(media Media) *Comments {
+func newComments(item *Item) *Comments {
 	c := &Comments{
-		media: media,
+		item: item,
 	}
 	return c
 }
@@ -39,6 +37,8 @@ func newComments(media Media) *Comments {
 func (comments Comments) Error() error {
 	return comments.err
 }
+
+// Disable disables comments in item
 
 // Next allows comment pagination.
 //
@@ -50,7 +50,8 @@ func (comments *Comments) Next() bool {
 		return false
 	}
 
-	insta := comments.media.instagram()
+	item := comments.item
+	insta := comments.item.media.instagram()
 	data, err := insta.prepareData(
 		map[string]interface{}{
 			"can_support_threading": true,
@@ -63,7 +64,6 @@ func (comments *Comments) Next() bool {
 		return false
 	}
 
-	media := comments.media
 	endpoint := comments.endpoint
 
 	body, err := insta.sendRequest(
@@ -79,7 +79,7 @@ func (comments *Comments) Next() bool {
 		if err == nil {
 			*comments = c
 			comments.endpoint = endpoint
-			comments.media = media
+			comments.item = item
 			if !comments.HasMoreComments || comments.NextID == "" {
 				comments.err = ErrNoMore
 			}
@@ -93,9 +93,7 @@ func (comments *Comments) Next() bool {
 // Sync prepare Comments to receive comments.
 // Use Next to receive comments.
 func (comments *Comments) Sync() {
-	media := comments.media
-	endpoint := fmt.Sprintf(urlCommentSync, comments.media.ID())
-	comments.media = media
+	endpoint := fmt.Sprintf(urlCommentSync, comments.item.ID)
 	comments.endpoint = endpoint
 	return
 }
@@ -105,7 +103,7 @@ func (comments *Comments) Sync() {
 // If parent media is a Story this function will send a private message
 // replying the Instagram story. TODO
 func (comments *Comments) Add(msg string) error {
-	insta := comments.media.instagram()
+	insta := comments.item.media.instagram()
 	data, err := insta.prepareData(
 		map[string]interface{}{
 			"comment_text": msg,
@@ -117,7 +115,7 @@ func (comments *Comments) Add(msg string) error {
 
 	_, err = insta.sendRequest(
 		&reqOptions{
-			Endpoint: fmt.Sprintf(urlCommentAdd, comments.media.ID()),
+			Endpoint: fmt.Sprintf(urlCommentAdd, comments.item.ID),
 			Query:    generateSignature(data),
 			IsPost:   true,
 		},
@@ -127,7 +125,7 @@ func (comments *Comments) Add(msg string) error {
 
 // Del deletes comment.
 func (comments *Comments) Del(comment *Comment) error {
-	insta := comments.media.instagram()
+	insta := comments.item.media.instagram()
 
 	data, err := insta.prepareData()
 	if err != nil {
@@ -137,7 +135,7 @@ func (comments *Comments) Del(comment *Comment) error {
 
 	_, err = insta.sendRequest(
 		&reqOptions{
-			Endpoint: fmt.Sprintf(urlCommentDelete, comments.media.ID(), id),
+			Endpoint: fmt.Sprintf(urlCommentDelete, comments.item.ID, id),
 			Query:    generateSignature(data),
 			IsPost:   true,
 		},
@@ -164,7 +162,7 @@ func (comments *Comments) DelMine(limit int) error {
 	}
 	comments.Sync()
 
-	insta := comments.media.instagram()
+	insta := comments.item.media.instagram()
 floop:
 	for comments.Next() {
 		for _, c := range comments.Items {
