@@ -11,6 +11,8 @@ type accountResp struct {
 }
 
 // Account is personal account object
+//
+// See examples: examples/account/*
 type Account struct {
 	inst *Instagram
 
@@ -63,6 +65,8 @@ func (account *Account) Sync() error {
 //
 // GoInsta does not store current instagram password (for security reasons)
 // If you want to change your password you must parse old and new password.
+//
+// See example: examples/account/changePass.go
 func (account *Account) ChangePassword(old, new string) error {
 	insta := account.inst
 	data, err := insta.prepareData(
@@ -92,6 +96,8 @@ type profResp struct {
 // RemoveProfilePic removes current profile picture
 //
 // This function updates current Account information.
+//
+// See example: examples/account/removeProfilePic.go
 func (account *Account) RemoveProfilePic() error {
 	insta := account.inst
 	data, err := insta.prepareData()
@@ -120,6 +126,8 @@ func (account *Account) RemoveProfilePic() error {
 // SetPrivate sets account to private mode.
 //
 // This function updates current Account information.
+//
+// See example: examples/account/setPrivate.go
 func (account *Account) SetPrivate() error {
 	insta := account.inst
 	data, err := insta.prepareData()
@@ -148,6 +156,8 @@ func (account *Account) SetPrivate() error {
 // SetPublic sets account to public mode.
 //
 // This function updates current Account information.
+//
+// See example: examples/account/setPublic.go
 func (account *Account) SetPublic() error {
 	insta := account.inst
 	data, err := insta.prepareData()
@@ -176,6 +186,8 @@ func (account *Account) SetPublic() error {
 // Followers returns a list of user followers.
 //
 // Users.Next can be used to paginate
+//
+// See example: examples/account/followers.go
 func (account *Account) Followers() *Users {
 	endpoint := fmt.Sprintf(urlFollowers, account.ID)
 	users := &Users{}
@@ -187,6 +199,8 @@ func (account *Account) Followers() *Users {
 // Following returns a list of user following.
 //
 // Users.Next can be used to paginate
+//
+// See example: examples/account/following.go
 func (account *Account) Following() *Users {
 	endpoint := fmt.Sprintf(urlFollowing, account.ID)
 	users := &Users{}
