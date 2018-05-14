@@ -41,6 +41,7 @@ func (time *Timeline) Get() (*FeedMedia, error) {
 	return nil, err
 }
 
+// Stories returns slice of StoryMedia
 func (time *Timeline) Stories() ([]StoryMedia, error) {
 	body, err := time.inst.sendSimpleRequest(urlStories)
 	if err == nil {
