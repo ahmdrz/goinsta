@@ -10,6 +10,11 @@ import (
 	"gopkg.in/ahmdrz/goinsta.v2"
 )
 
+// New function returns Instagram object.
+// In case of error this function does os.Exit(1) and prints error to Stdout.
+//
+// This function tries to get config from $HOME/.goinsta. If this file does not
+// exists will wait from Stdin to Username and Password.
 func New() *goinsta.Instagram {
 	home, err := homedir.Dir()
 	if err != nil {
