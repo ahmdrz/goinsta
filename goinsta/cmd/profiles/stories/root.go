@@ -55,7 +55,7 @@ var RootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		media := user.Feed(nil)
+		media := user.Stories()
 
 		fmt.Println("Downloading...")
 		for media.Next() {
