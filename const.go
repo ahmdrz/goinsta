@@ -13,7 +13,11 @@ const (
 	// login
 	urlFetchHeaders = "si/fetch_headers/"
 	urlLogin        = "accounts/login/"
+	urlLogout       = "accounts/logout/"
 	urlAutoComplete = "friendships/autocomplete_user_list/"
+	urlSync         = "qe/sync/"
+	urlMegaphoneLog = "megaphone/log/"
+	urlExpose       = "qe/expose/"
 
 	// account
 	urlChangePass    = "accounts/change_password/"

@@ -6,41 +6,6 @@ import (
 	"strconv"
 )
 
-// Instagram represent the main API handler
-//
-// ...
-type Instagram struct {
-	user string
-	pass string
-	// device id
-	dID string
-	// uuid
-	uuid string
-	// rankToken
-	rankToken string
-	// token
-	token string
-	// phone id
-	pid string
-
-	// Instagram objects
-
-	// Profiles is the user interaction
-	Profiles *Profiles
-	// Account stores all personal data of the user and his/her options.
-	Account *Account
-	// Search performs searching of multiple things (users, locations...)
-	Search *Search
-	// Timeline allows to receive timeline media.
-	Timeline *Timeline
-	// Activity ...
-	Activity *Activity
-
-	logged bool
-
-	c *http.Client
-}
-
 type ConfigFile struct {
 	User      string         `json:"username"`
 	DeviceID  string         `json:"device_id"`

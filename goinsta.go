@@ -11,6 +11,45 @@ import (
 	"time"
 )
 
+// Instagram represent the main API handler
+//
+// Profiles: Represents instragram's user profile.
+// Account:  Represents instagram's personal account.
+// Search:   Represents instagram's search.
+// Timeline: Represents instagram's timeline.
+// Activity: Represents instagram's user activity.
+//
+// See Scheme section in README.md for more information.
+type Instagram struct {
+	user string
+	pass string
+	// device id
+	dID string
+	// uuid
+	uuid string
+	// rankToken
+	rankToken string
+	// token
+	token string
+	// phone id
+	pid string
+
+	// Instagram objects
+
+	// Profiles is the user interaction
+	Profiles *Profiles
+	// Account stores all personal data of the user and his/her options.
+	Account *Account
+	// Search performs searching of multiple things (users, locations...)
+	Search *Search
+	// Timeline allows to receive timeline media.
+	Timeline *Timeline
+	// Activity ...
+	Activity *Activity
+
+	c *http.Client
+}
+
 // New creates Instagram structure
 func New(username, password string) *Instagram {
 	inst := &Instagram{
@@ -172,13 +211,12 @@ func (inst *Instagram) Login() error {
 			if err != nil {
 				err = instaToErr(ierr)
 			}
-			return err
+			goto end
 		}
 		inst.Account = &res.Account
 		inst.Account.inst = inst
 
 		inst.rankToken = strconv.FormatInt(inst.Account.ID, 10) + "_" + inst.uuid
-		inst.logged = true
 
 		inst.syncFeatures()
 		inst.megaphoneLog()
@@ -190,8 +228,7 @@ end:
 
 // Logout closes current session
 func (inst *Instagram) Logout() error {
-	_, err := inst.sendSimpleRequest("accounts/logout/")
-	inst.logged = false
+	_, err := inst.sendSimpleRequest(urlLogout)
 	inst.c.Jar = nil
 	inst.c = nil
 	return err
@@ -210,7 +247,7 @@ func (inst *Instagram) syncFeatures() error {
 
 	_, err = inst.sendRequest(
 		&reqOptions{
-			Endpoint: "qe/sync/",
+			Endpoint: urlSync,
 			Query:    generateSignature(data),
 			IsPost:   true,
 		},
@@ -246,7 +283,7 @@ func (inst *Instagram) megaphoneLog() error {
 	}
 	_, err = inst.sendRequest(
 		&reqOptions{
-			Endpoint: "megaphone/log/",
+			Endpoint: urlMegaphoneLog,
 			Query:    generateSignature(data),
 			IsPost:   true,
 		},
@@ -267,7 +304,7 @@ func (inst *Instagram) expose() error {
 
 	_, err = inst.sendRequest(
 		&reqOptions{
-			Endpoint: "qe/expose/",
+			Endpoint: urlExpose,
 			Query:    generateSignature(data),
 			IsPost:   true,
 		},
