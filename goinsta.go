@@ -35,13 +35,14 @@ func New(username, password string) *Instagram {
 	return inst
 }
 
+// NewWithProxy creates new instagram object using proxy requests.
 func NewWithProxy(user, pass, url string) (*Instagram, error) {
 	inst := New(user, pass)
 	uri, err := neturl.Parse(url)
-	_ = uri
 	if err == nil {
-		// TODO
-		//inst.c.Transport = proxhttp.ProxyURL(uri)
+		inst.c.Transport = &http.Transport{
+			Proxy: http.ProxyURL(uri),
+		}
 	}
 	return inst, err
 }
