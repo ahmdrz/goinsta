@@ -47,13 +47,6 @@ func NewWithProxy(user, pass, url string) (*Instagram, error) {
 	return inst, err
 }
 
-// ChangeTo logouts from the current account and login into another
-func (inst *Instagram) ChangeTo(user, pass string) (err error) {
-	inst.Logout()
-	inst = New(user, pass)
-	return inst.Login()
-}
-
 // Export exports *Instagram object options
 func (inst *Instagram) Export(path string) error {
 	url, err := neturl.Parse(goInstaAPIUrl)
