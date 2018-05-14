@@ -21,9 +21,16 @@ We are working on `alpha` branch. Try it and tell us your suggestions!
 
 The newer versions will be exported into v2 branch when new features will be well tested.
 
-## Installation 
+## Package installation 
 
 `go get -u -v gopkg.in/ahmdrz/goinsta.v2`
+
+## CMD tool installation
+
+```
+go get -u -v gopkg.in/ahmdrz/goinsta.v2
+go install gopkg.in/ahmdrz/goinsta.v2/goinsta
+```
 
 ## Example
 
