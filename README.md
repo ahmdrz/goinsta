@@ -99,8 +99,3 @@ Instagram
 - Activity:
   - Following
   - Recent
-
-
-# TODO
-
-- CMD instagram tool
