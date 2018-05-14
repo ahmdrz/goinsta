@@ -406,10 +406,8 @@ type StoryMedia struct {
 }
 
 // Delete removes instragram story.
-//
-// See example: examples/media/mediaDelete.go
+// TODO
 func (media *StoryMedia) Delete() error {
-	// TODO
 	return nil
 }
 
@@ -434,8 +432,8 @@ func (media StoryMedia) Error() error {
 }
 
 // Seen marks story as seen.
+// TODO
 func (media *StoryMedia) Seen() error {
-	// TODO
 	return nil
 }
 
@@ -473,7 +471,7 @@ func (media *StoryMedia) Next() bool {
 	return false
 }
 
-// Media represent a set of media items
+// FeedMedia represent a set of media items
 type FeedMedia struct {
 	inst *Instagram
 

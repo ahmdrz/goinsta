@@ -10,6 +10,7 @@ type Activity struct {
 	inst *Instagram
 }
 
+// Activities ...
 type Activities struct {
 	inst *Instagram
 
@@ -46,8 +47,6 @@ type Activities struct {
 }
 
 // Next can be used to paginate over activities.
-//
-//
 func (nact *Activities) Next() bool {
 	// TODO: Bug
 	if nact.err != nil {

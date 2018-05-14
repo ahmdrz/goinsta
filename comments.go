@@ -150,6 +150,8 @@ func (comments *Comments) Next() bool {
 
 // Sync prepare Comments to receive comments.
 // Use Next to receive comments.
+//
+// See example: examples/media/commentsSync.go
 func (comments *Comments) Sync() {
 	endpoint := fmt.Sprintf(urlCommentSync, comments.item.ID)
 	comments.endpoint = endpoint
@@ -159,7 +161,9 @@ func (comments *Comments) Sync() {
 // Add push a comment in media.
 //
 // If parent media is a Story this function will send a private message
-// replying the Instagram story. TODO
+// replying the Instagram story.
+//
+// See example: examples/media/commentsAdd.go
 func (comments *Comments) Add(msg string) error {
 	insta := comments.item.media.instagram()
 	data, err := insta.prepareData(
