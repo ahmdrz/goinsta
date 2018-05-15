@@ -50,7 +50,6 @@ var RootCmd = &cobra.Command{
 		fmt.Println("Downloading your timeline stories")
 		for _, media := range tray.Stories {
 			out := fmt.Sprintf("%s/%s/", output, media.User.Username)
-
 			pgb := pb.StartNew(len(media.Items))
 			for _, item := range media.Items {
 				err := item.Download(out, "")

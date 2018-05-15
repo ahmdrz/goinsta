@@ -62,6 +62,11 @@ var RootCmd = &cobra.Command{
 		}
 		user.FriendShip()
 
+		if user.IsPrivate {
+			fmt.Printf("%s is private. Requested.", user.Username)
+			return
+		}
+
 		fmt.Printf("Following %s: %v\n", user.Username, user.Friendship.Following)
 	},
 }
