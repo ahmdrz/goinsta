@@ -37,6 +37,9 @@ func init() {
 	RootCmd.AddCommand(feed.RootCmd)
 	RootCmd.AddCommand(story.RootCmd)
 	RootCmd.AddCommand(info.RootCmd)
+	RootCmd.AddCommand(follow.RootCmd)
+	RootCmd.AddCommand(followers.RootCmd)
+	RootCmd.AddCommand(following.RootCmd)
 }
 
 var RootCmd = &cobra.Command{
