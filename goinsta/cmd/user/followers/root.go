@@ -51,7 +51,7 @@ var RootCmd = &cobra.Command{
 
 		users := user.Followers()
 
-		fmt.Println("Followers:\n  ID\tUsername")
+		fmt.Println("Followers:\n  ID\t\tUsername")
 		for users.Next() {
 			for _, u := range users.Users {
 				fmt.Printf("  %d\t%s\n", u.ID, u.Username)
