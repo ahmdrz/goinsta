@@ -26,6 +26,7 @@ import (
 
 	"github.com/cheggaaa/pb"
 	"github.com/spf13/cobra"
+	"gopkg.in/ahmdrz/goinsta.v2"
 	"gopkg.in/ahmdrz/goinsta.v2/utils"
 )
 
@@ -33,23 +34,39 @@ var RootCmd = &cobra.Command{
 	Use:   "stories",
 	Short: "Get stories of a user",
 	Run: func(cmd *cobra.Command, args []string) {
+		var id int64
+		var target string
+		cmd = cmd.Root()
+
 		output, err := cmd.Flags().GetString("output")
 		if err != nil {
 			output = "./files/"
 		}
 
-		target, err := cmd.Flags().GetString("target")
+		target, err = cmd.Flags().GetString("target")
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 		if target == "" {
-			fmt.Println("required parameter `target`. See help")
-			return
+			id, err = cmd.Flags().GetInt64("id")
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			if id <= 0 {
+				fmt.Println("-t or -i parameters are required")
+				return
+			}
 		}
 		inst := utils.New()
 
-		user, err := inst.Profiles.ByName(target)
+		var user *goinsta.User
+		if target != "" {
+			user, err = inst.Profiles.ByName(target)
+		} else {
+			user, err = inst.Profiles.ByID(id)
+		}
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -70,9 +87,4 @@ var RootCmd = &cobra.Command{
 			pgb.Finish()
 		}
 	},
-}
-
-func init() {
-	RootCmd.Flags().StringP("output", "o", "./files/", "Output directory")
-	RootCmd.Flags().StringP("target", "t", "", "Target user")
 }
