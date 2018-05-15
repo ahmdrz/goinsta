@@ -63,7 +63,7 @@ var RootCmd = &cobra.Command{
 		user.FriendShip()
 
 		if user.IsPrivate {
-			fmt.Printf("%s is private. Requested.", user.Username)
+			fmt.Printf("%s is private. Requested.\n", user.Username)
 			return
 		}
 
