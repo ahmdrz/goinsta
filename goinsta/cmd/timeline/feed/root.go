@@ -44,9 +44,13 @@ var RootCmd = &cobra.Command{
 
 		media := inst.Timeline.Get()
 
-		// TODO
+		i := 0
 		fmt.Println("Downloading your timeline feed")
 		for media.Next() {
+			if i == max {
+				break
+			}
+
 			pgb := pb.StartNew(len(media.Items))
 			for _, item := range media.Items {
 				err := item.Download(output, "")
@@ -58,4 +62,10 @@ var RootCmd = &cobra.Command{
 			pgb.Finish()
 		}
 	},
+}
+
+var max int
+
+func init() {
+	RootCmd.Flags().IntVarP(&max, "max", "m", 3, "Max iterations")
 }
