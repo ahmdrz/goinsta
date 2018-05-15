@@ -219,7 +219,7 @@ func (account *Account) Feed(minTime []byte) *FeedMedia {
 
 	media := &FeedMedia{}
 	media.inst = insta
-	media.timestamp = timestamp
+	media.timestamp = string(minTime)
 	media.endpoint = urlUserFeed
 	media.uid = account.ID
 	return media
