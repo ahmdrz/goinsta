@@ -35,6 +35,10 @@ var RootCmd = &cobra.Command{
 	Short:   "Get stories of a user",
 	Example: "goinsta user stories robpike",
 	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) == 0 {
+			fmt.Println("Missing arguments. See example.")
+			return
+		}
 		cmd = cmd.Root()
 
 		output, err := cmd.Flags().GetString("output")
