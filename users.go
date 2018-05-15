@@ -119,6 +119,11 @@ type User struct {
 	PublicPhoneNumber          string       `json:"public_phone_number"`
 	PublicPhoneCountryCode     string       `json:"public_phone_country_code"`
 	ContactPhoneNumber         string       `json:"contact_phone_number"`
+	Byline                     string       `json:"byline"`
+	SocialContext              string       `json:"social_context,omitempty"`
+	SearchSocialContext        string       `json:"search_social_context,omitempty"`
+	MutualFollowersCount       float64      `json:"mutual_followers_count"`
+	LatestReelMedia            int          `json:"latest_reel_media,omitempty"`
 	CityID                     int64        `json:"city_id"`
 	CityName                   string       `json:"city_name"`
 	AddressStreet              string       `json:"address_street"`
