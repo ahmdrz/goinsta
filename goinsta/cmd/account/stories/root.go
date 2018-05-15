@@ -22,8 +22,6 @@ package story
 
 import (
 	"fmt"
-	"os"
-	"strconv"
 
 	"github.com/cheggaaa/pb"
 	"github.com/spf13/cobra"

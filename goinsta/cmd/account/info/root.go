@@ -46,9 +46,8 @@ Gender: %d
 Biography: %s
 Followers: %d
 Following: %d
-You follow him/her: %v
 `, user.Username, user.FullName, user.ID, user.ProfilePicURL,
-			user.PublicEmail, user.Gender, user.Biography, user.FollowerCount,
-			user.FollowingCount, user.Friendship.Following)
+			user.Email, user.Gender, user.Biography, user.FollowerCount,
+			user.FollowingCount)
 	},
 }

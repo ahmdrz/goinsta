@@ -25,6 +25,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/account"
 	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/search"
 	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user"
 )
@@ -32,6 +33,7 @@ import (
 func init() {
 	rootCmd.AddCommand(user.RootCmd)
 	rootCmd.AddCommand(search.RootCmd)
+	rootCmd.AddCommand(account.RootCmd)
 }
 
 var (
@@ -51,5 +53,5 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringP("output", "o", "./files/", "Output directory")
+	rootCmd.PersistentFlags().StringP("output", "o", "", "Output directory")
 }
