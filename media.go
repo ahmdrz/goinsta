@@ -390,18 +390,19 @@ type StoryMedia struct {
 
 	err error
 
-	Pk                   int64       `json:"id"`
-	LatestReelMedia      int         `json:"latest_reel_media"`
-	ExpiringAt           int         `json:"expiring_at"`
-	HaveBeenSeen         float64     `json:"seen"`
-	CanReply             bool        `json:"can_reply"`
-	CanReshare           bool        `json:"can_reshare"`
-	ReelType             string      `json:"reel_type"`
-	User                 User        `json:"user"`
-	Items                []Item      `json:"items"`
-	ReelMentions         []string    `json:"reel_mentions"`
-	PrefetchCount        int         `json:"prefetch_count"`
-	HasBestiesMedia      bool        `json:"has_besties_media"`
+	Pk              int64    `json:"id"`
+	LatestReelMedia int      `json:"latest_reel_media"`
+	ExpiringAt      int      `json:"expiring_at"`
+	HaveBeenSeen    float64  `json:"seen"`
+	CanReply        bool     `json:"can_reply"`
+	CanReshare      bool     `json:"can_reshare"`
+	ReelType        string   `json:"reel_type"`
+	User            User     `json:"user"`
+	Items           []Item   `json:"items"`
+	ReelMentions    []string `json:"reel_mentions"`
+	PrefetchCount   int      `json:"prefetch_count"`
+	// this field can be int or bool
+	HasBestiesMedia      interface{} `json:"has_besties_media"`
 	StoryRankingToken    string      `json:"story_ranking_token"`
 	Broadcasts           []Broadcast `json:"broadcasts"`
 	FaceFilterNuxVersion int         `json:"face_filter_nux_version"`
