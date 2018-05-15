@@ -45,6 +45,10 @@ var RootCmd = &cobra.Command{
 			fmt.Println(err)
 			return
 		}
+		if res.NumResults == 0 {
+			fmt.Println("No results.")
+			return
+		}
 
 		fmt.Printf("Results: %d\n", res.NumResults)
 		fmt.Println("  ID\tName")
