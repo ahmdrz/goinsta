@@ -70,11 +70,18 @@ func (users *Users) Next() bool {
 			}
 			users.inst = insta
 			users.endpoint = endpoint
+			users.setValues()
 			return true
 		}
 	}
 	users.err = err
 	return false
+}
+
+func (users *Users) setValues() {
+	for i := range users.Users {
+		users.Users[i].inst = users.inst
+	}
 }
 
 type userResp struct {
