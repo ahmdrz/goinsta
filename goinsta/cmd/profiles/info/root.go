@@ -64,6 +64,7 @@ var RootCmd = &cobra.Command{
 			fmt.Println(err)
 			os.Exit(1)
 		}
+		user.FriendShip()
 
 		fmt.Printf(`
 Username: %s
