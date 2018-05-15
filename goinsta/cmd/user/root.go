@@ -26,6 +26,9 @@ import (
 
 	"github.com/spf13/cobra"
 	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/feed"
+	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/follow"
+	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/followers"
+	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/following"
 	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/info"
 	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/stories"
 )

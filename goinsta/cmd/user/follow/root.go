@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package followers
+package follow
 
 import (
 	"fmt"
@@ -29,12 +29,12 @@ import (
 )
 
 var RootCmd = &cobra.Command{
-	Use:     "followers",
-	Short:   "Get user followers",
-	Example: "goinsta user followers robpike",
+	Use:     "follow",
+	Short:   "Start following a user",
+	Example: "goinsta user follow robpike",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-			fmt.Println("Missing args. See example.")
+			fmt.Println("Missing arguments. See example.")
 			return
 		}
 		inst := utils.New()
@@ -48,14 +48,20 @@ var RootCmd = &cobra.Command{
 				return
 			}
 		}
+		user.FriendShip()
 
-		users := user.Followers()
-
-		fmt.Println("Followers:\n  ID\t\tUsername")
-		for users.Next() {
-			for _, u := range users.Users {
-				fmt.Printf("  %d\t%s\n", u.ID, u.Username)
-			}
+		if user.Friendship.Following {
+			fmt.Printf("You are currently following %s.\n", user.Username)
+			return
 		}
+
+		err = user.Follow()
+		if err != nil {
+			fmt.Printf("error following %s: %s\n", user.Username, err)
+			return
+		}
+		user.FriendShip()
+
+		fmt.Printf("Following %s: %v\n", user.Username, user.Friendship.Following)
 	},
 }
