@@ -44,13 +44,12 @@ var RootCmd = &cobra.Command{
 
 		media := inst.Timeline.Get()
 
-		i := 0
 		fmt.Println("Downloading your timeline feed")
 		for media.Next() {
-			if i >= max {
+			if max >= 0 {
 				break
 			}
-			i++
+			max--
 
 			pgb := pb.StartNew(len(media.Items))
 			for _, item := range media.Items {
