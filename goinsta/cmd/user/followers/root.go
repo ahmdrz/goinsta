@@ -51,11 +51,14 @@ var RootCmd = &cobra.Command{
 
 		users := user.Followers()
 
+		i := 0
 		fmt.Println("Followers:\n  ID\t\tUsername")
 		for users.Next() {
 			for _, u := range users.Users {
+				i++
 				fmt.Printf("  %d\t%s\n", u.ID, u.Username)
 			}
 		}
+		fmt.Printf("Total: %d\n", i)
 	},
 }
