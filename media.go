@@ -288,19 +288,25 @@ func (item *Item) Like() error {
 //
 // See example: examples/media/itemDownload.go
 func (item *Item) Download(folder, name string) error {
+	imgFolder := fmt.Sprintf("%s%cimages%c", folder, os.PathSeparator, os.PathSeparator)
+	vidFolder := fmt.Sprintf("%s%cvideos%c", folder, os.PathSeparator, os.PathSeparator)
 	inst := item.media.instagram()
+
 	os.MkdirAll(folder, 0777)
+	os.MkdirAll(imgFolder, 0777)
+	os.MkdirAll(vidFolder, 0777)
+
 	for _, url := range getBest(item.Images.Versions) {
-		nname := name
-		if nname == "" {
+		var nname string
+		if name == "" {
 			u, err := neturl.Parse(url)
 			if err != nil {
 				return err
 			}
 
-			nname = fmt.Sprintf("%s%c%s", folder, os.PathSeparator, path.Base(u.Path))
+			nname = fmt.Sprintf("%s%c%s", imgFolder, os.PathSeparator, path.Base(u.Path))
 		} else {
-			nname = fmt.Sprintf("%s%c%s", folder, os.PathSeparator, nname)
+			nname = fmt.Sprintf("%s%c%s", imgFolder, os.PathSeparator, nname)
 		}
 		nname = getname(nname)
 
@@ -311,16 +317,16 @@ func (item *Item) Download(folder, name string) error {
 	}
 
 	for _, url := range getBest(item.Videos) {
-		nname := name
-		if nname == "" {
+		var nname string
+		if name == "" {
 			u, err := neturl.Parse(url)
 			if err != nil {
 				return err
 			}
 
-			nname = fmt.Sprintf("%s%c%s", folder, os.PathSeparator, path.Base(u.Path))
+			nname = fmt.Sprintf("%s%c%s", vidFolder, os.PathSeparator, path.Base(u.Path))
 		} else {
-			nname = fmt.Sprintf("%s%c%s", folder, os.PathSeparator, nname)
+			nname = fmt.Sprintf("%s%c%s", vidFolder, os.PathSeparator, nname)
 		}
 		nname = getname(nname)
 
