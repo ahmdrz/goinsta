@@ -25,7 +25,7 @@ The newer versions will be exported into v2 branch when new features will be wel
 
 `go get -u -v gopkg.in/ahmdrz/goinsta.v2`
 
-## CMD tool installation
+## CLI installation
 
 ```
 go get -u -v gopkg.in/ahmdrz/goinsta.v2
