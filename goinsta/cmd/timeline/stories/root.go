@@ -18,42 +18,48 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package stories
 
 import (
 	"fmt"
-	"os"
 
+	"github.com/cheggaaa/pb"
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/account"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/search"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/timeline"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user"
+	"gopkg.in/ahmdrz/goinsta.v2/utils"
 )
 
-func init() {
-	rootCmd.AddCommand(user.RootCmd)
-	rootCmd.AddCommand(search.RootCmd)
-	rootCmd.AddCommand(account.RootCmd)
-	rootCmd.AddCommand(timeline.RootCmd)
-}
+var RootCmd = &cobra.Command{
+	Use:     "stories",
+	Short:   "Get stories of a user",
+	Example: "goinsta user stories robpike",
+	Run: func(cmd *cobra.Command, args []string) {
+		cmd = cmd.Root()
 
-var (
-	username string
-)
+		output, err := cmd.Flags().GetString("output")
+		if err != nil || output == "" {
+			output = "./timeline/stories/"
+		}
+		inst := utils.New()
 
-var rootCmd = &cobra.Command{
-	Use:   "goinsta",
-	Short: "Command line tool for Instagram",
-}
+		tray, err := inst.Timeline.Stories()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 
-func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-}
+		fmt.Println("Downloading your timeline stories")
+		for _, media := range tray.Stories {
+			out := fmt.Sprintf("%s/%s/", output, media.User.Username)
 
-func init() {
-	rootCmd.PersistentFlags().StringP("output", "o", "", "Output directory")
+			pgb := pb.StartNew(len(media.Items))
+			for _, item := range media.Items {
+				err := item.Download(out, "")
+				if err != nil {
+					fmt.Println(err)
+				}
+				pgb.Add(1)
+			}
+			pgb.Finish()
+		}
+	},
 }

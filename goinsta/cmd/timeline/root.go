@@ -18,42 +18,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package timeline
 
 import (
 	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/account"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/search"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/timeline"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user"
+	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/timeline/feed"
+	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/timeline/stories"
 )
 
 func init() {
-	rootCmd.AddCommand(user.RootCmd)
-	rootCmd.AddCommand(search.RootCmd)
-	rootCmd.AddCommand(account.RootCmd)
-	rootCmd.AddCommand(timeline.RootCmd)
+	RootCmd.AddCommand(feed.RootCmd)
+	RootCmd.AddCommand(stories.RootCmd)
 }
 
-var (
-	username string
-)
-
-var rootCmd = &cobra.Command{
-	Use:   "goinsta",
-	Short: "Command line tool for Instagram",
+var RootCmd = &cobra.Command{
+	Use:   "timeline",
+	Short: "Get timeline feed or stories",
 }
 
 func Execute() {
-	if err := rootCmd.Execute(); err != nil {
+	if err := RootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-}
-
-func init() {
-	rootCmd.PersistentFlags().StringP("output", "o", "", "Output directory")
 }
