@@ -34,7 +34,7 @@ var RootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		inst := utils.New()
 
-		user := inst.Account
+		user, _ := inst.Profiles.ByID(inst.Account.ID)
 
 		fmt.Printf(`
 Username: %s
@@ -47,7 +47,7 @@ Biography: %s
 Followers: %d
 Following: %d
 `, user.Username, user.FullName, user.ID, user.ProfilePicURL,
-			user.Email, user.Gender, user.Biography, user.FollowerCount,
+			user.PublicEmail, user.Gender, user.Biography, user.FollowerCount,
 			user.FollowingCount)
 	},
 }
