@@ -49,7 +49,7 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().StringP("output", "o", "./files/", "Output directory")
-	rootCmd.Flags().StringP("target", "t", "", "Target user")
-	rootCmd.Flags().Int64P("id", "i", 0, "Target id")
+	rootCmd.PersistentFlags().StringP("output", "o", "./files/", "Output directory")
+	rootCmd.PersistentFlags().StringP("target", "t", "", "Target user")
+	rootCmd.PersistentFlags().Int64P("id", "i", 0, "Target id")
 }
