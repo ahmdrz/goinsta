@@ -25,11 +25,11 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/profiles"
+	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user"
 )
 
 func init() {
-	rootCmd.AddCommand(profiles.RootCmd)
+	rootCmd.AddCommand(user.RootCmd)
 }
 
 var (
