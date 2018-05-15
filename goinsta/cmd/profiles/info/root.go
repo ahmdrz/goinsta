@@ -18,32 +18,65 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package profiles
+package story
 
 import (
 	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/profiles/feed"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/profiles/info"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/profiles/stories"
+	"gopkg.in/ahmdrz/goinsta.v2"
+	"gopkg.in/ahmdrz/goinsta.v2/utils"
 )
 
-func init() {
-	RootCmd.AddCommand(feed.RootCmd)
-	RootCmd.AddCommand(story.RootCmd)
-	RootCmd.AddCommand(info.RootCmd)
-}
-
 var RootCmd = &cobra.Command{
-	Use:   "profiles",
-	Short: "Get downloads specified Instagram user's object.",
-}
+	Use:   "info",
+	Short: "Get partial info about user",
+	Run: func(cmd *cobra.Command, args []string) {
+		var id int64
+		cmd = cmd.Root()
 
-func Execute() {
-	if err := RootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+		target, err := cmd.Flags().GetString("target")
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		if target == "" {
+			id, err = cmd.Flags().GetInt64("id")
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			if id <= 0 {
+				fmt.Println("-t or -i parameters are required")
+				return
+			}
+		}
+		inst := utils.New()
+
+		var user *goinsta.User
+		if target != "" {
+			user, err = inst.Profiles.ByName(target)
+		} else {
+			user, err = inst.Profiles.ByID(id)
+		}
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		fmt.Printf(`Username: %s
+		Fullname: %s
+		ID: %d
+		ProfilePicURL: %s
+		Email: %s
+		Gender: %d
+		Biography: %s
+		Followers: %d
+		Following: %d
+		You follow him/her: %v
+		`, user.Username, user.FullName, user.ID, user.ProfilePicURL,
+			user.PublicEmail, user.Gender, user.Biography, user.FollowerCount,
+			user.FollowingCount, user.Friendship.Following)
+	},
 }
