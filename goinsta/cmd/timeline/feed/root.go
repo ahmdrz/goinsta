@@ -46,7 +46,7 @@ var RootCmd = &cobra.Command{
 
 		fmt.Println("Downloading your timeline feed")
 		for media.Next() {
-			if max >= 0 {
+			if max <= 0 {
 				break
 			}
 			max--
