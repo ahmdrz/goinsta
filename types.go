@@ -56,6 +56,8 @@ type Friendship struct {
 	Following       bool `json:"following"`
 	Blocking        bool `json:"blocking"`
 	IsPrivate       bool `json:"is_private"`
+	Muting          bool `json:"muting"`
+	IsMutingReel    bool `json:"is_muting_reel"`
 }
 
 // Images are different quality images
@@ -144,4 +146,64 @@ type Video struct {
 type timeStoryResp struct {
 	Status string       `json:"status"`
 	Media  []StoryMedia `json:"tray"`
+}
+
+// Tray is a set of story media received from timeline calls.
+type Tray struct {
+	Stories []StoryMedia `json:"tray"`
+	Lives   struct {
+		LiveItems []LiveItems `json:"post_live_items"`
+	} `json:"post_live"`
+	StoryRankingToken    string      `json:"story_ranking_token"`
+	Broadcasts           []Broadcast `json:"broadcasts"`
+	FaceFilterNuxVersion int         `json:"face_filter_nux_version"`
+	HasNewNuxStory       bool        `json:"has_new_nux_story"`
+	Status               string      `json:"status"`
+}
+
+func (tray *Tray) set(inst *Instagram, url string) {
+	for i := range tray.Stories {
+		tray.Stories[i].inst = inst
+		tray.Stories[i].endpoint = url
+		tray.Stories[i].setValues()
+	}
+	for i := range tray.Lives.LiveItems {
+		tray.Lives.LiveItems[i].User.inst = inst
+		for j := range tray.Lives.LiveItems[i].Broadcasts {
+			tray.Lives.LiveItems[i].Broadcasts[j].BroadcastOwner.inst = inst
+		}
+	}
+	for i := range tray.Broadcasts {
+		tray.Broadcasts[i].BroadcastOwner.inst = inst
+	}
+}
+
+// LiveItems are Live media items
+type LiveItems struct {
+	ID                  string      `json:"pk"`
+	User                User        `json:"user"`
+	Broadcasts          []Broadcast `json:"broadcasts"`
+	LastSeenBroadcastTs int         `json:"last_seen_broadcast_ts"`
+	RankedPosition      int         `json:"ranked_position"`
+	SeenRankedPosition  int         `json:"seen_ranked_position"`
+	Muted               bool        `json:"muted"`
+	CanReply            bool        `json:"can_reply"`
+	CanReshare          bool        `json:"can_reshare"`
+}
+
+// Broadcast is live videos.
+type Broadcast struct {
+	ID                   int64  `json:"id"`
+	BroadcastStatus      string `json:"broadcast_status"`
+	DashManifest         string `json:"dash_manifest"`
+	ExpireAt             int    `json:"expire_at"`
+	EncodingTag          string `json:"encoding_tag"`
+	InternalOnly         bool   `json:"internal_only"`
+	NumberOfQualities    int    `json:"number_of_qualities"`
+	CoverFrameURL        string `json:"cover_frame_url"`
+	BroadcastOwner       User   `json:"broadcast_owner"`
+	PublishedTime        int    `json:"published_time"`
+	MediaID              string `json:"media_id"`
+	BroadcastMessage     string `json:"broadcast_message"`
+	OrganicTrackingToken string `json:"organic_tracking_token"`
 }

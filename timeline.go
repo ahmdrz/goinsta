@@ -42,19 +42,16 @@ func (time *Timeline) Get() (*FeedMedia, error) {
 }
 
 // Stories returns slice of StoryMedia
-func (time *Timeline) Stories() ([]StoryMedia, error) {
+func (time *Timeline) Stories() (*Tray, error) {
 	body, err := time.inst.sendSimpleRequest(urlStories)
 	if err == nil {
-		resp := &timeStoryResp{}
-		err = json.Unmarshal(body, &resp)
+		tray := &Tray{}
+		err = json.Unmarshal(body, tray)
 		if err != nil {
 			return nil, err
 		}
-		for i := range resp.Media {
-			resp.Media[i].inst = time.inst
-			resp.Media[i].endpoint = urlStories
-		}
-		return resp.Media, nil
+		tray.set(time.inst, urlStories)
+		return tray, nil
 	}
 	return nil, err
 }

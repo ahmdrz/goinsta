@@ -12,10 +12,14 @@ func main() {
 	inst, err := e.InitGoinsta("")
 	e.CheckErr(err)
 
-	stories, err := inst.Timeline.Stories()
+	tray, err := inst.Timeline.Stories()
 	e.CheckErr(err)
 
-	for _, story := range stories {
+	if s := len(tray.Lives.LiveItems); s != 0 {
+		fmt.Printf("%d people are currently on live.\n", s)
+	}
+
+	for _, story := range tray.Stories {
 		// getting images URL
 		for _, item := range story.Items {
 			if len(item.Images.Versions) > 0 {
