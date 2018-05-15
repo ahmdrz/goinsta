@@ -18,27 +18,12 @@ func newTimeline(inst *Instagram) *Timeline {
 // Get returns latest media from timeline.
 //
 // For pagination use FeedMedia.Next()
-func (time *Timeline) Get() (*FeedMedia, error) {
+func (time *Timeline) Get() *FeedMedia {
 	insta := time.inst
-
-	body, err := insta.sendRequest(
-		&reqOptions{
-			Endpoint: urlTimeline,
-			Query: map[string]string{
-				"max_id":         "",
-				"rank_token":     insta.rankToken,
-				"ranked_content": "true",
-			},
-		},
-	)
-	if err == nil {
-		media := &FeedMedia{}
-		err = json.Unmarshal(body, media)
-		media.inst = insta
-		media.endpoint = urlTimeline
-		return media, err
-	}
-	return nil, err
+	media := &FeedMedia{}
+	media.inst = insta
+	media.endpoint = urlTimeline
+	return media
 }
 
 // Stories returns slice of StoryMedia
