@@ -22,7 +22,6 @@ package info
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/spf13/cobra"
 	"gopkg.in/ahmdrz/goinsta.v2/utils"
@@ -30,25 +29,12 @@ import (
 
 var RootCmd = &cobra.Command{
 	Use:     "info",
-	Short:   "Get partial info about user",
-	Example: "goinsta user info robpike",
+	Short:   "Get partial info about your account",
+	Example: "goinsta account info",
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 0 {
-			fmt.Println("Missing arguments. See example.")
-			return
-		}
 		inst := utils.New()
 
-		user, err := inst.Profiles.ByName(args[0])
-		if err != nil {
-			id, _ := strconv.ParseInt(args[0], 10, 64)
-			user, err = inst.Profiles.ByID(id)
-			if err != nil {
-				fmt.Printf("Invalid username or id: %s\n", args[0])
-				return
-			}
-		}
-		user.FriendShip()
+		user := inst.Account
 
 		fmt.Printf(`
 Username: %s

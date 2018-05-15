@@ -61,7 +61,7 @@ var mediaCmd = &cobra.Command{
 
 		media := user.Feed(nil)
 
-		fmt.Println("Downloading...")
+		fmt.Println("Downloading feed of", user.Username)
 		for media.Next() {
 			pgb := pb.StartNew(len(media.Items))
 			for _, item := range media.Items {

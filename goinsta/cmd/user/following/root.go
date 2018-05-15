@@ -29,12 +29,12 @@ import (
 )
 
 var RootCmd = &cobra.Command{
-	Use:     "info",
-	Short:   "Get partial info about user",
-	Example: "goinsta user info robpike",
+	Use:     "following",
+	Short:   "Get user following",
+	Example: "goinsta user following robpike",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-			fmt.Println("Missing arguments. See example.")
+			fmt.Println("Missing args. See example.")
 			return
 		}
 		inst := utils.New()
@@ -48,21 +48,14 @@ var RootCmd = &cobra.Command{
 				return
 			}
 		}
-		user.FriendShip()
 
-		fmt.Printf(`
-Username: %s
-Fullname: %s
-ID: %d
-ProfilePicURL: %s
-Email: %s
-Gender: %d
-Biography: %s
-Followers: %d
-Following: %d
-You follow him/her: %v
-`, user.Username, user.FullName, user.ID, user.ProfilePicURL,
-			user.PublicEmail, user.Gender, user.Biography, user.FollowerCount,
-			user.FollowingCount, user.Friendship.Following)
+		users := user.Following()
+
+		fmt.Println("Followers:\n  ID\tUsername")
+		for users.Next() {
+			for _, u := range users.Users {
+				fmt.Printf("  %d\t%s\n", u.ID, u.Username)
+			}
+		}
 	},
 }

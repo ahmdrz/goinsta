@@ -18,51 +18,48 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package info
+package feed
 
 import (
 	"fmt"
-	"strconv"
 
+	"github.com/cheggaaa/pb"
 	"github.com/spf13/cobra"
 	"gopkg.in/ahmdrz/goinsta.v2/utils"
 )
 
-var RootCmd = &cobra.Command{
-	Use:     "info",
-	Short:   "Get partial info about user",
-	Example: "goinsta user info robpike",
+// mediaCmd represents the media command
+var mediaCmd = &cobra.Command{
+	Use:     "media",
+	Short:   "Download media in output directory",
+	Example: "goinsta account feed media",
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 0 {
-			fmt.Println("Missing arguments. See example.")
-			return
-		}
+		cmd = cmd.Root()
+
 		inst := utils.New()
 
-		user, err := inst.Profiles.ByName(args[0])
-		if err != nil {
-			id, _ := strconv.ParseInt(args[0], 10, 64)
-			user, err = inst.Profiles.ByID(id)
-			if err != nil {
-				fmt.Printf("Invalid username or id: %s\n", args[0])
-				return
-			}
+		output, err := cmd.Flags().GetString("output")
+		if err != nil || output == "" {
+			output = "./" + inst.Account.Username + "/"
 		}
-		user.FriendShip()
 
-		fmt.Printf(`
-Username: %s
-Fullname: %s
-ID: %d
-ProfilePicURL: %s
-Email: %s
-Gender: %d
-Biography: %s
-Followers: %d
-Following: %d
-You follow him/her: %v
-`, user.Username, user.FullName, user.ID, user.ProfilePicURL,
-			user.PublicEmail, user.Gender, user.Biography, user.FollowerCount,
-			user.FollowingCount, user.Friendship.Following)
+		media := inst.Account.Feed(nil)
+
+		fmt.Println("Downloading your feed")
+		for media.Next() {
+			pgb := pb.StartNew(len(media.Items))
+			for _, item := range media.Items {
+				err := item.Download(output, "")
+				if err != nil {
+					fmt.Println(err)
+				}
+				pgb.Add(1)
+			}
+			pgb.Finish()
+		}
 	},
+}
+
+func init() {
+	RootCmd.AddCommand(mediaCmd)
 }

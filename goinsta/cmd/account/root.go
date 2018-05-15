@@ -18,51 +18,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package info
+package account
 
 import (
 	"fmt"
-	"strconv"
+	"os"
 
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/utils"
+	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/account/feed"
+	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/account/followers"
+	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/account/following"
+	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/account/info"
+	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/account/stories"
 )
 
+func init() {
+	RootCmd.AddCommand(feed.RootCmd)
+	RootCmd.AddCommand(story.RootCmd)
+	RootCmd.AddCommand(info.RootCmd)
+	RootCmd.AddCommand(followers.RootCmd)
+	RootCmd.AddCommand(following.RootCmd)
+}
+
 var RootCmd = &cobra.Command{
-	Use:     "info",
-	Short:   "Get partial info about user",
-	Example: "goinsta user info robpike",
-	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 0 {
-			fmt.Println("Missing arguments. See example.")
-			return
-		}
-		inst := utils.New()
+	Use:   "account",
+	Short: "Interact with your account",
+}
 
-		user, err := inst.Profiles.ByName(args[0])
-		if err != nil {
-			id, _ := strconv.ParseInt(args[0], 10, 64)
-			user, err = inst.Profiles.ByID(id)
-			if err != nil {
-				fmt.Printf("Invalid username or id: %s\n", args[0])
-				return
-			}
-		}
-		user.FriendShip()
-
-		fmt.Printf(`
-Username: %s
-Fullname: %s
-ID: %d
-ProfilePicURL: %s
-Email: %s
-Gender: %d
-Biography: %s
-Followers: %d
-Following: %d
-You follow him/her: %v
-`, user.Username, user.FullName, user.ID, user.ProfilePicURL,
-			user.PublicEmail, user.Gender, user.Biography, user.FollowerCount,
-			user.FollowingCount, user.Friendship.Following)
-	},
+func Execute() {
+	if err := RootCmd.Execute(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
