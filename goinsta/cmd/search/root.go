@@ -18,40 +18,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package search
 
 import (
 	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/search"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user"
+	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/search/facebook"
+	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/search/tags"
+	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/search/user"
 )
 
 func init() {
-	rootCmd.AddCommand(user.RootCmd)
-	rootCmd.AddCommand(search.RootCmd)
+	RootCmd.AddCommand(facebook.RootCmd)
+	RootCmd.AddCommand(user.RootCmd)
+	RootCmd.AddCommand(tags.RootCmd)
 }
 
-var (
-	username string
-)
-
-var rootCmd = &cobra.Command{
-	Use:   "goinsta",
-	Short: "Command line tool for Instagram",
+var RootCmd = &cobra.Command{
+	Use:   "search",
+	Short: "Search on Instagram.",
 }
 
 func Execute() {
-	if err := rootCmd.Execute(); err != nil {
+	if err := RootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-}
-
-func init() {
-	rootCmd.PersistentFlags().StringP("output", "o", "./files/", "Output directory")
-	rootCmd.PersistentFlags().StringP("target", "t", "", "Target user")
-	rootCmd.PersistentFlags().Int64P("id", "i", 0, "Target id")
 }

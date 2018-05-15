@@ -18,40 +18,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package tags
 
 import (
 	"fmt"
-	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/search"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user"
+	"gopkg.in/ahmdrz/goinsta.v2/utils"
 )
 
-func init() {
-	rootCmd.AddCommand(user.RootCmd)
-	rootCmd.AddCommand(search.RootCmd)
-}
+var RootCmd = &cobra.Command{
+	Use:     "tags",
+	Short:   "Search tags on Instagram",
+	Example: "goinsta search tags rob pike",
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) == 0 {
+			fmt.Println("Missing arguments. See example")
+			return
+		}
 
-var (
-	username string
-)
+		inst := utils.New()
 
-var rootCmd = &cobra.Command{
-	Use:   "goinsta",
-	Short: "Command line tool for Instagram",
-}
+		res, err := inst.Search.Tags(strings.Join(args, " "))
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 
-func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-}
-
-func init() {
-	rootCmd.PersistentFlags().StringP("output", "o", "./files/", "Output directory")
-	rootCmd.PersistentFlags().StringP("target", "t", "", "Target user")
-	rootCmd.PersistentFlags().Int64P("id", "i", 0, "Target id")
+		fmt.Printf("Results: %d\n", res.NumResults)
+		fmt.Println("  ID\tName")
+		for i := range res.Tags {
+			fmt.Printf("  %d\t%s\n", res.Tags[i].ID, res.Tags[i].Name)
+		}
+	},
 }
