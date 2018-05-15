@@ -65,17 +65,18 @@ var RootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		fmt.Printf(`Username: %s
-		Fullname: %s
-		ID: %d
-		ProfilePicURL: %s
-		Email: %s
-		Gender: %d
-		Biography: %s
-		Followers: %d
-		Following: %d
-		You follow him/her: %v
-		`, user.Username, user.FullName, user.ID, user.ProfilePicURL,
+		fmt.Printf(`
+Username: %s
+Fullname: %s
+ID: %d
+ProfilePicURL: %s
+Email: %s
+Gender: %d
+Biography: %s
+Followers: %d
+Following: %d
+You follow him/her: %v
+`, user.Username, user.FullName, user.ID, user.ProfilePicURL,
 			user.PublicEmail, user.Gender, user.Biography, user.FollowerCount,
 			user.FollowingCount, user.Friendship.Following)
 	},
