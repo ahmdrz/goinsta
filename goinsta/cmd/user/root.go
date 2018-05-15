@@ -25,9 +25,9 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/profiles/feed"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/profiles/info"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/profiles/stories"
+	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/feed"
+	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/info"
+	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/stories"
 )
 
 func init() {
@@ -37,7 +37,7 @@ func init() {
 }
 
 var RootCmd = &cobra.Command{
-	Use:   "profiles",
+	Use:   "user",
 	Short: "Get downloads specified Instagram user's object.",
 }
 
