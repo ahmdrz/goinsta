@@ -42,22 +42,20 @@ var RootCmd = &cobra.Command{
 
 		inst := utils.New()
 
-		media, err := inst.Timeline.Get()
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+		media := inst.Timeline.Get()
 
 		// TODO
 		fmt.Println("Downloading your timeline feed")
-		pgb := pb.StartNew(len(media.Items))
-		for _, item := range media.Items {
-			err := item.Download(output, "")
-			if err != nil {
-				fmt.Println(err)
+		for media.Next() {
+			pgb := pb.StartNew(len(media.Items))
+			for _, item := range media.Items {
+				err := item.Download(output, "")
+				if err != nil {
+					fmt.Println(err)
+				}
+				pgb.Add(1)
 			}
-			pgb.Add(1)
+			pgb.Finish()
 		}
-		pgb.Finish()
 	},
 }
