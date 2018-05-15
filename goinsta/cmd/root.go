@@ -47,3 +47,9 @@ func Execute() {
 		os.Exit(1)
 	}
 }
+
+func init() {
+	rootCmd.Flags().StringP("output", "o", "./files/", "Output directory")
+	rootCmd.Flags().StringP("target", "t", "", "Target user")
+	rootCmd.Flags().Int64P("id", "i", 0, "Target id")
+}

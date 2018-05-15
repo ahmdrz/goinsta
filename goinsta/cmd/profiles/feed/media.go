@@ -26,6 +26,7 @@ import (
 
 	"github.com/cheggaaa/pb"
 	"github.com/spf13/cobra"
+	"gopkg.in/ahmdrz/goinsta.v2"
 	"gopkg.in/ahmdrz/goinsta.v2/utils"
 )
 
@@ -35,19 +36,39 @@ var mediaCmd = &cobra.Command{
 	Short:   "Download media in output directory",
 	Example: "goinsta profiles feed media -t pakillo",
 	Run: func(cmd *cobra.Command, args []string) {
+		var target string
+		var id int64
+		cmd = cmd.Root()
+
 		output, err := cmd.Flags().GetString("output")
 		if err != nil {
 			output = "./files/"
 		}
 
-		target, err := cmd.Flags().GetString("target")
+		target, err = cmd.Flags().GetString("target")
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
+		if target == "" {
+			id, err = cmd.Flags().GetInt64("id")
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			if id <= 0 {
+				fmt.Println("-t or -i parameters are required")
+				return
+			}
+		}
 		inst := utils.New()
 
-		user, err := inst.Profiles.ByName(target)
+		var user *goinsta.User
+		if target != "" {
+			user, err = inst.Profiles.ByName(target)
+		} else {
+			user, err = inst.Profiles.ByID(id)
+		}
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -71,8 +92,6 @@ var mediaCmd = &cobra.Command{
 }
 
 func init() {
-	mediaCmd.Flags().StringP("output", "o", "./files/", "Output directory")
-	mediaCmd.Flags().StringP("target", "t", "", "Target user")
 
 	RootCmd.AddCommand(mediaCmd)
 }
