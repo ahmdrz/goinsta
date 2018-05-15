@@ -26,7 +26,6 @@ func (prof *Profiles) ByName(name string) (*User, error) {
 		if err == nil {
 			user := &resp.User
 			user.inst = prof.inst
-			user.friendShip()
 			return user, err
 		}
 	}
@@ -52,7 +51,6 @@ func (prof *Profiles) ByID(id int64) (*User, error) {
 		if err == nil {
 			user := &resp.User
 			user.inst = prof.inst
-			user.friendShip()
 			return user, err
 		}
 	}

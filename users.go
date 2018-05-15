@@ -276,7 +276,10 @@ func (user *User) Unfollow() error {
 	return err
 }
 
-func (user *User) friendShip() error {
+// FriendShip allows user to get friend relationship.
+//
+// The result is stored in user.Friendship
+func (user *User) FriendShip() error {
 	insta := user.inst
 	data, err := insta.prepareData(
 		map[string]interface{}{
