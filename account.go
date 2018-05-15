@@ -214,30 +214,15 @@ func (account *Account) Following() *Users {
 // minTime is the minimum timestamp of media.
 //
 // For pagination use FeedMedia.Next()
-func (account *Account) Feed(minTime []byte) (*FeedMedia, error) {
+func (account *Account) Feed(minTime []byte) *FeedMedia {
 	insta := account.inst
-	timestamp := b2s(minTime)
 
-	body, err := insta.sendRequest(
-		&reqOptions{
-			Endpoint: fmt.Sprintf(urlUserFeed, account.ID),
-			Query: map[string]string{
-				"max_id":         "",
-				"rank_token":     insta.rankToken,
-				"min_timestamp":  timestamp,
-				"ranked_content": "true",
-			},
-		},
-	)
-	if err == nil {
-		media := &FeedMedia{}
-		err = json.Unmarshal(body, media)
-		media.inst = insta
-		media.endpoint = urlUserFeed
-		media.uid = account.ID
-		return media, err
-	}
-	return nil, err
+	media := &FeedMedia{}
+	media.inst = insta
+	media.timestamp = timestamp
+	media.endpoint = urlUserFeed
+	media.uid = account.ID
+	return media
 }
 
 // Stories returns account stories.
