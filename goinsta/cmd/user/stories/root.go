@@ -42,8 +42,8 @@ var RootCmd = &cobra.Command{
 		cmd = cmd.Root()
 
 		output, err := cmd.Flags().GetString("output")
-		if err != nil {
-			output = "./files/"
+		if err != nil || output == "" {
+			output = "./" + args[0] + "/"
 		}
 		inst := utils.New()
 
