@@ -23,53 +23,34 @@ package story
 import (
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/cheggaaa/pb"
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2"
 	"gopkg.in/ahmdrz/goinsta.v2/utils"
 )
 
 var RootCmd = &cobra.Command{
-	Use:   "stories",
-	Short: "Get stories of a user",
+	Use:     "stories",
+	Short:   "Get stories of a user",
+	Example: "goinsta user stories robpike",
 	Run: func(cmd *cobra.Command, args []string) {
-		var id int64
-		var target string
 		cmd = cmd.Root()
 
 		output, err := cmd.Flags().GetString("output")
 		if err != nil {
 			output = "./files/"
 		}
-
-		target, err = cmd.Flags().GetString("target")
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		if target == "" {
-			id, err = cmd.Flags().GetInt64("id")
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-			if id <= 0 {
-				fmt.Println("-t or -i parameters are required")
-				return
-			}
-		}
 		inst := utils.New()
 
-		var user *goinsta.User
-		if target != "" {
-			user, err = inst.Profiles.ByName(target)
-		} else {
-			user, err = inst.Profiles.ByID(id)
-		}
+		user, err := inst.Profiles.ByName(args[0])
 		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			id, _ := strconv.ParseInt(args[0], 10, 64)
+			user, err = inst.Profiles.ByID(id)
+			if err != nil {
+				fmt.Printf("Invalid username or id: %s\n", args[0])
+				os.Exit(1)
+			}
 		}
 
 		media := user.Stories()
