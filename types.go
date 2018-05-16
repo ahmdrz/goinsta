@@ -98,6 +98,16 @@ type Friendship struct {
 	IsMutingReel    bool `json:"is_muting_reel"`
 }
 
+type SavedMedia struct {
+	Items []struct {
+		Media Item `json:"media"`
+	} `json:"items"`
+	NumResults          int    `json:"num_results"`
+	MoreAvailable       bool   `json:"more_available"`
+	AutoLoadMoreEnabled bool   `json:"auto_load_more_enabled"`
+	Status              string `json:"status"`
+}
+
 // Images are different quality images
 type Images struct {
 	Versions []Candidate `json:"candidates"`
