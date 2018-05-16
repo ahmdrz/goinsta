@@ -60,7 +60,7 @@ func (nact *Activities) Next() bool {
 		&reqOptions{
 			Endpoint: endpoint,
 			Query: map[string]string{
-				"next_max_id": strconv.FormatInt(nact.NextID, 10),
+				"max_id": strconv.FormatInt(nact.NextID, 10),
 			},
 		},
 	)
