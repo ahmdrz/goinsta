@@ -49,6 +49,44 @@ type friendResp struct {
 	Friendship Friendship `json:"friendship_status"`
 }
 
+type Location struct {
+	Pk               int     `json:"pk"`
+	Name             string  `json:"name"`
+	Address          string  `json:"address"`
+	City             string  `json:"city"`
+	ShortName        string  `json:"short_name"`
+	Lng              float64 `json:"lng"`
+	Lat              float64 `json:"lat"`
+	ExternalSource   string  `json:"external_source"`
+	FacebookPlacesID int64   `json:"facebook_places_id"`
+}
+
+type SuggestedUsers struct {
+	Type        int `json:"type"`
+	Suggestions []struct {
+		User            User          `json:"user"`
+		Algorithm       string        `json:"algorithm"`
+		SocialContext   string        `json:"social_context"`
+		Icon            string        `json:"icon"`
+		Caption         string        `json:"caption"`
+		MediaIds        []interface{} `json:"media_ids"`
+		ThumbnailUrls   []interface{} `json:"thumbnail_urls"`
+		LargeUrls       []interface{} `json:"large_urls"`
+		MediaInfos      []interface{} `json:"media_infos"`
+		Value           float64       `json:"value"`
+		IsNewSuggestion bool          `json:"is_new_suggestion"`
+	} `json:"suggestions"`
+	LandingSiteType  string `json:"landing_site_type"`
+	Title            string `json:"title"`
+	ViewAllText      string `json:"view_all_text"`
+	LandingSiteTitle string `json:"landing_site_title"`
+	NetegoType       string `json:"netego_type"`
+	UpsellFbPos      string `json:"upsell_fb_pos"`
+	AutoDvance       string `json:"auto_dvance"`
+	ID               string `json:"id"`
+	TrackingToken    string `json:"tracking_token"`
+}
+
 type Friendship struct {
 	IncomingRequest bool `json:"incoming_request"`
 	FollowedBy      bool `json:"followed_by"`

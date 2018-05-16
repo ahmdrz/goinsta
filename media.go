@@ -55,23 +55,13 @@ type Item struct {
 	OrganicTrackingToken string      `json:"organic_tracking_token"`
 	// Images contains URL images in different versions.
 	// Version = quality.
-	Images          Images `json:"image_versions2,omitempty"`
-	OriginalWidth   int    `json:"original_width,omitempty"`
-	OriginalHeight  int    `json:"original_height,omitempty"`
-	ImportedTakenAt int    `json:"imported_taken_at,omitempty"`
-	Location        struct {
-		Pk               int     `json:"pk"`
-		Name             string  `json:"name"`
-		Address          string  `json:"address"`
-		City             string  `json:"city"`
-		ShortName        string  `json:"short_name"`
-		Lng              float64 `json:"lng"`
-		Lat              float64 `json:"lat"`
-		ExternalSource   string  `json:"external_source"`
-		FacebookPlacesID int64   `json:"facebook_places_id"`
-	} `json:"location,omitempty"`
-	Lat float64 `json:"lat,omitempty"`
-	Lng float64 `json:"lng,omitempty"`
+	Images          Images   `json:"image_versions2,omitempty"`
+	OriginalWidth   int      `json:"original_width,omitempty"`
+	OriginalHeight  int      `json:"original_height,omitempty"`
+	ImportedTakenAt int      `json:"imported_taken_at,omitempty"`
+	Location        Location `json:"location,omitempty"`
+	Lat             float64  `json:"lat,omitempty"`
+	Lng             float64  `json:"lng,omitempty"`
 
 	// Only for stories
 	StoryEvents              []interface{} `json:"story_events"`
