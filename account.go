@@ -300,3 +300,14 @@ func (account *Account) Tags(minTimestamp []byte) (*FeedMedia, error) {
 	media.uid = account.ID
 	return media, err
 }
+
+// Saved returns saved media.
+func (account *Account) Saved() (*SavedMedia, error) {
+	body, err := account.inst.sendSimpleRequest(urlUserTags, account.ID)
+	if err == nil {
+		media := &SavedMedia{}
+		err = json.Unmarshal(body, &media)
+		return media, err
+	}
+	return nil, err
+}

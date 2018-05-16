@@ -269,6 +269,30 @@ func (item *Item) Like() error {
 	return err
 }
 
+// Save saves media item.
+//
+// You can get saved media using Account.Saved()
+func (item *Item) Save() error {
+	insta := item.media.instagram()
+	data, err := insta.prepareData(
+		map[string]interface{}{
+			"media_id": item.ID,
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	_, err = insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlMediaSave, item.ID),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	return err
+}
+
 // Download downloads media item (video or image) with the best quality.
 //
 // Input parameters are folder and filename. If filename is "" will be saved with

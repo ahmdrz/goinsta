@@ -25,6 +25,7 @@ const (
 	urlSetPublic     = "accounts/set_public/"
 	urlRemoveProfPic = "accounts/remove_profile_picture/"
 	urlSyncProfile   = "accounts/current_user/"
+	urlFeedSaved     = "feed/saved/"
 
 	// account and profile
 	urlFollowers = "friendships/%d/followers/"
@@ -58,6 +59,7 @@ const (
 	urlMediaDelete = "media/%d/delete/"
 	urlMediaLike   = "media/%d/like/"
 	urlMediaUnlike = "media/%d/unlike/"
+	urlMediaSave   = "media/%d/save/"
 
 	// comments
 	urlCommentAdd     = "media/%d/comment/"
