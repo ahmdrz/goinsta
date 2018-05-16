@@ -26,6 +26,7 @@ const (
 	urlRemoveProfPic = "accounts/remove_profile_picture/"
 	urlSyncProfile   = "accounts/current_user/"
 	urlFeedSaved     = "feed/saved/"
+	urlSetBiography  = "accounts/set_biography/"
 
 	// account and profile
 	urlFollowers = "friendships/%d/followers/"

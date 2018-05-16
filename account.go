@@ -311,3 +311,40 @@ func (account *Account) Saved() (*SavedMedia, error) {
 	}
 	return nil, err
 }
+
+// SetBiography changes your Instagram's biography.
+//
+// This function updates current Account information.
+func (account *Account) SetBiography(bio string) error {
+	insta := account.inst
+	data, err := insta.prepareData(
+		map[string]interface{}{
+			"raw_text": bio,
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: urlSetBiography,
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	if err == nil {
+		var resp struct {
+			User struct {
+				Pk        int64  `json:"pk"`
+				Biography string `json:"biography"`
+			} `json:"user"`
+			Status string `json:"status"`
+		}
+		err = json.Unmarshal(body, &resp)
+		if err == nil {
+			account.Biography = resp.User.Biography
+		}
+	}
+	return err
+}
