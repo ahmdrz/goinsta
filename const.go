@@ -67,6 +67,6 @@ const (
 	urlCommentEnable  = "media/%d/enable_comments/"
 
 	// activity
-	urlActivityFollowing = "news/?"
-	urlActivityRecent    = "news/inbox/?"
+	urlActivityFollowing = "news/"
+	urlActivityRecent    = "news/inbox/"
 )
