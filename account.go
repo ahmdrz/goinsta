@@ -348,3 +348,13 @@ func (account *Account) SetBiography(bio string) error {
 	}
 	return err
 }
+
+// Liked are liked publications
+func (account *Account) Liked() *FeedMedia {
+	insta := account.inst
+
+	media := &FeedMedia{}
+	media.inst = insta
+	media.endpoint = urlFeedLiked
+	return media
+}

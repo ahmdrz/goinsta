@@ -27,12 +27,13 @@ const (
 	urlSyncProfile   = "accounts/current_user/"
 	urlFeedSaved     = "feed/saved/"
 	urlSetBiography  = "accounts/set_biography/"
+	urlFeedLiked     = "feed/liked/"
 
 	// account and profile
 	urlFollowers = "friendships/%d/followers/"
 	urlFollowing = "friendships/%d/following/"
 
-	// username
+	// users
 	urlUserByName   = "users/%s/usernameinfo/"
 	urlUserById     = "users/%d/info/"
 	urlUserBlock    = "friendships/block/%d/"
@@ -43,6 +44,7 @@ const (
 	urlFriendship   = "friendships/show/%d/"
 	urlUserStories  = "feed/user/%d/reel_media/"
 	urlUserTags     = "usertags/%d/feed/"
+	urlBlockedList  = "users/blocked_list/"
 
 	// timeline
 	urlTimeline = "feed/timeline/"

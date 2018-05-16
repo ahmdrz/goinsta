@@ -255,3 +255,23 @@ type Broadcast struct {
 	BroadcastMessage     string `json:"broadcast_message"`
 	OrganicTrackingToken string `json:"organic_tracking_token"`
 }
+
+type BlockedUser struct {
+	UserID        int64  `json:"user_id"`
+	Username      string `json:"username"`
+	FullName      string `json:"full_name"`
+	ProfilePicURL string `json:"profile_pic_url"`
+	BlockAt       int    `json:"block_at"`
+}
+
+// Unblock unblocks blocked user.
+func (b *BlockedUser) Unblock() error {
+	u := User{ID: b.UserID}
+	return u.Unblock()
+}
+
+type blockedListResp struct {
+	BlockedList []BlockedUser `json:"blocked_list"`
+	PageSize    int           `json:"page_size"`
+	Status      string        `json:"status"`
+}

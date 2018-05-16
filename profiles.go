@@ -56,3 +56,14 @@ func (prof *Profiles) ByID(id int64) (*User, error) {
 	}
 	return nil, err
 }
+
+// Blocked returns a list of blocked profiles.
+func (prof *Profiles) Blocked() ([]BlockedUser, error) {
+	body, err := prof.inst.sendSimpleRequest(urlBlockedList)
+	if err == nil {
+		resp := blockedListResp{}
+		err = json.Unmarshal(body, &resp)
+		return resp.BlockedList, err
+	}
+	return nil, err
+}
