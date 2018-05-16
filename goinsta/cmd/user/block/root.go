@@ -18,44 +18,42 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package user
+package block
 
 import (
 	"fmt"
-	"os"
+	"strconv"
 
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/block"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/feed"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/follow"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/followers"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/following"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/info"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/stories"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/unblock"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/unfollow"
+	"gopkg.in/ahmdrz/goinsta.v2/utils"
 )
 
-func init() {
-	RootCmd.AddCommand(feed.RootCmd)
-	RootCmd.AddCommand(story.RootCmd)
-	RootCmd.AddCommand(info.RootCmd)
-	RootCmd.AddCommand(follow.RootCmd)
-	RootCmd.AddCommand(followers.RootCmd)
-	RootCmd.AddCommand(following.RootCmd)
-	RootCmd.AddCommand(unfollow.RootCmd)
-	RootCmd.AddCommand(block.RootCmd)
-	RootCmd.AddCommand(unblock.RootCmd)
-}
-
 var RootCmd = &cobra.Command{
-	Use:   "user",
-	Short: "Get downloads specified Instagram user's object.",
-}
+	Use:     "block",
+	Short:   "Blocks a user",
+	Example: "goinsta user block robpike",
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) == 0 {
+			fmt.Println("Missing arguments. See example.")
+			return
+		}
+		inst := utils.New()
 
-func Execute() {
-	if err := RootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+		user, err := inst.Profiles.ByName(args[0])
+		if err != nil {
+			id, _ := strconv.ParseInt(args[0], 10, 64)
+			user, err = inst.Profiles.ByID(id)
+			if err != nil {
+				fmt.Printf("Invalid username or id: %s\n", args[0])
+				return
+			}
+		}
+		err = user.Block()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		fmt.Printf("Blocked %s\n", user.Username)
+	},
 }
