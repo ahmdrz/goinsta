@@ -145,28 +145,12 @@ type User struct {
 	IncludeDirectBlacklistStatus bool         `json:"include_direct_blacklist_status"`
 	HdProfilePicURLInfo          PicURLInfo   `json:"hd_profile_pic_url_info"`
 	HdProfilePicVersions         []PicURLInfo `json:"hd_profile_pic_versions"`
-	UsertagsCount                int          `json:"usertags_count"`
-	HasChaining                  bool         `json:"has_chaining"`
-	IsFavorite                   bool         `json:"is_favorite"`
-	ReelAutoArchive              string       `json:"reel_auto_archive"`
 	School                       School       `json:"school"`
-	PublicEmail                  string       `json:"public_email"`
-	PublicPhoneNumber            string       `json:"public_phone_number"`
-	PublicPhoneCountryCode       string       `json:"public_phone_country_code"`
-	ContactPhoneNumber           string       `json:"contact_phone_number"`
 	Byline                       string       `json:"byline"`
 	SocialContext                string       `json:"social_context,omitempty"`
 	SearchSocialContext          string       `json:"search_social_context,omitempty"`
 	MutualFollowersCount         float64      `json:"mutual_followers_count"`
 	LatestReelMedia              int          `json:"latest_reel_media,omitempty"`
-	CityID                       int64        `json:"city_id"`
-	CityName                     string       `json:"city_name"`
-	AddressStreet                string       `json:"address_street"`
-	DirectMessaging              string       `json:"direct_messaging"`
-	Latitude                     float64      `json:"latitude"`
-	Longitude                    float64      `json:"longitude"`
-	Category                     string       `json:"category"`
-	BusinessContactMethod        string       `json:"business_contact_method"`
 	IsCallToActionEnabled        bool         `json:"is_call_to_action_enabled"`
 	FbPageCallToActionID         string       `json:"fb_page_call_to_action_id"`
 	Zip                          string       `json:"zip"`
@@ -182,7 +166,7 @@ func (user *User) Sync() error {
 		err = json.Unmarshal(body, &resp)
 		if err == nil {
 			*user = resp.User
-			user.inst = inst
+			user.inst = insta
 		}
 	}
 	return err
