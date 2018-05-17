@@ -18,44 +18,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package logout
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/account"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/logout"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/search"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/timeline"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user"
+	"gopkg.in/ahmdrz/goinsta.v2/utils"
 )
 
-func init() {
-	rootCmd.AddCommand(user.RootCmd)
-	rootCmd.AddCommand(search.RootCmd)
-	rootCmd.AddCommand(account.RootCmd)
-	rootCmd.AddCommand(timeline.RootCmd)
-	rootCmd.AddCommand(logout.RootCmd)
-}
+var RootCmd = &cobra.Command{
+	Use:   "logout",
+	Short: "Logout from your account",
+	Run: func(_ *cobra.Command, _ []string) {
+		inst := utils.New()
 
-var (
-	username string
-)
-
-var rootCmd = &cobra.Command{
-	Use:   "goinsta",
-	Short: "Command line tool for Instagram",
-}
-
-func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-}
-
-func init() {
-	rootCmd.PersistentFlags().StringP("output", "o", "", "Output directory")
+		err := inst.Logout()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println("Logged out!")
+	},
 }
