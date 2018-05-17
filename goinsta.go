@@ -47,6 +47,8 @@ type Instagram struct {
 	Timeline *Timeline
 	// Activity ...
 	Activity *Activity
+	// Inbox ...
+	Inbox *Inbox
 
 	c *http.Client
 }
@@ -65,15 +67,15 @@ func New(username, password string) *Instagram {
 		c:    &http.Client{},
 	}
 
+	return inst
+}
+
+func (inst *Instagram) init() {
 	inst.Profiles = newProfiles(inst)
-	// not needed
-	// this object is created after login
-	// inst.Account = NewAccount(inst)
 	inst.Activity = newActivity(inst)
 	inst.Timeline = newTimeline(inst)
 	inst.Search = newSearch(inst)
-
-	return inst
+	inst.Inbox = newInbox(inst)
 }
 
 // NewWithProxy creates new instagram object using proxy requests.
@@ -145,12 +147,8 @@ func Import(path string) (*Instagram, error) {
 	}
 	inst.c.Jar.SetCookies(url, config.Cookies)
 
-	inst.Profiles = newProfiles(inst)
-	inst.Activity = newActivity(inst)
-	inst.Timeline = newTimeline(inst)
-	inst.Search = newSearch(inst)
+	inst.init()
 	inst.Account = &Account{inst: inst}
-
 	inst.Account.Sync()
 
 	return inst, nil

@@ -76,4 +76,7 @@ const (
 	// activity
 	urlActivityFollowing = "news/"
 	urlActivityRecent    = "news/inbox/"
+
+	// inbox
+	urlInbox = "direct_v2/inbox/"
 )

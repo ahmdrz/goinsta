@@ -281,3 +281,59 @@ type blockedListResp struct {
 	PageSize    int           `json:"page_size"`
 	Status      string        `json:"status"`
 }
+
+type InboxItem struct {
+	ItemID     string `json:"item_id"`
+	UserID     int64  `json:"user_id"`
+	Timestamp  int64  `json:"timestamp"`
+	ItemType   string `json:"item_type"`
+	RavenMedia struct {
+		MediaType int `json:"media_type"`
+	} `json:"raven_media"`
+	ClientContext              string        `json:"client_context"`
+	SeenUserIds                []interface{} `json:"seen_user_ids"`
+	ReplyChainCount            int           `json:"reply_chain_count"`
+	ExpiringMediaActionSummary struct {
+		Type      string `json:"type"`
+		Timestamp int64  `json:"timestamp"`
+		Count     int    `json:"count"`
+	} `json:"expiring_media_action_summary"`
+	ViewMode string `json:"view_mode"`
+	Like     string `json:"like"`
+}
+
+type Thread struct {
+	ThreadID                  string      `json:"thread_id"`
+	ThreadV2ID                int64       `json:"thread_v2_id"`
+	Users                     []User      `json:"users"`
+	LeftUsers                 []User      `json:"left_users"`
+	Items                     []InboxItem `json:"items"`
+	LastActivityAt            int64       `json:"last_activity_at"`
+	Muted                     bool        `json:"muted"`
+	IsPin                     bool        `json:"is_pin"`
+	Named                     bool        `json:"named"`
+	Canonical                 bool        `json:"canonical"`
+	Pending                   bool        `json:"pending"`
+	ValuedRequest             bool        `json:"valued_request"`
+	ThreadType                string      `json:"thread_type"`
+	ViewerID                  int64       `json:"viewer_id"`
+	ThreadTitle               string      `json:"thread_title"`
+	PendingScore              int64       `json:"pending_score"`
+	ReshareSendCount          int         `json:"reshare_send_count"`
+	ReshareReceiveCount       int         `json:"reshare_receive_count"`
+	ExpiringMediaSendCount    int         `json:"expiring_media_send_count"`
+	ExpiringMediaReceiveCount int         `json:"expiring_media_receive_count"`
+	Inviter                   User        `json:"inviter"`
+	HasOlder                  bool        `json:"has_older"`
+	HasNewer                  bool        `json:"has_newer"`
+	LastSeenAt                struct {
+		Num7629421016 struct {
+			Timestamp string `json:"timestamp"`
+			ItemID    string `json:"item_id"`
+		} `json:"7629421016"`
+	} `json:"last_seen_at"`
+	NewestCursor      string `json:"newest_cursor"`
+	OldestCursor      string `json:"oldest_cursor"`
+	IsSpam            bool   `json:"is_spam"`
+	LastPermanentItem Item   `json:"last_permanent_item"`
+}
