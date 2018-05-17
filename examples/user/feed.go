@@ -17,7 +17,6 @@ func main() {
 	e.CheckErr(err)
 
 	media := user.Feed(nil)
-	e.CheckErr(err)
 
 	for media.Next() {
 		fmt.Printf("Printing %d items\n", len(media.Items))
