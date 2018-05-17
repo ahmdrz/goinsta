@@ -12,8 +12,7 @@ func main() {
 	inst, err := e.InitGoinsta("")
 	e.CheckErr(err)
 
-	media, err := inst.Timeline.Get()
-	e.CheckErr(err)
+	media := inst.Timeline.Get()
 
 	for i := 0; i < 2; i++ {
 		media.Next()
