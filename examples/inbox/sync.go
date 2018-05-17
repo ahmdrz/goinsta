@@ -15,7 +15,7 @@ func main() {
 	err = inst.Inbox.Sync()
 	e.CheckErr(err)
 
-	fmt.Printf("You have %d opened conversations\n", len(inst.Inbox.Threads))
+	fmt.Printf("You have %d opened conversations\n", len(inst.Inbox.Conversations))
 
 	if !e.UsingSession {
 		err = inst.Logout()
