@@ -45,6 +45,7 @@ const (
 	urlUserStories  = "feed/user/%d/reel_media/"
 	urlUserTags     = "usertags/%d/feed/"
 	urlBlockedList  = "users/blocked_list/"
+	urlUserInfo     = "users/%d/info/"
 
 	// timeline
 	urlTimeline = "feed/timeline/"
@@ -70,6 +71,7 @@ const (
 	urlCommentSync    = "media/%d/comments/"
 	urlCommentDisable = "media/%d/disable_comments/"
 	urlCommentEnable  = "media/%d/enable_comments/"
+	urlCommentLike    = "media/%d/comment_like"
 
 	// activity
 	urlActivityFollowing = "news/"
