@@ -8,7 +8,7 @@ import (
 type Inbox struct {
 	inst *Instagram
 
-	Threads []Thread `json:"threads"`
+	Conversations []Conversation `json:"threads"`
 
 	HasOlder            bool  `json:"has_older"`
 	UnseenCount         int   `json:"unseen_count"`
