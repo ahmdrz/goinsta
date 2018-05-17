@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	inst, err := e.InitGoinsta(3, "<media id>")
+	inst, err := e.InitGoinsta("<media id>")
 	e.CheckErr(err)
 
 	media := inst.AcquireFeed()
