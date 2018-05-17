@@ -152,6 +152,8 @@ func (c Conversation) lastItemID() string {
 }
 
 // Next loads next set of private messages.
+//
+// See example: examples/inbox/conversation.go
 func (c *Conversation) Next() bool {
 	if c.err != nil {
 		return false
