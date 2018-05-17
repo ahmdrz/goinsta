@@ -8,7 +8,6 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
-	"strings"
 )
 
 const (
@@ -45,13 +44,10 @@ func newUUID() (string, error) {
 	return fmt.Sprintf("%x-%x-%x-%x-%x", uuid[0:4], uuid[4:6], uuid[6:8], uuid[8:10], uuid[10:]), nil
 }
 
-func generateUUID(replace bool) string {
+func generateUUID() string {
 	uuid, err := newUUID()
 	if err != nil {
 		return "cb479ee7-a50d-49e7-8b7b-60cc1a105e22" // default value when error occurred
-	}
-	if replace {
-		return strings.Replace(uuid, "-", "", -1)
 	}
 	return uuid
 }
