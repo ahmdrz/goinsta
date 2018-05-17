@@ -64,6 +64,7 @@ func New(username, password string) *Instagram {
 		pid:  generateUUID(),
 		c:    &http.Client{},
 	}
+	inst.init()
 
 	return inst
 }
