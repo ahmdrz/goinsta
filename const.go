@@ -78,5 +78,8 @@ const (
 	urlActivityRecent    = "news/inbox/"
 
 	// inbox
-	urlInbox = "direct_v2/inbox/"
+	urlInbox       = "direct_v2/inbox/"
+	urlInboxThread = "direct_v2/threads/%s/"
+	urlInboxMute   = "direct_v2/threads/%s/mute/"
+	urlInboxUnmute = "direct_v2/threads/%s/unmute/"
 )

@@ -34,7 +34,7 @@ func (users *Users) SetInstagram(inst *Instagram) {
 	users.inst = inst
 }
 
-var ErrNoMore = errors.New("User list end reached")
+var ErrNoMore = errors.New("List end have been reached")
 
 // Next allows to paginate after calling:
 // Account.Follow* and User.Follow*

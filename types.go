@@ -302,65 +302,14 @@ type InboxItemMedia struct {
 	ViewMode        string        `json:"view_mode"`
 }
 
-// InboxItemLike is the heart that your girlfriend send to you.
-// (or in my case: the heart that my fans sends to me hehe)
 type InboxItemLike struct {
-	ClientContext string `json:"client_context"`
-	ItemID        string `json:"item_id"`
-	ItemType      string `json:"item_type"`
-	Like          string `json:"like"`
-	Timestamp     int64  `json:"timestamp"`
-	UserID        int64  `json:"user_id"`
-}
-
-// InboxItemMsg is inbox text message
-type InboxItemMsg struct {
-	ClientContext string `json:"client_context"`
-	ItemID        string `json:"item_id"`
-	ItemType      string `json:"item_type"`
-	Text          string `json:"text"`
-	Timestamp     int64  `json:"timestamp"`
-	UserID        int64  `json:"user_id"`
+	ItemID    string `json:"item_id"`
+	ItemType  string `json:"item_type"`
+	Timestamp int64  `json:"timestamp"`
+	UserID    int64  `json:"user_id"`
 }
 
 type threadResp struct {
 	Conversation Conversation `json:"thread"`
 	Status       string       `json:"status"`
-}
-
-type Conversation struct {
-	ID   string `json:"thread_id"`
-	V2ID int64  `json:"thread_v2_id"`
-	// Items can be the following types:
-	// InboxItemMedia, InboxItemLike, InboxItemMsg
-	Items                     []interface{} `json:"items"`
-	Title                     string        `json:"thread_title"`
-	Users                     []User        `json:"users"`
-	LeftUsers                 []User        `json:"left_users"`
-	Pending                   bool          `json:"pending"`
-	PendingScore              int64         `json:"pending_score"`
-	ReshareReceiveCount       int           `json:"reshare_receive_count"`
-	ReshareSendCount          int           `json:"reshare_send_count"`
-	ViewerID                  int64         `json:"viewer_id"`
-	ValuedRequest             bool          `json:"valued_request"`
-	LastActivityAt            int64         `json:"last_activity_at"`
-	Muted                     bool          `json:"muted"`
-	IsPin                     bool          `json:"is_pin"`
-	Named                     bool          `json:"named"`
-	ThreadType                string        `json:"thread_type"`
-	ExpiringMediaSendCount    int           `json:"expiring_media_send_count"`
-	ExpiringMediaReceiveCount int           `json:"expiring_media_receive_count"`
-	Inviter                   User          `json:"inviter"`
-	HasOlder                  bool          `json:"has_older"`
-	HasNewer                  bool          `json:"has_newer"`
-	LastSeenAt                struct {
-		Num7629421016 struct {
-			Timestamp string `json:"timestamp"`
-			ItemID    string `json:"item_id"`
-		} `json:"7629421016"`
-	} `json:"last_seen_at"`
-	NewestCursor      string `json:"newest_cursor"`
-	OldestCursor      string `json:"oldest_cursor"`
-	IsSpam            bool   `json:"is_spam"`
-	LastPermanentItem Item   `json:"last_permanent_item"`
 }

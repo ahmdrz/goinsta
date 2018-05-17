@@ -8,7 +8,6 @@ import (
 	"net/http/cookiejar"
 	neturl "net/url"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -55,15 +54,14 @@ type Instagram struct {
 
 // New creates Instagram structure
 func New(username, password string) *Instagram {
-	phoneid := generateUUID()
 	inst := &Instagram{
 		user: username,
 		pass: password,
 		dID: generateDeviceID(
 			generateMD5Hash(username + password),
 		),
-		uuid: strings.Replace(phoneid, "-", "", -1),
-		pid:  phoneid,
+		uuid: generateUUID(), // both uuid must be differents
+		pid:  generateUUID(),
 		c:    &http.Client{},
 	}
 
@@ -169,7 +167,7 @@ func (inst *Instagram) Login() error {
 			Endpoint: urlFetchHeaders,
 			Query: map[string]string{
 				"challenge_type": "signup",
-				"guid":           inst.pid,
+				"guid":           inst.uuid,
 			},
 		},
 	)

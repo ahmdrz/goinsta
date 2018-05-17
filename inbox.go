@@ -2,7 +2,41 @@ package goinsta
 
 import (
 	"encoding/json"
+	"fmt"
 )
+
+// InboxItem is any conversation message.
+type InboxItem struct {
+	ID            string `json:"item_id"`
+	UserID        int64  `json:"user_id"`
+	Timestamp     int64  `json:"timestamp"`
+	ClientContext string `json:"client_context"`
+
+	// Type there are a few types:
+	// text, like, raven_media
+	Type string `json:"item_type"`
+
+	// Text is message text.
+	Text string `json:"text"`
+
+	// InboxItemLike is the heart that your girlfriend send to you.
+	// (or in my case: the heart that my fans sends to me hehe)
+
+	Like string `json:"like"`
+
+	// Media is image or video
+	Media struct {
+		ID                   string `json:"id"`
+		Images               Images `json:"image_versions2"`
+		OriginalWidth        int    `json:"original_width"`
+		OriginalHeight       int    `json:"original_height"`
+		MediaType            int    `json:"media_type"`
+		MediaID              int64  `json:"media_id"`
+		PlaybackDurationSecs int    `json:"playback_duration_secs"`
+		URLExpireAtSecs      int    `json:"url_expire_at_secs"`
+		OrganicTrackingToken string `json:"organic_tracking_token"`
+	}
+}
 
 // Inbox is the direct message inbox.
 type Inbox struct {
@@ -10,6 +44,7 @@ type Inbox struct {
 
 	Conversations []Conversation `json:"threads"`
 
+	HasNewer            bool  `json:"has_newer"` // TODO
 	HasOlder            bool  `json:"has_older"`
 	UnseenCount         int   `json:"unseen_count"`
 	UnseenCountTs       int64 `json:"unseen_count_ts"`
@@ -33,6 +68,8 @@ func newInbox(inst *Instagram) *Inbox {
 }
 
 // Sync updates inbox messages.
+//
+// See example: examples/inbox/sync.go
 func (inbox *Inbox) Sync() error {
 	insta := inbox.inst
 	body, err := insta.sendRequest(
@@ -53,7 +90,100 @@ func (inbox *Inbox) Sync() error {
 			inbox.SeqID = resp.Inbox.SeqID
 			inbox.PendingRequestsTotal = resp.Inbox.PendingRequestsTotal
 			inbox.SnapshotAtMs = resp.Inbox.SnapshotAtMs
+			for i := range inbox.Conversations {
+				inbox.Conversations[i].inst = insta
+				inbox.Conversations[i].firstRun = true
+			}
 		}
 	}
 	return err
+}
+
+type Conversation struct {
+	inst     *Instagram
+	err      error
+	firstRun bool
+
+	ID   string `json:"thread_id"`
+	V2ID int64  `json:"thread_v2_id"`
+	// Items can be of many types.
+	Items                     []InboxItem `json:"items"`
+	Title                     string      `json:"thread_title"`
+	Users                     []User      `json:"users"`
+	LeftUsers                 []User      `json:"left_users"`
+	Pending                   bool        `json:"pending"`
+	PendingScore              int64       `json:"pending_score"`
+	ReshareReceiveCount       int         `json:"reshare_receive_count"`
+	ReshareSendCount          int         `json:"reshare_send_count"`
+	ViewerID                  int64       `json:"viewer_id"`
+	ValuedRequest             bool        `json:"valued_request"`
+	LastActivityAt            int64       `json:"last_activity_at"`
+	Muted                     bool        `json:"muted"`
+	IsPin                     bool        `json:"is_pin"`
+	Named                     bool        `json:"named"`
+	ThreadType                string      `json:"thread_type"`
+	ExpiringMediaSendCount    int         `json:"expiring_media_send_count"`
+	ExpiringMediaReceiveCount int         `json:"expiring_media_receive_count"`
+	Inviter                   User        `json:"inviter"`
+	HasOlder                  bool        `json:"has_older"`
+	HasNewer                  bool        `json:"has_newer"`
+	LastSeenAt                struct {
+		Num7629421016 struct {
+			Timestamp string `json:"timestamp"`
+			ItemID    string `json:"item_id"`
+		} `json:"7629421016"`
+	} `json:"last_seen_at"`
+	NewestCursor      string `json:"newest_cursor"`
+	OldestCursor      string `json:"oldest_cursor"`
+	IsSpam            bool   `json:"is_spam"`
+	LastPermanentItem Item   `json:"last_permanent_item"`
+}
+
+func (c Conversation) Error() error {
+	return c.err
+}
+
+func (c Conversation) lastItemID() string {
+	n := len(c.Items)
+	if n == 0 {
+		return ""
+	}
+	return c.Items[n-1].ID
+}
+
+// Next loads next set of private messages.
+func (c *Conversation) Next() bool {
+	if c.err != nil {
+		return false
+	}
+	if c.firstRun {
+		c.firstRun = false
+		return true
+	}
+
+	insta := c.inst
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlInboxThread, c.ID),
+			Query: map[string]string{
+				"cursor":            c.lastItemID(),
+				"direction":         "older", // go to upper
+				"use_unified_inbox": "true",
+			},
+		},
+	)
+	if err == nil {
+		resp := threadResp{}
+		err = json.Unmarshal(body, &resp)
+		if err == nil {
+			*c = resp.Conversation
+			c.inst = insta
+			if !c.HasOlder {
+				c.err = ErrNoMore
+			}
+			return true
+		}
+	}
+	c.err = err
+	return false
 }
