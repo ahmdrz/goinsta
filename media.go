@@ -63,6 +63,15 @@ type Item struct {
 	Lat             float64  `json:"lat,omitempty"`
 	Lng             float64  `json:"lng,omitempty"`
 
+	// Videos
+	Videos                   []Video       `json:"video_versions,omitempty"`
+	HasAudio                 bool          `json:"has_audio,omitempty"`
+	VideoDuration            float64       `json:"video_duration,omitempty"`
+	ViewCount                float64       `json:"view_count,omitempty"`
+	IsDashEligible           int           `json:"is_dash_eligible,omitempty"`
+	VideoDashManifest        string        `json:"video_dash_manifest,omitempty"`
+	NumberOfQualities        int           `json:"number_of_qualities,omitempty"`
+
 	// Only for stories
 	StoryEvents              []interface{} `json:"story_events"`
 	StoryHashtags            []interface{} `json:"story_hashtags"`
@@ -78,12 +87,6 @@ type Item struct {
 	ShowOneTapFbShareTooltip bool          `json:"show_one_tap_fb_share_tooltip"`
 	HasSharedToFb            int           `json:"has_shared_to_fb"`
 	Mentions                 []Mentions
-	Videos                   []Video `json:"video_versions,omitempty"`
-	HasAudio                 bool    `json:"has_audio,omitempty"`
-	VideoDuration            float64 `json:"video_duration,omitempty"`
-	IsDashEligible           int     `json:"is_dash_eligible,omitempty"`
-	VideoDashManifest        string  `json:"video_dash_manifest,omitempty"`
-	NumberOfQualities        int     `json:"number_of_qualities,omitempty"`
 }
 
 func setToItem(item *Item, media Media) {
