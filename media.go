@@ -209,7 +209,7 @@ func (item *Item) Hashtags() []Hashtag {
 		}
 		n := strings.IndexByte(capt[i:], ' ')
 		if n < 0 { // last hashtag
-			hsh = append(hsh, Hashtag{Name: capt[i:]})
+			hsh = append(hsh, Hashtag{Name: capt[i+1:]})
 			break
 		}
 
@@ -217,7 +217,7 @@ func (item *Item) Hashtags() []Hashtag {
 		hsh = append(hsh, Hashtag{Name: capt[i+1 : i+n]})
 
 		// snipping caption
-		capt = capt[n+1:]
+		capt = capt[n+i:]
 	}
 	return hsh
 }
