@@ -184,7 +184,7 @@ func (comments *Comments) Add(text string) (err error) {
 			},
 		)
 	case *FeedMedia: // normal media
-		url = fmt.Sprintf(urlCommentAdd, item.ID)
+		url = fmt.Sprintf(urlCommentAdd, item.Pk)
 		data, err = insta.prepareData(
 			map[string]interface{}{
 				"comment_text": text,
