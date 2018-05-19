@@ -412,7 +412,7 @@ type StoryMedia struct {
 
 	Pk              int64    `json:"id"`
 	LatestReelMedia int      `json:"latest_reel_media"`
-	ExpiringAt      int      `json:"expiring_at"`
+	ExpiringAt      float64  `json:"expiring_at"`
 	HaveBeenSeen    float64  `json:"seen"`
 	CanReply        bool     `json:"can_reply"`
 	CanReshare      bool     `json:"can_reshare"`
