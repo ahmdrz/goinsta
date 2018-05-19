@@ -46,13 +46,16 @@ type Item struct {
 	MaxNumVisiblePreviewComments int         `json:"max_num_visible_preview_comments"`
 	// _PreviewComments can be `string` or `[]string` or `[]Comment`.
 	// Use PreviewComments function instead of getting it directly.
-	_PreviewComments     interface{} `json:"preview_comments,omitempty"`
-	CommentCount         int         `json:"comment_count"`
-	PhotoOfYou           bool        `json:"photo_of_you"`
-	Usertags             Tag         `json:"usertags,omitempty"`
-	FbUserTags           Tag         `json:"fb_user_tags"`
-	CanViewerSave        bool        `json:"can_viewer_save"`
-	OrganicTrackingToken string      `json:"organic_tracking_token"`
+	_PreviewComments interface{} `json:"preview_comments,omitempty"`
+	CommentCount     int         `json:"comment_count"`
+	PhotoOfYou       bool        `json:"photo_of_you"`
+	// Tags are tagged people in photo
+	Tags struct {
+		In []Tag `json:"in"`
+	} `json:"usertags,omitempty"`
+	FbUserTags           Tag    `json:"fb_user_tags"`
+	CanViewerSave        bool   `json:"can_viewer_save"`
+	OrganicTrackingToken string `json:"organic_tracking_token"`
 	// Images contains URL images in different versions.
 	// Version = quality.
 	Images          Images   `json:"image_versions2,omitempty"`
@@ -189,6 +192,34 @@ func getBest(obj interface{}) []string {
 	}
 	m = nil
 	return s
+}
+
+// Hastags returns caption hashtags.
+//
+// Item media parent must be FeedMedia.
+//
+// See example: examples/media/hashtags.go
+func (item *Item) Hashtags() []string {
+	hsh := make([]string, 0)
+	capt := item.Caption.Text
+	for {
+		i := strings.IndexByte(capt, '#')
+		if i < 0 {
+			break
+		}
+		n := strings.IndexByte(capt[i:], ' ')
+		if n < 0 { // last hashtag
+			hsh = append(hsh, capt[i:])
+			break
+		}
+
+		// avoiding '#' character
+		hsh = append(hsh, capt[i+1:i+n])
+
+		// snipping caption
+		capt = capt[n+1:]
+	}
+	return hsh
 }
 
 // Delete deletes your media item. StoryMedia or FeedMedia
