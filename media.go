@@ -399,8 +399,6 @@ type Media interface {
 	ID() string
 	// Delete removes media
 	Delete() error
-	// Sync synchronize media
-	Sync() error
 
 	instagram() *Instagram
 }
