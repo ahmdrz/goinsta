@@ -170,7 +170,7 @@ func (comments *Comments) Add(text string) (err error) {
 	insta := item.media.instagram()
 
 	switch item.media.(type) {
-	case *StoryMedia: // story
+	case *StoryMedia: // TODO: story causes error
 		url = urlReplyStory
 		data, err = insta.prepareData(
 			map[string]interface{}{

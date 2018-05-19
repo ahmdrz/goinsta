@@ -82,8 +82,12 @@ const (
 	urlInboxSend     = "direct_v2/threads/broadcast/text/"
 	urlInboxSendLike = "direct_v2/threads/broadcast/like/"
 	urlReplyStory    = "direct_v2/threads/broadcast/reel_share/"
+	urlInboxThread   = "direct_v2/threads/%s/"
+	urlInboxMute     = "direct_v2/threads/%s/mute/"
+	urlInboxUnmute   = "direct_v2/threads/%s/unmute/"
 
-	urlInboxThread = "direct_v2/threads/%s/"
-	urlInboxMute   = "direct_v2/threads/%s/mute/"
-	urlInboxUnmute = "direct_v2/threads/%s/unmute/"
+	// tags
+	urlTagSync    = "tags/%s/info/"
+	urlTagStories = "tags/%s/story/"
+	urlTagContent = "tags/%s/ranked_sections/"
 )

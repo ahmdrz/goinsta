@@ -199,8 +199,8 @@ func getBest(obj interface{}) []string {
 // Item media parent must be FeedMedia.
 //
 // See example: examples/media/hashtags.go
-func (item *Item) Hashtags() []string {
-	hsh := make([]string, 0)
+func (item *Item) Hashtags() []Hashtag {
+	hsh := make([]Hashtag, 0)
 	capt := item.Caption.Text
 	for {
 		i := strings.IndexByte(capt, '#')
@@ -209,12 +209,12 @@ func (item *Item) Hashtags() []string {
 		}
 		n := strings.IndexByte(capt[i:], ' ')
 		if n < 0 { // last hashtag
-			hsh = append(hsh, capt[i:])
+			hsh = append(hsh, Hashtag{Name: capt[i:]})
 			break
 		}
 
 		// avoiding '#' character
-		hsh = append(hsh, capt[i+1:i+n])
+		hsh = append(hsh, Hashtag{Name: capt[i+1 : i+n]})
 
 		// snipping caption
 		capt = capt[n+1:]
