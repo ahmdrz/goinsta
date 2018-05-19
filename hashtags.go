@@ -102,4 +102,8 @@ func (h *Hashtag) Next() bool {
 	return false
 }
 
+func (h *Hashtag) Error() error {
+	return h.err
+}
+
 // TODO: func (h *Hashtag) Stories()
