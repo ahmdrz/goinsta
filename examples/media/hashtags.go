@@ -17,7 +17,10 @@ func main() {
 	media.SetID(os.Args[2])
 	media.Sync()
 
-	fmt.Printf("Hashtags:\n%v\n", media.Items[0].Hashtags())
+	fmt.Printf("Hashtags:\n")
+	for _, h := range media.Items[0].Hashtags() {
+		fmt.Println(h.Name)
+	}
 
 	if !e.UsingSession {
 		err = inst.Logout()
