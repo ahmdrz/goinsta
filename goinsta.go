@@ -20,6 +20,8 @@ import (
 // Activity: Represents instagram's user activity.
 //
 // See Scheme section in README.md for more information.
+//
+// We recommend to use Export and Import functions after first Login.
 type Instagram struct {
 	user string
 	pass string
@@ -50,6 +52,21 @@ type Instagram struct {
 	Inbox *Inbox
 
 	c *http.Client
+}
+
+// SetDeviceID sets device id
+func (i *Instagram) SetDeviceID(id string) {
+	i.dID = id
+}
+
+// SetUUID sets uuid
+func (i *Instagram) SetUUID(uuid string) {
+	i.uuid = uuid
+}
+
+// SetPhoneID sets phone id
+func (i *Instagram) SetPhoneID(id string) {
+	i.pid = id
 }
 
 // New creates Instagram structure
