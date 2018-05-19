@@ -40,9 +40,11 @@ type Hashtag struct {
 }
 
 // NewHashtag returns initialised hashtag structure
-func (inst *Instagram) NewHashtag() *Hashtag {
+// Name parameter is hashtag name
+func (inst *Instagram) NewHashtag(name string) *Hashtag {
 	return &Hashtag{
 		inst: inst,
+		Name: name,
 	}
 }
 
