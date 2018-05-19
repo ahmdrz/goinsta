@@ -95,6 +95,7 @@ func (h *Hashtag) Next() bool {
 			if !h.MoreAvailable {
 				h.err = ErrNoMore
 			}
+			return true
 		}
 	}
 	h.err = err
