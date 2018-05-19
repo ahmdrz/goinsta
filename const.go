@@ -78,7 +78,11 @@ const (
 	urlActivityRecent    = "news/inbox/"
 
 	// inbox
-	urlInbox       = "direct_v2/inbox/"
+	urlInbox         = "direct_v2/inbox/"
+	urlInboxSend     = "direct_v2/threads/broadcast/text/"
+	urlInboxSendLike = "direct_v2/threads/broadcast/like/"
+	urlReplyStory    = "direct_v2/threads/broadcast/reel_share/"
+
 	urlInboxThread = "direct_v2/threads/%s/"
 	urlInboxMute   = "direct_v2/threads/%s/mute/"
 	urlInboxUnmute = "direct_v2/threads/%s/unmute/"
