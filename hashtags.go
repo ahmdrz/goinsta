@@ -5,8 +5,9 @@ import (
 	"fmt"
 )
 
-type Hashtags struct {
+type Hashtag struct {
 	inst *Instagram
+	err  error
 
 	Name string `json:"name"`
 
@@ -38,8 +39,8 @@ type Hashtags struct {
 	Status              string  `json:"status"`
 }
 
-// Sync updates Hashtags information preparing it to Next call.
-func (h *Hashtags) Sync() error {
+// Sync updates Hashtag information preparing it to Next call.
+func (h *Hashtag) Sync() error {
 	insta := h.inst
 
 	body, err := insta.sendSimpleRequest(urlTagSync, h.Name)
@@ -52,7 +53,7 @@ func (h *Hashtags) Sync() error {
 		err = json.Unmarshal(body, &resp)
 		if err == nil {
 			h.Name = resp.Name
-			h.ID = ID
+			h.ID = resp.ID
 			h.MediaCount = resp.MediaCount
 		}
 	}
@@ -60,13 +61,13 @@ func (h *Hashtags) Sync() error {
 }
 
 // Next paginates over hashtag page (xd).
-func (h *Hashtags) Next() bool {
+func (h *Hashtag) Next() bool {
 	if h.err != nil {
 		return false
 	}
 	insta := h.inst
 	name := h.Name
-	data, err := insta.prepareData(
+	body, err := insta.sendRequest(
 		&reqOptions{
 			Query: map[string]string{
 				"max_id":     h.NextID,
@@ -78,13 +79,13 @@ func (h *Hashtags) Next() bool {
 		},
 	)
 	if err == nil {
-		ht := &Hashtags{}
+		ht := Hashtag{}
 		err = json.Unmarshal(body, &ht)
 		if err == nil {
 			*h = ht
 			h.inst = insta
 			h.Name = name
-			if !h.MoreAvailible {
+			if !h.MoreAvailable {
 				h.err = ErrNoMore
 			}
 		}
@@ -93,4 +94,4 @@ func (h *Hashtags) Next() bool {
 	return false
 }
 
-// TODO: func (h *Hashtags) Stories()
+// TODO: func (h *Hashtag) Stories()
