@@ -39,6 +39,13 @@ type Hashtag struct {
 	Status              string  `json:"status"`
 }
 
+// NewHashtag returns initialised hashtag structure
+func (inst *Instagram) NewHashtag() *Hashtag {
+	return &Hashtag{
+		inst: inst,
+	}
+}
+
 // Sync updates Hashtag information preparing it to Next call.
 func (h *Hashtag) Sync() error {
 	insta := h.inst
@@ -60,7 +67,7 @@ func (h *Hashtag) Sync() error {
 	return err
 }
 
-// Next paginates over hashtag page (xd).
+// Next paginates over hashtag pages (xd).
 func (h *Hashtag) Next() bool {
 	if h.err != nil {
 		return false
