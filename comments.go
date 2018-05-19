@@ -164,20 +164,41 @@ func (comments *Comments) Sync() {
 // replying the Instagram story.
 //
 // See example: examples/media/commentsAdd.go
-func (comments *Comments) Add(msg string) error {
-	insta := comments.item.media.instagram()
-	data, err := insta.prepareData(
-		map[string]interface{}{
-			"comment_text": msg,
-		},
-	)
+func (comments *Comments) Add(text string) (err error) {
+	var url, data string
+	item := comments.item
+	insta := item.media.instagram()
+
+	switch item.media.(type) {
+	case *StoryMedia: // TODO: story causes error
+		url = urlReplyStory
+		data, err = insta.prepareData(
+			map[string]interface{}{
+				"recipient_users": fmt.Sprintf("[[%d]]", item.User.ID),
+				"action":          "send_item",
+				"client_context":  insta.dID,
+				"media_id":        item.ID,
+				"text":            text,
+				"entry":           "reel",
+				"reel_id":         item.User.ID,
+			},
+		)
+	case *FeedMedia: // normal media
+		url = fmt.Sprintf(urlCommentAdd, item.Pk)
+		data, err = insta.prepareData(
+			map[string]interface{}{
+				"comment_text": text,
+			},
+		)
+	}
 	if err != nil {
 		return err
 	}
 
+	// ignoring response
 	_, err = insta.sendRequest(
 		&reqOptions{
-			Endpoint: fmt.Sprintf(urlCommentAdd, comments.item.ID),
+			Endpoint: url,
 			Query:    generateSignature(data),
 			IsPost:   true,
 		},

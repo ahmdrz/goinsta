@@ -20,8 +20,8 @@ type Item struct {
 	Comments *Comments `json:"-"`
 
 	TakenAt          int     `json:"taken_at"`
-	ID               int64   `json:"pk"`
-	IDStr            string  `json:"id"`
+	Pk               int64   `json:"pk"`
+	ID               string  `json:"id"`
 	CommentsDisabled bool    `json:"comments_disabled"`
 	DeviceTimestamp  int64   `json:"device_timestamp"`
 	MediaType        int     `json:"media_type"`
@@ -46,13 +46,16 @@ type Item struct {
 	MaxNumVisiblePreviewComments int         `json:"max_num_visible_preview_comments"`
 	// _PreviewComments can be `string` or `[]string` or `[]Comment`.
 	// Use PreviewComments function instead of getting it directly.
-	_PreviewComments     interface{} `json:"preview_comments,omitempty"`
-	CommentCount         int         `json:"comment_count"`
-	PhotoOfYou           bool        `json:"photo_of_you"`
-	Usertags             Tag         `json:"usertags,omitempty"`
-	FbUserTags           Tag         `json:"fb_user_tags"`
-	CanViewerSave        bool        `json:"can_viewer_save"`
-	OrganicTrackingToken string      `json:"organic_tracking_token"`
+	_PreviewComments interface{} `json:"preview_comments,omitempty"`
+	CommentCount     int         `json:"comment_count"`
+	PhotoOfYou       bool        `json:"photo_of_you"`
+	// Tags are tagged people in photo
+	Tags struct {
+		In []Tag `json:"in"`
+	} `json:"usertags,omitempty"`
+	FbUserTags           Tag    `json:"fb_user_tags"`
+	CanViewerSave        bool   `json:"can_viewer_save"`
+	OrganicTrackingToken string `json:"organic_tracking_token"`
 	// Images contains URL images in different versions.
 	// Version = quality.
 	Images          Images   `json:"image_versions2,omitempty"`
@@ -191,6 +194,34 @@ func getBest(obj interface{}) []string {
 	return s
 }
 
+// Hastags returns caption hashtags.
+//
+// Item media parent must be FeedMedia.
+//
+// See example: examples/media/hashtags.go
+func (item *Item) Hashtags() []Hashtag {
+	hsh := make([]Hashtag, 0)
+	capt := item.Caption.Text
+	for {
+		i := strings.IndexByte(capt, '#')
+		if i < 0 {
+			break
+		}
+		n := strings.IndexByte(capt[i:], ' ')
+		if n < 0 { // last hashtag
+			hsh = append(hsh, Hashtag{Name: capt[i+1:]})
+			break
+		}
+
+		// avoiding '#' character
+		hsh = append(hsh, Hashtag{Name: capt[i+1 : i+n]})
+
+		// snipping caption
+		capt = capt[n+i:]
+	}
+	return hsh
+}
+
 // Delete deletes your media item. StoryMedia or FeedMedia
 //
 // See example: examples/media/mediaDelete.go
@@ -200,7 +231,7 @@ func (item *Item) Delete() error {
 		insta := item.media.instagram()
 		data, err := insta.prepareData(
 			map[string]interface{}{
-				"media_id": strconv.FormatInt(item.ID, 10),
+				"media_id": item.ID,
 			},
 		)
 		if err != nil {
@@ -412,7 +443,7 @@ type StoryMedia struct {
 
 	Pk              int64    `json:"id"`
 	LatestReelMedia int      `json:"latest_reel_media"`
-	ExpiringAt      int      `json:"expiring_at"`
+	ExpiringAt      float64  `json:"expiring_at"`
 	HaveBeenSeen    float64  `json:"seen"`
 	CanReply        bool     `json:"can_reply"`
 	CanReshare      bool     `json:"can_reshare"`
