@@ -157,24 +157,25 @@ func (c Conversation) lastItemID() string {
 }
 
 // Send sends message in conversation
-func (c *Conversation) Send(msg string) error {
+func (c *Conversation) Send(text string) error {
 	insta := c.inst
 	data, err := insta.prepareData(
 		map[string]interface{}{
-			"recipient_users": c.recipientUsers(),
+			"recipient_users": c.Inviter.ID,
 			"action":          "send_item",
-			"text":            msg,
+			"text":            text,
 		},
 	)
 	body, err := insta.sendRequest(
 		&reqOptions{
-			Endpoint: urlSendMessage,
+			Endpoint: urlInboxSend,
 			Query:    generateSignature(data),
 			IsPost:   true,
 		},
 	)
 	if err == nil {
-
+		// TODO
+		_ = body
 	}
 	return err
 }

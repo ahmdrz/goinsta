@@ -164,11 +164,12 @@ func (comments *Comments) Sync() {
 // replying the Instagram story.
 //
 // See example: examples/media/commentsAdd.go
-func (comments *Comments) Add(msg string) (err error) {
+func (comments *Comments) Add(text string) (err error) {
 	var url, data string
-	insta := media.inst
+	item := comments.item
+	insta := item.media.instagram()
 
-	switch media := comments.item.media.(type) {
+	switch item.media.(type) {
 	case *StoryMedia: // story
 		url = urlReplyStory
 		data, err = insta.prepareData(
@@ -183,10 +184,10 @@ func (comments *Comments) Add(msg string) (err error) {
 			},
 		)
 	case *FeedMedia: // normal media
-		url = fmt.Sprintf(urlCommentAdd, comments.Item.ID)
-		data, err := insta.prepareData(
+		url = fmt.Sprintf(urlCommentAdd, item.ID)
+		data, err = insta.prepareData(
 			map[string]interface{}{
-				"comment_text": msg,
+				"comment_text": text,
 			},
 		)
 	}
