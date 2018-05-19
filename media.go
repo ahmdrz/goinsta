@@ -19,7 +19,7 @@ type Item struct {
 	media    Media     `json:"-"`
 	Comments *Comments `json:"-"`
 
-	TakenAt          int     `json:"taken_at"`
+	TakenAt          float64 `json:"taken_at"`
 	Pk               int64   `json:"pk"`
 	ID               string  `json:"id"`
 	CommentsDisabled bool    `json:"comments_disabled"`
@@ -67,13 +67,13 @@ type Item struct {
 	Lng             float64  `json:"lng,omitempty"`
 
 	// Videos
-	Videos                   []Video       `json:"video_versions,omitempty"`
-	HasAudio                 bool          `json:"has_audio,omitempty"`
-	VideoDuration            float64       `json:"video_duration,omitempty"`
-	ViewCount                float64       `json:"view_count,omitempty"`
-	IsDashEligible           int           `json:"is_dash_eligible,omitempty"`
-	VideoDashManifest        string        `json:"video_dash_manifest,omitempty"`
-	NumberOfQualities        int           `json:"number_of_qualities,omitempty"`
+	Videos            []Video `json:"video_versions,omitempty"`
+	HasAudio          bool    `json:"has_audio,omitempty"`
+	VideoDuration     float64 `json:"video_duration,omitempty"`
+	ViewCount         float64 `json:"view_count,omitempty"`
+	IsDashEligible    int     `json:"is_dash_eligible,omitempty"`
+	VideoDashManifest string  `json:"video_dash_manifest,omitempty"`
+	NumberOfQualities int     `json:"number_of_qualities,omitempty"`
 
 	// Only for stories
 	StoryEvents              []interface{} `json:"story_events"`
@@ -444,17 +444,17 @@ type StoryMedia struct {
 
 	err error
 
-	Pk              int64    `json:"id"`
-	LatestReelMedia int      `json:"latest_reel_media"`
-	ExpiringAt      float64  `json:"expiring_at"`
-	HaveBeenSeen    float64  `json:"seen"`
-	CanReply        bool     `json:"can_reply"`
-	CanReshare      bool     `json:"can_reshare"`
-	ReelType        string   `json:"reel_type"`
-	User            User     `json:"user"`
-	Items           []Item   `json:"items"`
-	ReelMentions    []string `json:"reel_mentions"`
-	PrefetchCount   int      `json:"prefetch_count"`
+	Pk              interface{} `json:"id"`
+	LatestReelMedia int         `json:"latest_reel_media"`
+	ExpiringAt      float64     `json:"expiring_at"`
+	HaveBeenSeen    float64     `json:"seen"`
+	CanReply        bool        `json:"can_reply"`
+	CanReshare      bool        `json:"can_reshare"`
+	ReelType        string      `json:"reel_type"`
+	User            User        `json:"user"`
+	Items           []Item      `json:"items"`
+	ReelMentions    []string    `json:"reel_mentions"`
+	PrefetchCount   int         `json:"prefetch_count"`
 	// this field can be int or bool
 	HasBestiesMedia      interface{} `json:"has_besties_media"`
 	StoryRankingToken    string      `json:"story_ranking_token"`
@@ -472,7 +472,13 @@ func (media *StoryMedia) Delete() error {
 
 // ID returns Story id
 func (media *StoryMedia) ID() string {
-	return strconv.FormatInt(media.Pk, 10)
+	switch id := media.Pk.(type) {
+	case int64:
+		return strconv.FormatInt(id, 10)
+	case string:
+		return id
+	}
+	return ""
 }
 
 func (media *StoryMedia) instagram() *Instagram {

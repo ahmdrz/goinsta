@@ -104,8 +104,23 @@ func (h *Hashtag) Next() bool {
 	return false
 }
 
+// Error returns hashtag error
 func (h *Hashtag) Error() error {
 	return h.err
 }
 
-// TODO: func (h *Hashtag) Stories()
+// Stories returns hashtag stories.
+func (h *Hashtag) Stories() (*StoryMedia, error) {
+	body, err := h.inst.sendSimpleRequest(
+		urlTagStories, h.Name,
+	)
+	if err == nil {
+		var resp struct {
+			Story  StoryMedia `json:"story"`
+			Status string     `json:"status"`
+		}
+		err = json.Unmarshal(body, &resp)
+		return &resp.Story, err
+	}
+	return nil, err
+}
