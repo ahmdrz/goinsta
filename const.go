@@ -60,10 +60,10 @@ const (
 
 	// media
 	urlMediaInfo   = "media/%s/info/"
-	urlMediaDelete = "media/%d/delete/"
-	urlMediaLike   = "media/%d/like/"
-	urlMediaUnlike = "media/%d/unlike/"
-	urlMediaSave   = "media/%d/save/"
+	urlMediaDelete = "media/%s/delete/"
+	urlMediaLike   = "media/%s/like/"
+	urlMediaUnlike = "media/%s/unlike/"
+	urlMediaSave   = "media/%s/save/"
 
 	// comments
 	urlCommentAdd     = "media/%d/comment/"

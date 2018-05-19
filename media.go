@@ -20,8 +20,8 @@ type Item struct {
 	Comments *Comments `json:"-"`
 
 	TakenAt          int     `json:"taken_at"`
-	ID               int64   `json:"pk"`
-	IDStr            string  `json:"id"`
+	Pk               int64   `json:"pk"`
+	ID               string  `json:"id"`
 	CommentsDisabled bool    `json:"comments_disabled"`
 	DeviceTimestamp  int64   `json:"device_timestamp"`
 	MediaType        int     `json:"media_type"`
@@ -200,7 +200,7 @@ func (item *Item) Delete() error {
 		insta := item.media.instagram()
 		data, err := insta.prepareData(
 			map[string]interface{}{
-				"media_id": strconv.FormatInt(item.ID, 10),
+				"media_id": item.ID,
 			},
 		)
 		if err != nil {
@@ -399,6 +399,8 @@ type Media interface {
 	ID() string
 	// Delete removes media
 	Delete() error
+	// Sync synchronize media
+	Sync() error
 
 	instagram() *Instagram
 }
