@@ -39,6 +39,9 @@ type InboxItem struct {
 }
 
 // Inbox is the direct message inbox.
+//
+// Inbox contains Conversations. Each conversation has InboxItems.
+// InboxItems are the message of the chat.
 type Inbox struct {
 	inst *Instagram
 
@@ -71,6 +74,7 @@ func newInbox(inst *Instagram) *Inbox {
 //
 // See example: examples/inbox/sync.go
 func (inbox *Inbox) Sync() error {
+	// TODO: Next for pagination
 	insta := inbox.inst
 	body, err := insta.sendRequest(
 		&reqOptions{
@@ -78,6 +82,7 @@ func (inbox *Inbox) Sync() error {
 			Query: map[string]string{
 				"persistentBadging": "true",
 				"use_unified_inbox": "true",
+				"limit":             "0",
 			},
 		},
 	)
@@ -149,6 +154,35 @@ func (c Conversation) lastItemID() string {
 		return ""
 	}
 	return c.Items[n-1].ID
+}
+
+// Send sends message in conversation
+func (c *Conversation) Send(msg string) error {
+	insta := c.inst
+	data, err := insta.prepareData(
+		map[string]interface{}{
+			"recipient_users": c.recipientUsers(),
+			"action":          "send_item",
+			"text":            msg,
+		},
+	)
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: urlSendMessage,
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	if err == nil {
+
+	}
+	return err
+}
+
+// Write is like Send but being compatible with io.Writer.
+func (c *Conversation) Write(b []byte) (int, error) {
+	n := len(b)
+	return n, c.Send(b2s(b))
 }
 
 // Next loads next set of private messages.
