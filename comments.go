@@ -177,7 +177,7 @@ func (comments *Comments) Add(text string) (err error) {
 				"recipient_users": fmt.Sprintf("[[%d]]", item.User.ID),
 				"action":          "send_item",
 				"client_context":  insta.dID,
-				"media_id":        item.media.ID(),
+				"media_id":        item.ID,
 				"text":            text,
 				"entry":           "reel",
 				"reel_id":         item.User.ID,
