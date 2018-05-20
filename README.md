@@ -21,7 +21,7 @@ We are working on a new object-oriented API. Try it and tell us your suggestions
 
 If you want to use the old version you can found it in v1 branch or using gopkg.in/ahmdrz/goinsta.v1/
 
-Sorry for breaking dependences :(. You can use this command to update old master branch to v1.
+Sorry for breaking dependences :(. You can use this command in your project folder to update old master branch to v1.
 
 ```bash
 for i in `grep -r ahmdrz ./ | awk '{split($0, a, ":"); print a[1]}'`; do sed -i 's/github\.com\/ahmdrz\/goinsta/gopkg\.in\/ahmdrz\/goinsta\.v1/g' $i; done
