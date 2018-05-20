@@ -64,6 +64,14 @@ func (h *Hashtag) Sync() error {
 			h.Name = resp.Name
 			h.ID = resp.ID
 			h.MediaCount = resp.MediaCount
+			for i := range h.Sections {
+				for j := range h.Sections[i].LayoutContent.Medias {
+					m := &FeedMedia{
+						inst: insta,
+					}
+					setToItem(&h.Sections[i].LayoutContent.Medias[j].Item, m)
+				}
+			}
 		}
 	}
 	return err
@@ -96,6 +104,14 @@ func (h *Hashtag) Next() bool {
 			h.Name = name
 			if !h.MoreAvailable {
 				h.err = ErrNoMore
+			}
+			for i := range h.Sections {
+				for j := range h.Sections[i].LayoutContent.Medias {
+					m := &FeedMedia{
+						inst: insta,
+					}
+					setToItem(&h.Sections[i].LayoutContent.Medias[j].Item, m)
+				}
 			}
 			return true
 		}
