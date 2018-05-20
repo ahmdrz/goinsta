@@ -82,7 +82,6 @@ func (inbox *Inbox) Sync() error {
 			Query: map[string]string{
 				"persistentBadging": "true",
 				"use_unified_inbox": "true",
-				"limit":             "0",
 			},
 		},
 	)
