@@ -50,9 +50,9 @@ type Instagram struct {
 	Search *Search
 	// Timeline allows to receive timeline media.
 	Timeline *Timeline
-	// Activity ...
+	// Activity are instagram notifications.
 	Activity *Activity
-	// Inbox ...
+	// Inbox are instagram message/chat system.
 	Inbox *Inbox
 
 	c *http.Client
