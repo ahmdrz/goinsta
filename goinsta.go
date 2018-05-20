@@ -18,10 +18,14 @@ import (
 // Search:   Represents instagram's search.
 // Timeline: Represents instagram's timeline.
 // Activity: Represents instagram's user activity.
+// Inbox:    Represents instagram's messages.
 //
 // See Scheme section in README.md for more information.
 //
 // We recommend to use Export and Import functions after first Login.
+//
+// Also you can use SetProxy and UnsetProxy to set and unset proxy.
+// Golang also provides the option to set a proxy using HTTP_PROXY env var.
 type Instagram struct {
 	user string
 	pass string
@@ -94,16 +98,20 @@ func (inst *Instagram) init() {
 	inst.Inbox = newInbox(inst)
 }
 
-// NewWithProxy creates new instagram object using proxy requests.
-func NewWithProxy(user, pass, url string) (*Instagram, error) {
-	inst := New(user, pass)
+// SetProxy sets proxy for connection.
+func (inst *Instagram) SetProxy(url string) error {
 	uri, err := neturl.Parse(url)
 	if err == nil {
 		inst.c.Transport = &http.Transport{
 			Proxy: http.ProxyURL(uri),
 		}
 	}
-	return inst, err
+	return err
+}
+
+// UnsetProxy unsets proxy for connection.
+func (inst *Instagram) UnsetProxy() error {
+	inst.c.Transport = nil
 }
 
 // Export exports *Instagram object options
@@ -131,6 +139,8 @@ func (inst *Instagram) Export(path string) error {
 }
 
 // Import imports instagram configuration
+//
+// This function does not set proxy automatically. Use SetProxy after this call.
 func Import(path string) (*Instagram, error) {
 	url, err := neturl.Parse(goInstaAPIUrl)
 	if err != nil {
