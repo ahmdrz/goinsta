@@ -94,6 +94,7 @@ type Item struct {
 
 func setToItem(item *Item, media Media) {
 	item.media = media
+	item.User.inst = media.instagram()
 	item.Comments = newComments(item)
 }
 
