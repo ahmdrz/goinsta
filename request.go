@@ -52,15 +52,14 @@ func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 	for k, v := range o.Query {
 		vs.Add(k, v)
 	}
-	if !o.IsPost {
-		for k, v := range u.Query() {
-			vs.Add(k, strings.Join(v, " "))
-		}
-	}
 
 	if o.IsPost {
 		bf.WriteString(vs.Encode())
 	} else {
+		for k, v := range u.Query() {
+			vs.Add(k, strings.Join(v, " "))
+		}
+
 		u.RawQuery = vs.Encode()
 	}
 
