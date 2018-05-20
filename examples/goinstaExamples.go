@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"gopkg.in/ahmdrz/goinsta.v2"
+	"github.com/ahmdrz/goinsta"
 	"github.com/howeyc/gopass"
 )
 
