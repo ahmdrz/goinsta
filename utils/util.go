@@ -7,7 +7,7 @@ import (
 
 	"github.com/howeyc/gopass"
 	homedir "github.com/mitchellh/go-homedir"
-	"gopkg.in/ahmdrz/goinsta.v2"
+	"github.com/ahmdrz/goinsta"
 )
 
 // New function returns Instagram object.
