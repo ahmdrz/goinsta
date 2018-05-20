@@ -17,19 +17,19 @@
 
 ## New Version !
 
-We are working on `alpha` branch. Try it and tell us your suggestions!
+We are working on a new object-oriented API. Try it and tell us your suggestions. See https://github.com/ahmdrz/goinsta/blob/master/CONTRIBUTION.md
 
-The newer versions will be exported into v2 branch when new features will be well tested.
+If you want to use the old version you can found it in v1 branch or using gopkg.in/ahmdrz/goinsta.v1/
 
 ## Package installation 
 
-`go get -u -v gopkg.in/ahmdrz/goinsta.v2`
+`go get -u -v github.com/ahmdrz/goinsta`
 
 ## CLI installation
 
 ```
-go get -u -v gopkg.in/ahmdrz/goinsta.v2
-go install gopkg.in/ahmdrz/goinsta.v2/goinsta
+go get -u -v github.com/ahmdrz/goinsta
+go install github.com/ahmdrz/goinsta/goinsta
 ```
 
 ## Example
