@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/spf13/cast"
 )
 
 type reqOptions struct {
@@ -44,17 +46,17 @@ func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 		return nil, err
 	}
 
+	vs := url.Values{}
 	bf := bytes.NewBuffer([]byte{})
 
-	q := u.Query()
 	for k, v := range o.Query {
-		q.Add(k, v)
+		vs.Add(k, v)
 	}
 
 	if o.IsPost {
-		bf.WriteString(q.Encode())
+		bf.WriteString(vs.Encode())
 	} else {
-		u.RawQuery = q.Encode()
+		u.RawQuery += vs.Encode()
 	}
 
 	var req *http.Request
@@ -118,4 +120,17 @@ func (insta *Instagram) prepareData(other ...map[string]interface{}) (string, er
 		return b2s(b), err
 	}
 	return "", err
+}
+
+func (insta *Instagram) prepareDataQuery(other ...map[string]interface{}) map[string]string {
+	data := map[string]string{
+		"_uuid":      insta.uuid,
+		"_csrftoken": insta.token,
+	}
+	for i := range other {
+		for key, value := range other[i] {
+			data[key] = cast.ToString(value)
+		}
+	}
+	return data
 }
