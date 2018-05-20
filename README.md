@@ -1,5 +1,5 @@
 # GoInsta. Make Goinsta Great Again!
-<p align="center"><img width=100% src="https://raw.github.com/ahmdrz/goinsta/master/resources/goinsta-image.png"></p>
+<p align="center"><img width=100% src="https://raw.githubusercontent.com/ahmdrz/goinsta/v1/resources/goinsta-image.png"></p>
 
 > Unofficial Instagram API for Golang
 
