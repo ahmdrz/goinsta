@@ -44,7 +44,7 @@ var RootCmd = &cobra.Command{
 			id, _ := strconv.ParseInt(args[0], 10, 64)
 			user, err = inst.Profiles.ByID(id)
 			if err != nil {
-				fmt.Printf("Invalid username or id: %s\n", args[0])
+				fmt.Printf("Invalid username or id '%s': %s\n", args[0], err)
 				return
 			}
 		}
