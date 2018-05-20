@@ -44,14 +44,16 @@ type InboxItem struct {
 // InboxItems are the message of the chat.
 type Inbox struct {
 	inst *Instagram
+	err  error
 
 	Conversations []Conversation `json:"threads"`
 
-	HasNewer            bool  `json:"has_newer"` // TODO
-	HasOlder            bool  `json:"has_older"`
-	UnseenCount         int   `json:"unseen_count"`
-	UnseenCountTs       int64 `json:"unseen_count_ts"`
-	BlendedInboxEnabled bool  `json:"blended_inbox_enabled"`
+	HasNewer            bool   `json:"has_newer"` // TODO
+	HasOlder            bool   `json:"has_older"`
+	Cursor              string `json:"oldest_cursor"`
+	UnseenCount         int    `json:"unseen_count"`
+	UnseenCountTs       int64  `json:"unseen_count_ts"`
+	BlendedInboxEnabled bool   `json:"blended_inbox_enabled"`
 	// this fields are copied from response
 	SeqID                int   `json:"seq_id"`
 	PendingRequestsTotal int   `json:"pending_requests_total"`
@@ -74,7 +76,6 @@ func newInbox(inst *Instagram) *Inbox {
 //
 // See example: examples/inbox/sync.go
 func (inbox *Inbox) Sync() error {
-	// TODO: Next for pagination
 	insta := inbox.inst
 	body, err := insta.sendRequest(
 		&reqOptions{
@@ -82,6 +83,7 @@ func (inbox *Inbox) Sync() error {
 			Query: map[string]string{
 				"persistentBadging": "true",
 				"use_unified_inbox": "true",
+				"cursor":            inbox.Cursor,
 			},
 		},
 	)
@@ -101,6 +103,52 @@ func (inbox *Inbox) Sync() error {
 		}
 	}
 	return err
+}
+
+// Reset sets inbox cursor at the beginning.
+func (inbox *Inbox) Reset() {
+	inbox.Cursor = ""
+}
+
+// Next allows pagination over messages.
+//
+// See example: examples/inbox/next.go
+func (inbox *Inbox) Next() bool {
+	if inbox.err != nil {
+		return false
+	}
+	insta := inbox.inst
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: urlInbox,
+			Query: map[string]string{
+				"persistentBadging": "true",
+				"use_unified_inbox": "true",
+				"cursor":            inbox.Cursor,
+			},
+		},
+	)
+	if err == nil {
+		resp := inboxResp{}
+		err = json.Unmarshal(body, &resp)
+		if err == nil {
+			*inbox = resp.Inbox
+			inbox.inst = insta
+			inbox.SeqID = resp.Inbox.SeqID
+			inbox.PendingRequestsTotal = resp.Inbox.PendingRequestsTotal
+			inbox.SnapshotAtMs = resp.Inbox.SnapshotAtMs
+			for i := range inbox.Conversations {
+				inbox.Conversations[i].inst = insta
+				inbox.Conversations[i].firstRun = true
+			}
+			if inbox.Cursor == "" || !inbox.HasOlder {
+				inbox.err = ErrNoMore
+			}
+			return true
+		}
+	}
+	inbox.err = err
+	return false
 }
 
 type Conversation struct {
