@@ -6,6 +6,8 @@ import (
 )
 
 // Activity is the activity of your instagram account
+//
+// You can get Recent and Following activities.
 type Activity struct {
 	inst *Instagram
 }
@@ -85,6 +87,9 @@ func (act *FollowingActivity) Next() bool {
 	return false
 }
 
+// MineActivity is the recent activity menu.
+//
+// See example: examples/activity/recent.go
 type MineActivity struct {
 	inst *Instagram
 	err  error
@@ -152,7 +157,7 @@ func (act *MineActivity) Error() error {
 
 // Next function allows pagination over notifications.
 //
-// See example
+// See example: examples/activity/recent.go
 func (act *MineActivity) Next() bool {
 	if act.err != nil {
 		return false
