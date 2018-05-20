@@ -177,15 +177,17 @@ func (comments *Comments) Add(text string) (err error) {
 	item := comments.item
 	insta := item.media.instagram()
 
+	var query map[string]string
+
 	switch item.media.(type) {
 	case *StoryMedia: // TODO: story causes error
 		url = urlReplyStory
-		data, err = insta.prepareData(
+		query = insta.prepareDataQuery(
 			map[string]interface{}{
 				"recipient_users": fmt.Sprintf("[[%d]]", item.User.ID),
 				"action":          "send_item",
-				"client_context":  insta.dID,
 				"media_id":        item.ID,
+				"client_context":  generateUUID(),
 				"text":            text,
 				"entry":           "reel",
 				"reel_id":         item.User.ID,
@@ -198,6 +200,7 @@ func (comments *Comments) Add(text string) (err error) {
 				"comment_text": text,
 			},
 		)
+		query = generateSignature(data)
 	}
 	if err != nil {
 		return err
@@ -207,7 +210,7 @@ func (comments *Comments) Add(text string) (err error) {
 	_, err = insta.sendRequest(
 		&reqOptions{
 			Endpoint: url,
-			Query:    generateSignature(data),
+			Query:    query,
 			IsPost:   true,
 		},
 	)
