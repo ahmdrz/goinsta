@@ -87,12 +87,13 @@ Instagram
   - Following
   - Feed
   - Stories
+  - Liked
+  - Saved
   - Tags
 - Profiles: User interaction.
-  - Followers
-  - Following
-  - FriendShip
-  - Story
+  - Blocked
+  - Get user using ID
+  - Get user using Username
 - Media:
   - Comments
   - Likes
@@ -106,3 +107,6 @@ Instagram
 - Activity:
   - Following
   - Recent
+- Hashtag: Hashtag allows user to search using hashtags.
+  - Stories
+  - Media
