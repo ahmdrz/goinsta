@@ -75,6 +75,9 @@ func (i *Instagram) SetPhoneID(id string) {
 
 // New creates Instagram structure
 func New(username, password string) *Instagram {
+	// this call never returns error
+	jar, _ := cookiejar.New(nil)
+
 	inst := &Instagram{
 		user: username,
 		pass: password,
@@ -87,6 +90,7 @@ func New(username, password string) *Instagram {
 			Transport: &http.Transport{
 				Proxy: http.ProxyFromEnvironment,
 			},
+			Jar: jar,
 		},
 	}
 	inst.init()
@@ -192,12 +196,6 @@ func Import(path string) (*Instagram, error) {
 //
 // Password will be deleted after login
 func (inst *Instagram) Login() error {
-	jar, err := cookiejar.New(nil)
-	if err != nil {
-		return err
-	}
-	inst.c.Jar = jar
-
 	body, err := inst.sendRequest(
 		&reqOptions{
 			Endpoint: urlFetchHeaders,
