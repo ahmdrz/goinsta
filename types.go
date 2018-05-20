@@ -3,7 +3,6 @@ package goinsta
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 )
 
 type ConfigFile struct {
@@ -117,38 +116,6 @@ type Candidate struct {
 	Width  int    `json:"width"`
 	Height int    `json:"height"`
 	URL    string `json:"url"`
-}
-
-type Comment struct {
-	ID                             int64     `json:"pk"`
-	idstr                          string    `json:"-"`
-	Text                           string    `json:"text"`
-	Type                           int       `json:"type"`
-	User                           User      `json:"user"`
-	UserID                         int64     `json:"user_id"`
-	BitFlags                       int       `json:"bit_flags"`
-	ChildCommentCount              int       `json:"child_comment_count"`
-	CommentIndex                   int       `json:"comment_index"`
-	CommentLikeCount               int       `json:"comment_like_count"`
-	ContentType                    string    `json:"content_type"`
-	CreatedAt                      int       `json:"created_at"`
-	CreatedAtUtc                   int       `json:"created_at_utc"`
-	DidReportAsSpam                bool      `json:"did_report_as_spam"`
-	HasLikedComment                bool      `json:"has_liked_comment"`
-	InlineComposerDisplayCondition string    `json:"inline_composer_display_condition"`
-	OtherPreviewUsers              []User    `json:"other_preview_users"`
-	PreviewChildComments           []Comment `json:"preview_child_comments"`
-	Status                         string    `json:"status"`
-}
-
-func (c Comment) getid() string {
-	switch {
-	case c.ID == 0:
-		return c.idstr
-	case c.idstr == "":
-		return strconv.FormatInt(c.ID, 10)
-	}
-	return ""
 }
 
 type Tag struct {

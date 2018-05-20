@@ -71,7 +71,8 @@ const (
 	urlCommentSync    = "media/%d/comments/"
 	urlCommentDisable = "media/%d/disable_comments/"
 	urlCommentEnable  = "media/%d/enable_comments/"
-	urlCommentLike    = "media/%d/comment_like"
+	urlCommentLike    = "media/%d/comment_like/"
+	urlCommentUnlike  = "media/%d/comment_unlike/"
 
 	// activity
 	urlActivityFollowing = "news/"

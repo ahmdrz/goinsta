@@ -3,6 +3,7 @@ package goinsta
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 )
 
 // Comments allows user to interact with media (item) comments.
@@ -25,6 +26,12 @@ type Comments struct {
 	Status                         string    `json:"status"`
 
 	//PreviewComments                []Comment   `json:"preview_comments"`
+}
+
+func (c *Comments) setValues() {
+	for i := range c.Items {
+		c.Items[i].inst = c.item.media.instagram()
+	}
 }
 
 func newComments(item *Item) *Comments {
@@ -141,6 +148,7 @@ func (comments *Comments) Next() bool {
 			if !comments.HasMoreComments || comments.NextID == "" {
 				comments.err = ErrNoMore
 			}
+			comments.setValues()
 			return true
 		}
 	}
@@ -262,4 +270,72 @@ floop:
 		return err
 	}
 	return nil
+}
+
+type Comment struct {
+	inst *Instagram
+
+	ID                             int64     `json:"pk"`
+	idstr                          string    `json:"-"`
+	Text                           string    `json:"text"`
+	Type                           int       `json:"type"`
+	User                           User      `json:"user"`
+	UserID                         int64     `json:"user_id"`
+	BitFlags                       int       `json:"bit_flags"`
+	ChildCommentCount              int       `json:"child_comment_count"`
+	CommentIndex                   int       `json:"comment_index"`
+	CommentLikeCount               int       `json:"comment_like_count"`
+	ContentType                    string    `json:"content_type"`
+	CreatedAt                      int       `json:"created_at"`
+	CreatedAtUtc                   int       `json:"created_at_utc"`
+	DidReportAsSpam                bool      `json:"did_report_as_spam"`
+	HasLikedComment                bool      `json:"has_liked_comment"`
+	InlineComposerDisplayCondition string    `json:"inline_composer_display_condition"`
+	OtherPreviewUsers              []User    `json:"other_preview_users"`
+	PreviewChildComments           []Comment `json:"preview_child_comments"`
+	Status                         string    `json:"status"`
+}
+
+func (c Comment) getid() string {
+	switch {
+	case c.ID == 0:
+		return c.idstr
+	case c.idstr == "":
+		return strconv.FormatInt(c.ID, 10)
+	}
+	return ""
+}
+
+// Like likes comment.
+func (c *Comment) Like() error {
+	data, err := c.inst.prepareData()
+	if err != nil {
+		return err
+	}
+
+	_, err = c.inst.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlCommentLike, c.getid()),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	return err
+}
+
+// Unlike unlikes comment.
+func (c *Comment) Unlike() error {
+	data, err := c.inst.prepareData()
+	if err != nil {
+		return err
+	}
+
+	_, err = c.inst.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlCommentUnlike, c.getid()),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	return err
 }
