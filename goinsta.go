@@ -110,7 +110,7 @@ func (inst *Instagram) SetProxy(url string) error {
 }
 
 // UnsetProxy unsets proxy for connection.
-func (inst *Instagram) UnsetProxy() error {
+func (inst *Instagram) UnsetProxy() {
 	inst.c.Transport = nil
 }
 
