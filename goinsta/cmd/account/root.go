@@ -25,11 +25,11 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/account/feed"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/account/followers"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/account/following"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/account/info"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/account/stories"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/account/feed"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/account/followers"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/account/following"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/account/info"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/account/stories"
 )
 
 func init() {

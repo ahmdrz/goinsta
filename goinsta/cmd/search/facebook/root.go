@@ -25,7 +25,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/utils"
+	"github.com/ahmdrz/goinsta/utils"
 )
 
 var RootCmd = &cobra.Command{

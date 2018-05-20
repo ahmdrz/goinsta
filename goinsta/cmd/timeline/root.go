@@ -25,8 +25,8 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/timeline/feed"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/timeline/stories"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/timeline/feed"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/timeline/stories"
 )
 
 func init() {

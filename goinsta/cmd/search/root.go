@@ -25,9 +25,9 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/search/facebook"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/search/tags"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/search/user"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/search/facebook"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/search/tags"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/search/user"
 )
 
 func init() {
