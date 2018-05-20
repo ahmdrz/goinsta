@@ -1,4 +1,4 @@
-package goinsta // github.com/ahmdrz/goinsta
+package goinsta // gopkg.in/ahmdrz/goinsta.v2
 
 /*
 	Goinsta is unofficial API of Instagram for Golang.
