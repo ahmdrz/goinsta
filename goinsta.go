@@ -83,7 +83,11 @@ func New(username, password string) *Instagram {
 		),
 		uuid: generateUUID(), // both uuid must be differents
 		pid:  generateUUID(),
-		c:    &http.Client{},
+		c: &http.Client{
+			Transport: &http.Transport{
+				Proxy: http.ProxyFromEnvironment,
+			},
+		},
 	}
 	inst.init()
 
@@ -165,7 +169,11 @@ func Import(path string) (*Instagram, error) {
 		rankToken: config.RankToken,
 		token:     config.Token,
 		pid:       config.PhoneID,
-		c:         &http.Client{},
+		c: &http.Client{
+			Transport: &http.Transport{
+				Proxy: http.ProxyFromEnvironment,
+			},
+		},
 	}
 	inst.c.Jar, err = cookiejar.New(nil)
 	if err != nil {
