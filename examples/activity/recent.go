@@ -18,6 +18,7 @@ func main() {
 	for act.Next() {
 		fmt.Printf("Stories: %d %d\n", len(act.Stories), act.NextID)
 	}
+	fmt.Println(act.Error())
 
 	if !e.UsingSession {
 		err = inst.Logout()
