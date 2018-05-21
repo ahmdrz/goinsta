@@ -17,10 +17,13 @@ type reqOptions struct {
 	// Endpoint is the request path of instagram api
 	Endpoint string
 
-	// IsPost setted to true will send request with POST method.
+	// IsPost set to true will send request with POST method.
 	//
 	// By default this option is false.
 	IsPost bool
+
+	// UseV2 is set when API endpoint uses v2 url.
+	UseV2 bool
 
 	// Query is the parameters of the request
 	//
@@ -45,7 +48,12 @@ func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 		o.Connection = "close"
 	}
 
-	u, err := url.Parse(goInstaAPIUrl + o.Endpoint)
+	nu := goInstaAPIUrl
+	if o.UseV2 {
+		nu = goInstaAPIUrlv2
+	}
+
+	u, err := url.Parse(nu + o.Endpoint)
 	if err != nil {
 		return nil, err
 	}

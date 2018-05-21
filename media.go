@@ -519,10 +519,33 @@ func (media StoryMedia) Error() error {
 }
 
 // Seen marks story as seen.
-// TODO
+/*
 func (media *StoryMedia) Seen() error {
-	return nil
+	insta := media.inst
+	data, err := insta.prepareData(
+		map[string]interface{}{
+			"container_module":   "feed_timeline",
+			"live_vods_skipped":  "",
+			"nuxes_skipped":      "",
+			"nuxes":              "",
+			"reels":              "", // TODO xd
+			"live_vods":          "",
+			"reel_media_skipped": "",
+		},
+	)
+	if err == nil {
+		_, err = insta.sendRequest(
+			&reqOptions{
+				Endpoint: urlMediaSeen, // reel=1&live_vod=0
+				Query:    generateSignature(data),
+				IsPost:   true,
+				UseV2:    true,
+			},
+		)
+	}
+	return err
 }
+*/
 
 // Next allows pagination after calling:
 // User.Stories
