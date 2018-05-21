@@ -37,7 +37,7 @@ func main() {
 
 	story := tray.Stories[1]
 	// commenting your first timeline story xddxdxd
-	fmt.Printf("Sending reply to %s %d\n", story.Items[0].Images.GetBest(), story.Items[0].MediaType)
+	fmt.Printf("Sending reply to %s %s\n", story.Items[0].Images.GetBest(), story.Items[0].MediaToString())
 	err = story.Items[0].Comments.Add("xasfdsaf")
 	e.CheckErr(err)
 
