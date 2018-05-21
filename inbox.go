@@ -205,24 +205,39 @@ func (c Conversation) lastItemID() string {
 // Send sends message in conversation
 func (c *Conversation) Send(text string) error {
 	insta := c.inst
-	data, err := insta.prepareData(
+	// I DON'T KNOW WHY BUT INSTAGRAM WANTS A DOUBLE SLICE OF INTS FOR ONE ID.
+	ids := make([][]int64, 0)
+	for i := range c.Users {
+		ids = append(ids, []int64{c.Users[i].ID})
+	}
+
+	to, err := json.Marshal(ids)
+	if err != nil {
+		return err
+	}
+	// I DONT KNOW WHY BUT INSTAGRAM WANTS SLICE OF STRINGS FOR ONE ID
+	thread, err := json.Marshal([]string{c.ID})
+	if err != nil {
+		return err
+	}
+
+	data := insta.prepareDataQuery(
 		map[string]interface{}{
-			"recipient_users": c.Inviter.ID,
+			"recipient_users": b2s(to),
+			"client_context":  generateUUID(),
+			"thread_ids":      b2s(thread),
 			"action":          "send_item",
 			"text":            text,
 		},
 	)
-	body, err := insta.sendRequest(
+	_, err = insta.sendRequest(
 		&reqOptions{
-			Endpoint: urlInboxSend,
-			Query:    generateSignature(data),
-			IsPost:   true,
+			Connection: "keep-alive",
+			Endpoint:   urlInboxSend,
+			Query:      data,
+			IsPost:     true,
 		},
 	)
-	if err == nil {
-		// TODO
-		_ = body
-	}
 	return err
 }
 
