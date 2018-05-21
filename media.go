@@ -241,30 +241,24 @@ func (item *Item) Hashtags() []Hashtag {
 //
 // See example: examples/media/mediaDelete.go
 func (item *Item) Delete() error {
-	switch m := item.media.(type) {
-	case *FeedMedia:
-		insta := item.media.instagram()
-		data, err := insta.prepareData(
-			map[string]interface{}{
-				"media_id": item.ID,
-			},
-		)
-		if err != nil {
-			return err
-		}
-
-		_, err = insta.sendRequest(
-			&reqOptions{
-				Endpoint: fmt.Sprintf(urlMediaDelete, item.ID),
-				Query:    generateSignature(data),
-				IsPost:   true,
-			},
-		)
+	insta := item.media.instagram()
+	data, err := insta.prepareData(
+		map[string]interface{}{
+			"media_id": item.ID,
+		},
+	)
+	if err != nil {
 		return err
-	case *StoryMedia:
-		return m.Delete()
 	}
-	return nil
+
+	_, err = insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlMediaDelete, item.ID),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	return err
 }
 
 // Unlike mark media item as unliked.
@@ -477,9 +471,25 @@ type StoryMedia struct {
 }
 
 // Delete removes instragram story.
-// TODO
+//
+// See example: examples/media/deleteStories.go
 func (media *StoryMedia) Delete() error {
-	return nil
+	insta := media.inst
+	data, err := insta.prepareData(
+		map[string]interface{}{
+			"media_id": media.ID(),
+		},
+	)
+	if err == nil {
+		_, err = insta.sendRequest(
+			&reqOptions{
+				Endpoint: fmt.Sprintf(urlMediaDelete, media.ID()),
+				Query:    generateSignature(data),
+				IsPost:   true,
+			},
+		)
+	}
+	return err
 }
 
 // ID returns Story id
