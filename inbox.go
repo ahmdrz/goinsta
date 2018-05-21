@@ -202,6 +202,40 @@ func (c Conversation) lastItemID() string {
 	return c.Items[n-1].ID
 }
 
+// Like sends heart to the conversation
+//
+// See example: examples/media/likeAll.go
+func (c *Conversation) Like() error {
+	insta := c.inst
+	to, err := prepareRecipients(c)
+	if err != nil {
+		return err
+	}
+
+	thread, err := json.Marshal([]string{c.ID})
+	if err != nil {
+		return err
+	}
+
+	data := insta.prepareDataQuery(
+		map[string]interface{}{
+			"recipient_users": to,
+			"client_context":  generateUUID(),
+			"thread_ids":      b2s(thread),
+			"action":          "send_item",
+		},
+	)
+	_, err = insta.sendRequest(
+		&reqOptions{
+			Connection: "keep-alive",
+			Endpoint:   urlInboxSendLike,
+			Query:      data,
+			IsPost:     true,
+		},
+	)
+	return err
+}
+
 // Send sends message in conversation
 //
 // See example: examples/inbox/sms.go
