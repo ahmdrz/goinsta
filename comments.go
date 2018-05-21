@@ -173,18 +173,20 @@ func (comments *Comments) Sync() {
 //
 // See example: examples/media/commentsAdd.go
 func (comments *Comments) Add(text string) (err error) {
-	var url, data string
+	var opt *reqOptions
 	item := comments.item
 	insta := item.media.instagram()
 
-	var query map[string]string
-
 	switch item.media.(type) {
-	case *StoryMedia: // TODO: story causes error
-		url = urlReplyStory
-		query = insta.prepareDataQuery(
+	case *StoryMedia:
+		to, err := prepareRecipients(item)
+		if err != nil {
+			return err
+		}
+
+		query := insta.prepareDataQuery(
 			map[string]interface{}{
-				"recipient_users": fmt.Sprintf("[[%d]]", item.User.ID),
+				"recipient_users": to,
 				"action":          "send_item",
 				"media_id":        item.ID,
 				"client_context":  generateUUID(),
@@ -193,27 +195,31 @@ func (comments *Comments) Add(text string) (err error) {
 				"reel_id":         item.User.ID,
 			},
 		)
+		opt = &reqOptions{
+			Connection: "keep-alive",
+			Endpoint:   fmt.Sprintf("%s?media_type=%s", urlReplyStory, item.MediaToString()),
+			Query:      query,
+			IsPost:     true,
+		}
 	case *FeedMedia: // normal media
-		url = fmt.Sprintf(urlCommentAdd, item.Pk)
+		var data string
 		data, err = insta.prepareData(
 			map[string]interface{}{
 				"comment_text": text,
 			},
 		)
-		query = generateSignature(data)
+		opt = &reqOptions{
+			Endpoint: fmt.Sprintf(urlCommentAdd, item.Pk),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		}
 	}
 	if err != nil {
 		return err
 	}
 
 	// ignoring response
-	_, err = insta.sendRequest(
-		&reqOptions{
-			Endpoint: url,
-			Query:    query,
-			IsPost:   true,
-		},
-	)
+	_, err = insta.sendRequest(opt)
 	return err
 }
 

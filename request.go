@@ -100,6 +100,13 @@ func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 
 	switch resp.StatusCode {
 	case 200:
+	case 400:
+		ierr := instaError400{}
+		err = json.Unmarshal(body, &ierr)
+		if err == nil {
+			return nil, instaToErr(ierr)
+		}
+		fallthrough
 	default:
 		ierr := instaError{}
 		err = json.Unmarshal(body, &ierr)

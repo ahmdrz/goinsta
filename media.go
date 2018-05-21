@@ -92,6 +92,17 @@ type Item struct {
 	Mentions                 []Mentions
 }
 
+// MediaToString returns Item.MediaType as string.
+func (item *Item) MediaToString() string {
+	switch item.MediaType {
+	case 1:
+		return "photo"
+	case 2:
+		return "video"
+	}
+	return ""
+}
+
 func setToItem(item *Item, media Media) {
 	item.media = media
 	item.User.inst = media.instagram()

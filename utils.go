@@ -1,6 +1,7 @@
 package goinsta
 
 import (
+	"encoding/json"
 	"strconv"
 	"unsafe"
 )
@@ -45,4 +46,20 @@ func toString(i interface{}) string {
 		return s.Error()
 	}
 	return ""
+}
+
+func prepareRecipients(cc interface{}) (bb string, err error) {
+	var b []byte
+	ids := make([][]int64, 0)
+	switch c := cc.(type) {
+	case *Conversation:
+		for i := range c.Users {
+			ids = append(ids, []int64{c.Users[i].ID})
+		}
+	case *Item:
+		ids = append(ids, []int64{c.User.ID})
+	}
+	b, err = json.Marshal(ids)
+	bb = b2s(b)
+	return
 }

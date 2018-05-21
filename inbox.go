@@ -208,15 +208,11 @@ func (c Conversation) lastItemID() string {
 func (c *Conversation) Send(text string) error {
 	insta := c.inst
 	// I DON'T KNOW WHY BUT INSTAGRAM WANTS A DOUBLE SLICE OF INTS FOR ONE ID.
-	ids := make([][]int64, 0)
-	for i := range c.Users {
-		ids = append(ids, []int64{c.Users[i].ID})
-	}
-
-	to, err := json.Marshal(ids)
+	to, err := prepareRecipients(c)
 	if err != nil {
 		return err
 	}
+
 	// I DONT KNOW WHY BUT INSTAGRAM WANTS SLICE OF STRINGS FOR ONE ID
 	thread, err := json.Marshal([]string{c.ID})
 	if err != nil {
@@ -225,7 +221,7 @@ func (c *Conversation) Send(text string) error {
 
 	data := insta.prepareDataQuery(
 		map[string]interface{}{
-			"recipient_users": b2s(to),
+			"recipient_users": to,
 			"client_context":  generateUUID(),
 			"thread_ids":      b2s(thread),
 			"action":          "send_item",

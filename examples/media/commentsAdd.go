@@ -32,17 +32,14 @@ func main() {
 	media.Sync()
 	fmt.Printf("After calling: Comments: %d\n", media.Items[0].CommentCount)
 
-	/*
-		tray, err := inst.Timeline.Stories()
-		e.CheckErr(err)
+	tray, err := inst.Timeline.Stories()
+	e.CheckErr(err)
 
-		story := tray.Stories[0]
-		// commenting your first timeline story xddxdxd
-		fmt.Printf("Sending reply to %s\n", story.Items[0].ID)
-		err = story.Items[0].Comments.Add("xd")
-		e.CheckErr(err)
-		TODO Causes: Media ID is missing
-	*/
+	story := tray.Stories[1]
+	// commenting your first timeline story xddxdxd
+	fmt.Printf("Sending reply to %s %d\n", story.Items[0].Images.GetBest(), story.Items[0].MediaType)
+	err = story.Items[0].Comments.Add("xasfdsaf")
+	e.CheckErr(err)
 
 	if !e.UsingSession {
 		err = inst.Logout()

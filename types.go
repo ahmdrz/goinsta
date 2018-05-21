@@ -32,8 +32,24 @@ type instaError struct {
 	ErrorType string `json:"error_type"`
 }
 
-func instaToErr(ierr instaError) error {
-	return fmt.Errorf("%s: %s (%s)", ierr.Status, ierr.Message, ierr.ErrorType)
+type instaError400 struct {
+	Action     string `json:"action"`
+	StatusCode string `json:"status_code"`
+	Payload    struct {
+		ClientContext string `json:"client_context"`
+		Message       string `json:"message"`
+	} `json:"payload"`
+	Status string `json:"status"`
+}
+
+func instaToErr(err interface{}) error {
+	switch ierr := err.(type) {
+	case instaError:
+		return fmt.Errorf("%s: %s (%s)", ierr.Status, ierr.Message, ierr.ErrorType)
+	case instaError400:
+		return fmt.Errorf("%s: %s", ierr.Status, ierr.Payload.Message)
+	}
+	return fmt.Errorf("Unknown error :)")
 }
 
 type Nametag struct {
@@ -110,6 +126,19 @@ type SavedMedia struct {
 // Images are different quality images
 type Images struct {
 	Versions []Candidate `json:"candidates"`
+}
+
+// GetBest returns the URL of the image with the best quality.
+func (img Images) GetBest() string {
+	best := ""
+	var mh, mw int
+	for _, v := range img.Versions {
+		if v.Width > mw || v.Height > mh {
+			best = v.URL
+			mh, mw = v.Height, v.Width
+		}
+	}
+	return best
 }
 
 type Candidate struct {
