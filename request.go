@@ -8,11 +8,12 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-
-	"github.com/spf13/cast"
 )
 
 type reqOptions struct {
+	// Connection is connection header. Default is "close".
+	Connection string
+
 	// Endpoint is the request path of instagram api
 	Endpoint string
 
@@ -39,6 +40,9 @@ func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 	method := "GET"
 	if o.IsPost {
 		method = "POST"
+	}
+	if o.Connection == "" {
+		o.Connection = "close"
 	}
 
 	u, err := url.Parse(goInstaAPIUrl + o.Endpoint)
@@ -69,9 +73,9 @@ func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 		return
 	}
 
-	req.Header.Set("Connection", "close")
+	req.Header.Set("Connection", o.Connection)
 	req.Header.Set("Accept", "*/*")
-	req.Header.Set("Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
 	req.Header.Set("Cookie2", "$Version=1")
 	req.Header.Set("Accept-Language", "en-US")
 	req.Header.Set("User-Agent", goInstaUserAgent)
@@ -133,7 +137,7 @@ func (insta *Instagram) prepareDataQuery(other ...map[string]interface{}) map[st
 	}
 	for i := range other {
 		for key, value := range other[i] {
-			data[key] = cast.ToString(value)
+			data[key] = toString(value)
 		}
 	}
 	return data
