@@ -203,6 +203,8 @@ func (c Conversation) lastItemID() string {
 }
 
 // Send sends message in conversation
+//
+// See example: examples/inbox/sms.go
 func (c *Conversation) Send(text string) error {
 	insta := c.inst
 	// I DON'T KNOW WHY BUT INSTAGRAM WANTS A DOUBLE SLICE OF INTS FOR ONE ID.
