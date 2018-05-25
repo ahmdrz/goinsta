@@ -261,6 +261,24 @@ func (item *Item) Delete() error {
 	return err
 }
 
+type LikersResponse struct {
+	Users     []User `json:"users"`
+	UserCount int64  `json:"user_count"`
+	Status    string `json:"status"`
+}
+
+func (item *Item) SyncLikers() (LikersResponse, error) {
+	output := LikersResponse{}
+	insta := item.media.instagram()
+	body, err := insta.sendSimpleRequest("media/%s/likers/?", item.ID)
+	if err != nil {
+		return output, err
+	}
+	err = json.Unmarshal(body, &output)
+	item.Likers = output.Users
+	return output, nil
+}
+
 // Unlike mark media item as unliked.
 //
 // See example: examples/media/unlike.go
