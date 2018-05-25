@@ -261,12 +261,14 @@ func (item *Item) Delete() error {
 	return err
 }
 
+// LikersResponse is response of media/?/likers endpoint.
 type LikersResponse struct {
 	Users     []User `json:"users"`
 	UserCount int64  `json:"user_count"`
 	Status    string `json:"status"`
 }
 
+// SyncLikers , fetch likers of a media
 func (item *Item) SyncLikers() (LikersResponse, error) {
 	output := LikersResponse{}
 	insta := item.media.instagram()
