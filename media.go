@@ -592,7 +592,7 @@ func (media *StoryMedia) Next() bool {
 			*media = m
 			media.inst = insta
 			media.endpoint = endpoint
-			media.err = ErrNoMore
+			media.err = ErrNoMore // TODO: See if stories has pagination
 			media.setValues()
 			return true
 		}
