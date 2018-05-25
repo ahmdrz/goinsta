@@ -67,7 +67,7 @@ const (
 	urlMediaUnlike = "media/%s/unlike/"
 	urlMediaSave   = "media/%s/save/"
 	urlMediaSeen   = "media/seen/"
-	urlMediaLikers = "media/%s/likers/?"
+	urlMediaLikers = "media/%s/likers/"
 
 	// comments
 	urlCommentAdd     = "media/%d/comment/"

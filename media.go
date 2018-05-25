@@ -261,24 +261,21 @@ func (item *Item) Delete() error {
 	return err
 }
 
-// LikersResponse is response of media/?/likers endpoint.
-type LikersResponse struct {
-	Users     []User `json:"users"`
-	UserCount int64  `json:"user_count"`
-	Status    string `json:"status"`
-}
-
-// SyncLikers , fetch likers of a media
-func (item *Item) SyncLikers() (LikersResponse, error) {
-	output := LikersResponse{}
+// SyncLikers fetch new likers of a media
+//
+// This function updates Item.Likers value
+func (item *Item) SyncLikers() error {
+	resp := respLikers{}
 	insta := item.media.instagram()
 	body, err := insta.sendSimpleRequest(urlMediaLikers, item.ID)
 	if err != nil {
-		return output, err
+		return err
 	}
-	err = json.Unmarshal(body, &output)
-	item.Likers = output.Users
-	return output, nil
+	err = json.Unmarshal(body, &resp)
+	if err == nil {
+		item.Likers = resp.Users
+	}
+	return err
 }
 
 // Unlike mark media item as unliked.

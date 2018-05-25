@@ -305,6 +305,12 @@ type InboxItemLike struct {
 	UserID    int64  `json:"user_id"`
 }
 
+type respLikers struct {
+	Users     []User `json:"users"`
+	UserCount int64  `json:"user_count"`
+	Status    string `json:"status"`
+}
+
 type threadResp struct {
 	Conversation Conversation `json:"thread"`
 	Status       string       `json:"status"`
