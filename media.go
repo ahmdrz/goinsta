@@ -272,7 +272,7 @@ type LikersResponse struct {
 func (item *Item) SyncLikers() (LikersResponse, error) {
 	output := LikersResponse{}
 	insta := item.media.instagram()
-	body, err := insta.sendSimpleRequest("media/%s/likers/?", item.ID)
+	body, err := insta.sendSimpleRequest(urlMediaLikers, item.ID)
 	if err != nil {
 		return output, err
 	}
