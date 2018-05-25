@@ -112,6 +112,7 @@ type User struct {
 	FollowerCount              int    `json:"follower_count"`
 	FollowingCount             int    `json:"following_count"`
 	FollowingTagCount          int    `json:"following_tag_count"`
+	MutualFollowersID          []int  `json:"profile_context_mutual_follow_ids"`
 	GeoMediaCount              int    `json:"geo_media_count"`
 	ExternalURL                string `json:"external_url"`
 	HasBiographyTranslation    bool   `json:"has_biography_translation"`
