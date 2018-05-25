@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package feed
+package highlights
 
 import (
 	"fmt"
@@ -30,11 +30,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// mediaCmd represents the media command
-var mediaCmd = &cobra.Command{
-	Use:     "media",
-	Short:   "Download media in output directory",
-	Example: "goinsta profiles feed media robpike",
+var RootCmd = &cobra.Command{
+	Use:     "highlights",
+	Short:   "Get highlights of a user",
+	Example: "goinsta user highlights robpike",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			fmt.Println("Missing arguments. See example.")
@@ -44,9 +43,8 @@ var mediaCmd = &cobra.Command{
 
 		output, err := cmd.Flags().GetString("output")
 		if err != nil || output == "" {
-			output = "./" + args[0] + "/feed/"
+			output = "./" + args[0] + "/highlights/"
 		}
-
 		inst := utils.New()
 
 		user, err := inst.Profiles.ByName(args[0])
@@ -54,17 +52,21 @@ var mediaCmd = &cobra.Command{
 			id, _ := strconv.ParseInt(args[0], 10, 64)
 			user, err = inst.Profiles.ByID(id)
 			if err != nil {
-				fmt.Printf("Invalid username or id: %s", args[0])
+				fmt.Printf("Invalid username or id: %s\n", args[0])
 				os.Exit(1)
 			}
 		}
 
-		media := user.Feed(nil)
+		hlgts, err := user.Highlights()
+		if err != nil {
+			fmt.Printf("error getting highlights: %s\n", err)
+			os.Exit(1)
+		}
 
-		fmt.Println("Downloading feed of", user.Username)
-		for media.Next() {
-			pgb := pb.StartNew(len(media.Items))
-			for _, item := range media.Items {
+		fmt.Println("Downloading highlights of", user.Username)
+		for _, h := range hlgts {
+			pgb := pb.StartNew(len(h.Items))
+			for _, item := range h.Items {
 				err := item.Download(output, "")
 				if err != nil {
 					fmt.Println(err)
@@ -74,8 +76,4 @@ var mediaCmd = &cobra.Command{
 			pgb.Finish()
 		}
 	},
-}
-
-func init() {
-	RootCmd.AddCommand(mediaCmd)
 }

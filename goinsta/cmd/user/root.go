@@ -24,19 +24,21 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/spf13/cobra"
 	"github.com/ahmdrz/goinsta/goinsta/cmd/user/block"
 	"github.com/ahmdrz/goinsta/goinsta/cmd/user/feed"
 	"github.com/ahmdrz/goinsta/goinsta/cmd/user/follow"
 	"github.com/ahmdrz/goinsta/goinsta/cmd/user/followers"
 	"github.com/ahmdrz/goinsta/goinsta/cmd/user/following"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/user/highlights"
 	"github.com/ahmdrz/goinsta/goinsta/cmd/user/info"
 	"github.com/ahmdrz/goinsta/goinsta/cmd/user/stories"
 	"github.com/ahmdrz/goinsta/goinsta/cmd/user/unblock"
 	"github.com/ahmdrz/goinsta/goinsta/cmd/user/unfollow"
+	"github.com/spf13/cobra"
 )
 
 func init() {
+	RootCmd.AddCommand(highlights.RootCmd)
 	RootCmd.AddCommand(feed.RootCmd)
 	RootCmd.AddCommand(story.RootCmd)
 	RootCmd.AddCommand(info.RootCmd)

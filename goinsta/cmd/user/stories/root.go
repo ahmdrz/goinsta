@@ -25,9 +25,9 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/ahmdrz/goinsta/utils"
 	"github.com/cheggaaa/pb"
 	"github.com/spf13/cobra"
-	"github.com/ahmdrz/goinsta/utils"
 )
 
 var RootCmd = &cobra.Command{
@@ -43,7 +43,7 @@ var RootCmd = &cobra.Command{
 
 		output, err := cmd.Flags().GetString("output")
 		if err != nil || output == "" {
-			output = "./" + args[0] + "/"
+			output = "./" + args[0] + "/stories/"
 		}
 		inst := utils.New()
 
