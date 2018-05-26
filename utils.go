@@ -2,6 +2,10 @@ package goinsta
 
 import (
 	"encoding/json"
+	"image"
+	_ "image/jpeg"
+	_ "image/png"
+	"io"
 	"strconv"
 	"unsafe"
 )
@@ -62,4 +66,13 @@ func prepareRecipients(cc interface{}) (bb string, err error) {
 	b, err = json.Marshal(ids)
 	bb = b2s(b)
 	return
+}
+
+// getImageDimensionFromReader return image dimension , types is .jpg and .png
+func getImageDimensionFromReader(rdr io.Reader) (int, int, error) {
+	image, _, err := image.DecodeConfig(rdr)
+	if err != nil {
+		return 0, 0, err
+	}
+	return image.Width, image.Height, nil
 }

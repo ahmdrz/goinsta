@@ -9,6 +9,15 @@ const (
 	goInstaSigKeyVersion = "4"
 )
 
+var (
+	goInstaDeviceSettings = map[string]interface{}{
+		"manufacturer":    "Xiaomi",
+		"model":           "HM 1SW",
+		"android_version": 18,
+		"android_release": "4.3",
+	}
+)
+
 // Endpoints (with format vars)
 const (
 	// login
