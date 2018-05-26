@@ -199,10 +199,8 @@ type timeStoryResp struct {
 }
 
 type trayResp struct {
-	Reels struct {
-		Media map[string]StoryMedia
-	} `json:"reels"`
-	Status string `json:"status"`
+	Reels  map[string]StoryMedia `json:"reels"`
+	Status string                `json:"status"`
 }
 
 // Tray is a set of story media received from timeline calls.

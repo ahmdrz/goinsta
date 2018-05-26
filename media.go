@@ -580,9 +580,10 @@ func (media *StoryMedia) Sync() error {
 			{"COMPRESSION", "ETC2_COMPRESSION"},
 		}
 	*/
+	id := media.Pk.(string)
 	data, err := insta.prepareData(
 		map[string]interface{}{
-			"user_ids": fmt.Sprintf(`["%s"]`, media.Pk),
+			"user_ids": []string{id},
 		},
 	)
 	if err != nil {
@@ -600,10 +601,10 @@ func (media *StoryMedia) Sync() error {
 		resp := trayResp{}
 		err = json.Unmarshal(body, &resp)
 		if err == nil {
-			m, ok := resp.Reels.Media[media.Pk.(string)]
+			m, ok := resp.Reels[id]
 			if ok {
-				m.setValues()
 				media.Items = m.Items
+				media.setValues()
 				return nil
 			}
 			err = fmt.Errorf("cannot find %s structure in response")
