@@ -380,22 +380,22 @@ func (user *User) Stories() *StoryMedia {
 //
 // See example: examples/user/highlights.go
 func (user *User) Highlights() ([]StoryMedia, error) {
-	query := []struct {
-		Name  string `json:"name"`
-		Value string `json:"value"`
-	}{
-		{"SUPPORTED_SDK_VERSIONS", "9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0,17.0,18.0,19.0,20.0,21.0,22.0,23.0,24.0"},
-		{"FACE_TRACKER_VERSION", "9"},
-		{"segmentation", "segmentation_enabled"},
-		{"COMPRESSION", "ETC2_COMPRESSION"},
-	}
-	data, err := json.Marshal(query)
+	/*
+		TODO
+		query := []struct {
+			Name  string `json:"name"`
+			Value string `json:"value"`
+		}{
+			{"SUPPORTED_SDK_VERSIONS", "9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0,17.0,18.0,19.0,20.0,21.0,22.0,23.0,24.0"},
+			{"FACE_TRACKER_VERSION", "9"},
+			{"segmentation", "segmentation_enabled"},
+			{"COMPRESSION", "ETC2_COMPRESSION"},
+		}
+	*/
+	//data, err := json.Marshal(query)
 	body, err := user.inst.sendRequest(
 		&reqOptions{
-			Endpoint: fmt.Sprintf(urlUserHighlights, user.ID),
-			Query: map[string]string{
-				"supported_capabilities_new": b2s(data),
-			},
+			Endpoint:   fmt.Sprintf(urlUserHighlights, user.ID),
 			Connection: "keep-alive",
 		},
 	)
@@ -404,6 +404,14 @@ func (user *User) Highlights() ([]StoryMedia, error) {
 		err = json.Unmarshal(body, &tray)
 		if err == nil {
 			tray.set(user.inst, "")
+			for i := range tray.Stories {
+				if len(tray.Stories[i].Items) == 0 {
+					err = tray.Stories[i].Sync()
+					if err != nil {
+						return nil, err
+					}
+				}
+			}
 			return tray.Stories, nil
 		}
 	}

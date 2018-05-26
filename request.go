@@ -111,7 +111,7 @@ func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 	case 400:
 		ierr := instaError400{}
 		err = json.Unmarshal(body, &ierr)
-		if err == nil {
+		if err == nil && ierr.Payload.Message != "" {
 			return nil, instaToErr(ierr)
 		}
 		fallthrough

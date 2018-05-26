@@ -564,6 +564,54 @@ func (media *StoryMedia) Seen() error {
 }
 */
 
+// Sync function is used when Highlight must be sync.
+// Highlight must be sync when User.Highlights does not return any object inside StoryMedia slice.
+//
+// This function does NOT update Stories items.
+//
+// This function updates StoryMedia.Items
+func (media *StoryMedia) Sync() error {
+	insta := media.inst
+	/*
+		query := []trayRequest{
+			{"SUPPORTED_SDK_VERSIONS", "9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0,17.0,18.0,19.0,20.0,21.0,22.0,23.0,24.0"},
+			{"FACE_TRACKER_VERSION", "9"},
+			{"segmentation", "segmentation_enabled"},
+			{"COMPRESSION", "ETC2_COMPRESSION"},
+		}
+	*/
+	data, err := insta.prepareData(
+		map[string]interface{}{
+			"user_ids": fmt.Sprintf(`["%s"]`, media.Pk),
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: urlReelMedia,
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	if err == nil {
+		resp := trayResp{}
+		err = json.Unmarshal(body, &resp)
+		if err == nil {
+			m, ok := resp.Reels.Media[media.Pk.(string)]
+			if ok {
+				m.setValues()
+				media.Items = m.Items
+				return nil
+			}
+			err = fmt.Errorf("cannot find %s structure in response")
+		}
+	}
+	return err
+}
+
 // Next allows pagination after calling:
 // User.Stories
 //
