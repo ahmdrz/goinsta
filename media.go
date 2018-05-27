@@ -368,8 +368,8 @@ func (item *Item) Save() error {
 //
 // See example: examples/media/itemDownload.go
 func (item *Item) Download(folder, name string) (imgs, vds []string, err error) {
-	imgFolder := fmt.Sprintf("%s%cimages%c", folder, os.PathSeparator, os.PathSeparator)
-	vidFolder := fmt.Sprintf("%s%cvideos%c", folder, os.PathSeparator, os.PathSeparator)
+	imgFolder := path.Join(folder, "images")
+	vidFolder := path.Join(folder, "videos")
 	inst := item.media.instagram()
 
 	os.MkdirAll(folder, 0777)
@@ -384,9 +384,9 @@ func (item *Item) Download(folder, name string) (imgs, vds []string, err error) 
 				return nil, nil, err
 			}
 
-			nname = fmt.Sprintf("%s%c%s", imgFolder, os.PathSeparator, path.Base(u.Path))
+			nname = path.Join(imgFolder, path.Base(u.Path))
 		} else {
-			nname = fmt.Sprintf("%s%c%s", imgFolder, os.PathSeparator, nname)
+			nname = path.Join(imgFolder, nname)
 		}
 		nname = getname(nname)
 
@@ -405,9 +405,9 @@ func (item *Item) Download(folder, name string) (imgs, vds []string, err error) 
 				return nil, nil, err
 			}
 
-			nname = fmt.Sprintf("%s%c%s", vidFolder, os.PathSeparator, path.Base(u.Path))
+			nname = path.Join(vidFolder, path.Base(u.Path))
 		} else {
-			nname = fmt.Sprintf("%s%c%s", vidFolder, os.PathSeparator, nname)
+			nname = path.Join(vidFolder, nname)
 		}
 		nname = getname(nname)
 
