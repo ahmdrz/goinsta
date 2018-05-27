@@ -361,6 +361,7 @@ func (item *Item) Save() error {
 // the default value name.
 //
 // If file exists it will be saved
+// This function makes folder automatically
 //
 // See example: examples/media/itemDownload.go
 func (item *Item) Download(folder, name string) error {
