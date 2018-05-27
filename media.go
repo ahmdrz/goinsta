@@ -133,20 +133,20 @@ func getname(name string) string {
 	return name
 }
 
-func download(inst *Instagram, url, dst string) error {
+func download(inst *Instagram, url, dst string) (string, error) {
 	file, err := os.Create(dst)
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer file.Close()
 
 	resp, err := inst.c.Get(url)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	_, err = io.Copy(file, resp.Body)
-	return err
+	return dst, err
 }
 
 type bestMedia struct {
@@ -363,8 +363,11 @@ func (item *Item) Save() error {
 // If file exists it will be saved
 // This function makes folder automatically
 //
+// This function returns an slice of location of downloaded items
+// The first slice returns images and the second one videos.
+//
 // See example: examples/media/itemDownload.go
-func (item *Item) Download(folder, name string) error {
+func (item *Item) Download(folder, name string) (imgs, vds []string, err error) {
 	imgFolder := fmt.Sprintf("%s%cimages%c", folder, os.PathSeparator, os.PathSeparator)
 	vidFolder := fmt.Sprintf("%s%cvideos%c", folder, os.PathSeparator, os.PathSeparator)
 	inst := item.media.instagram()
@@ -378,7 +381,7 @@ func (item *Item) Download(folder, name string) error {
 		if name == "" {
 			u, err := neturl.Parse(url)
 			if err != nil {
-				return err
+				return nil, nil, err
 			}
 
 			nname = fmt.Sprintf("%s%c%s", imgFolder, os.PathSeparator, path.Base(u.Path))
@@ -387,10 +390,11 @@ func (item *Item) Download(folder, name string) error {
 		}
 		nname = getname(nname)
 
-		err := download(inst, url, nname)
+		path, err := download(inst, url, nname)
 		if err != nil {
-			return err
+			return nil, nil, err
 		}
+		imgs = append(imgs, path)
 	}
 
 	for _, url := range getBest(item.Videos) {
@@ -398,7 +402,7 @@ func (item *Item) Download(folder, name string) error {
 		if name == "" {
 			u, err := neturl.Parse(url)
 			if err != nil {
-				return err
+				return nil, nil, err
 			}
 
 			nname = fmt.Sprintf("%s%c%s", vidFolder, os.PathSeparator, path.Base(u.Path))
@@ -407,12 +411,13 @@ func (item *Item) Download(folder, name string) error {
 		}
 		nname = getname(nname)
 
-		err := download(inst, url, nname)
+		path, err := download(inst, url, nname)
 		if err != nil {
-			return err
+			return nil, nil, err
 		}
+		vds = append(vds, path)
 	}
-	return nil
+	return imgs, vds, err
 }
 
 // TopLikers returns string slice or single string (inside string slice)
