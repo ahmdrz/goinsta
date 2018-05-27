@@ -159,6 +159,11 @@ type User struct {
 	Friendship                   Friendship   `json:"friendship_status"`
 }
 
+// NewUser returns prepared user to be used with his functions.
+func (inst *Instagram) NewUser() *User {
+	return &User{inst: inst}
+}
+
 // Sync updates user info
 func (user *User) Sync() error {
 	insta := user.inst
