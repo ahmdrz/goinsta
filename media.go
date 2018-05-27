@@ -477,6 +477,7 @@ type StoryMedia struct {
 	ExpiringAt      float64     `json:"expiring_at"`
 	HaveBeenSeen    float64     `json:"seen"`
 	CanReply        bool        `json:"can_reply"`
+	Title           string      `json:"title"`
 	CanReshare      bool        `json:"can_reshare"`
 	ReelType        string      `json:"reel_type"`
 	User            User        `json:"user"`
