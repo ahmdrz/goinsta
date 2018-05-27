@@ -154,64 +154,30 @@ type bestMedia struct {
 	url  string
 }
 
-func getBest(obj interface{}) []string {
-	m := make(map[string]bestMedia)
+func getBest(obj interface{}) string {
+	m := bestMedia{}
 
 	switch t := obj.(type) {
 	// getting best video
 	case []Video:
 		for _, video := range t {
-			v, ok := m[video.ID]
-			if !ok {
-				m[video.ID] = bestMedia{
-					w:   video.Width,
-					h:   video.Height,
-					url: video.URL,
-				}
-			} else {
-				if v.w < video.Width && video.Height > v.h {
-					m[video.ID] = bestMedia{
-						w:   video.Width,
-						h:   video.Height,
-						url: video.URL,
-					}
-				}
+			if m.w < video.Width && video.Height > m.h && video.URL != "" {
+				m.w = video.Width
+				m.h = video.Height
+				m.url = video.URL
 			}
 		}
 		// getting best image
 	case []Candidate:
 		for _, image := range t {
-			url, err := neturl.Parse(image.URL)
-			if err != nil {
-				continue
-			}
-
-			base := path.Base(url.Path)
-			i, ok := m[base]
-			if !ok {
-				m[base] = bestMedia{
-					w:   image.Width,
-					h:   image.Height,
-					url: image.URL,
-				}
-			} else {
-				if i.w < image.Width && image.Height > i.h {
-					m[base] = bestMedia{
-						w:   image.Width,
-						h:   image.Height,
-						url: image.URL,
-					}
-				}
+			if m.w < image.Width && image.Height > m.h && image.URL != "" {
+				m.w = image.Width
+				m.h = image.Height
+				m.url = image.URL
 			}
 		}
 	}
-	s := []string{}
-	// getting best to return in string slice
-	for _, v := range m {
-		s = append(s, v.url)
-	}
-	m = nil
-	return s
+	return m.url
 }
 
 // Hastags returns caption hashtags.
@@ -364,10 +330,12 @@ func (item *Item) Save() error {
 // This function makes folder automatically
 //
 // This function returns an slice of location of downloaded items
-// The first slice returns images and the second one videos.
+// The returned values are the output path of images and videos.
 //
 // See example: examples/media/itemDownload.go
-func (item *Item) Download(folder, name string) (imgs, vds []string, err error) {
+func (item *Item) Download(folder, name string) (imgs, vds string, err error) {
+	var u *neturl.URL
+	var nname string
 	imgFolder := path.Join(folder, "images")
 	vidFolder := path.Join(folder, "videos")
 	inst := item.media.instagram()
@@ -376,12 +344,12 @@ func (item *Item) Download(folder, name string) (imgs, vds []string, err error) 
 	os.MkdirAll(imgFolder, 0777)
 	os.MkdirAll(vidFolder, 0777)
 
-	for _, url := range getBest(item.Images.Versions) {
-		var nname string
+	imgs = getBest(item.Images.Versions)
+	if imgs != "" {
 		if name == "" {
-			u, err := neturl.Parse(url)
+			u, err = neturl.Parse(imgs)
 			if err != nil {
-				return nil, nil, err
+				return
 			}
 
 			nname = path.Join(imgFolder, path.Base(u.Path))
@@ -390,19 +358,18 @@ func (item *Item) Download(folder, name string) (imgs, vds []string, err error) 
 		}
 		nname = getname(nname)
 
-		path, err := download(inst, url, nname)
+		imgs, err = download(inst, imgs, nname)
 		if err != nil {
-			return nil, nil, err
+			return
 		}
-		imgs = append(imgs, path)
 	}
 
-	for _, url := range getBest(item.Videos) {
-		var nname string
+	vds = getBest(item.Videos)
+	if vds != "" {
 		if name == "" {
-			u, err := neturl.Parse(url)
+			u, err = neturl.Parse(vds)
 			if err != nil {
-				return nil, nil, err
+				return
 			}
 
 			nname = path.Join(vidFolder, path.Base(u.Path))
@@ -411,11 +378,10 @@ func (item *Item) Download(folder, name string) (imgs, vds []string, err error) 
 		}
 		nname = getname(nname)
 
-		path, err := download(inst, url, nname)
+		vds, err = download(inst, vds, nname)
 		if err != nil {
-			return nil, nil, err
+			return
 		}
-		vds = append(vds, path)
 	}
 	return imgs, vds, err
 }
