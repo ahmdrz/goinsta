@@ -24,8 +24,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/spf13/cobra"
 	"github.com/ahmdrz/goinsta/utils"
+	"github.com/spf13/cobra"
 )
 
 var RootCmd = &cobra.Command{
@@ -56,13 +56,13 @@ Fullname: %s
 ID: %d
 ProfilePicURL: %s
 Email: %s
-Gender: %d
+Phone number: %s
 Biography: %s
 Followers: %d
 Following: %d
 You follow him/her: %v
 `, user.Username, user.FullName, user.ID, user.ProfilePicURL,
-			user.PublicEmail, user.Gender, user.Biography, user.FollowerCount,
+			user.PublicEmail, user.PublicPhoneNumber, user.Biography, user.FollowerCount,
 			user.FollowingCount, user.Friendship.Following)
 	},
 }
