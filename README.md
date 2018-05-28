@@ -5,6 +5,12 @@
 
 [![Build Status](https://travis-ci.org/ahmdrz/goinsta.svg?branch=master)](https://travis-ci.org/ahmdrz/goinsta) [![GoDoc](https://godoc.org/github.com/ahmdrz/goinsta?status.svg)](https://godoc.org/github.com/ahmdrz/goinsta) [![Go Report Card](https://goreportcard.com/badge/github.com/ahmdrz/goinsta)](https://goreportcard.com/report/github.com/ahmdrz/goinsta) [![Coverage Status](https://coveralls.io/repos/github/ahmdrz/goinsta/badge.svg?branch=master)](https://coveralls.io/github/ahmdrz/goinsta?branch=master)
 
+## Versioning
+
+Goinsta used gopkg.in as versioning control. Stable new API is the version v2.0. You can get it using:
+```bash
+go get -u -v gopkg.in/ahmdrz/goinsta.v2
+```
 ## Features
 
 * **HTTP2 by default. Goinsta uses HTTP2 client enhancing performance.**
@@ -29,13 +35,13 @@ for i in `grep -r ahmdrz ./ | awk '{split($0, a, ":"); print a[1]}'`; do sed -i 
 
 ## Package installation 
 
-`go get -u -v github.com/ahmdrz/goinsta`
+`go get -u -v gopkg.in/ahmdrz/goinsta.v2`
 
 ## CLI installation
 
 ```
-go get -u -v github.com/ahmdrz/goinsta
-go install github.com/ahmdrz/goinsta/goinsta
+go get -u -v gopkg.in/ahmdrz/goinsta.v2
+go install gopkg.in/ahmdrz/goinsta.v2
 ```
 
 ## Example
@@ -46,25 +52,28 @@ package main
 import (
 	"fmt"
 
-	"github.com/ahmdrz/goinsta"
+	"gopkg.in/ahmdrz/goinsta.v2"
 )
 
 func main() {
+  //insta, err := goinsta.Import("~/.goinsta")
 	insta := goinsta.New("USERNAME", "PASSWORD")
+
+  // also you can use New function from gopkg.in/ahmdrz/goinsta.v2/utils
 
 	if err := insta.Login(); err != nil {
 		fmt.Println(err)
 		return
 	}
-	defer insta.Logout()
+  // export your configuration
+  // after exporting you can use Import function instead of New function.
+  insta.Export("~/.goinsta")
 
 	...
 }
 ```
 
-In the next examples you can use an optional argument to use cache config.
-
-* [**More Examples**](https://github.com/ahmdrz/goinsta/tree/v2/examples)
+* [**More Examples**](https://github.com/ahmdrz/goinsta/tree/master/examples)
 
 ## Legal
 
@@ -87,23 +96,45 @@ This code is in no way affiliated with, authorized, maintained, sponsored or end
 
 ## Schema
 
+The objects of the following schema can point to other objects defined below.
+
 Instagram
 - Account: Personal information and account interactions.
   - Followers
   - Following
   - Feed
+    - FeedMedia
+      - Item(s)
   - Stories
+    - StoryFeed
+      - Item(s)
   - Liked
+    - FeedMedia
+      - Item(s)
   - Saved
+    - SavedMedia
+      - Item(s)
   - Tags
+    - FeedMedia
+      - Item(s)
+  - Blocked
+    - BlockedUser(s)
 - Profiles: User interaction.
   - Blocked
+    - BlockedUser(s)
   - Get user using ID
+    - User
   - Get user using Username
+    - User
 - Media:
-  - Comments
+  - Items
+  - Comments # Comments and Comment are different.
+    - User
+    - Comment(s) # Slice of Comment
   - Likes
   - Likers
+- Item
+  - Items # If it is a carousel.
 - Search:
   - Location
   - Username
@@ -115,4 +146,5 @@ Instagram
   - Recent
 - Hashtag: Hashtag allows user to search using hashtags.
   - Stories
-  - Media
+    - StoryMedia
+  - Media # By default hashtag contains Medias in the structure

@@ -23,7 +23,7 @@ func main() {
 
 	for media.Next() {
 		for _, item := range media.Items {
-			err = item.Download("./files/", "")
+			_, _, err = item.Download("./files/", "")
 			if err != nil {
 				fmt.Println(err)
 				return
