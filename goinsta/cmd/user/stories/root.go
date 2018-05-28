@@ -63,7 +63,7 @@ var RootCmd = &cobra.Command{
 		for media.Next() {
 			pgb := pb.StartNew(len(media.Items))
 			for _, item := range media.Items {
-				err := item.Download(output, "")
+				_, _, err := item.Download(output, "")
 				if err != nil {
 					fmt.Println(err)
 				}

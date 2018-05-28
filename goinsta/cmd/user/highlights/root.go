@@ -67,7 +67,7 @@ var RootCmd = &cobra.Command{
 		for _, h := range hlgts {
 			pgb := pb.StartNew(len(h.Items))
 			for _, item := range h.Items {
-				err := item.Download(output, "")
+				_, _, err := item.Download(output, "")
 				if err != nil {
 					fmt.Println(err)
 				}

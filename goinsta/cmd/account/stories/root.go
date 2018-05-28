@@ -23,9 +23,9 @@ package story
 import (
 	"fmt"
 
+	"github.com/ahmdrz/goinsta/utils"
 	"github.com/cheggaaa/pb"
 	"github.com/spf13/cobra"
-	"github.com/ahmdrz/goinsta/utils"
 )
 
 var RootCmd = &cobra.Command{
@@ -48,7 +48,7 @@ var RootCmd = &cobra.Command{
 		for media.Next() {
 			pgb := pb.StartNew(len(media.Items))
 			for _, item := range media.Items {
-				err := item.Download(output, "")
+				_, _, err := item.Download(output, "")
 				if err != nil {
 					fmt.Println(err)
 				}
