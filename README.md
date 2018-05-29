@@ -41,7 +41,7 @@ for i in `grep -r ahmdrz ./ | awk '{split($0, a, ":"); print a[1]}'`; do sed -i 
 
 ```
 go get -u -v gopkg.in/ahmdrz/goinsta.v2
-go install gopkg.in/ahmdrz/goinsta.v2
+go install gopkg.in/ahmdrz/goinsta.v2/goinsta
 ```
 
 ## Example
