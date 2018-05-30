@@ -154,7 +154,10 @@ type bestMedia struct {
 	url  string
 }
 
-func getBest(obj interface{}) string {
+// GetBest returns best quality image or video.
+//
+// Arguments can be []Video or []Candidate
+func GetBest(obj interface{}) string {
 	m := bestMedia{}
 
 	switch t := obj.(type) {
@@ -344,7 +347,7 @@ func (item *Item) Download(folder, name string) (imgs, vds string, err error) {
 	os.MkdirAll(imgFolder, 0777)
 	os.MkdirAll(vidFolder, 0777)
 
-	imgs = getBest(item.Images.Versions)
+	imgs = GetBest(item.Images.Versions)
 	if imgs != "" {
 		if name == "" {
 			u, err = neturl.Parse(imgs)
@@ -364,7 +367,7 @@ func (item *Item) Download(folder, name string) (imgs, vds string, err error) {
 		}
 	}
 
-	vds = getBest(item.Videos)
+	vds = GetBest(item.Videos)
 	if vds != "" {
 		if name == "" {
 			u, err = neturl.Parse(vds)
