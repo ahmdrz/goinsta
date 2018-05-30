@@ -112,6 +112,9 @@ func setToItem(item *Item, media Media) {
 	item.media = media
 	item.User.inst = media.instagram()
 	item.Comments = newComments(item)
+	for i := range item.CarouselMedia {
+		setToItem(&item.CarouselMedia[i], media)
+	}
 }
 
 func getname(name string) string {
@@ -334,6 +337,8 @@ func (item *Item) Save() error {
 //
 // This function returns an slice of location of downloaded items
 // The returned values are the output path of images and videos.
+//
+// This function does not download CarouselMedia.
 //
 // See example: examples/media/itemDownload.go
 func (item *Item) Download(folder, name string) (imgs, vds string, err error) {
