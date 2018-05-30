@@ -347,26 +347,6 @@ func (item *Item) Download(folder, name string) (imgs, vds string, err error) {
 	os.MkdirAll(imgFolder, 0777)
 	os.MkdirAll(vidFolder, 0777)
 
-	imgs = GetBest(item.Images.Versions)
-	if imgs != "" {
-		if name == "" {
-			u, err = neturl.Parse(imgs)
-			if err != nil {
-				return
-			}
-
-			nname = path.Join(imgFolder, path.Base(u.Path))
-		} else {
-			nname = path.Join(imgFolder, nname)
-		}
-		nname = getname(nname)
-
-		imgs, err = download(inst, imgs, nname)
-		if err != nil {
-			return
-		}
-	}
-
 	vds = GetBest(item.Videos)
 	if vds != "" {
 		if name == "" {
@@ -382,11 +362,28 @@ func (item *Item) Download(folder, name string) (imgs, vds string, err error) {
 		nname = getname(nname)
 
 		vds, err = download(inst, vds, nname)
-		if err != nil {
-			return
-		}
+		return "", vds, err
 	}
-	return imgs, vds, err
+
+	imgs = GetBest(item.Images.Versions)
+	if imgs != "" {
+		if name == "" {
+			u, err = neturl.Parse(imgs)
+			if err != nil {
+				return
+			}
+
+			nname = path.Join(imgFolder, path.Base(u.Path))
+		} else {
+			nname = path.Join(imgFolder, nname)
+		}
+		nname = getname(nname)
+
+		imgs, err = download(inst, imgs, nname)
+		return imgs, "", err
+	}
+
+	return imgs, vds, fmt.Errorf("cannot find any image or video")
 }
 
 // TopLikers returns string slice or single string (inside string slice)
