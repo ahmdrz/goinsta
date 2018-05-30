@@ -113,6 +113,7 @@ func setToItem(item *Item, media Media) {
 	item.User.inst = media.instagram()
 	item.Comments = newComments(item)
 	for i := range item.CarouselMedia {
+		item.CarouselMedia[i].User = item.User
 		setToItem(&item.CarouselMedia[i], media)
 	}
 }
