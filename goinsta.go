@@ -345,9 +345,15 @@ func (inst *Instagram) expose() error {
 	return err
 }
 
-// AcquireFeed returns initilised FeedMedia
+// GetMedia returns media specified by id.
 //
-// Use FeedMedia.Sync() to update FeedMedia information. Do not forget to set id (you can use FeedMedia.SetID)
-func (inst *Instagram) AcquireFeed() *FeedMedia {
-	return &FeedMedia{inst: inst}
+// The argument can be int64 or string
+//
+// See example: examples/media/like.go
+func (inst *Instagram) GetMedia(o interface{}) (*FeedMedia, error) {
+	media := &FeedMedia{
+		inst:   inst,
+		NextID: o,
+	}
+	return media, media.Sync()
 }
