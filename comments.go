@@ -19,18 +19,21 @@ type Comments struct {
 	CaptionIsEdited                bool      `json:"caption_is_edited"`
 	HasMoreComments                bool      `json:"has_more_comments"`
 	HasMoreHeadloadComments        bool      `json:"has_more_headload_comments"`
+	ThreadingEnabled               bool      `json:"threading_enabled"`
 	MediaHeaderDisplay             string    `json:"media_header_display"`
+	InitiateAtTop                  bool      `json:"initiate_at_top"`
+	InsertNewCommentToTop          bool      `json:"insert_new_comment_to_top"`
+	PreviewComments                []Comment `json:"preview_comments"`
+	NextMinID                      string    `json:"next_min_id"`
+	CommentLikesEnabled            bool      `json:"comment_likes_enabled"`
 	DisplayRealtimeTypingIndicator bool      `json:"display_realtime_typing_indicator"`
-	NextID                         string    `json:"next_max_id"`
-	LastID                         string    `json:"next_min_id"`
 	Status                         string    `json:"status"`
-
-	//PreviewComments                []Comment   `json:"preview_comments"`
+	//PreviewComments                []Comment `json:"preview_comments"`
 }
 
 func (c *Comments) setValues() {
 	for i := range c.Items {
-		c.Items[i].inst = c.item.media.instagram()
+		c.Items[i].setValues(c.item.media.instagram())
 	}
 }
 
@@ -116,26 +119,16 @@ func (comments *Comments) Next() bool {
 	}
 
 	item := comments.item
-	insta := comments.item.media.instagram()
-	data, err := insta.prepareData(
-		map[string]interface{}{
-			"can_support_threading": true,
-			"max_id":                comments.NextID,
-			"min_id":                comments.LastID,
-		},
-	)
-	if err != nil {
-		comments.err = err
-		return false
-	}
-
+	insta := item.media.instagram()
 	endpoint := comments.endpoint
 
 	body, err := insta.sendRequest(
 		&reqOptions{
 			Endpoint: endpoint,
-			Query:    generateSignature(data),
-			IsPost:   true,
+			Query: map[string]string{
+				"can_support_threading": "true",
+				"min_id":                comments.NextMinID,
+			},
 		},
 	)
 	if err == nil {
@@ -145,7 +138,7 @@ func (comments *Comments) Next() bool {
 			*comments = c
 			comments.endpoint = endpoint
 			comments.item = item
-			if !comments.HasMoreComments || comments.NextID == "" {
+			if !comments.HasMoreComments || comments.NextMinID == "" {
 				comments.err = ErrNoMore
 			}
 			comments.setValues()
@@ -302,7 +295,23 @@ type Comment struct {
 	InlineComposerDisplayCondition string    `json:"inline_composer_display_condition"`
 	OtherPreviewUsers              []User    `json:"other_preview_users"`
 	PreviewChildComments           []Comment `json:"preview_child_comments"`
+	NextMaxChildCursor             string    `json:"next_max_child_cursor,omitempty"`
+	HasMoreTailChildComments       bool      `json:"has_more_tail_child_comments,omitempty"`
+	NextMinChildCursor             string    `json:"next_min_child_cursor,omitempty"`
+	HasMoreHeadChildComments       bool      `json:"has_more_head_child_comments,omitempty"`
+	NumTailChildComments           int       `json:"num_tail_child_comments,omitempty"`
+	NumHeadChildComments           int       `json:"num_head_child_comments,omitempty"`
 	Status                         string    `json:"status"`
+}
+
+func (c *Comment) setValues(inst *Instagram) {
+	c.User.inst = inst
+	for i := range c.OtherPreviewUsers {
+		c.OtherPreviewUsers[i].inst = inst
+	}
+	for i := range c.PreviewChildComments {
+		c.PreviewChildComments[i].setValues(inst)
+	}
 }
 
 func (c Comment) getid() string {
