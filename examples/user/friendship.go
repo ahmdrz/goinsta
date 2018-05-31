@@ -16,17 +16,13 @@ func main() {
 	user, err := inst.Profiles.ByName(os.Args[2])
 	e.CheckErr(err)
 
-	media := user.Feed()
+	// At this context you can use:
+	// user.FriendShip()
+	// user.Sync(true)
+	err = user.Sync(true)
+	e.CheckErr(err)
 
-	for media.Next() {
-		fmt.Printf("Printing %d items\n", len(media.Items))
-		for _, item := range media.Items {
-			if len(item.Images.Versions) != 0 {
-				fmt.Printf("  %v - %s\n", item.ID, item.Images.Versions[0].URL)
-			}
-		}
-	}
-	fmt.Println(media.Error())
+	fmt.Println("Following:", user.Friendship.Following)
 
 	if !e.UsingSession {
 		err = inst.Logout()

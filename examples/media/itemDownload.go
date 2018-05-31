@@ -17,7 +17,7 @@ func main() {
 	e.CheckErr(err)
 
 	// You can downlaod Stories or Feed images.
-	// media := user.Feed(nil)
+	// media := user.Feed()
 	media := user.Stories()
 	e.CheckErr(err)
 
