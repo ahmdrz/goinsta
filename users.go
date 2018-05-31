@@ -167,7 +167,7 @@ func (inst *Instagram) NewUser() *User {
 // Sync updates user info
 //
 // params can be:
-// bool: must be true if you want to include FriendShip call. See goinsta.FriendShip
+// - bool: must be true if you want to include FriendShip call. See goinsta.FriendShip
 //
 // See example: examples/user/friendship.go
 func (user *User) Sync(params ...interface{}) error {
@@ -365,7 +365,7 @@ func (user *User) FriendShip() error {
 // Feed returns user feeds (media)
 //
 // params can be:
-// string: timestamp of the minimum media timestamp.
+// - string: timestamp of the minimum media timestamp.
 //
 // For pagination use FeedMedia.Next()
 //
