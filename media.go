@@ -160,12 +160,17 @@ type bestMedia struct {
 
 // GetBest returns best quality image or video.
 //
-// Arguments can be []Video or []Candidate
+// Arguments can be []Video, []Candidate or Item/*Item
 func GetBest(obj interface{}) string {
 	m := bestMedia{}
 
 	switch t := obj.(type) {
 	// getting best video
+	case Item, *Item:
+		url := GetBest(t.Images.Versions)
+		if url == "" {
+			return GetBest(t.Videos)
+		}
 	case []Video:
 		for _, video := range t {
 			if m.w < video.Width && video.Height > m.h && video.URL != "" {
