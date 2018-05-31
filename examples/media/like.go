@@ -13,9 +13,8 @@ func main() {
 	inst, err := e.InitGoinsta("<media id>")
 	e.CheckErr(err)
 
-	media := inst.AcquireFeed()
-	media.SetID(os.Args[2])
-	media.Sync()
+	media, err := inst.GetMedia(os.Args[2])
+	e.CheckErr(err)
 
 	fmt.Printf("Liked: %v\n", media.Items[0].HasLiked)
 	media.Items[0].Like()

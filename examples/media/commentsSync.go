@@ -13,9 +13,8 @@ func main() {
 	inst, err := e.InitGoinsta("<media id>")
 	e.CheckErr(err)
 
-	media := inst.AcquireFeed()
-	media.SetID(os.Args[2])
-	media.Sync()
+	media, err := inst.GetMedia(os.Args[2])
+	e.CheckErr(err)
 
 	fmt.Printf("Comments %d:\n", media.Items[0].CommentCount)
 	// getting items (images or videos)
