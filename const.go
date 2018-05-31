@@ -80,13 +80,13 @@ const (
 	urlMediaLikers = "media/%s/likers/"
 
 	// comments
-	urlCommentAdd     = "media/%d/comment/"
-	urlCommentDelete  = "media/%d/comment/%s/delete/"
-	urlCommentSync    = "media/%d/comments/"
-	urlCommentDisable = "media/%d/disable_comments/"
-	urlCommentEnable  = "media/%d/enable_comments/"
-	urlCommentLike    = "media/%d/comment_like/"
-	urlCommentUnlike  = "media/%d/comment_unlike/"
+	urlCommentAdd     = "media/%s/comment/"
+	urlCommentDelete  = "media/%s/comment/%s/delete/"
+	urlCommentSync    = "media/%s/comments/"
+	urlCommentDisable = "media/%s/disable_comments/"
+	urlCommentEnable  = "media/%s/enable_comments/"
+	urlCommentLike    = "media/%s/comment_like/"
+	urlCommentUnlike  = "media/%s/comment_unlike/"
 
 	// activity
 	urlActivityFollowing = "news/"
