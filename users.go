@@ -165,7 +165,12 @@ func (inst *Instagram) NewUser() *User {
 }
 
 // Sync updates user info
-func (user *User) Sync() error {
+//
+// params can be:
+// bool: must be true if you want to include FriendShip call. See goinsta.FriendShip
+//
+// See example: examples/user/friendship.go
+func (user *User) Sync(params ...interface{}) error {
 	insta := user.inst
 	body, err := insta.sendSimpleRequest(urlUserInfo, user.ID)
 	if err == nil {
@@ -174,6 +179,14 @@ func (user *User) Sync() error {
 		if err == nil {
 			*user = resp.User
 			user.inst = insta
+			for _, param := range params {
+				switch b := param.(type) {
+				case bool:
+					if b {
+						err = user.FriendShip()
+					}
+				}
+			}
 		}
 	}
 	return err
