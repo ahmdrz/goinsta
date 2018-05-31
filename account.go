@@ -246,17 +246,27 @@ func (account *Account) Following() *Users {
 
 // Feed returns current account feed
 //
+// 	params can be:
+// 		string: timestamp of the minimum media timestamp.
+//
 // minTime is the minimum timestamp of media.
 //
 // For pagination use FeedMedia.Next()
-func (account *Account) Feed(minTime []byte) *FeedMedia {
+func (account *Account) Feed(params ...interface{}) *FeedMedia {
 	insta := account.inst
 
 	media := &FeedMedia{}
 	media.inst = insta
-	media.timestamp = string(minTime)
 	media.endpoint = urlUserFeed
 	media.uid = account.ID
+
+	for _, param := range params {
+		switch s := param.(type) {
+		case string:
+			media.timestamp = s
+		}
+	}
+
 	return media
 }
 
