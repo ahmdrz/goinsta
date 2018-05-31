@@ -351,20 +351,27 @@ func (user *User) FriendShip() error {
 
 // Feed returns user feeds (media)
 //
-// minTime is the minimum timestamp of media.
+// params can be:
+// string: timestamp of the minimum media timestamp.
 //
 // For pagination use FeedMedia.Next()
 //
 // See example: examples/user/feed.go
-func (user *User) Feed(minTime []byte) *FeedMedia {
+func (user *User) Feed(params ...interface{}) *FeedMedia {
 	insta := user.inst
-	timestamp := b2s(minTime)
 
 	media := &FeedMedia{}
-	media.timestamp = timestamp
 	media.inst = insta
 	media.endpoint = urlUserFeed
 	media.uid = user.ID
+
+	for _, param := range params {
+		switch s := param.(type) {
+		case string:
+			media.timestamp = s
+		}
+	}
+
 	return media
 }
 
