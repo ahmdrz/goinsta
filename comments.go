@@ -3,6 +3,7 @@ package goinsta
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"strconv"
 )
 
@@ -24,7 +25,7 @@ type Comments struct {
 	InitiateAtTop                  bool      `json:"initiate_at_top"`
 	InsertNewCommentToTop          bool      `json:"insert_new_comment_to_top"`
 	PreviewComments                []Comment `json:"preview_comments"`
-	NextMinID                      string    `json:"next_min_id"`
+	NextID                         string    `json:"next_max_id"`
 	CommentLikesEnabled            bool      `json:"comment_likes_enabled"`
 	DisplayRealtimeTypingIndicator bool      `json:"display_realtime_typing_indicator"`
 	Status                         string    `json:"status"`
@@ -121,14 +122,22 @@ func (comments *Comments) Next() bool {
 	item := comments.item
 	insta := item.media.instagram()
 	endpoint := comments.endpoint
+	query := map[string]string{
+		"can_support_threading": "true",
+	}
+	if comments.NextID != "" {
+		next, err := url.QueryUnescape(comments.NextID)
+		if err != nil { // TODO: Changed NextID to next_min_id after change login
+			next = comments.NextID
+		}
+		query["max_id"] = next
+	}
 
 	body, err := insta.sendRequest(
 		&reqOptions{
-			Endpoint: endpoint,
-			Query: map[string]string{
-				"can_support_threading": "true",
-				"min_id":                comments.NextMinID,
-			},
+			Endpoint:   endpoint,
+			Connection: "keep-alive",
+			Query:      query,
 		},
 	)
 	if err == nil {
@@ -138,7 +147,7 @@ func (comments *Comments) Next() bool {
 			*comments = c
 			comments.endpoint = endpoint
 			comments.item = item
-			if !comments.HasMoreComments || comments.NextMinID == "" {
+			if !comments.HasMoreComments || comments.NextID == "" {
 				comments.err = ErrNoMore
 			}
 			comments.setValues()
