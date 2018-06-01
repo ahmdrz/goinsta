@@ -2,7 +2,6 @@ package goinsta
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/cookiejar"
@@ -29,9 +28,9 @@ import (
 type Instagram struct {
 	user string
 	pass string
-	// device id
+	// device id: android-1923fjnma8123
 	dID string
-	// uuid
+	// uuid: 8493-1233-4312312-5123
 	uuid string
 	// rankToken
 	rankToken string
@@ -39,6 +38,8 @@ type Instagram struct {
 	token string
 	// phone id
 	pid string
+	// ads id
+	adid string
 
 	// Instagram objects
 
@@ -192,21 +193,111 @@ func Import(path string) (*Instagram, error) {
 	return inst, nil
 }
 
+func (inst *Instagram) readMsisdnHeader() error {
+	data, err := json.Marshal(
+		map[string]string{
+			"mobile_subno_usage": "ig_select_app",
+			"device_id":          inst.uuid,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	_, err = inst.sendRequest(
+		&reqOptions{
+			Endpoint:   urlMsisdnHeader,
+			Login:      true,
+			IsPost:     true,
+			Connection: "keep-alive",
+			Query:      generateSignature(b2s(data)),
+		},
+	)
+	return err
+}
+
+func (inst *Instagram) syncLauncher() error {
+	data, err := json.Marshal(
+		map[string]string{
+			"id":      inst.uuid,
+			"configs": "",
+		},
+	)
+	if err != nil {
+		return err
+	}
+	_, err = inst.sendRequest(
+		&reqOptions{
+			Endpoint:   urlSyncLauncher,
+			Login:      true,
+			IsPost:     true,
+			Connection: "keep-alive",
+			Query:      generateSignature(b2s(data)),
+		},
+	)
+	return err
+}
+
+func (inst *Instagram) zrToken() error {
+	_, err := inst.sendRequest(
+		&reqOptions{
+			Endpoint:   urlZrToken,
+			IsPost:     false,
+			Login:      true,
+			Connection: "keep-alive",
+			Query: map[string]string{
+				"device_id":        inst.dID,
+				"token_hash":       "",
+				"custom_device_id": inst.uuid,
+				"fetch_reason":     "token_expired",
+			},
+		},
+	)
+	return err
+}
+
+func (inst *Instagram) sendAdId() error {
+	data, err := inst.prepareData(
+		map[string]interface{}{
+			"adid": inst.adid,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	_, err = inst.sendRequest(
+		&reqOptions{
+			Endpoint:   urlLogAttribution,
+			IsPost:     false,
+			Login:      true,
+			Connection: "keep-alive",
+			Query:      generateSignature(data),
+		},
+	)
+	return err
+}
+
 // Login performs instagram login.
 //
 // Password will be deleted after login
 func (inst *Instagram) Login() error {
-	body, err := inst.sendRequest(
-		&reqOptions{
-			Endpoint: urlFetchHeaders,
-			Query: map[string]string{
-				"challenge_type": "signup",
-				"guid":           inst.uuid,
-			},
-		},
-	)
+	err := inst.readMsisdnHeader()
 	if err != nil {
-		return fmt.Errorf("login failed for %s: %s", inst.user, err.Error())
+		return err
+	}
+
+	err = inst.syncLauncher()
+	if err != nil {
+		return err
+	}
+
+	err = inst.syncFeatures()
+	if err != nil {
+		return err
+	}
+
+	err = inst.sendAdId()
+	if err != nil {
+		return err
 	}
 
 	result, err := json.Marshal(
@@ -215,13 +306,15 @@ func (inst *Instagram) Login() error {
 			"login_attempt_count": 0,
 			"_csrftoken":          inst.token,
 			"device_id":           inst.dID,
+			"adid":                inst.adid,
 			"phone_id":            inst.pid,
 			"username":            inst.user,
 			"password":            inst.pass,
+			"google_tokens":       "[]",
 		},
 	)
 	if err == nil {
-		body, err = inst.sendRequest(
+		body, err := inst.sendRequest(
 			&reqOptions{
 				Endpoint: urlLogin,
 				Query:    generateSignature(b2s(result)),
@@ -269,7 +362,7 @@ func (inst *Instagram) Logout() error {
 func (inst *Instagram) syncFeatures() error {
 	data, err := inst.prepareData(
 		map[string]interface{}{
-			"id":          inst.Account.ID,
+			"id":          inst.uuid,
 			"experiments": goInstaExperiments,
 		},
 	)
@@ -279,21 +372,10 @@ func (inst *Instagram) syncFeatures() error {
 
 	_, err = inst.sendRequest(
 		&reqOptions{
-			Endpoint: urlSync,
+			Endpoint: urlQeSync,
+			Login:    true,
 			Query:    generateSignature(data),
 			IsPost:   true,
-		},
-	)
-	if err != nil {
-		return err
-	}
-
-	_, err = inst.sendRequest(
-		&reqOptions{
-			Endpoint: urlAutoComplete,
-			Query: map[string]string{
-				"version": "2",
-			},
 		},
 	)
 	return err

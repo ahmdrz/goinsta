@@ -14,6 +14,9 @@ type reqOptions struct {
 	// Connection is connection header. Default is "close".
 	Connection string
 
+	// Login url
+	Login bool
+
 	// Endpoint is the request path of instagram api
 	Endpoint string
 
@@ -49,8 +52,11 @@ func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 	}
 
 	nu := goInstaAPIUrl
-	if o.UseV2 {
+	switch {
+	case o.UseV2:
 		nu = goInstaAPIUrlv2
+	case o.Login:
+		nu = goInstaAPIUrlLogin
 	}
 
 	u, err := url.Parse(nu + o.Endpoint)
@@ -84,7 +90,6 @@ func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 	req.Header.Set("Connection", o.Connection)
 	req.Header.Set("Accept", "*/*")
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-	req.Header.Set("Cookie2", "$Version=1")
 	req.Header.Set("Accept-Language", "en-US")
 	req.Header.Set("User-Agent", goInstaUserAgent)
 
