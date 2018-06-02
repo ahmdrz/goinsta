@@ -86,11 +86,6 @@ func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 		return
 	}
 
-	ua := goInstaUserAgent2
-	if o.Login {
-		ua = goInstaUserAgent
-	}
-
 	req.Header.Set("Connection", o.Connection)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
 	req.Header.Set("Accept-Language", "en-US")
