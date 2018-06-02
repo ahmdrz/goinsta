@@ -1,6 +1,7 @@
 package goinsta
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -108,11 +109,14 @@ func (inst *Instagram) init() {
 }
 
 // SetProxy sets proxy for connection.
-func (inst *Instagram) SetProxy(url string) error {
+func (inst *Instagram) SetProxy(url string, insecure bool) error {
 	uri, err := neturl.Parse(url)
 	if err == nil {
 		inst.c.Transport = &http.Transport{
 			Proxy: http.ProxyURL(uri),
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: insecure,
+			},
 		}
 	}
 	return err
