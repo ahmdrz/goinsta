@@ -14,10 +14,10 @@ const (
 
 var (
 	goInstaDeviceSettings = map[string]interface{}{
-		"manufacturer":    "Xiaomi",
-		"model":           "HM 1SW",
-		"android_version": 18,
-		"android_release": "4.3",
+		"manufacturer":    "OnePlus",
+		"model":           "A3010",
+		"android_version": 24,
+		"android_release": "7.0",
 	}
 )
 
