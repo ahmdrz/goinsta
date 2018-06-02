@@ -47,7 +47,7 @@ func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 		method = "POST"
 	}
 	if o.Connection == "" {
-		o.Connection = "close"
+		o.Connection = "keep-alive"
 	}
 
 	nu := goInstaAPIUrl
