@@ -134,6 +134,7 @@ func (inst *Instagram) Export(path string) error {
 	}
 
 	config := ConfigFile{
+		ID:        inst.Account.ID,
 		User:      inst.user,
 		DeviceID:  inst.dID,
 		UUID:      inst.uuid,
@@ -190,7 +191,7 @@ func Import(path string) (*Instagram, error) {
 	inst.c.Jar.SetCookies(url, config.Cookies)
 
 	inst.init()
-	inst.Account = &Account{inst: inst}
+	inst.Account = &Account{inst: inst, ID: config.ID}
 	inst.Account.Sync()
 
 	return inst, nil
@@ -323,6 +324,7 @@ func (inst *Instagram) Login() error {
 				Endpoint: urlLogin,
 				Query:    generateSignature(b2s(result)),
 				IsPost:   true,
+				Login:    true,
 			},
 		)
 		if err != nil {
@@ -378,6 +380,7 @@ func (inst *Instagram) syncFeatures() error {
 			Endpoint: urlQeSync,
 			Query:    generateSignature(data),
 			IsPost:   true,
+			Login:    true,
 		},
 	)
 	return err
@@ -402,6 +405,7 @@ func (inst *Instagram) megaphoneLog() error {
 			Endpoint: urlMegaphoneLog,
 			Query:    generateSignature(data),
 			IsPost:   true,
+			Login:    true,
 		},
 	)
 	return err

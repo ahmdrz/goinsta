@@ -6,6 +6,7 @@ import (
 )
 
 type ConfigFile struct {
+	ID        int64          `json:"id"`
 	User      string         `json:"username"`
 	DeviceID  string         `json:"device_id"`
 	UUID      string         `json:"uuid"`

@@ -73,18 +73,7 @@ type Account struct {
 // Sync updates account information
 func (account *Account) Sync() error {
 	insta := account.inst
-	data, err := insta.prepareData()
-	if err != nil {
-		return err
-	}
-
-	body, err := insta.sendRequest(
-		&reqOptions{
-			Endpoint: urlSyncProfile,
-			Query:    generateSignature(data),
-			IsPost:   true,
-		},
-	)
+	body, err := insta.sendSimpleRequest(urlUserById, account.ID)
 	if err == nil {
 		resp := profResp{}
 		err = json.Unmarshal(body, &resp)
