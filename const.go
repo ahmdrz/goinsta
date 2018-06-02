@@ -35,7 +35,6 @@ const (
 	urlSetPrivate    = "accounts/set_private/"
 	urlSetPublic     = "accounts/set_public/"
 	urlRemoveProfPic = "accounts/remove_profile_picture/"
-	urlSyncProfile   = "accounts/current_user/"
 	urlFeedSaved     = "feed/saved/"
 	urlSetBiography  = "accounts/set_biography/"
 	urlFeedLiked     = "feed/liked/"
