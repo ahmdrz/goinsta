@@ -57,19 +57,20 @@ import (
 
 func main() {
   //insta, err := goinsta.Import("~/.goinsta")
-	insta := goinsta.New("USERNAME", "PASSWORD")
+  insta := goinsta.New("USERNAME", "PASSWORD")
 
   // also you can use New function from gopkg.in/ahmdrz/goinsta.v2/utils
 
-	if err := insta.Login(); err != nil {
-		fmt.Println(err)
-		return
-	}
+  // insta.SetProxy("http://localhost:8080", true) // true for insecure connections
+  if err := insta.Login(); err != nil {
+    fmt.Println(err)
+    return
+  }
   // export your configuration
   // after exporting you can use Import function instead of New function.
   insta.Export("~/.goinsta")
 
-	...
+  ...
 }
 ```
 
