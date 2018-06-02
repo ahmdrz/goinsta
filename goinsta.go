@@ -79,7 +79,6 @@ func (i *Instagram) SetPhoneID(id string) {
 func New(username, password string) *Instagram {
 	// this call never returns error
 	jar, _ := cookiejar.New(nil)
-
 	inst := &Instagram{
 		user: username,
 		pass: password,
@@ -200,8 +199,7 @@ func Import(path string) (*Instagram, error) {
 func (inst *Instagram) readMsisdnHeader() error {
 	data, err := json.Marshal(
 		map[string]string{
-			"mobile_subno_usage": "ig_select_app",
-			"device_id":          inst.uuid,
+			"device_id": inst.uuid,
 		},
 	)
 	if err != nil {
@@ -210,7 +208,6 @@ func (inst *Instagram) readMsisdnHeader() error {
 	_, err = inst.sendRequest(
 		&reqOptions{
 			Endpoint:   urlMsisdnHeader,
-			Login:      true,
 			IsPost:     true,
 			Connection: "keep-alive",
 			Query:      generateSignature(b2s(data)),
@@ -219,11 +216,12 @@ func (inst *Instagram) readMsisdnHeader() error {
 	return err
 }
 
-func (inst *Instagram) syncLauncher() error {
+func (inst *Instagram) contactPrefill() error {
 	data, err := json.Marshal(
 		map[string]string{
-			"id":      inst.uuid,
-			"configs": "",
+			"phone_id":   inst.pid,
+			"_csrftoken": inst.token,
+			"usage":      "prefill",
 		},
 	)
 	if err != nil {
@@ -231,8 +229,7 @@ func (inst *Instagram) syncLauncher() error {
 	}
 	_, err = inst.sendRequest(
 		&reqOptions{
-			Endpoint:   urlSyncLauncher,
-			Login:      true,
+			Endpoint:   urlContactPrefill,
 			IsPost:     true,
 			Connection: "keep-alive",
 			Query:      generateSignature(b2s(data)),
@@ -246,7 +243,6 @@ func (inst *Instagram) zrToken() error {
 		&reqOptions{
 			Endpoint:   urlZrToken,
 			IsPost:     false,
-			Login:      true,
 			Connection: "keep-alive",
 			Query: map[string]string{
 				"device_id":        inst.dID,
@@ -271,8 +267,7 @@ func (inst *Instagram) sendAdId() error {
 	_, err = inst.sendRequest(
 		&reqOptions{
 			Endpoint:   urlLogAttribution,
-			IsPost:     false,
-			Login:      true,
+			IsPost:     true,
 			Connection: "keep-alive",
 			Query:      generateSignature(data),
 		},
@@ -289,17 +284,22 @@ func (inst *Instagram) Login() error {
 		return err
 	}
 
-	err = inst.syncLauncher()
-	if err != nil {
-		return err
-	}
-
 	err = inst.syncFeatures()
 	if err != nil {
 		return err
 	}
 
+	err = inst.zrToken()
+	if err != nil {
+		return err
+	}
+
 	err = inst.sendAdId()
+	if err != nil {
+		return err
+	}
+
+	err = inst.contactPrefill()
 	if err != nil {
 		return err
 	}
@@ -347,8 +347,7 @@ func (inst *Instagram) Login() error {
 
 		inst.rankToken = strconv.FormatInt(inst.Account.ID, 10) + "_" + inst.uuid
 
-		inst.syncFeatures()
-		inst.megaphoneLog()
+		inst.zrToken()
 	}
 
 end:
@@ -377,7 +376,6 @@ func (inst *Instagram) syncFeatures() error {
 	_, err = inst.sendRequest(
 		&reqOptions{
 			Endpoint: urlQeSync,
-			Login:    true,
 			Query:    generateSignature(data),
 			IsPost:   true,
 		},

@@ -5,17 +5,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 type reqOptions struct {
 	// Connection is connection header. Default is "close".
 	Connection string
-
-	// Login url
-	Login bool
 
 	// Endpoint is the request path of instagram api
 	Endpoint string
@@ -52,11 +51,8 @@ func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 	}
 
 	nu := goInstaAPIUrl
-	switch {
-	case o.UseV2:
+	if o.UseV2 {
 		nu = goInstaAPIUrlv2
-	case o.Login:
-		nu = goInstaAPIUrlLogin
 	}
 
 	u, err := url.Parse(nu + o.Endpoint)
@@ -88,10 +84,16 @@ func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 	}
 
 	req.Header.Set("Connection", o.Connection)
-	req.Header.Set("Accept", "*/*")
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
 	req.Header.Set("Accept-Language", "en-US")
 	req.Header.Set("User-Agent", goInstaUserAgent)
+	req.Header.Set("X-IG-App-ID", fbAnalytics)
+	req.Header.Set("X-IG-Capabilities", igCapabilities)
+	req.Header.Set("X-IG-Connection-Type", connType)
+	req.Header.Set("X-IG-Connection-Speed", fmt.Sprintf("%dkbps", acquireRand(1000, 3700)))
+	req.Header.Set("X-IG-Bandwidth-Speed-KBPS", "-1.000")
+	req.Header.Set("X-IG-Bandwidth-TotalBytes-B", "0")
+	req.Header.Set("X-IG-Bandwidth-TotalTime-MS", "0")
 
 	resp, err := inst.c.Do(req)
 	if err != nil {
@@ -135,9 +137,12 @@ func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 func (insta *Instagram) prepareData(other ...map[string]interface{}) (string, error) {
 	data := map[string]interface{}{
 		"_uuid":      insta.uuid,
-		"_uid":       insta.Account.ID,
 		"_csrftoken": insta.token,
 	}
+	if insta.Account != nil && insta.Account.ID != 0 {
+		data["_uid"] = insta.Account.ID
+	}
+
 	for i := range other {
 		for key, value := range other[i] {
 			data[key] = value
@@ -161,4 +166,9 @@ func (insta *Instagram) prepareDataQuery(other ...map[string]interface{}) map[st
 		}
 	}
 	return data
+}
+
+func acquireRand(min, max int) int {
+	rand.Seed(time.Now().Unix())
+	return rand.Intn(max-min) + min
 }
