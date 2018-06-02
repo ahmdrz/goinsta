@@ -23,7 +23,7 @@ go get -u -v gopkg.in/ahmdrz/goinsta.v2
 
 ## New Version !
 
-We are working on a new object-oriented API. Try it and tell us your suggestions. See https://github.com/ahmdrz/goinsta/blob/master/CONTRIBUTION.md
+We are working on a new object-oriented API. Try it and tell us your suggestions. See https://github.com/ahmdrz/goinsta/blob/master/CONTRIBUTING.md
 
 If you want to use the old version you can found it in v1 branch or using gopkg.in/ahmdrz/goinsta.v1/
 
