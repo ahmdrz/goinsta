@@ -156,7 +156,7 @@ type Conversation struct {
 	firstRun bool
 
 	ID   string `json:"thread_id"`
-	V2ID int64  `json:"thread_v2_id"`
+	V2ID string `json:"thread_v2_id"`
 	// Items can be of many types.
 	Items                     []InboxItem `json:"items"`
 	Title                     string      `json:"thread_title"`
