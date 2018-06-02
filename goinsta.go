@@ -199,6 +199,7 @@ func (inst *Instagram) Login() error {
 	body, err := inst.sendRequest(
 		&reqOptions{
 			Endpoint: urlFetchHeaders,
+			Login:    true,
 			Query: map[string]string{
 				"challenge_type": "signup",
 				"guid":           inst.uuid,
@@ -226,6 +227,7 @@ func (inst *Instagram) Login() error {
 				Endpoint: urlLogin,
 				Query:    generateSignature(b2s(result)),
 				IsPost:   true,
+				Login:    true,
 			},
 		)
 		if err != nil {
@@ -282,6 +284,7 @@ func (inst *Instagram) syncFeatures() error {
 			Endpoint: urlSync,
 			Query:    generateSignature(data),
 			IsPost:   true,
+			Login:    true,
 		},
 	)
 	if err != nil {
@@ -318,6 +321,7 @@ func (inst *Instagram) megaphoneLog() error {
 			Endpoint: urlMegaphoneLog,
 			Query:    generateSignature(data),
 			IsPost:   true,
+			Login:    true,
 		},
 	)
 	return err
