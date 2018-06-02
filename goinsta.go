@@ -130,6 +130,7 @@ func (inst *Instagram) Export(path string) error {
 	}
 
 	config := ConfigFile{
+		ID:        inst.Account.ID,
 		User:      inst.user,
 		DeviceID:  inst.dID,
 		UUID:      inst.uuid,
@@ -186,7 +187,7 @@ func Import(path string) (*Instagram, error) {
 	inst.c.Jar.SetCookies(url, config.Cookies)
 
 	inst.init()
-	inst.Account = &Account{inst: inst}
+	inst.Account = &Account{inst: inst, ID: config.ID}
 	inst.Account.Sync()
 
 	return inst, nil
