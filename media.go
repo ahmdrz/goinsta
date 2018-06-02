@@ -548,6 +548,11 @@ func (media *StoryMedia) Seen() error {
 }
 */
 
+type trayRequest struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
+}
+
 // Sync function is used when Highlight must be sync.
 // Highlight must be sync when User.Highlights does not return any object inside StoryMedia slice.
 //
@@ -556,18 +561,22 @@ func (media *StoryMedia) Seen() error {
 // This function updates StoryMedia.Items
 func (media *StoryMedia) Sync() error {
 	insta := media.inst
-	/*
-		query := []trayRequest{
-			{"SUPPORTED_SDK_VERSIONS", "9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0,17.0,18.0,19.0,20.0,21.0,22.0,23.0,24.0"},
-			{"FACE_TRACKER_VERSION", "9"},
-			{"segmentation", "segmentation_enabled"},
-			{"COMPRESSION", "ETC2_COMPRESSION"},
-		}
-	*/
+	query := []trayRequest{
+		{"SUPPORTED_SDK_VERSIONS", "9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0,17.0,18.0,19.0,20.0,21.0,22.0,23.0,24.0"},
+		{"FACE_TRACKER_VERSION", "10"},
+		{"segmentation", "segmentation_enabled"},
+		{"COMPRESSION", "ETC2_COMPRESSION"},
+	}
+	qjson, err := json.Marshal(query)
+	if err != nil {
+		return err
+	}
+
 	id := media.Pk.(string)
 	data, err := insta.prepareData(
 		map[string]interface{}{
-			"user_ids": []string{id},
+			"user_ids":                   []string{id},
+			"supported_capabilities_new": b2s(qjson),
 		},
 	)
 	if err != nil {

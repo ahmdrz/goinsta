@@ -405,23 +405,20 @@ func (user *User) Stories() *StoryMedia {
 //
 // See example: examples/user/highlights.go
 func (user *User) Highlights() ([]StoryMedia, error) {
-	/*
-		TODO
-		query := []struct {
-			Name  string `json:"name"`
-			Value string `json:"value"`
-		}{
-			{"SUPPORTED_SDK_VERSIONS", "9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0,17.0,18.0,19.0,20.0,21.0,22.0,23.0,24.0"},
-			{"FACE_TRACKER_VERSION", "9"},
-			{"segmentation", "segmentation_enabled"},
-			{"COMPRESSION", "ETC2_COMPRESSION"},
-		}
-	*/
-	//data, err := json.Marshal(query)
+	query := []trayRequest{
+		{"SUPPORTED_SDK_VERSIONS", "9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0,17.0,18.0,19.0,20.0,21.0,22.0,23.0,24.0"},
+		{"FACE_TRACKER_VERSION", "10"},
+		{"segmentation", "segmentation_enabled"},
+		{"COMPRESSION", "ETC2_COMPRESSION"},
+	}
+	data, err := json.Marshal(query)
+	if err != nil {
+		return nil, err
+	}
 	body, err := user.inst.sendRequest(
 		&reqOptions{
-			Endpoint:   fmt.Sprintf(urlUserHighlights, user.ID),
-			Connection: "keep-alive",
+			Endpoint: fmt.Sprintf(urlUserHighlights, user.ID),
+			Query:    generateSignature(b2s(data)),
 		},
 	)
 	if err == nil {
