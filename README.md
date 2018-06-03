@@ -82,6 +82,9 @@ func main() {
 - [go-instabot](https://github.com/tducasse/go-instabot)
 - [ermes](https://github.com/borteo/ermes)
 - [nick\_bot](https://github.com/icholy/nick_bot)
+- [goinstadownload](https://github.com/alejoloaiza/goinstadownload)
+- [instafeed](https://github.com/falzm/instafeed)
+- [keepig](https://github.com/seankhliao/keepig)
 
 ## Legal
 
