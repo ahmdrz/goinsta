@@ -79,6 +79,9 @@ func main() {
 ## Projects using Goinsta
 
 - [icrawler](https://github.com/themester/icrawler)
+- [go-instabot](https://github.com/tducasse/go-instabot)
+- [ermes](https://github.com/borteo/ermes)
+- [nick\_bot](https://github.com/icholy/nick_bot)
 
 ## Legal
 
