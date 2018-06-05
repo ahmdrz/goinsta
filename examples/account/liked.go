@@ -14,8 +14,7 @@ func main() {
 
 	media := inst.Account.Liked()
 
-	for media.Next() {
-		fmt.Printf("Printing %d items\n", len(media.Items))
+	if media.Next() {
 		for _, item := range media.Items {
 			fmt.Printf("You liked the media %v of user: %s with total likes of %v\n", item.ID, item.User.Username, item.Likes)
 		}
