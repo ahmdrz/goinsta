@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	neturl "net/url"
+	"os"
+	"path/filepath"
 	"strconv"
 	"time"
 )
@@ -124,6 +126,15 @@ func (inst *Instagram) SetProxy(url string, insecure bool) error {
 // UnsetProxy unsets proxy for connection.
 func (inst *Instagram) UnsetProxy() {
 	inst.c.Transport = nil
+}
+
+// Save exports config to ~/.goinsta
+func (inst *Instagram) Save() {
+	home := os.Getenv("$HOME")
+	if home == "" {
+		home = os.Getenv("$home") // for plan9
+	}
+	inst.Export(filepath.Join(home, ".goinsta"))
 }
 
 // Export exports *Instagram object options
