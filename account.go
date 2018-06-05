@@ -311,10 +311,31 @@ func (account *Account) Saved() (*SavedMedia, error) {
 	return nil, err
 }
 
+func (account *Account) edit() {
+	insta := account.inst
+	acResp := accountResp{}
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: urlCurrentUser,
+			Query: map[string]string{
+				"edit": "true",
+			},
+		},
+	)
+	if err == nil {
+		err = json.Unmarshal(body, &acResp)
+		if err == nil {
+			acResp.Account.inst = insta
+			*account = acResp.Account
+		}
+	}
+}
+
 // SetBiography changes your Instagram's biography.
 //
 // This function updates current Account information.
 func (account *Account) SetBiography(bio string) error {
+	account.edit() // preparing to edit
 	insta := account.inst
 	data, err := insta.prepareData(
 		map[string]interface{}{
