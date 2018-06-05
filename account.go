@@ -311,9 +311,14 @@ func (account *Account) Saved() (*SavedMedia, error) {
 	return nil, err
 }
 
+type editResp struct {
+	Status  string  `json:"status"`
+	Account Account `json:"user"`
+}
+
 func (account *Account) edit() {
 	insta := account.inst
-	acResp := accountResp{}
+	acResp := editResp{}
 	body, err := insta.sendRequest(
 		&reqOptions{
 			Endpoint: urlCurrentUser,
