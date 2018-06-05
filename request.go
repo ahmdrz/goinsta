@@ -8,6 +8,7 @@ import (
 	"math/rand"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -143,7 +144,7 @@ func (insta *Instagram) prepareData(other ...map[string]interface{}) (string, er
 		"_csrftoken": insta.token,
 	}
 	if insta.Account != nil && insta.Account.ID != 0 {
-		data["_uid"] = insta.Account.ID
+		data["_uid"] = strconv.FormatInt(insta.Account.ID, 10)
 	}
 
 	for i := range other {
