@@ -14,11 +14,11 @@ func main() {
 	inst, err := e.InitGoinsta("<media id> <comment id>")
 	e.CheckErr(err)
 
-	media, err := inst.GetMedia(os.Args[2])
+	media, err := inst.GetMedia(os.Args[0])
 	e.CheckErr(err)
 
 	fmt.Printf("Comments: %d\n", media.Items[0].CommentCount)
-	err = media.Items[0].Comments.DelByID(os.Args[3])
+	err = media.Items[0].Comments.DelByID(os.Args[1])
 	e.CheckErr(err)
 
 	fmt.Println("wait 5 seconds...")

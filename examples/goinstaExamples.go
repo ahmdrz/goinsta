@@ -32,7 +32,7 @@ func InitGoinsta(msg string) (*goinsta.Instagram, error) {
 	case nargs < min:
 		fmt.Printf("%s <username or config file> %s\n", os.Args[0], msg)
 		os.Exit(0)
-	case nargs == min:
+	default:
 		user = os.Args[1]
 	}
 
@@ -50,12 +50,15 @@ func InitGoinsta(msg string) (*goinsta.Instagram, error) {
 			return nil, err
 		}
 
-		inst = goinsta.New(os.Args[1], string(pass))
+		inst = goinsta.New(user, string(pass))
 
 		err = inst.Login()
 		if err != nil {
 			return inst, err
 		}
+	}
+	if min > 0 {
+		os.Args = os.Args[2:]
 	}
 
 	fmt.Printf("Hello %s!\n", inst.Account.Username)

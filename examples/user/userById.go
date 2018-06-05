@@ -14,7 +14,7 @@ func main() {
 	inst, err := e.InitGoinsta("<another user>")
 	e.CheckErr(err)
 
-	id, err := strconv.Atoi(os.Args[2])
+	id, err := strconv.Atoi(os.Args[0])
 	e.CheckErr(err)
 
 	user, err := inst.Profiles.ByID(int64(id))

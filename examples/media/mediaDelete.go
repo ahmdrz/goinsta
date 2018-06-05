@@ -13,10 +13,10 @@ func main() {
 	inst, err := e.InitGoinsta("<media id>")
 	e.CheckErr(err)
 
-	media, err := inst.GetMedia(os.Args[2])
+	media, err := inst.GetMedia(os.Args[0])
 	e.CheckErr(err)
 
-	fmt.Println("Deleting", os.Args[2])
+	fmt.Println("Deleting", os.Args[0])
 	err = media.Items[0].Delete()
 	e.CheckErr(err)
 

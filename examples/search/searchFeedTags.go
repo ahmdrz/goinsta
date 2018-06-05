@@ -16,7 +16,7 @@ func main() {
 	fmt.Printf("Hello %s!\n", inst.Account.Username)
 
 	// I don't want to make an example of this. Not today.
-	tags, err := inst.Search.FeedTags(os.Args[2])
+	tags, err := inst.Search.FeedTags(os.Args[0])
 	e.CheckErr(err)
 
 	// TODO

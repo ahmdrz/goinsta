@@ -13,7 +13,7 @@ func main() {
 	inst, err := e.InitGoinsta("<query>")
 	e.CheckErr(err)
 
-	res, err := inst.Search.Tags(os.Args[2])
+	res, err := inst.Search.Tags(os.Args[0])
 	e.CheckErr(err)
 
 	for _, tag := range res.Tags {

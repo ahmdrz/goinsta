@@ -13,7 +13,7 @@ func main() {
 	inst, err := e.InitGoinsta("<target user>")
 	e.CheckErr(err)
 
-	user, err := inst.Profiles.ByName(os.Args[2])
+	user, err := inst.Profiles.ByName(os.Args[0])
 	e.CheckErr(err)
 
 	users := user.Followers()

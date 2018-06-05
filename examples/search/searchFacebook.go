@@ -13,7 +13,7 @@ func main() {
 	inst, err := e.InitGoinsta("<query>")
 	e.CheckErr(err)
 
-	res, err := inst.Search.Facebook(os.Args[2])
+	res, err := inst.Search.Facebook(os.Args[0])
 	e.CheckErr(err)
 
 	for _, user := range res.Users {

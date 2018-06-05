@@ -14,7 +14,7 @@ func main() {
 	e.CheckErr(err)
 
 	res, err := inst.Search.Location(
-		os.Args[2], os.Args[3], os.Args[4],
+		os.Args[0], os.Args[1], os.Args[2],
 	)
 	e.CheckErr(err)
 

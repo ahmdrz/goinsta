@@ -13,7 +13,7 @@ func main() {
 	e.CheckErr(err)
 
 	// if you have someone blocked probably you cannot found it with this method
-	user, err := inst.Profiles.ByName(os.Args[2])
+	user, err := inst.Profiles.ByName(os.Args[0])
 	e.CheckErr(err)
 
 	err = user.Unblock()

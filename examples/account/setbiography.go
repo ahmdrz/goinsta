@@ -14,12 +14,15 @@ func main() {
 	inst, err := e.InitGoinsta("<New biography text>")
 	e.CheckErr(err)
 
-	newBiography := strings.Join(os.Args[2:], " ")
+	newBiography := strings.Join(os.Args, " ")
 
-	fmt.Printf("Setting biography to: %s", newBiography)
+	fmt.Printf("Your current biography: %s\n", inst.Account.Biography)
+	fmt.Printf("Setting biography to: %s\n", newBiography)
 
 	err = inst.Account.SetBiography(newBiography)
 	e.CheckErr(err)
+
+	fmt.Printf("Your current biography (after update): %s\n", inst.Account.Biography)
 
 	if !e.UsingSession {
 		err = inst.Logout()
