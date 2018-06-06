@@ -130,7 +130,7 @@ func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 		ierr := instaError{}
 		err = json.Unmarshal(body, &ierr)
 		if err != nil {
-			return nil, fmt.Errorf("Invalid status code: %d", resp.StatusCode)
+			return nil, fmt.Errorf("Invalid status code: %d: %s", resp.StatusCode, body)
 		}
 		return nil, instaToErr(ierr)
 	}
