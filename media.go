@@ -432,7 +432,7 @@ func (item *Item) PreviewComments() []Comment {
 
 type Media interface {
 	// Next allows pagination
-	Next() bool
+	Next(...interface{}) bool
 	// Error returns error (in case it have been occurred)
 	Error() error
 	// ID returns media id
@@ -611,7 +611,7 @@ func (media *StoryMedia) Sync() error {
 //
 // returns false when list reach the end
 // if StoryMedia.Error() is ErrNoMore no problem have been occurred.
-func (media *StoryMedia) Next() bool {
+func (media *StoryMedia) Next(params ...interface{}) bool {
 	if media.err != nil {
 		return false
 	}
@@ -741,7 +741,7 @@ func (media *FeedMedia) ID() string {
 //
 // returns false when list reach the end.
 // if FeedMedia.Error() is ErrNoMore no problem have been occurred.
-func (media *FeedMedia) Next() bool {
+func (media *FeedMedia) Next(params ...interface{}) bool {
 	if media.err != nil {
 		return false
 	}
@@ -749,11 +749,20 @@ func (media *FeedMedia) Next() bool {
 	insta := media.inst
 	endpoint := media.endpoint
 	next := media.ID()
+	ranked := "true"
 
 	if media.uid != 0 {
 		endpoint = fmt.Sprintf(endpoint, media.uid)
 	}
 
+	for _, param := range params {
+		switch s := param.(type) {
+		case string:
+			if _, err := strconv.ParseBool(s); err == nil {
+				ranked = s
+			}
+		}
+	}
 	body, err := insta.sendRequest(
 		&reqOptions{
 			Endpoint: endpoint,
@@ -761,7 +770,7 @@ func (media *FeedMedia) Next() bool {
 				"max_id":         next,
 				"rank_token":     insta.rankToken,
 				"min_timestamp":  media.timestamp,
-				"ranked_content": "true",
+				"ranked_content": ranked,
 			},
 		},
 	)
