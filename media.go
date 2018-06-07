@@ -741,11 +741,10 @@ func (media *FeedMedia) ID() string {
 //
 // returns false when list reach the end.
 // if FeedMedia.Error() is ErrNoMore no problem have been occurred.
-func (media *FeedMedia) Next() bool {
+func (media *FeedMedia) Next(args ...map[string]string) bool {
 	if media.err != nil {
 		return false
 	}
-
 	insta := media.inst
 	endpoint := media.endpoint
 	next := media.ID()
@@ -753,16 +752,22 @@ func (media *FeedMedia) Next() bool {
 	if media.uid != 0 {
 		endpoint = fmt.Sprintf(endpoint, media.uid)
 	}
+	query := map[string]string{
+		"max_id":         next,
+		"rank_token":     insta.rankToken,
+		"min_timestamp":  media.timestamp,
+		"ranked_content": "true",
+	}
+	for _, arg := range args {
+		for key, value := range arg {
+			query[key] = value
+		}
+	}
 
 	body, err := insta.sendRequest(
 		&reqOptions{
 			Endpoint: endpoint,
-			Query: map[string]string{
-				"max_id":         next,
-				"rank_token":     insta.rankToken,
-				"min_timestamp":  media.timestamp,
-				"ranked_content": "true",
-			},
+			Query:    query,
 		},
 	)
 	if err == nil {
