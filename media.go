@@ -608,7 +608,7 @@ func (media *StoryMedia) Sync() error {
 
 // Next allows pagination after calling:
 // User.Stories
-// 
+//
 //
 // returns false when list reach the end
 // if StoryMedia.Error() is ErrNoMore no problem have been occurred.
@@ -739,7 +739,7 @@ func (media *FeedMedia) ID() string {
 
 // Next allows pagination after calling:
 // User.Feed
-// ranked_content by default is set to "true", you can set it to false by using either passing "false" or false as parameter
+// Params: ranked_content is set to "true" by default, you can set it to false by either passing "false" or false as parameter.
 
 // returns false when list reach the end.
 // if FeedMedia.Error() is ErrNoMore no problem have been occurred.
