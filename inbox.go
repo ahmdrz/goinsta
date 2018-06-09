@@ -104,13 +104,12 @@ func (inbox *Inbox) Sync() error {
 	return err
 }
 
-// This is to initiate a NEW conversation with an user, for further messages you should use Conversation.Send
+// New initialises a new conversation with a user, for further messages you should use Conversation.Send
 //
 // See example: examples/inbox/newconversation.go
-func (inbox *Inbox) NewConversation(recipients int64, text string) error {
+func (inbox *Inbox) New(user *User, text string) error {
 	insta := inbox.inst
-	// I DON'T KNOW WHY BUT INSTAGRAM WANTS A DOUBLE SLICE OF INTS FOR ONE ID.
-	to, err := prepareRecipients(recipients)
+	to, err := prepareRecipients(user.ID)
 	if err != nil {
 		return err
 	}
