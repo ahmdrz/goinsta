@@ -282,7 +282,7 @@ func TestFullLikeCommentOptions(t *testing.T) {
 			return
 		}
 
-		bytes, err = insta.DeleteComment(id, strconv.FormatInt(Result.Comment.ID, 10))
+		_, err = insta.DeleteComment(id, strconv.FormatInt(Result.Comment.ID, 10))
 		if err != nil {
 			t.Fatal(err)
 			return
