@@ -24,10 +24,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/spf13/cobra"
 	"github.com/ahmdrz/goinsta/goinsta/cmd/search/facebook"
 	"github.com/ahmdrz/goinsta/goinsta/cmd/search/tags"
 	"github.com/ahmdrz/goinsta/goinsta/cmd/search/user"
+	"github.com/spf13/cobra"
 )
 
 func init() {

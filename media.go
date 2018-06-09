@@ -421,7 +421,7 @@ func (item *Item) PreviewComments() []Comment {
 		return comments
 	case string:
 		comments := []Comment{
-			Comment{
+			{
 				Text: s,
 			},
 		}

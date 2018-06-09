@@ -24,9 +24,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/spf13/cobra"
 	"github.com/ahmdrz/goinsta/goinsta/cmd/timeline/feed"
 	"github.com/ahmdrz/goinsta/goinsta/cmd/timeline/stories"
+	"github.com/spf13/cobra"
 )
 
 func init() {
