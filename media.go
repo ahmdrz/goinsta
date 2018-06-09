@@ -600,7 +600,7 @@ func (media *StoryMedia) Sync() error {
 				media.setValues()
 				return nil
 			}
-			err = fmt.Errorf("cannot find %s structure in response")
+			err = fmt.Errorf("cannot find %s structure in response", id)
 		}
 	}
 	return err

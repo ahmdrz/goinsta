@@ -86,7 +86,7 @@ const (
 	urlMediaLikers = "media/%s/likers/"
 
 	// comments
-	urlCommentAdd     = "media/%s/comment/"
+	urlCommentAdd     = "media/%d/comment/"
 	urlCommentDelete  = "media/%s/comment/%s/delete/"
 	urlCommentSync    = "media/%s/comments/"
 	urlCommentDisable = "media/%s/disable_comments/"
