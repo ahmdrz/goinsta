@@ -514,7 +514,7 @@ func (media *StoryMedia) setValues() {
 	}
 }
 
-// Error returns error happend any error
+// Error returns error happened any error
 func (media StoryMedia) Error() error {
 	return media.err
 }
@@ -657,7 +657,7 @@ type FeedMedia struct {
 	AutoLoadMoreEnabled bool   `json:"auto_load_more_enabled"`
 	Status              string `json:"status"`
 	// Can be int64 and string
-	// this is why we recomend Next() usage :')
+	// this is why we recommend Next() usage :')
 	NextID interface{} `json:"next_max_id"`
 }
 
@@ -870,7 +870,7 @@ func (insta *Instagram) UploadPhoto(photo io.Reader, photoCaption string, qualit
 	}
 
 	if result.Status != "ok" {
-		return out, fmt.Errorf("unkown error, status: %s", result.Status)
+		return out, fmt.Errorf("unknown error, status: %s", result.Status)
 	}
 
 	width, height, err := getImageDimensionFromReader(&buf)

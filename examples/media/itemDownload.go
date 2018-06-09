@@ -16,7 +16,7 @@ func main() {
 	user, err := inst.Profiles.ByName(os.Args[0])
 	e.CheckErr(err)
 
-	// You can downlaod Stories or Feed images.
+	// You can download Stories or Feed images.
 	// media := user.Feed()
 	media := user.Stories()
 	e.CheckErr(err)
