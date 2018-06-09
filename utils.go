@@ -62,6 +62,8 @@ func prepareRecipients(cc interface{}) (bb string, err error) {
 		}
 	case *Item:
 		ids = append(ids, []int64{c.User.ID})
+	case int64:
+		ids = append(ids, []int64{c})
 	}
 	b, err = json.Marshal(ids)
 	bb = b2s(b)

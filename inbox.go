@@ -104,6 +104,37 @@ func (inbox *Inbox) Sync() error {
 	return err
 }
 
+// This is to initiate a NEW conversation with an user, for further messages you should use Conversation.Send
+//
+// See example: examples/inbox/newconversation.go
+func (inbox *Inbox) NewConversation(recipients int64, text string) error {
+	insta := inbox.inst
+	// I DON'T KNOW WHY BUT INSTAGRAM WANTS A DOUBLE SLICE OF INTS FOR ONE ID.
+	to, err := prepareRecipients(recipients)
+	if err != nil {
+		return err
+	}
+
+	data := insta.prepareDataQuery(
+		map[string]interface{}{
+			"recipient_users": to,
+			"client_context":  generateUUID(),
+			"thread_ids":      `["0"]`,
+			"action":          "send_item",
+			"text":            text,
+		},
+	)
+	_, err = insta.sendRequest(
+		&reqOptions{
+			Connection: "keep-alive",
+			Endpoint:   urlInboxSend,
+			Query:      data,
+			IsPost:     true,
+		},
+	)
+	return err
+}
+
 // Reset sets inbox cursor at the beginning.
 func (inbox *Inbox) Reset() {
 	inbox.Cursor = ""
