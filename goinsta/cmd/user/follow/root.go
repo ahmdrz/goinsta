@@ -24,8 +24,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/spf13/cobra"
 	"github.com/ahmdrz/goinsta/utils"
+	"github.com/spf13/cobra"
 )
 
 var RootCmd = &cobra.Command{

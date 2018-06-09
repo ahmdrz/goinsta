@@ -24,12 +24,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/spf13/cobra"
 	"github.com/ahmdrz/goinsta/goinsta/cmd/account/feed"
 	"github.com/ahmdrz/goinsta/goinsta/cmd/account/followers"
 	"github.com/ahmdrz/goinsta/goinsta/cmd/account/following"
 	"github.com/ahmdrz/goinsta/goinsta/cmd/account/info"
 	"github.com/ahmdrz/goinsta/goinsta/cmd/account/stories"
+	"github.com/spf13/cobra"
 )
 
 func init() {
