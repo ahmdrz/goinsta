@@ -19,7 +19,7 @@ func main() {
 	err = inst.Inbox.Sync()
 	e.CheckErr(err)
 
-	err = inst.Inbox.NewConversation(user.ID, strings.Join(os.Args[1:], " "))
+	err = inst.Inbox.New(&user, strings.Join(os.Args[1:], " "))
 	e.CheckErr(err)
 
 	if !e.UsingSession {
