@@ -7,10 +7,12 @@ import (
 	"time"
 )
 
+// Search is the object for all searches like Facebook, Location or Tag search.
 type Search struct {
 	inst *Instagram
 }
 
+// SearchResult handles the data for the results given by each type of Search.
 type SearchResult struct {
 	HasMore    bool   `json:"has_more"`
 	RankToken  string `json:"rank_token"`
@@ -188,8 +190,9 @@ func (search *Search) FeedTags(tag string) (*FeedTag, error) {
 	return res, err
 }
 
+// FeedTag is the struct that fits the structure returned by instagram on TagSearch.
 // Instagram's database is f*cking shit.
-// We all hate nodejs (seems that they uses nodejs and mongoldb)
+// We all hate nodejs (seems that they use nodejs and mongoldb)
 // I don't know why FeedTags returns this aberration structure.
 type FeedTag struct {
 	RankedItems         []Item     `json:"ranked_items"`

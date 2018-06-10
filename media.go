@@ -187,7 +187,7 @@ func GetBest(obj interface{}) string {
 	return m.url
 }
 
-// Hastags returns caption hashtags.
+// Hashtags returns caption hashtags.
 //
 // Item media parent must be FeedMedia.
 //
@@ -430,6 +430,7 @@ func (item *Item) PreviewComments() []Comment {
 	return nil
 }
 
+//Media interface defines methods for both StoryMedia and FeedMedia.
 type Media interface {
 	// Next allows pagination
 	Next(...interface{}) bool
@@ -443,6 +444,7 @@ type Media interface {
 	instagram() *Instagram
 }
 
+//StoryMedia is the struct that handles the information from the methods to get info about Stories.
 type StoryMedia struct {
 	inst     *Instagram
 	endpoint string
@@ -740,7 +742,6 @@ func (media *FeedMedia) ID() string {
 // Next allows pagination after calling:
 // User.Feed
 // Params: ranked_content is set to "true" by default, you can set it to false by either passing "false" or false as parameter.
-
 // returns false when list reach the end.
 // if FeedMedia.Error() is ErrNoMore no problem have been occurred.
 func (media *FeedMedia) Next(params ...interface{}) bool {
