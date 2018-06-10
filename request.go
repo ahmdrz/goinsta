@@ -45,7 +45,7 @@ func (insta *Instagram) sendSimpleRequest(uri string, a ...interface{}) (body []
 	)
 }
 
-func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
+func (insta *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 	method := "GET"
 	if o.IsPost {
 		method = "POST"
@@ -99,16 +99,16 @@ func (inst *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 	req.Header.Set("X-IG-Bandwidth-TotalBytes-B", "0")
 	req.Header.Set("X-IG-Bandwidth-TotalTime-MS", "0")
 
-	resp, err := inst.c.Do(req)
+	resp, err := insta.c.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
 	u, _ = url.Parse(goInstaAPIUrl)
-	for _, value := range inst.c.Jar.Cookies(u) {
+	for _, value := range insta.c.Jar.Cookies(u) {
 		if strings.Contains(value.Name, "csrftoken") {
-			inst.token = value.Value
+			insta.token = value.Value
 		}
 	}
 

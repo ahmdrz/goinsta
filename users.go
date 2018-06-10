@@ -6,6 +6,7 @@ import (
 	"fmt"
 )
 
+// Users is a struct that stores many user's returned by many different methods.
 type Users struct {
 	inst *Instagram
 
@@ -34,6 +35,7 @@ func (users *Users) SetInstagram(inst *Instagram) {
 	users.inst = inst
 }
 
+// ErrNoMore is an error that comes when there is no more elements available on the list.
 var ErrNoMore = errors.New("List end have been reached")
 
 // Next allows to paginate after calling:

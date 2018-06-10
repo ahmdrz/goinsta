@@ -63,18 +63,18 @@ type Instagram struct {
 }
 
 // SetDeviceID sets device id
-func (i *Instagram) SetDeviceID(id string) {
-	i.dID = id
+func (inst *Instagram) SetDeviceID(id string) {
+	inst.dID = id
 }
 
 // SetUUID sets uuid
-func (i *Instagram) SetUUID(uuid string) {
-	i.uuid = uuid
+func (inst *Instagram) SetUUID(uuid string) {
+	inst.uuid = uuid
 }
 
 // SetPhoneID sets phone id
-func (i *Instagram) SetPhoneID(id string) {
-	i.pid = id
+func (inst *Instagram) SetPhoneID(id string) {
+	inst.pid = id
 }
 
 // New creates Instagram structure
@@ -267,7 +267,7 @@ func (inst *Instagram) zrToken() error {
 	return err
 }
 
-func (inst *Instagram) sendAdId() error {
+func (inst *Instagram) sendAdID() error {
 	data, err := inst.prepareData(
 		map[string]interface{}{
 			"adid": inst.adid,
@@ -306,7 +306,7 @@ func (inst *Instagram) Login() error {
 		return err
 	}
 
-	err = inst.sendAdId()
+	err = inst.sendAdID()
 	if err != nil {
 		return err
 	}

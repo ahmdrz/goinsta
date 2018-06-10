@@ -180,6 +180,7 @@ func (inbox *Inbox) Next() bool {
 	return false
 }
 
+// Conversation is the representation of an instagram already established conversation through direct messages.
 type Conversation struct {
 	inst     *Instagram
 	err      error

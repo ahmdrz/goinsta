@@ -51,7 +51,7 @@ const (
 
 	// users
 	urlUserByName     = "users/%s/usernameinfo/"
-	urlUserById       = "users/%d/info/"
+	urlUserByID       = "users/%d/info/"
 	urlUserBlock      = "friendships/block/%d/"
 	urlUserUnblock    = "friendships/unblock/%d/"
 	urlUserFollow     = "friendships/create/%d/"

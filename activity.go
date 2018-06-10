@@ -12,6 +12,7 @@ type Activity struct {
 	inst *Instagram
 }
 
+//FollowingActivity is the latest activity of the people you are following
 type FollowingActivity struct {
 	inst *Instagram
 	err  error
