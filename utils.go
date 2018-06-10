@@ -3,6 +3,7 @@ package goinsta
 import (
 	"encoding/json"
 	"image"
+	// Required for getImageDimensionFromReader in jpg and png format
 	_ "image/jpeg"
 	_ "image/png"
 	"io"
