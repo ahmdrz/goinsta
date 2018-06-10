@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// ConfigFile is a structure to store the session information so that can be exported or imported.
 type ConfigFile struct {
 	ID        int64          `json:"id"`
 	User      string         `json:"username"`
@@ -53,6 +54,7 @@ func instaToErr(err interface{}) error {
 	return fmt.Errorf("Unknown error :)")
 }
 
+// Nametag is part of the account information.
 type Nametag struct {
 	Mode          int    `json:"mode"`
 	Gradient      int    `json:"gradient"`
@@ -65,6 +67,7 @@ type friendResp struct {
 	Friendship Friendship `json:"friendship_status"`
 }
 
+// Location stores media location information.
 type Location struct {
 	Pk               int     `json:"pk"`
 	Name             string  `json:"name"`
@@ -77,6 +80,7 @@ type Location struct {
 	FacebookPlacesID int64   `json:"facebook_places_id"`
 }
 
+// SuggestedUsers stores the information about user suggestions.
 type SuggestedUsers struct {
 	Type        int `json:"type"`
 	Suggestions []struct {
@@ -103,6 +107,7 @@ type SuggestedUsers struct {
 	TrackingToken    string `json:"tracking_token"`
 }
 
+// Friendship stores the details of the relationship between two users.
 type Friendship struct {
 	IncomingRequest bool `json:"incoming_request"`
 	FollowedBy      bool `json:"followed_by"`
@@ -114,6 +119,7 @@ type Friendship struct {
 	IsMutingReel    bool `json:"is_muting_reel"`
 }
 
+// SavedMedia stores the information about media being saved before in my account.
 type SavedMedia struct {
 	Items []struct {
 		Media Item `json:"media"`
@@ -142,12 +148,14 @@ func (img Images) GetBest() string {
 	return best
 }
 
+// Candidate is something that I really have no idea what it is.
 type Candidate struct {
 	Width  int    `json:"width"`
 	Height int    `json:"height"`
 	URL    string `json:"url"`
 }
 
+// Tag is the information of an user being tagged on any media.
 type Tag struct {
 	In []struct {
 		User                  User        `json:"user"`
@@ -174,6 +182,7 @@ type Caption struct {
 	HasTranslation  bool   `json:"has_translation"`
 }
 
+// Mentions is a user being mentioned on media.
 type Mentions struct {
 	X        float64 `json:"x"`
 	Y        float64 `json:"y"`
@@ -264,6 +273,7 @@ type Broadcast struct {
 	OrganicTrackingToken string `json:"organic_tracking_token"`
 }
 
+// BlockedUser stores information about a used that has been blocked before.
 type BlockedUser struct {
 	// TODO: Convert to user
 	UserID        int64  `json:"user_id"`
@@ -305,6 +315,7 @@ type InboxItemMedia struct {
 	ViewMode        string        `json:"view_mode"`
 }
 
+//InboxItemLike is the heart sent during a conversation.
 type InboxItemLike struct {
 	ItemID    string `json:"item_id"`
 	ItemType  string `json:"item_type"`
