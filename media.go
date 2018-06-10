@@ -21,7 +21,7 @@ import (
 // All Item has Images or Videos objects which contains the url(s).
 // You can use Download function to get the best quality Image or Video from Item.
 type Item struct {
-	media    Media     `json:"-"`
+	media    Media
 	Comments *Comments `json:"-"`
 
 	TakenAt          float64 `json:"taken_at"`
@@ -41,19 +41,19 @@ type Item struct {
 	CaptionIsEdited  bool    `json:"caption_is_edited"`
 	Likes            int     `json:"like_count"`
 	HasLiked         bool    `json:"has_liked"`
-	// _TopLikers can be `string` or `[]string`.
+	// Toplikers can be `string` or `[]string`.
 	// Use TopLikers function instead of getting it directly.
-	_TopLikers                   interface{} `json:"top_likers"`
+	Toplikers                    interface{} `json:"top_likers"`
 	Likers                       []User      `json:"likers"`
 	CommentLikesEnabled          bool        `json:"comment_likes_enabled"`
 	CommentThreadingEnabled      bool        `json:"comment_threading_enabled"`
 	HasMoreComments              bool        `json:"has_more_comments"`
 	MaxNumVisiblePreviewComments int         `json:"max_num_visible_preview_comments"`
-	// _PreviewComments can be `string` or `[]string` or `[]Comment`.
+	// Previewcomments can be `string` or `[]string` or `[]Comment`.
 	// Use PreviewComments function instead of getting it directly.
-	_PreviewComments interface{} `json:"preview_comments,omitempty"`
-	CommentCount     int         `json:"comment_count"`
-	PhotoOfYou       bool        `json:"photo_of_you"`
+	Previewcomments interface{} `json:"preview_comments,omitempty"`
+	CommentCount    int         `json:"comment_count"`
+	PhotoOfYou      bool        `json:"photo_of_you"`
 	// Tags are tagged people in photo
 	Tags struct {
 		In []Tag `json:"in"`
@@ -395,7 +395,7 @@ func (item *Item) Download(folder, name string) (imgs, vds string, err error) {
 // TopLikers returns string slice or single string (inside string slice)
 // Depending on TopLikers parameter.
 func (item *Item) TopLikers() []string {
-	switch s := item._TopLikers.(type) {
+	switch s := item.Toplikers.(type) {
 	case string:
 		return []string{s}
 	case []string:
@@ -408,7 +408,7 @@ func (item *Item) TopLikers() []string {
 // Depending on PreviewComments parameter.
 // If PreviewComments are string or []string only the Text field will be filled.
 func (item *Item) PreviewComments() []Comment {
-	switch s := item._PreviewComments.(type) {
+	switch s := item.Previewcomments.(type) {
 	case []Comment:
 		return s
 	case []string:

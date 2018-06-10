@@ -9,7 +9,7 @@ import (
 	"gopkg.in/ahmdrz/goinsta.v2"
 )
 
-func ExampleAccount_ChangePass() {
+func ExampleAccount_ChangePassword() {
 	// See more: example/account/changepass.go
 	fmt.Print("Password: ")
 	pass, err := gopass.GetPasswd()

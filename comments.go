@@ -285,10 +285,10 @@ floop:
 
 // Comment is a type of Media retrieved by the Comments methods
 type Comment struct {
-	inst *Instagram
+	inst  *Instagram
+	idstr string
 
 	ID                             int64     `json:"pk"`
-	idstr                          string    `json:"-"`
 	Text                           string    `json:"text"`
 	Type                           int       `json:"type"`
 	User                           User      `json:"user"`
