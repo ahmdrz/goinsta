@@ -329,41 +329,41 @@ func (inst *Instagram) Login() error {
 			"google_tokens":       "[]",
 		},
 	)
-	if err == nil {
-		body, err := inst.sendRequest(
-			&reqOptions{
-				Endpoint: urlLogin,
-				Query:    generateSignature(b2s(result)),
-				IsPost:   true,
-				Login:    true,
-			},
-		)
-		if err != nil {
-			goto end
-		}
-		inst.pass = ""
-
-		// getting account data
-		res := accountResp{}
-
-		err = json.Unmarshal(body, &res)
-		if err != nil {
-			ierr := instaError{}
-			err = json.Unmarshal(body, &ierr)
-			if err != nil {
-				err = instaToErr(ierr)
-			}
-			goto end
-		}
-		inst.Account = &res.Account
-		inst.Account.inst = inst
-
-		inst.rankToken = strconv.FormatInt(inst.Account.ID, 10) + "_" + inst.uuid
-
-		inst.zrToken()
+	if err != nil {
+		return err
 	}
+	body, err := inst.sendRequest(
+		&reqOptions{
+			Endpoint: urlLogin,
+			Query:    generateSignature(b2s(result)),
+			IsPost:   true,
+			Login:    true,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	inst.pass = ""
 
-end:
+	// getting account data
+	res := accountResp{}
+
+	err = json.Unmarshal(body, &res)
+	if err != nil {
+		ierr := instaError{}
+		err = json.Unmarshal(body, &ierr)
+		if err != nil {
+			err = instaToErr(ierr)
+		}
+		return err
+	}
+	inst.Account = &res.Account
+	inst.Account.inst = inst
+
+	inst.rankToken = strconv.FormatInt(inst.Account.ID, 10) + "_" + inst.uuid
+
+	inst.zrToken()
+
 	return err
 }
 

@@ -230,21 +230,27 @@ func (user *User) Block() error {
 			"user_id": user.ID,
 		},
 	)
-	if err == nil {
-		body, err := insta.sendRequest(
-			&reqOptions{
-				Endpoint: fmt.Sprintf(urlUserBlock, user.ID),
-				Query:    generateSignature(data),
-				IsPost:   true,
-			},
-		)
-		if err == nil {
-			resp := friendResp{}
-			err = json.Unmarshal(body, &resp)
-			user.Friendship = resp.Friendship
-		}
+	if err != nil {
+		return err
 	}
-	return err
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlUserBlock, user.ID),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	resp := friendResp{}
+	err = json.Unmarshal(body, &resp)
+	user.Friendship = resp.Friendship
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Unblock unblocks user
@@ -259,21 +265,27 @@ func (user *User) Unblock() error {
 			"user_id": user.ID,
 		},
 	)
-	if err == nil {
-		body, err := insta.sendRequest(
-			&reqOptions{
-				Endpoint: fmt.Sprintf(urlUserUnblock, user.ID),
-				Query:    generateSignature(data),
-				IsPost:   true,
-			},
-		)
-		if err == nil {
-			resp := friendResp{}
-			err = json.Unmarshal(body, &resp)
-			user.Friendship = resp.Friendship
-		}
+	if err != nil {
+		return err
 	}
-	return err
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlUserUnblock, user.ID),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	resp := friendResp{}
+	err = json.Unmarshal(body, &resp)
+	user.Friendship = resp.Friendship
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Follow started following some user
@@ -291,21 +303,27 @@ func (user *User) Follow() error {
 			"user_id": user.ID,
 		},
 	)
-	if err == nil {
-		body, err := insta.sendRequest(
-			&reqOptions{
-				Endpoint: fmt.Sprintf(urlUserFollow, user.ID),
-				Query:    generateSignature(data),
-				IsPost:   true,
-			},
-		)
-		if err == nil {
-			resp := friendResp{}
-			err = json.Unmarshal(body, &resp)
-			user.Friendship = resp.Friendship
-		}
+	if err != nil {
+		return err
 	}
-	return err
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlUserFollow, user.ID),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	resp := friendResp{}
+	err = json.Unmarshal(body, &resp)
+	user.Friendship = resp.Friendship
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Unfollow unfollows user
@@ -320,21 +338,27 @@ func (user *User) Unfollow() error {
 			"user_id": user.ID,
 		},
 	)
-	if err == nil {
-		body, err := insta.sendRequest(
-			&reqOptions{
-				Endpoint: fmt.Sprintf(urlUserUnfollow, user.ID),
-				Query:    generateSignature(data),
-				IsPost:   true,
-			},
-		)
-		if err == nil {
-			resp := friendResp{}
-			err = json.Unmarshal(body, &resp)
-			user.Friendship = resp.Friendship
-		}
+	if err != nil {
+		return err
 	}
-	return err
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlUserUnfollow, user.ID),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	resp := friendResp{}
+	err = json.Unmarshal(body, &resp)
+	user.Friendship = resp.Friendship
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // FriendShip allows user to get friend relationship.
