@@ -28,6 +28,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+//RootCmd is used as a command line interaction with Instagram Timeline Stories.
 var RootCmd = &cobra.Command{
 	Use:     "stories",
 	Short:   "Get stories of a user",

@@ -28,6 +28,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+//RootCmd is used as a command line interaction with Instagram Tag search.
 var RootCmd = &cobra.Command{
 	Use:     "tags",
 	Short:   "Search tags on Instagram",

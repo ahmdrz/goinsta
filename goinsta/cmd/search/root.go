@@ -36,11 +36,13 @@ func init() {
 	RootCmd.AddCommand(tags.RootCmd)
 }
 
+//RootCmd is used as a command line interaction with all Instagram Searches.
 var RootCmd = &cobra.Command{
 	Use:   "search",
 	Short: "Search on Instagram.",
 }
 
+//Execute the method to to start the command execution of Instagram Search related methods.
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
 		fmt.Println(err)

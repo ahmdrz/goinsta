@@ -49,6 +49,7 @@ var rootCmd = &cobra.Command{
 	Short: "Command line tool for Instagram",
 }
 
+// Execute is called from main as an entrance to the command line interaction tool.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)

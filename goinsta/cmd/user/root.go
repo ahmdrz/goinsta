@@ -50,11 +50,13 @@ func init() {
 	RootCmd.AddCommand(unblock.RootCmd)
 }
 
+//RootCmd is used as a command line interaction with Instagram User related methods.
 var RootCmd = &cobra.Command{
 	Use:   "user",
 	Short: "Get downloads specified Instagram user's object.",
 }
 
+//Execute the method to to start the command execution of Instagram User related methods.
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
 		fmt.Println(err)

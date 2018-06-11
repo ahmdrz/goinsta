@@ -40,11 +40,13 @@ func init() {
 	RootCmd.AddCommand(following.RootCmd)
 }
 
+//RootCmd is used as a command line interaction with Instagram Account related methods.
 var RootCmd = &cobra.Command{
 	Use:   "account",
 	Short: "Interact with your account",
 }
 
+//Execute the method to to start the command execution of Instagram Account related methods.
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
 		fmt.Println(err)

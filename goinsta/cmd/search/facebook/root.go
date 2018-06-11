@@ -28,6 +28,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+//RootCmd is used as a command line interaction with Instagram Facebook Search.
 var RootCmd = &cobra.Command{
 	Use:     "facebook",
 	Short:   "Search facebook users on Instagram",

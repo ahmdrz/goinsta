@@ -28,6 +28,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+//RootCmd is used as a command line interaction with Instagram unblock user method.
 var RootCmd = &cobra.Command{
 	Use:     "unblock",
 	Short:   "Unblocks a user",
