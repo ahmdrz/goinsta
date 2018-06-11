@@ -9,8 +9,10 @@ import (
 	"github.com/howeyc/gopass"
 )
 
+// UsingSession is used inside InitGoinsta to control if there is already a session created.
 var UsingSession bool
 
+// CheckErr is a generic function to validate all errors.
 func CheckErr(err error) {
 	if err != nil {
 		fmt.Printf("error: %s\n", err)

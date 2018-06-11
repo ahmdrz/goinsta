@@ -27,6 +27,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+//RootCmd is used as a command line interaction with Instagram Followers.
 var RootCmd = &cobra.Command{
 	Use:     "followers",
 	Short:   "Get account followers",

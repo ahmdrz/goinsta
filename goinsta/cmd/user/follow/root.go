@@ -28,6 +28,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+//RootCmd is used as a command line interaction with Instagram Follow user method.
 var RootCmd = &cobra.Command{
 	Use:     "follow",
 	Short:   "Start following a user",

@@ -27,6 +27,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+//RootCmd is used as a command line interaction with Instagram Profile info.
 var RootCmd = &cobra.Command{
 	Use:     "info",
 	Short:   "Get partial info about your account",

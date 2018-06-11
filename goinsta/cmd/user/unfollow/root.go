@@ -28,6 +28,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+//RootCmd is used as a command line interaction with Instagram unfollow user method.
 var RootCmd = &cobra.Command{
 	Use:     "unfollow",
 	Short:   "Start unfollowing a user",
