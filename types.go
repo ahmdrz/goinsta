@@ -28,13 +28,28 @@ type PicURLInfo struct {
 	Width  int    `json:"width"`
 }
 
-type instaError struct {
+// ErrorN is general instagram error
+type ErrorN struct {
 	Message   string `json:"message"`
 	Status    string `json:"status"`
 	ErrorType string `json:"error_type"`
 }
 
-type instaError400 struct {
+// Error503 is instagram API error
+type Error503 struct {
+	Message string
+}
+
+func (e Error503) Error() string {
+	return e.Message
+}
+
+func (e ErrorN) Error() string {
+	return fmt.Sprintf("%s: %s (%s)", e.Status, e.Message, e.ErrorType)
+}
+
+// Error400 is error returned by HTTP 400 status code.
+type Error400 struct {
 	Action     string `json:"action"`
 	StatusCode string `json:"status_code"`
 	Payload    struct {
@@ -44,14 +59,8 @@ type instaError400 struct {
 	Status string `json:"status"`
 }
 
-func instaToErr(err interface{}) error {
-	switch ierr := err.(type) {
-	case instaError:
-		return fmt.Errorf("%s: %s (%s)", ierr.Status, ierr.Message, ierr.ErrorType)
-	case instaError400:
-		return fmt.Errorf("%s: %s", ierr.Status, ierr.Payload.Message)
-	}
-	return fmt.Errorf("Unknown error :)")
+func (e Error400) Error() string {
+	return fmt.Sprintf("%s: %s", e.Status, e.Payload.Message)
 }
 
 // Nametag is part of the account information.

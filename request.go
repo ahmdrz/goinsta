@@ -113,29 +113,35 @@ func (insta *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 	}
 
 	body, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return
+	if err == nil {
+		err = isError(resp.StatusCode, body)
 	}
+	return body, err
+}
 
-	switch resp.StatusCode {
+func isError(code int, body []byte) (err error) {
+	switch code {
 	case 200:
+	case 503:
+		return Error503{
+			Message: "Instagram API error. Try it later.",
+		}
 	case 400:
-		ierr := instaError400{}
+		ierr := Error400{}
 		err = json.Unmarshal(body, &ierr)
 		if err == nil && ierr.Payload.Message != "" {
-			return nil, instaToErr(ierr)
+			return ierr
 		}
 		fallthrough
 	default:
-		ierr := instaError{}
+		ierr := ErrorN{}
 		err = json.Unmarshal(body, &ierr)
 		if err != nil {
-			return nil, fmt.Errorf("Invalid status code: %d: %s", resp.StatusCode, body)
+			return fmt.Errorf("Invalid status code: %d: %s", code, body)
 		}
-		return nil, instaToErr(ierr)
+		return ierr
 	}
-
-	return body, err
+	return nil
 }
 
 func (insta *Instagram) prepareData(other ...map[string]interface{}) (string, error) {
