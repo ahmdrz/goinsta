@@ -332,7 +332,7 @@ func (inst *Instagram) Login() error {
 	if err != nil {
 		return err
 	}
-	_, err = inst.sendRequest(
+	body, err := inst.sendRequest(
 		&reqOptions{
 			Endpoint: urlLogin,
 			Query:    generateSignature(b2s(result)),
@@ -347,6 +347,10 @@ func (inst *Instagram) Login() error {
 
 	// getting account data
 	res := accountResp{}
+	err = json.Unmarshal(body, &res)
+	if err != nil {
+		return err
+	}
 
 	inst.Account = &res.Account
 	inst.Account.inst = inst
