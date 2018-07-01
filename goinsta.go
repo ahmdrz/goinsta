@@ -129,12 +129,12 @@ func (inst *Instagram) UnsetProxy() {
 }
 
 // Save exports config to ~/.goinsta
-func (inst *Instagram) Save() {
-	home := os.Getenv("$HOME")
+func (inst *Instagram) Save() error {
+	home := os.Getenv("HOME")
 	if home == "" {
-		home = os.Getenv("$home") // for plan9
+		home = os.Getenv("home") // for plan9
 	}
-	inst.Export(filepath.Join(home, ".goinsta"))
+	return inst.Export(filepath.Join(home, ".goinsta"))
 }
 
 // Export exports *Instagram object options
