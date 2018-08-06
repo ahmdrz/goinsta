@@ -137,6 +137,16 @@ func getname(name string) string {
 	return name
 }
 
+func getnameoverwrite(name string) string {
+	nname := name
+	ext := path.Ext(name)
+	if ext != "" {
+		nname = strings.Replace(nname, ext, "", -1)
+	}
+	name = fmt.Sprintf("%s%s", nname, ext)
+	return name
+}
+
 func download(inst *Instagram, url, dst string) (string, error) {
 	file, err := os.Create(dst)
 	if err != nil {
@@ -341,7 +351,7 @@ func (item *Item) Save() error {
 //
 //
 // See example: examples/media/itemDownload.go
-func (item *Item) Download(folder, name string) (imgs, vds string, err error) {
+func (item *Item) Download(folder, name string, overwrite bool) (imgs, vds string, err error) {
 	var u *neturl.URL
 	var nname string
 	imgFolder := path.Join(folder, "images")
@@ -364,7 +374,11 @@ func (item *Item) Download(folder, name string) (imgs, vds string, err error) {
 		} else {
 			nname = path.Join(vidFolder, nname)
 		}
-		nname = getname(nname)
+		if !overwrite {
+			nname = getname(nname)
+		} else {
+			nname = getnameoverwrite(nname)
+		}
 
 		vds, err = download(inst, vds, nname)
 		return "", vds, err
@@ -385,8 +399,12 @@ func (item *Item) Download(folder, name string) (imgs, vds string, err error) {
 				} else {
 					nname = path.Join(imgFolder, nname)
 				}
-				nname = getname(nname)
 
+				if !overwrite {
+					nname = getname(nname)
+				} else {
+					nname = getnameoverwrite(nname)
+				}
 				imgs, err = download(inst, imgs, nname)
 			}
 
@@ -402,8 +420,12 @@ func (item *Item) Download(folder, name string) (imgs, vds string, err error) {
 				} else {
 					nname = path.Join(vidFolder, nname)
 				}
-				nname = getname(nname)
 
+				if !overwrite {
+					nname = getname(nname)
+				} else {
+					nname = getnameoverwrite(nname)
+				}
 				vds, err = download(inst, vds, nname)
 			}
 		}
@@ -423,8 +445,12 @@ func (item *Item) Download(folder, name string) (imgs, vds string, err error) {
 		} else {
 			nname = path.Join(imgFolder, nname)
 		}
-		nname = getname(nname)
 
+		if !overwrite {
+			nname = getname(nname)
+		} else {
+			nname = getnameoverwrite(nname)
+		}
 		imgs, err = download(inst, imgs, nname)
 		return imgs, "", err
 	}
