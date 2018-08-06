@@ -339,7 +339,6 @@ func (item *Item) Save() error {
 // This function returns an slice of location of downloaded items
 // The returned values are the output path of images and videos.
 //
-// This function does not download CarouselMedia.
 //
 // See example: examples/media/itemDownload.go
 func (item *Item) Download(folder, name string) (imgs, vds string, err error) {
@@ -369,6 +368,30 @@ func (item *Item) Download(folder, name string) (imgs, vds string, err error) {
 
 		vds, err = download(inst, vds, nname)
 		return "", vds, err
+	}
+
+	// TODO: Make image and carousel download one block of code
+	if len(item.CarouselMedia) > 0 {
+		for _, carouselItem := range item.CarouselMedia {
+			imgs = GetBest(carouselItem.Images.Versions)
+			if imgs != "" {
+				if name == "" {
+					u, err = neturl.Parse(imgs)
+					if err != nil {
+						return
+					}
+
+					nname = path.Join(imgFolder, path.Base(u.Path))
+				} else {
+					nname = path.Join(imgFolder, nname)
+				}
+				nname = getname(nname)
+
+				imgs, err = download(inst, imgs, nname)
+			}
+		}
+		// TODO: Return a list of downloaded paths
+		return "", "", err
 	}
 
 	imgs = GetBest(item.Images.Versions)
