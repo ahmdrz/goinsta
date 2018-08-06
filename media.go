@@ -389,6 +389,23 @@ func (item *Item) Download(folder, name string) (imgs, vds string, err error) {
 
 				imgs, err = download(inst, imgs, nname)
 			}
+
+			vds = GetBest(carouselItem.Videos)
+			if vds != "" {
+				if name == "" {
+					u, err = neturl.Parse(vds)
+					if err != nil {
+						return
+					}
+
+					nname = path.Join(vidFolder, path.Base(u.Path))
+				} else {
+					nname = path.Join(vidFolder, nname)
+				}
+				nname = getname(nname)
+
+				vds, err = download(inst, vds, nname)
+			}
 		}
 		// TODO: Return a list of downloaded paths
 		return "", "", err
