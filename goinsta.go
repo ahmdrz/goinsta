@@ -3,6 +3,7 @@ package goinsta
 import (
 	"crypto/tls"
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/cookiejar"
@@ -162,22 +163,46 @@ func (inst *Instagram) Export(path string) error {
 	return ioutil.WriteFile(path, bytes, 0644)
 }
 
-// Import imports instagram configuration
+// Export exports selected *Instagram object options to an io.Writer
+func Export(inst *Instagram, writer io.Writer) error {
+	url, err := neturl.Parse(goInstaAPIUrl)
+	if err != nil {
+		return err
+	}
+
+	config := ConfigFile{
+		ID:        inst.Account.ID,
+		User:      inst.user,
+		DeviceID:  inst.dID,
+		UUID:      inst.uuid,
+		RankToken: inst.rankToken,
+		Token:     inst.token,
+		PhoneID:   inst.pid,
+		Cookies:   inst.c.Jar.Cookies(url),
+	}
+	bytes, err := json.Marshal(config)
+	if err != nil {
+		return err
+	}
+	_, err = writer.Write(bytes)
+	return err
+}
+
+// ImportReader imports instagram configuration from io.Reader
 //
 // This function does not set proxy automatically. Use SetProxy after this call.
-func Import(path string) (*Instagram, error) {
+func ImportReader(r io.Reader) (*Instagram, error) {
 	url, err := neturl.Parse(goInstaAPIUrl)
 	if err != nil {
 		return nil, err
 	}
 
-	bytes, err := ioutil.ReadFile(path)
+	bytes, err := ioutil.ReadAll(r)
 	if err != nil {
 		return nil, err
 	}
 
 	config := ConfigFile{}
-
 	err = json.Unmarshal(bytes, &config)
 	if err != nil {
 		return nil, err
@@ -206,6 +231,18 @@ func Import(path string) (*Instagram, error) {
 	inst.Account.Sync()
 
 	return inst, nil
+}
+
+// Import imports instagram configuration
+//
+// This function does not set proxy automatically. Use SetProxy after this call.
+func Import(path string) (*Instagram, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	return ImportReader(f)
 }
 
 func (inst *Instagram) readMsisdnHeader() error {
