@@ -130,12 +130,12 @@ func (inst *Instagram) UnsetProxy() {
 }
 
 // Save exports config to ~/.goinsta
-func (inst *Instagram) Save() {
-	home := os.Getenv("$HOME")
+func (inst *Instagram) Save() error {
+	home := os.Getenv("HOME")
 	if home == "" {
-		home = os.Getenv("$home") // for plan9
+		home = os.Getenv("home") // for plan9
 	}
-	inst.Export(filepath.Join(home, ".goinsta"))
+	return inst.Export(filepath.Join(home, ".goinsta"))
 }
 
 // Export exports *Instagram object options
@@ -369,7 +369,7 @@ func (inst *Instagram) Login() error {
 	if err != nil {
 		return err
 	}
-	_, err = inst.sendRequest(
+	body, err := inst.sendRequest(
 		&reqOptions{
 			Endpoint: urlLogin,
 			Query:    generateSignature(b2s(result)),
@@ -384,6 +384,10 @@ func (inst *Instagram) Login() error {
 
 	// getting account data
 	res := accountResp{}
+	err = json.Unmarshal(body, &res)
+	if err != nil {
+		return err
+	}
 
 	inst.Account = &res.Account
 	inst.Account.inst = inst

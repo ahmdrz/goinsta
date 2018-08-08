@@ -80,6 +80,11 @@ func (users *Users) Next() bool {
 	return false
 }
 
+// Error returns users error
+func (users *Users) Error() error {
+	return users.err
+}
+
 func (users *Users) setValues() {
 	for i := range users.Users {
 		users.Users[i].inst = users.inst
