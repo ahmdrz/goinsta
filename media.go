@@ -735,6 +735,8 @@ func (media *FeedMedia) ID() string {
 		return s
 	case int64:
 		return strconv.FormatInt(s, 10)
+	case json.Number:
+		return string(s)
 	}
 	return ""
 }
@@ -783,7 +785,9 @@ func (media *FeedMedia) Next(params ...interface{}) bool {
 	)
 	if err == nil {
 		m := FeedMedia{}
-		err = json.Unmarshal(body, &m)
+		d := json.NewDecoder(bytes.NewReader(body))
+		d.UseNumber()
+		err = d.Decode(&m)
 		if err == nil {
 			*media = m
 			media.inst = insta
