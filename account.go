@@ -54,7 +54,7 @@ type Account struct {
 	SocialContext              string       `json:"social_context,omitempty"`
 	SearchSocialContext        string       `json:"search_social_context,omitempty"`
 	MutualFollowersCount       float64      `json:"mutual_followers_count"`
-	LatestReelMedia            int          `json:"latest_reel_media,omitempty"`
+	LatestReelMedia            int64        `json:"latest_reel_media,omitempty"`
 	CityID                     int64        `json:"city_id"`
 	CityName                   string       `json:"city_name"`
 	AddressStreet              string       `json:"address_street"`

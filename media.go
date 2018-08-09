@@ -66,7 +66,7 @@ type Item struct {
 	Images          Images   `json:"image_versions2,omitempty"`
 	OriginalWidth   int      `json:"original_width,omitempty"`
 	OriginalHeight  int      `json:"original_height,omitempty"`
-	ImportedTakenAt int      `json:"imported_taken_at,omitempty"`
+	ImportedTakenAt int64    `json:"imported_taken_at,omitempty"`
 	Location        Location `json:"location,omitempty"`
 	Lat             float64  `json:"lat,omitempty"`
 	Lng             float64  `json:"lng,omitempty"`
@@ -93,7 +93,7 @@ type Item struct {
 	StoryProductItems        []interface{} `json:"story_product_items"`
 	SupportsReelReactions    bool          `json:"supports_reel_reactions"`
 	ShowOneTapFbShareTooltip bool          `json:"show_one_tap_fb_share_tooltip"`
-	HasSharedToFb            int           `json:"has_shared_to_fb"`
+	HasSharedToFb            int64         `json:"has_shared_to_fb"`
 	Mentions                 []Mentions
 }
 
@@ -453,7 +453,7 @@ type StoryMedia struct {
 	err error
 
 	Pk              interface{} `json:"id"`
-	LatestReelMedia int         `json:"latest_reel_media"`
+	LatestReelMedia int64       `json:"latest_reel_media"`
 	ExpiringAt      float64     `json:"expiring_at"`
 	HaveBeenSeen    float64     `json:"seen"`
 	CanReply        bool        `json:"can_reply"`
