@@ -55,14 +55,14 @@ type Inbox struct {
 	UnseenCountTs       int64  `json:"unseen_count_ts"`
 	BlendedInboxEnabled bool   `json:"blended_inbox_enabled"`
 	// this fields are copied from response
-	SeqID                int   `json:"seq_id"`
+	SeqID                int64 `json:"seq_id"`
 	PendingRequestsTotal int   `json:"pending_requests_total"`
 	SnapshotAtMs         int64 `json:"snapshot_at_ms"`
 }
 
 type inboxResp struct {
 	Inbox                Inbox  `json:"inbox"`
-	SeqID                int    `json:"seq_id"`
+	SeqID                int64  `json:"seq_id"`
 	PendingRequestsTotal int    `json:"pending_requests_total"`
 	SnapshotAtMs         int64  `json:"snapshot_at_ms"`
 	Status               string `json:"status"`

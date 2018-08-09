@@ -17,7 +17,7 @@ type SearchResult struct {
 	HasMore    bool   `json:"has_more"`
 	RankToken  string `json:"rank_token"`
 	Status     string `json:"status"`
-	NumResults int    `json:"num_results"`
+	NumResults int64  `json:"num_results"`
 
 	// User search results
 	Users []User `json:"users"`
@@ -197,7 +197,7 @@ func (search *Search) FeedTags(tag string) (*FeedTag, error) {
 type FeedTag struct {
 	RankedItems         []Item     `json:"ranked_items"`
 	Images              []Item     `json:"items"`
-	NumResults          int        `json:"num_results"`
+	NumResults          int64      `json:"num_results"`
 	NextID              string     `json:"next_max_id"`
 	MoreAvailable       bool       `json:"more_available"`
 	AutoLoadMoreEnabled bool       `json:"auto_load_more_enabled"`
