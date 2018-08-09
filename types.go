@@ -68,7 +68,7 @@ type Nametag struct {
 	Mode          int64  `json:"mode"`
 	Gradient      int64  `json:"gradient"`
 	Emoji         string `json:"emoji"`
-	SelfieSticker int64  `json:"selfie_sticker"`
+	SelfieSticker string `json:"selfie_sticker"`
 }
 
 type friendResp struct {
