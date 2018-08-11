@@ -407,7 +407,7 @@ func (item *Item) Download(folder, name string, overwrite bool) (imgs, vds strin
 				nname += string(time.Now().Unix())
 				imgsr, err := download(inst, imgs, nname)
 				if err != nil {
-					return
+					return "", "", nil
 				}
 				imgs += "," + imgsr
 			}
@@ -417,7 +417,7 @@ func (item *Item) Download(folder, name string, overwrite bool) (imgs, vds strin
 				if name == "" {
 					u, err = neturl.Parse(vds)
 					if err != nil {
-						return
+						return "", "", err
 					}
 
 					nname = path.Join(vidFolder, path.Base(u.Path))
@@ -433,7 +433,7 @@ func (item *Item) Download(folder, name string, overwrite bool) (imgs, vds strin
 				nname += string(time.Now().Unix())
 				vdsr, err := download(inst, vds, nname)
 				if err != nil {
-					return
+					return "", "", err
 				}
 				vds += "," + vdsr
 			}
