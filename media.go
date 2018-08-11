@@ -137,7 +137,7 @@ func getname(name string) string {
 	return name
 }
 
-func getnameoverwrite(name string) string {
+func getNameOverwrite(name string) string {
 	nname := name
 	ext := path.Ext(name)
 	if ext != "" {
@@ -377,14 +377,13 @@ func (item *Item) Download(folder, name string, overwrite bool) (imgs, vds strin
 		if !overwrite {
 			nname = getname(nname)
 		} else {
-			nname = getnameoverwrite(nname)
+			nname = getNameOverwrite(nname)
 		}
 
 		vds, err = download(inst, vds, nname)
 		return "", vds, err
 	}
 
-	// TODO: Make image and carousel download one block of code
 	if len(item.CarouselMedia) > 0 {
 		for _, carouselItem := range item.CarouselMedia {
 			imgs = GetBest(carouselItem.Images.Versions)
@@ -403,9 +402,14 @@ func (item *Item) Download(folder, name string, overwrite bool) (imgs, vds strin
 				if !overwrite {
 					nname = getname(nname)
 				} else {
-					nname = getnameoverwrite(nname)
+					nname = getNameOverwrite(nname)
 				}
-				imgs, err = download(inst, imgs, nname)
+				nname += string(time.Now().Unix())
+				imgsr, err := download(inst, imgs, nname)
+				if err != nil {
+					return
+				}
+				imgs += "," + imgsr
 			}
 
 			vds = GetBest(carouselItem.Videos)
@@ -424,13 +428,17 @@ func (item *Item) Download(folder, name string, overwrite bool) (imgs, vds strin
 				if !overwrite {
 					nname = getname(nname)
 				} else {
-					nname = getnameoverwrite(nname)
+					nname = getNameOverwrite(nname)
 				}
-				vds, err = download(inst, vds, nname)
+				nname += string(time.Now().Unix())
+				vdsr, err := download(inst, vds, nname)
+				if err != nil {
+					return
+				}
+				vds += "," + vdsr
 			}
 		}
-		// TODO: Return a list of downloaded paths
-		return "", "", err
+		return imgs, vds, err
 	}
 
 	imgs = GetBest(item.Images.Versions)
@@ -449,7 +457,7 @@ func (item *Item) Download(folder, name string, overwrite bool) (imgs, vds strin
 		if !overwrite {
 			nname = getname(nname)
 		} else {
-			nname = getnameoverwrite(nname)
+			nname = getNameOverwrite(nname)
 		}
 		imgs, err = download(inst, imgs, nname)
 		return imgs, "", err
