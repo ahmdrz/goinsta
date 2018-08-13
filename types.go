@@ -65,10 +65,10 @@ func (e Error400) Error() string {
 
 // Nametag is part of the account information.
 type Nametag struct {
-	Mode          int64  `json:"mode"`
-	Gradient      int64  `json:"gradient"`
-	Emoji         string `json:"emoji"`
-	SelfieSticker string `json:"selfie_sticker"`
+	Mode          int64       `json:"mode"`
+	Gradient      int64       `json:"gradient"`
+	Emoji         string      `json:"emoji"`
+	SelfieSticker interface{} `json:"selfie_sticker"`
 }
 
 type friendResp struct {
