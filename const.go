@@ -3,7 +3,7 @@ package goinsta
 const (
 	goInstaAPIUrl        = "https://i.instagram.com/api/v1/"
 	goInstaAPIUrlv2      = "https://i.instagram.com/api/v2/"
-	goInstaUserAgent     = "Instagram 27.0.0.7.97 Android (24/7.0; 380dpi; 1080x1920; OnePlus; ONEPLUS A3010; OnePlus3T; qcom; en_US)"
+	goInstaUserAgent     = "Instagram 60.0.0.16.79 Android (24/7.0; 380dpi; 1080x1920; OnePlus; ONEPLUS A3010; OnePlus3T; qcom; en_US)"
 	goInstaIGSigKey      = "109513c04303341a7daf27bb41b268e633b30dcc65a3fe14503f743176113869"
 	fbAnalytics          = "567067343352427"
 	igCapabilities       = "3brTBw=="
