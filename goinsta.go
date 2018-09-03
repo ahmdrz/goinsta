@@ -102,6 +102,44 @@ func New(username, password string) *Instagram {
 	return inst
 }
 
+// NewFromConfig create a new Instagram client from config
+func NewFromConfig(config ConfigFile) (*Instagram, error) {
+	url, err := neturl.Parse(goInstaAPIUrl)
+	if err != nil {
+		return nil, err
+	}
+
+	inst := &Instagram{
+		user:      config.User,
+		dID:       config.DeviceID,
+		uuid:      config.UUID,
+		rankToken: config.RankToken,
+		token:     config.Token,
+		pid:       config.PhoneID,
+		c: &http.Client{
+			Transport: &http.Transport{
+				Proxy: http.ProxyFromEnvironment,
+			},
+		},
+	}
+	jar, err := cookiejar.New(nil)
+	if err != nil {
+		return inst, err
+	}
+
+	inst.c.Jar = jar
+	inst.c.Jar.SetCookies(url, config.Cookies)
+
+	inst.init()
+	inst.Account = &Account{inst: inst, ID: config.ID}
+
+	if err := inst.Account.Sync(); err != nil {
+		return nil, err
+	}
+
+	return inst, nil
+}
+
 func (inst *Instagram) init() {
 	inst.Profiles = newProfiles(inst)
 	inst.Activity = newActivity(inst)
@@ -193,43 +231,15 @@ func Export(inst *Instagram, writer io.Writer) error {
 //
 // This function does not set proxy automatically. Use SetProxy after this call.
 func ImportReader(r io.Reader) (*Instagram, error) {
-	url, err := neturl.Parse(goInstaAPIUrl)
-	if err != nil {
+	var config ConfigFile
+	if err := json.NewDecoder(r).Decode(&config); err != nil {
 		return nil, err
 	}
 
-	bytes, err := ioutil.ReadAll(r)
+	inst, err := NewFromConfig(config)
 	if err != nil {
 		return nil, err
 	}
-
-	config := ConfigFile{}
-	err = json.Unmarshal(bytes, &config)
-	if err != nil {
-		return nil, err
-	}
-	inst := &Instagram{
-		user:      config.User,
-		dID:       config.DeviceID,
-		uuid:      config.UUID,
-		rankToken: config.RankToken,
-		token:     config.Token,
-		pid:       config.PhoneID,
-		c: &http.Client{
-			Transport: &http.Transport{
-				Proxy: http.ProxyFromEnvironment,
-			},
-		},
-	}
-	inst.c.Jar, err = cookiejar.New(nil)
-	if err != nil {
-		return inst, err
-	}
-	inst.c.Jar.SetCookies(url, config.Cookies)
-
-	inst.init()
-	inst.Account = &Account{inst: inst, ID: config.ID}
-	inst.Account.Sync()
 
 	return inst, nil
 }
