@@ -129,6 +129,27 @@ func (inst *Instagram) UnsetProxy() {
 	inst.c.Transport = nil
 }
 
+// GetConfig returns Instagram configuration
+func (inst *Instagram) GetConfig() (*ConfigFile, error) {
+	url, err := neturl.Parse(goInstaAPIUrl)
+	if err != nil {
+		return nil, err
+	}
+
+	config := ConfigFile{
+		ID:        inst.Account.ID,
+		User:      inst.user,
+		DeviceID:  inst.dID,
+		UUID:      inst.uuid,
+		RankToken: inst.rankToken,
+		Token:     inst.token,
+		PhoneID:   inst.pid,
+		Cookies:   inst.c.Jar.Cookies(url),
+	}
+
+	return &config, nil
+}
+
 // Save exports config to ~/.goinsta
 func (inst *Instagram) Save() error {
 	home := os.Getenv("HOME")
@@ -140,21 +161,11 @@ func (inst *Instagram) Save() error {
 
 // Export exports *Instagram object options
 func (inst *Instagram) Export(path string) error {
-	url, err := neturl.Parse(goInstaAPIUrl)
+	config, err := inst.GetConfig()
 	if err != nil {
 		return err
 	}
 
-	config := ConfigFile{
-		ID:        inst.Account.ID,
-		User:      inst.user,
-		DeviceID:  inst.dID,
-		UUID:      inst.uuid,
-		RankToken: inst.rankToken,
-		Token:     inst.token,
-		PhoneID:   inst.pid,
-		Cookies:   inst.c.Jar.Cookies(url),
-	}
 	bytes, err := json.Marshal(config)
 	if err != nil {
 		return err
@@ -165,21 +176,11 @@ func (inst *Instagram) Export(path string) error {
 
 // Export exports selected *Instagram object options to an io.Writer
 func Export(inst *Instagram, writer io.Writer) error {
-	url, err := neturl.Parse(goInstaAPIUrl)
+	config, err := inst.GetConfig()
 	if err != nil {
 		return err
 	}
 
-	config := ConfigFile{
-		ID:        inst.Account.ID,
-		User:      inst.user,
-		DeviceID:  inst.dID,
-		UUID:      inst.uuid,
-		RankToken: inst.rankToken,
-		Token:     inst.token,
-		PhoneID:   inst.pid,
-		Cookies:   inst.c.Jar.Cookies(url),
-	}
 	bytes, err := json.Marshal(config)
 	if err != nil {
 		return err
