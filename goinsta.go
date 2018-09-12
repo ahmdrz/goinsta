@@ -59,6 +59,8 @@ type Instagram struct {
 	Activity *Activity
 	// Inbox are instagram message/chat system.
 	Inbox *Inbox
+	// Feed for search over feeds
+	Feed *Feed
 
 	c *http.Client
 }
@@ -108,6 +110,7 @@ func (inst *Instagram) init() {
 	inst.Timeline = newTimeline(inst)
 	inst.Search = newSearch(inst)
 	inst.Inbox = newInbox(inst)
+	inst.Feed = newFeed(inst)
 }
 
 // SetProxy sets proxy for connection.
