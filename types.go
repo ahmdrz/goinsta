@@ -65,10 +65,10 @@ func (e Error400) Error() string {
 
 // Nametag is part of the account information.
 type Nametag struct {
-	Mode          int    `json:"mode"`
-	Gradient      int    `json:"gradient"`
-	Emoji         string `json:"emoji"`
-	SelfieSticker int    `json:"selfie_sticker"`
+	Mode          int64       `json:"mode"`
+	Gradient      int64       `json:"gradient"`
+	Emoji         string      `json:"emoji"`
+	SelfieSticker interface{} `json:"selfie_sticker"`
 }
 
 type friendResp struct {
@@ -78,7 +78,7 @@ type friendResp struct {
 
 // Location stores media location information.
 type Location struct {
-	Pk               int     `json:"pk"`
+	Pk               int64   `json:"pk"`
 	Name             string  `json:"name"`
 	Address          string  `json:"address"`
 	City             string  `json:"city"`
@@ -177,11 +177,11 @@ type Tag struct {
 // Caption is media caption
 type Caption struct {
 	ID              int64  `json:"pk"`
-	UserID          int    `json:"user_id"`
+	UserID          int64  `json:"user_id"`
 	Text            string `json:"text"`
 	Type            int    `json:"type"`
-	CreatedAt       int    `json:"created_at"`
-	CreatedAtUtc    int    `json:"created_at_utc"`
+	CreatedAt       int64  `json:"created_at"`
+	CreatedAtUtc    int64  `json:"created_at_utc"`
 	ContentType     string `json:"content_type"`
 	Status          string `json:"status"`
 	BitFlags        int    `json:"bit_flags"`
@@ -195,7 +195,7 @@ type Caption struct {
 type Mentions struct {
 	X        float64 `json:"x"`
 	Y        float64 `json:"y"`
-	Z        int     `json:"z"`
+	Z        int64   `json:"z"`
 	Width    float64 `json:"width"`
 	Height   float64 `json:"height"`
 	Rotation float64 `json:"rotation"`
@@ -257,9 +257,9 @@ type LiveItems struct {
 	ID                  string      `json:"pk"`
 	User                User        `json:"user"`
 	Broadcasts          []Broadcast `json:"broadcasts"`
-	LastSeenBroadcastTs int         `json:"last_seen_broadcast_ts"`
-	RankedPosition      int         `json:"ranked_position"`
-	SeenRankedPosition  int         `json:"seen_ranked_position"`
+	LastSeenBroadcastTs int64       `json:"last_seen_broadcast_ts"`
+	RankedPosition      int64       `json:"ranked_position"`
+	SeenRankedPosition  int64       `json:"seen_ranked_position"`
 	Muted               bool        `json:"muted"`
 	CanReply            bool        `json:"can_reply"`
 	CanReshare          bool        `json:"can_reshare"`
@@ -270,13 +270,13 @@ type Broadcast struct {
 	ID                   int64  `json:"id"`
 	BroadcastStatus      string `json:"broadcast_status"`
 	DashManifest         string `json:"dash_manifest"`
-	ExpireAt             int    `json:"expire_at"`
+	ExpireAt             int64  `json:"expire_at"`
 	EncodingTag          string `json:"encoding_tag"`
 	InternalOnly         bool   `json:"internal_only"`
 	NumberOfQualities    int    `json:"number_of_qualities"`
 	CoverFrameURL        string `json:"cover_frame_url"`
 	BroadcastOwner       User   `json:"broadcast_owner"`
-	PublishedTime        int    `json:"published_time"`
+	PublishedTime        int64  `json:"published_time"`
 	MediaID              string `json:"media_id"`
 	BroadcastMessage     string `json:"broadcast_message"`
 	OrganicTrackingToken string `json:"organic_tracking_token"`
@@ -289,7 +289,7 @@ type BlockedUser struct {
 	Username      string `json:"username"`
 	FullName      string `json:"full_name"`
 	ProfilePicURL string `json:"profile_pic_url"`
-	BlockAt       int    `json:"block_at"`
+	BlockAt       int64  `json:"block_at"`
 }
 
 // Unblock unblocks blocked user.
@@ -315,7 +315,7 @@ type InboxItemMedia struct {
 	ItemID     string `json:"item_id"`
 	ItemType   string `json:"item_type"`
 	RavenMedia struct {
-		MediaType int `json:"media_type"`
+		MediaType int64 `json:"media_type"`
 	} `json:"raven_media"`
 	ReplyChainCount int           `json:"reply_chain_count"`
 	SeenUserIds     []interface{} `json:"seen_user_ids"`
