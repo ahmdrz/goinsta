@@ -166,8 +166,8 @@ type User struct {
 	Friendship                   Friendship   `json:"friendship_status"`
 }
 
-// SetController will update instagram instance for selected User.
-func (user *User) SetController(insta *Instagram) {
+// SetInstagram will update instagram instance for selected User.
+func (user *User) SetInstagram(insta *Instagram) {
 	user.inst = insta
 }
 
