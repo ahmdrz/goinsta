@@ -355,16 +355,18 @@ func (item *Item) Download(folder, name string) (imgs, vds string, err error) {
 
 	vds = GetBest(item.Videos)
 	if vds != "" {
-		if name == "" {
-			u, err = neturl.Parse(vds)
-			if err != nil {
-				return
-			}
+		u, err = neturl.Parse(vds)
+		if err != nil {
+			return
+		}
+		ext := path.Ext(u.Path)
 
+		if name == "" {
 			nname = path.Join(vidFolder, path.Base(u.Path))
 		} else {
-			nname = path.Join(vidFolder, nname)
+			nname = path.Join(vidFolder, name)
 		}
+		nname += ext
 		nname = getname(nname)
 
 		vds, err = download(inst, vds, nname)
@@ -373,18 +375,21 @@ func (item *Item) Download(folder, name string) (imgs, vds string, err error) {
 
 	imgs = GetBest(item.Images.Versions)
 	if imgs != "" {
-		if name == "" {
-			u, err = neturl.Parse(imgs)
-			if err != nil {
-				return
-			}
+		u, err = neturl.Parse(imgs)
+		if err != nil {
+			return
+		}
+		ext := path.Ext(u.Path)
 
+		if name == "" {
 			nname = path.Join(imgFolder, path.Base(u.Path))
 		} else {
-			nname = path.Join(imgFolder, nname)
+			nname = path.Join(imgFolder, name)
 		}
+		nname += ext
 		nname = getname(nname)
 
+		fmt.Println("Downloading to:", nname)
 		imgs, err = download(inst, imgs, nname)
 		return imgs, "", err
 	}
