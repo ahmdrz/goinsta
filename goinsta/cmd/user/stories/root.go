@@ -65,7 +65,7 @@ var RootCmd = &cobra.Command{
 		for media.Next() {
 			pgb := pb.StartNew(len(media.Items))
 			for _, item := range media.Items {
-				date := time.Unix(int64(item.TakenAt), 0).Add(-(24 * time.Hour)).Format("02-01-2006 15:04:05")
+				date := time.Unix(int64(item.TakenAt), 0).Format("02-01-2006 15:04:05")
 				_, _, err := item.Download(output, date)
 				if err != nil {
 					fmt.Println(err)
