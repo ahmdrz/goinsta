@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/ahmdrz/goinsta/utils"
 	"github.com/cheggaaa/pb"
@@ -60,11 +61,12 @@ var RootCmd = &cobra.Command{
 
 		media := user.Stories()
 
-		fmt.Println("Downloading stories of", user.Username)
+		fmt.Println("Downloading stories of: ", user.Username)
 		for media.Next() {
 			pgb := pb.StartNew(len(media.Items))
 			for _, item := range media.Items {
-				_, _, err := item.Download(output, "")
+				date := time.Unix(int64(item.TakenAt), 0).Add(-(24 * time.Hour)).Format("02-01-2006 15:04:05")
+				_, _, err := item.Download(output, date)
 				if err != nil {
 					fmt.Println(err)
 				}
