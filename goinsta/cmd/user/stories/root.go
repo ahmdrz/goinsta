@@ -61,7 +61,7 @@ var RootCmd = &cobra.Command{
 
 		media := user.Stories()
 
-		fmt.Println("Downloading stories of: ", user.Username)
+		fmt.Println("Downloading stories of:", user.Username)
 		for media.Next() {
 			pgb := pb.StartNew(len(media.Items))
 			for _, item := range media.Items {
