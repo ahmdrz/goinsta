@@ -363,7 +363,7 @@ func (item *Item) Download(folder, name string) (imgs, vds string, err error) {
 
 			nname = path.Join(vidFolder, path.Base(u.Path))
 		} else {
-			nname = path.Join(vidFolder, nname)
+			nname = path.Join(vidFolder, name)
 		}
 		nname = getname(nname)
 
@@ -381,7 +381,7 @@ func (item *Item) Download(folder, name string) (imgs, vds string, err error) {
 
 			nname = path.Join(imgFolder, path.Base(u.Path))
 		} else {
-			nname = path.Join(imgFolder, nname)
+			nname = path.Join(imgFolder, name)
 		}
 		nname = getname(nname)
 
