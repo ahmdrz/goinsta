@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-	"gopkg.in/ahmdrz/goinsta.v2"
+	"github.com/ahmdrz/goinsta"
 )
 
 func main() {
 	//insta, _ := goinsta.Import("session_dump")
-	insta := goinsta.New("insta_login", "insta_password")
+	insta := goinsta.New("lnsta_login", "insta_passwordd")
 
 	// also you can use New function from gopkg.in/ahmdrz/goinsta.v2/utils
 
@@ -22,15 +22,14 @@ func main() {
 
 	empty := make([]string, 0)
 	contacts := []goinsta.Contact{
-
 		{
 			Name:    "To Search 1",
-			Numbers: []string{"+79817938900"},
+			Numbers: []string{"+11111111111"},
 			Emails:  empty,
 		},
 		{
 			Name:    "To Search 2",
-			Numbers: []string{"+79818831040"},
+			Numbers: []string{"+22222222222"},
 			Emails:  empty,
 		},
 		{
@@ -39,6 +38,9 @@ func main() {
 			Emails:  []string{"test@mail.ex"},
 		},
 	}
-	answer := insta.Contacts.SyncContacts(&contacts)
+	answer, err := insta.Contacts.SyncContacts(&contacts)
+	if err != nil {
+		fmt.Println(err)
+	}
 	fmt.Println(answer)
 }

@@ -2,7 +2,6 @@ package goinsta
 
 import (
 	"encoding/json"
-	"fmt"
 	"strconv"
 )
 
@@ -37,7 +36,7 @@ func newContacts(inst *Instagram) *Contacts {
 	return &Contacts{inst: inst}
 }
 
-func (c *Contacts) SyncContacts(contacts *[]Contact) *SyncAnswer {
+func (c *Contacts) SyncContacts(contacts *[]Contact) (*SyncAnswer, error) {
 	acquireContacts := &reqOptions{
 		Endpoint: "address_book/acquire_owner_contacts/",
 		IsPost:   true,
@@ -50,13 +49,12 @@ func (c *Contacts) SyncContacts(contacts *[]Contact) *SyncAnswer {
 	}
 	body, err := c.inst.sendRequest(acquireContacts)
 	if err != nil {
-		fmt.Println(err)
+		return nil, err
 	}
-	fmt.Println(string(body))
 
 	byteContacts, err := json.Marshal(contacts)
 	if err != nil {
-		fmt.Println(err)
+		return nil, err
 	}
 
 	syncContacts := &reqOptions{
@@ -73,15 +71,15 @@ func (c *Contacts) SyncContacts(contacts *[]Contact) *SyncAnswer {
 
 	body, err = c.inst.sendRequest(syncContacts)
 	if err != nil {
-		fmt.Println(err)
+		return nil, err
 	}
 
 	answ := &SyncAnswer{}
 	json.Unmarshal(body, answ)
-	return answ
+	return answ, nil
 }
 
-func (c *Contacts) UnlinkContacts() {
+func (c *Contacts) UnlinkContacts() error {
 	toSign := map[string]string{
 		"_csrftoken": c.inst.token,
 		"_uid":       strconv.Itoa(int(c.inst.Account.ID)),
@@ -89,7 +87,6 @@ func (c *Contacts) UnlinkContacts() {
 	}
 
 	bytesS, _ := json.Marshal(toSign)
-	fmt.Println(string(bytesS))
 
 	unlinkBody := &reqOptions{
 		Endpoint: "address_book/unlink/",
@@ -99,9 +96,9 @@ func (c *Contacts) UnlinkContacts() {
 		Query:    generateSignature(string(bytesS)),
 	}
 
-	body, err := c.inst.sendRequest(unlinkBody)
+	_, err := c.inst.sendRequest(unlinkBody)
 	if err != nil {
-		fmt.Println(err)
+		return err
 	}
-	fmt.Println(string(body))
+	return nil
 }
