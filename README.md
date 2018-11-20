@@ -19,7 +19,7 @@ go get -u -v gopkg.in/ahmdrz/goinsta.v2
 * **Simple**. Goinsta is made by lazy programmers!
 * **Backup methods**. You can use `Export` and `Import` functions.
 * **Security**. Your password is only required to login. After login your password is deleted.
-* **No External Dependencies**. Goinsta will not use any Go packages outside of the standard library.
+* **No External Dependencies**. GoInsta will not use any Go packages outside of the standard library.
 
 ## New Version !
 
