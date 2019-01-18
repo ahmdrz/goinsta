@@ -677,6 +677,11 @@ func (media *FeedMedia) instagram() *Instagram {
 	return media.inst
 }
 
+// SetInstagram set instagram
+func (media *FeedMedia) SetInstagram(inst *Instagram) {
+	media.inst = inst
+}
+
 // SetID sets media ID
 // this value can be int64 or string
 func (media *FeedMedia) SetID(id interface{}) {
