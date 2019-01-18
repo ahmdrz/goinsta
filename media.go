@@ -701,7 +701,7 @@ func (media *FeedMedia) Sync() error {
 		&reqOptions{
 			Endpoint: fmt.Sprintf(urlMediaInfo, id),
 			Query:    generateSignature(data),
-			IsPost:   true,
+			IsPost:   false,
 		},
 	)
 	if err != nil {
