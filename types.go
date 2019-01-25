@@ -257,7 +257,7 @@ type LiveItems struct {
 	ID                  string      `json:"pk"`
 	User                User        `json:"user"`
 	Broadcasts          []Broadcast `json:"broadcasts"`
-	LastSeenBroadcastTs int64       `json:"last_seen_broadcast_ts"`
+	LastSeenBroadcastTs float64     `json:"last_seen_broadcast_ts"`
 	RankedPosition      int64       `json:"ranked_position"`
 	SeenRankedPosition  int64       `json:"seen_ranked_position"`
 	Muted               bool        `json:"muted"`
