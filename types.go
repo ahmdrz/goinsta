@@ -1,6 +1,7 @@
 package goinsta
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 )
@@ -66,9 +67,9 @@ func (e Error400) Error() string {
 // Nametag is part of the account information.
 type Nametag struct {
 	Mode          int64       `json:"mode"`
-	Gradient      interface{} `json:"gradient"`
+	Gradient      json.Number `json:"gradient,Number"`
 	Emoji         string      `json:"emoji"`
-	SelfieSticker interface{} `json:"selfie_sticker"`
+	SelfieSticker json.Number `json:"selfie_sticker,Number"`
 }
 
 type friendResp struct {
