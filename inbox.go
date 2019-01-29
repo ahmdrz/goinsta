@@ -72,20 +72,20 @@ func newInbox(inst *Instagram) *Inbox {
 	return &Inbox{inst: inst}
 }
 
-// Sync updates inbox messages.
-//
-// See example: examples/inbox/sync.go
-func (inbox *Inbox) Sync() error {
+func (inbox *Inbox) sync(pending bool, params map[string]string) error {
+	endpoint := urlInbox
+	if pending {
+		endpoint = urlInboxPending
+	}
+
 	insta := inbox.inst
 	body, err := insta.sendRequest(
 		&reqOptions{
-			Endpoint: urlInbox,
-			Query: map[string]string{
-				"persistentBadging": "true",
-				"use_unified_inbox": "true",
-			},
+			Endpoint: endpoint,
+			Query:    params,
 		},
 	)
+	fmt.Println(string(body))
 	if err == nil {
 		resp := inboxResp{}
 		err = json.Unmarshal(body, &resp)
@@ -102,6 +102,61 @@ func (inbox *Inbox) Sync() error {
 		}
 	}
 	return err
+}
+
+func (inbox *Inbox) next(pending bool, params map[string]string) bool {
+	endpoint := urlInbox
+	if pending {
+		endpoint = urlInboxPending
+	}
+	if inbox.err != nil {
+		return false
+	}
+	insta := inbox.inst
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: endpoint,
+			Query:    params,
+		},
+	)
+	if err == nil {
+		resp := inboxResp{}
+		err = json.Unmarshal(body, &resp)
+		if err == nil {
+			*inbox = resp.Inbox
+			inbox.inst = insta
+			inbox.SeqID = resp.Inbox.SeqID
+			inbox.PendingRequestsTotal = resp.Inbox.PendingRequestsTotal
+			inbox.SnapshotAtMs = resp.Inbox.SnapshotAtMs
+			for i := range inbox.Conversations {
+				inbox.Conversations[i].inst = insta
+				inbox.Conversations[i].firstRun = true
+			}
+			if inbox.Cursor == "" || !inbox.HasOlder {
+				inbox.err = ErrNoMore
+			}
+			return true
+		}
+	}
+	inbox.err = err
+	return false
+}
+
+// Sync updates inbox messages.
+//
+// See example: examples/inbox/sync.go
+func (inbox *Inbox) Sync() error {
+	return inbox.sync(false, map[string]string{
+		"persistentBadging": "true",
+		"use_unified_inbox": "true",
+	})
+}
+
+// SyncPending updates inbox pending messages.
+//
+// See example: examples/inbox/sync.go
+func (inbox *Inbox) SyncPending() error {
+	return inbox.sync(true, map[string]string{})
 }
 
 // New initialises a new conversation with a user, for further messages you should use Conversation.Send
@@ -143,41 +198,20 @@ func (inbox *Inbox) Reset() {
 //
 // See example: examples/inbox/next.go
 func (inbox *Inbox) Next() bool {
-	if inbox.err != nil {
-		return false
-	}
-	insta := inbox.inst
-	body, err := insta.sendRequest(
-		&reqOptions{
-			Endpoint: urlInbox,
-			Query: map[string]string{
-				"persistentBadging": "true",
-				"use_unified_inbox": "true",
-				"cursor":            inbox.Cursor,
-			},
-		},
-	)
-	if err == nil {
-		resp := inboxResp{}
-		err = json.Unmarshal(body, &resp)
-		if err == nil {
-			*inbox = resp.Inbox
-			inbox.inst = insta
-			inbox.SeqID = resp.Inbox.SeqID
-			inbox.PendingRequestsTotal = resp.Inbox.PendingRequestsTotal
-			inbox.SnapshotAtMs = resp.Inbox.SnapshotAtMs
-			for i := range inbox.Conversations {
-				inbox.Conversations[i].inst = insta
-				inbox.Conversations[i].firstRun = true
-			}
-			if inbox.Cursor == "" || !inbox.HasOlder {
-				inbox.err = ErrNoMore
-			}
-			return true
-		}
-	}
-	inbox.err = err
-	return false
+	return inbox.next(false, map[string]string{
+		"persistentBadging": "true",
+		"use_unified_inbox": "true",
+		"cursor":            inbox.Cursor,
+	})
+}
+
+// NextPending allows pagination over pending messages.
+//
+// See example: examples/inbox/next.go
+func (inbox *Inbox) NextPending() bool {
+	return inbox.next(true, map[string]string{
+		"cursor": inbox.Cursor,
+	})
 }
 
 // Conversation is the representation of an instagram already established conversation through direct messages.
