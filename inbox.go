@@ -209,11 +209,9 @@ type Conversation struct {
 	Inviter                   User        `json:"inviter"`
 	HasOlder                  bool        `json:"has_older"`
 	HasNewer                  bool        `json:"has_newer"`
-	LastSeenAt                struct {
-		Num7629421016 struct {
-			Timestamp string `json:"timestamp"`
-			ItemID    string `json:"item_id"`
-		} `json:"7629421016"`
+	LastSeenAt                map[string]struct {
+		Timestamp string `json:"timestamp"`
+		ItemID    string `json:"item_id"`
 	} `json:"last_seen_at"`
 	NewestCursor      string `json:"newest_cursor"`
 	OldestCursor      string `json:"oldest_cursor"`
