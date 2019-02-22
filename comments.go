@@ -14,21 +14,22 @@ type Comments struct {
 	endpoint string
 	err      error
 
-	Items                          []Comment `json:"comments"`
-	CommentCount                   int64     `json:"comment_count"`
-	Caption                        Caption   `json:"caption"`
-	CaptionIsEdited                bool      `json:"caption_is_edited"`
-	HasMoreComments                bool      `json:"has_more_comments"`
-	HasMoreHeadloadComments        bool      `json:"has_more_headload_comments"`
-	ThreadingEnabled               bool      `json:"threading_enabled"`
-	MediaHeaderDisplay             string    `json:"media_header_display"`
-	InitiateAtTop                  bool      `json:"initiate_at_top"`
-	InsertNewCommentToTop          bool      `json:"insert_new_comment_to_top"`
-	PreviewComments                []Comment `json:"preview_comments"`
-	NextID                         string    `json:"next_max_id"`
-	CommentLikesEnabled            bool      `json:"comment_likes_enabled"`
-	DisplayRealtimeTypingIndicator bool      `json:"display_realtime_typing_indicator"`
-	Status                         string    `json:"status"`
+	Items                          []Comment       `json:"comments"`
+	CommentCount                   int64           `json:"comment_count"`
+	Caption                        Caption         `json:"caption"`
+	CaptionIsEdited                bool            `json:"caption_is_edited"`
+	HasMoreComments                bool            `json:"has_more_comments"`
+	HasMoreHeadloadComments        bool            `json:"has_more_headload_comments"`
+	ThreadingEnabled               bool            `json:"threading_enabled"`
+	MediaHeaderDisplay             string          `json:"media_header_display"`
+	InitiateAtTop                  bool            `json:"initiate_at_top"`
+	InsertNewCommentToTop          bool            `json:"insert_new_comment_to_top"`
+	PreviewComments                []Comment       `json:"preview_comments"`
+	NextMaxID                      json.RawMessage `json:"next_max_id,omitempty"`
+	NextMinID                      json.RawMessage `json:"next_min_id,omitempty"`
+	CommentLikesEnabled            bool            `json:"comment_likes_enabled"`
+	DisplayRealtimeTypingIndicator bool            `json:"display_realtime_typing_indicator"`
+	Status                         string          `json:"status"`
 	//PreviewComments                []Comment `json:"preview_comments"`
 }
 
@@ -123,14 +124,14 @@ func (comments *Comments) Next() bool {
 	insta := item.media.instagram()
 	endpoint := comments.endpoint
 	query := map[string]string{
-		"can_support_threading": "true",
+		// "can_support_threading": "true",
 	}
-	if comments.NextID != "" {
-		next, err := url.QueryUnescape(comments.NextID)
-		if err != nil { // TODO: Changed NextID to next_min_id after change login
-			next = comments.NextID
-		}
+	if comments.NextMaxID != nil {
+		next, _ := strconv.Unquote(string(comments.NextMaxID))
 		query["max_id"] = next
+	} else if comments.NextMinID != nil {
+		next, _ := strconv.Unquote(string(comments.NextMinID))
+		query["min_id"] = next
 	}
 
 	body, err := insta.sendRequest(
@@ -147,7 +148,8 @@ func (comments *Comments) Next() bool {
 			*comments = c
 			comments.endpoint = endpoint
 			comments.item = item
-			if !comments.HasMoreComments || comments.NextID == "" {
+			if (!comments.HasMoreComments || comments.NextMaxID == nil) &&
+				(!comments.HasMoreHeadloadComments || comments.NextMinID == nil) {
 				comments.err = ErrNoMore
 			}
 			comments.setValues()
