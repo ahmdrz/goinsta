@@ -24,7 +24,7 @@ type Item struct {
 	media    Media
 	Comments *Comments `json:"-"`
 
-	TakenAt          float64 `json:"taken_at"`
+	TakenAt          int64   `json:"taken_at"`
 	Pk               int64   `json:"pk"`
 	ID               string  `json:"id"`
 	CommentsDisabled bool    `json:"comments_disabled"`
