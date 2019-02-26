@@ -409,16 +409,37 @@ func (item *Item) TopLikers() []string {
 // If PreviewComments are string or []string only the Text field will be filled.
 func (item *Item) PreviewComments() []Comment {
 	switch s := item.Previewcomments.(type) {
-	case []Comment:
-		return s
-	case []string:
-		comments := make([]Comment, 0)
-		for i := range s {
-			comments = append(comments, Comment{
-				Text: s[i],
-			})
+	case []interface{}:
+		if len(s) == 0 {
+			return nil
 		}
-		return comments
+
+		switch s[0].(type) {
+		case interface{}:
+			comments := make([]Comment, 0)
+			for i := range s {
+				if buf, err := json.Marshal(s[i]); err != nil {
+					return nil
+				} else {
+					comment := &Comment{}
+
+					if err = json.Unmarshal(buf, comment); err != nil {
+						return nil
+					} else {
+						comments = append(comments, *comment)
+					}
+				}
+			}
+			return comments
+		case string:
+			comments := make([]Comment, 0)
+			for i := range s {
+				comments = append(comments, Comment{
+					Text: s[i].(string),
+				})
+			}
+			return comments
+		}
 	case string:
 		comments := []Comment{
 			{
