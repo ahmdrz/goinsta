@@ -11,6 +11,7 @@ import (
 	neturl "net/url"
 	"os"
 	"path"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -187,31 +188,32 @@ func GetBest(obj interface{}) string {
 	return m.url
 }
 
+var rxpTags *regexp.Regexp
+
 // Hashtags returns caption hashtags.
 //
 // Item media parent must be FeedMedia.
 //
 // See example: examples/media/hashtags.go
 func (item *Item) Hashtags() []Hashtag {
-	hsh := make([]Hashtag, 0)
-	capt := item.Caption.Text
-	for {
-		i := strings.IndexByte(capt, '#')
-		if i < 0 {
-			break
-		}
-		n := strings.IndexByte(capt[i:], ' ')
-		if n < 0 { // last hashtag
-			hsh = append(hsh, Hashtag{Name: capt[i+1:]})
-			break
-		}
+	tags := rxpTags.FindAllString(item.Caption.Text, -1)
 
-		// avoiding '#' character
-		hsh = append(hsh, Hashtag{Name: capt[i+1 : i+n]})
+	hsh := make([]Hashtag, len(tags))
 
-		// snipping caption
-		capt = capt[n+i:]
+	i := 0
+	for _, tag := range tags {
+		hsh[i].Name = tag[1:]
+		i++
 	}
+
+	for _, comment := range item.PreviewComments() {
+		tags := rxpTags.FindAllString(comment.Text, -1)
+
+		for _, tag := range tags {
+			hsh = append(hsh, Hashtag{Name: tag[1:]})
+		}
+	}
+
 	return hsh
 }
 
@@ -933,4 +935,8 @@ func (insta *Instagram) UploadPhoto(photo io.Reader, photoCaption string, qualit
 	}
 
 	return uploadResult.Media, nil
+}
+
+func init() {
+	rxpTags = regexp.MustCompile(`#\w+`)
 }
