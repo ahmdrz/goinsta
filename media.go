@@ -188,7 +188,7 @@ func GetBest(obj interface{}) string {
 	return m.url
 }
 
-var rxpTags *regexp.Regexp
+var rxpTags = regexp.MustCompile(`#\w+`)
 
 // Hashtags returns caption hashtags.
 //
@@ -935,8 +935,4 @@ func (insta *Instagram) UploadPhoto(photo io.Reader, photoCaption string, qualit
 	}
 
 	return uploadResult.Media, nil
-}
-
-func init() {
-	rxpTags = regexp.MustCompile(`#\w+`)
 }
