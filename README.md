@@ -60,6 +60,7 @@ func main() {
 
 ### Projects using `goinsta`
 
+- [instagraph](https://github.com/ahmdrz/instagraph)
 - [icrawler](https://github.com/themester/icrawler)
 - [go-instabot](https://github.com/tducasse/go-instabot)
 - [ermes](https://github.com/borteo/ermes)
