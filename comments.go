@@ -3,7 +3,6 @@ package goinsta
 import (
 	"encoding/json"
 	"fmt"
-	"net/url"
 	"strconv"
 )
 
