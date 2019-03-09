@@ -85,7 +85,7 @@ func (inbox *Inbox) sync(pending bool, params map[string]string) error {
 			Query:    params,
 		},
 	)
-	fmt.Println(string(body))
+
 	if err == nil {
 		resp := inboxResp{}
 		err = json.Unmarshal(body, &resp)
