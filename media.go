@@ -91,6 +91,8 @@ type Item struct {
 	StorySliders             []interface{} `json:"story_sliders"`
 	StoryQuestions           []interface{} `json:"story_questions"`
 	StoryProductItems        []interface{} `json:"story_product_items"`
+	StoryCTA                 []interface{} `json:"story_cta"`
+	ReelMentions             []interface{} `json:"reel_mentions"`
 	SupportsReelReactions    bool          `json:"supports_reel_reactions"`
 	ShowOneTapFbShareTooltip bool          `json:"show_one_tap_fb_share_tooltip"`
 	HasSharedToFb            int64         `json:"has_shared_to_fb"`
