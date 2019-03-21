@@ -23,11 +23,12 @@ package stories
 import (
 	"fmt"
 
+	"github.com/ahmdrz/goinsta/utils"
 	"github.com/cheggaaa/pb"
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/utils"
 )
 
+//RootCmd is used as a command line interaction with Instagram Timeline Stories.
 var RootCmd = &cobra.Command{
 	Use:     "stories",
 	Short:   "Get stories of a user",
@@ -52,7 +53,7 @@ var RootCmd = &cobra.Command{
 			out := fmt.Sprintf("%s/%s/", output, media.User.Username)
 			pgb := pb.StartNew(len(media.Items))
 			for _, item := range media.Items {
-				err := item.Download(out, "")
+				_, _, err := item.Download(out, "")
 				if err != nil {
 					fmt.Println(err)
 				}

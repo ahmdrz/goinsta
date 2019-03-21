@@ -5,6 +5,7 @@ import (
 	"fmt"
 )
 
+// Hashtag is used for getting the media that matches a hashtag on instagram.
 type Hashtag struct {
 	inst *Instagram
 	err  error
@@ -39,6 +40,17 @@ type Hashtag struct {
 	Status              string  `json:"status"`
 }
 
+func (h *Hashtag) setValues() {
+	for i := range h.Sections {
+		for j := range h.Sections[i].LayoutContent.Medias {
+			m := &FeedMedia{
+				inst: h.inst,
+			}
+			setToItem(&h.Sections[i].LayoutContent.Medias[j].Item, m)
+		}
+	}
+}
+
 // NewHashtag returns initialised hashtag structure
 // Name parameter is hashtag name
 func (inst *Instagram) NewHashtag(name string) *Hashtag {
@@ -64,6 +76,7 @@ func (h *Hashtag) Sync() error {
 			h.Name = resp.Name
 			h.ID = resp.ID
 			h.MediaCount = resp.MediaCount
+			h.setValues()
 		}
 	}
 	return err
@@ -97,6 +110,7 @@ func (h *Hashtag) Next() bool {
 			if !h.MoreAvailable {
 				h.err = ErrNoMore
 			}
+			h.setValues()
 			return true
 		}
 	}

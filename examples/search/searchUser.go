@@ -6,14 +6,14 @@ import (
 	"fmt"
 	"os"
 
-	e "gopkg.in/ahmdrz/goinsta.v2/examples"
+	e "github.com/ahmdrz/goinsta/examples"
 )
 
 func main() {
 	inst, err := e.InitGoinsta("<query>")
 	e.CheckErr(err)
 
-	res, err := inst.Search.User(os.Args[2])
+	res, err := inst.Search.User(os.Args[0])
 	e.CheckErr(err)
 
 	for _, user := range res.Users {

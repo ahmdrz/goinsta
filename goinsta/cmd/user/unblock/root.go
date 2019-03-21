@@ -24,10 +24,11 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/ahmdrz/goinsta/utils"
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/utils"
 )
 
+//RootCmd is used as a command line interaction with Instagram unblock user method.
 var RootCmd = &cobra.Command{
 	Use:     "unblock",
 	Short:   "Unblocks a user",

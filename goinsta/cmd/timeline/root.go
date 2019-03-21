@@ -24,9 +24,9 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/ahmdrz/goinsta/goinsta/cmd/timeline/feed"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/timeline/stories"
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/timeline/feed"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/timeline/stories"
 )
 
 func init() {
@@ -34,11 +34,13 @@ func init() {
 	RootCmd.AddCommand(stories.RootCmd)
 }
 
+//RootCmd is used as a command line interaction with Instagram Timeline related methods.
 var RootCmd = &cobra.Command{
 	Use:   "timeline",
 	Short: "Get timeline feed or stories",
 }
 
+//Execute the method to to start the command execution of Instagram Timeline related methods.
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
 		fmt.Println(err)

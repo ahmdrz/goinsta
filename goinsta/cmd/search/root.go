@@ -24,10 +24,10 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/ahmdrz/goinsta/goinsta/cmd/search/facebook"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/search/tags"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/search/user"
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/search/facebook"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/search/tags"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/search/user"
 )
 
 func init() {
@@ -36,11 +36,13 @@ func init() {
 	RootCmd.AddCommand(tags.RootCmd)
 }
 
+//RootCmd is used as a command line interaction with all Instagram Searches.
 var RootCmd = &cobra.Command{
 	Use:   "search",
 	Short: "Search on Instagram.",
 }
 
+//Execute the method to to start the command execution of Instagram Search related methods.
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
 		fmt.Println(err)

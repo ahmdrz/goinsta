@@ -24,10 +24,11 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/ahmdrz/goinsta/utils"
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/utils"
 )
 
+//RootCmd is used as a command line interaction with Instagram get user info method.
 var RootCmd = &cobra.Command{
 	Use:     "info",
 	Short:   "Get partial info about user",
@@ -56,13 +57,13 @@ Fullname: %s
 ID: %d
 ProfilePicURL: %s
 Email: %s
-Gender: %d
+Phone number: %s
 Biography: %s
 Followers: %d
 Following: %d
 You follow him/her: %v
 `, user.Username, user.FullName, user.ID, user.ProfilePicURL,
-			user.PublicEmail, user.Gender, user.Biography, user.FollowerCount,
+			user.PublicEmail, user.PublicPhoneNumber, user.Biography, user.FollowerCount,
 			user.FollowingCount, user.Friendship.Following)
 	},
 }

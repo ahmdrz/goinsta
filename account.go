@@ -54,7 +54,7 @@ type Account struct {
 	SocialContext              string       `json:"social_context,omitempty"`
 	SearchSocialContext        string       `json:"search_social_context,omitempty"`
 	MutualFollowersCount       float64      `json:"mutual_followers_count"`
-	LatestReelMedia            int          `json:"latest_reel_media,omitempty"`
+	LatestReelMedia            int64        `json:"latest_reel_media,omitempty"`
 	CityID                     int64        `json:"city_id"`
 	CityName                   string       `json:"city_name"`
 	AddressStreet              string       `json:"address_street"`
@@ -77,14 +77,11 @@ func (account *Account) Sync() error {
 	if err != nil {
 		return err
 	}
-
-	body, err := insta.sendRequest(
-		&reqOptions{
-			Endpoint: urlSyncProfile,
-			Query:    generateSignature(data),
-			IsPost:   true,
-		},
-	)
+	body, err := insta.sendRequest(&reqOptions{
+		Endpoint: urlCurrentUser,
+		Query:    generateSignature(data),
+		IsPost:   true,
+	})
 	if err == nil {
 		resp := profResp{}
 		err = json.Unmarshal(body, &resp)
@@ -246,17 +243,27 @@ func (account *Account) Following() *Users {
 
 // Feed returns current account feed
 //
+// 	params can be:
+// 		string: timestamp of the minimum media timestamp.
+//
 // minTime is the minimum timestamp of media.
 //
 // For pagination use FeedMedia.Next()
-func (account *Account) Feed(minTime []byte) *FeedMedia {
+func (account *Account) Feed(params ...interface{}) *FeedMedia {
 	insta := account.inst
 
 	media := &FeedMedia{}
 	media.inst = insta
-	media.timestamp = string(minTime)
 	media.endpoint = urlUserFeed
 	media.uid = account.ID
+
+	for _, param := range params {
+		switch s := param.(type) {
+		case string:
+			media.timestamp = s
+		}
+	}
+
 	return media
 }
 
@@ -312,10 +319,36 @@ func (account *Account) Saved() (*SavedMedia, error) {
 	return nil, err
 }
 
+type editResp struct {
+	Status  string  `json:"status"`
+	Account Account `json:"user"`
+}
+
+func (account *Account) edit() {
+	insta := account.inst
+	acResp := editResp{}
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: urlCurrentUser,
+			Query: map[string]string{
+				"edit": "true",
+			},
+		},
+	)
+	if err == nil {
+		err = json.Unmarshal(body, &acResp)
+		if err == nil {
+			acResp.Account.inst = insta
+			*account = acResp.Account
+		}
+	}
+}
+
 // SetBiography changes your Instagram's biography.
 //
 // This function updates current Account information.
 func (account *Account) SetBiography(bio string) error {
+	account.edit() // preparing to edit
 	insta := account.inst
 	data, err := insta.prepareData(
 		map[string]interface{}{

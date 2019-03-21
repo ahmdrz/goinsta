@@ -6,16 +6,15 @@ import (
 	"fmt"
 	"os"
 
-	e "gopkg.in/ahmdrz/goinsta.v2/examples"
+	e "github.com/ahmdrz/goinsta/examples"
 )
 
 func main() {
 	inst, err := e.InitGoinsta("<media id>")
 	e.CheckErr(err)
 
-	media := inst.AcquireFeed()
-	media.SetID(os.Args[2])
-	media.Sync()
+	media, err := inst.GetMedia(os.Args[0])
+	e.CheckErr(err)
 
 	fmt.Printf("Liked: %v\n", media.Items[0].HasLiked)
 	media.Items[0].Unlike()

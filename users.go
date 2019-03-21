@@ -6,6 +6,7 @@ import (
 	"fmt"
 )
 
+// Users is a struct that stores many user's returned by many different methods.
 type Users struct {
 	inst *Instagram
 
@@ -34,6 +35,7 @@ func (users *Users) SetInstagram(inst *Instagram) {
 	users.inst = inst
 }
 
+// ErrNoMore is an error that comes when there is no more elements available on the list.
 var ErrNoMore = errors.New("List end have been reached")
 
 // Next allows to paginate after calling:
@@ -78,6 +80,11 @@ func (users *Users) Next() bool {
 	return false
 }
 
+// Error returns users error
+func (users *Users) Error() error {
+	return users.err
+}
+
 func (users *Users) setValues() {
 	for i := range users.Users {
 		users.Users[i].inst = users.inst
@@ -93,29 +100,31 @@ type userResp struct {
 type User struct {
 	inst *Instagram
 
-	ID                         int64  `json:"pk"`
-	Username                   string `json:"username"`
-	FullName                   string `json:"full_name"`
-	Biography                  string `json:"biography"`
-	ProfilePicURL              string `json:"profile_pic_url"`
-	Email                      string `json:"email"`
-	PhoneNumber                string `json:"phone_number"`
-	IsBusiness                 bool   `json:"is_business"`
-	Gender                     int    `json:"gender"`
-	ProfilePicID               string `json:"profile_pic_id"`
-	HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
-	IsPrivate                  bool   `json:"is_private"`
-	IsUnpublished              bool   `json:"is_unpublished"`
-	AllowedCommenterType       string `json:"allowed_commenter_type"`
-	IsVerified                 bool   `json:"is_verified"`
-	MediaCount                 int    `json:"media_count"`
-	FollowerCount              int    `json:"follower_count"`
-	FollowingCount             int    `json:"following_count"`
-	FollowingTagCount          int    `json:"following_tag_count"`
-	GeoMediaCount              int    `json:"geo_media_count"`
-	ExternalURL                string `json:"external_url"`
-	HasBiographyTranslation    bool   `json:"has_biography_translation"`
-	ExternalLynxURL            string `json:"external_lynx_url"`
+	ID                         int64   `json:"pk"`
+	Username                   string  `json:"username"`
+	FullName                   string  `json:"full_name"`
+	Biography                  string  `json:"biography"`
+	ProfilePicURL              string  `json:"profile_pic_url"`
+	Email                      string  `json:"email"`
+	PhoneNumber                string  `json:"phone_number"`
+	IsBusiness                 bool    `json:"is_business"`
+	Gender                     int     `json:"gender"`
+	ProfilePicID               string  `json:"profile_pic_id"`
+	HasAnonymousProfilePicture bool    `json:"has_anonymous_profile_picture"`
+	IsPrivate                  bool    `json:"is_private"`
+	IsUnpublished              bool    `json:"is_unpublished"`
+	AllowedCommenterType       string  `json:"allowed_commenter_type"`
+	IsVerified                 bool    `json:"is_verified"`
+	MediaCount                 int     `json:"media_count"`
+	FollowerCount              int     `json:"follower_count"`
+	FollowingCount             int     `json:"following_count"`
+	FollowingTagCount          int     `json:"following_tag_count"`
+	MutualFollowersID          []int64 `json:"profile_context_mutual_follow_ids"`
+	ProfileContext             string  `json:"profile_context"`
+	GeoMediaCount              int     `json:"geo_media_count"`
+	ExternalURL                string  `json:"external_url"`
+	HasBiographyTranslation    bool    `json:"has_biography_translation"`
+	ExternalLynxURL            string  `json:"external_lynx_url"`
 	BiographyWithEntities      struct {
 		RawText  string        `json:"raw_text"`
 		Entities []interface{} `json:"entities"`
@@ -150,15 +159,30 @@ type User struct {
 	SocialContext                string       `json:"social_context,omitempty"`
 	SearchSocialContext          string       `json:"search_social_context,omitempty"`
 	MutualFollowersCount         float64      `json:"mutual_followers_count"`
-	LatestReelMedia              int          `json:"latest_reel_media,omitempty"`
+	LatestReelMedia              int64        `json:"latest_reel_media,omitempty"`
 	IsCallToActionEnabled        bool         `json:"is_call_to_action_enabled"`
 	FbPageCallToActionID         string       `json:"fb_page_call_to_action_id"`
 	Zip                          string       `json:"zip"`
 	Friendship                   Friendship   `json:"friendship_status"`
 }
 
+// SetInstagram will update instagram instance for selected User.
+func (user *User) SetInstagram(insta *Instagram) {
+	user.inst = insta
+}
+
+// NewUser returns prepared user to be used with his functions.
+func (inst *Instagram) NewUser() *User {
+	return &User{inst: inst}
+}
+
 // Sync updates user info
-func (user *User) Sync() error {
+//
+// 	params can be:
+// 		bool: must be true if you want to include FriendShip call. See goinsta.FriendShip
+//
+// See example: examples/user/friendship.go
+func (user *User) Sync(params ...interface{}) error {
 	insta := user.inst
 	body, err := insta.sendSimpleRequest(urlUserInfo, user.ID)
 	if err == nil {
@@ -167,6 +191,14 @@ func (user *User) Sync() error {
 		if err == nil {
 			*user = resp.User
 			user.inst = insta
+			for _, param := range params {
+				switch b := param.(type) {
+				case bool:
+					if b {
+						err = user.FriendShip()
+					}
+				}
+			}
 		}
 	}
 	return err
@@ -208,21 +240,27 @@ func (user *User) Block() error {
 			"user_id": user.ID,
 		},
 	)
-	if err == nil {
-		body, err := insta.sendRequest(
-			&reqOptions{
-				Endpoint: fmt.Sprintf(urlUserBlock, user.ID),
-				Query:    generateSignature(data),
-				IsPost:   true,
-			},
-		)
-		if err == nil {
-			resp := friendResp{}
-			err = json.Unmarshal(body, &resp)
-			user.Friendship = resp.Friendship
-		}
+	if err != nil {
+		return err
 	}
-	return err
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlUserBlock, user.ID),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	resp := friendResp{}
+	err = json.Unmarshal(body, &resp)
+	user.Friendship = resp.Friendship
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Unblock unblocks user
@@ -237,21 +275,27 @@ func (user *User) Unblock() error {
 			"user_id": user.ID,
 		},
 	)
-	if err == nil {
-		body, err := insta.sendRequest(
-			&reqOptions{
-				Endpoint: fmt.Sprintf(urlUserUnblock, user.ID),
-				Query:    generateSignature(data),
-				IsPost:   true,
-			},
-		)
-		if err == nil {
-			resp := friendResp{}
-			err = json.Unmarshal(body, &resp)
-			user.Friendship = resp.Friendship
-		}
+	if err != nil {
+		return err
 	}
-	return err
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlUserUnblock, user.ID),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	resp := friendResp{}
+	err = json.Unmarshal(body, &resp)
+	user.Friendship = resp.Friendship
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Follow started following some user
@@ -269,21 +313,27 @@ func (user *User) Follow() error {
 			"user_id": user.ID,
 		},
 	)
-	if err == nil {
-		body, err := insta.sendRequest(
-			&reqOptions{
-				Endpoint: fmt.Sprintf(urlUserFollow, user.ID),
-				Query:    generateSignature(data),
-				IsPost:   true,
-			},
-		)
-		if err == nil {
-			resp := friendResp{}
-			err = json.Unmarshal(body, &resp)
-			user.Friendship = resp.Friendship
-		}
+	if err != nil {
+		return err
 	}
-	return err
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlUserFollow, user.ID),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	resp := friendResp{}
+	err = json.Unmarshal(body, &resp)
+	user.Friendship = resp.Friendship
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Unfollow unfollows user
@@ -298,21 +348,27 @@ func (user *User) Unfollow() error {
 			"user_id": user.ID,
 		},
 	)
-	if err == nil {
-		body, err := insta.sendRequest(
-			&reqOptions{
-				Endpoint: fmt.Sprintf(urlUserUnfollow, user.ID),
-				Query:    generateSignature(data),
-				IsPost:   true,
-			},
-		)
-		if err == nil {
-			resp := friendResp{}
-			err = json.Unmarshal(body, &resp)
-			user.Friendship = resp.Friendship
-		}
+	if err != nil {
+		return err
 	}
-	return err
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlUserUnfollow, user.ID),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	resp := friendResp{}
+	err = json.Unmarshal(body, &resp)
+	user.Friendship = resp.Friendship
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // FriendShip allows user to get friend relationship.
@@ -344,20 +400,27 @@ func (user *User) FriendShip() error {
 
 // Feed returns user feeds (media)
 //
-// minTime is the minimum timestamp of media.
+// 	params can be:
+// 		string: timestamp of the minimum media timestamp.
 //
 // For pagination use FeedMedia.Next()
 //
 // See example: examples/user/feed.go
-func (user *User) Feed(minTime []byte) *FeedMedia {
+func (user *User) Feed(params ...interface{}) *FeedMedia {
 	insta := user.inst
-	timestamp := b2s(minTime)
 
 	media := &FeedMedia{}
-	media.timestamp = timestamp
 	media.inst = insta
 	media.endpoint = urlUserFeed
 	media.uid = user.ID
+
+	for _, param := range params {
+		switch s := param.(type) {
+		case string:
+			media.timestamp = s
+		}
+	}
+
 	return media
 }
 
@@ -372,6 +435,45 @@ func (user *User) Stories() *StoryMedia {
 	media.inst = user.inst
 	media.endpoint = urlUserStories
 	return media
+}
+
+// Highlights represents saved stories.
+//
+// See example: examples/user/highlights.go
+func (user *User) Highlights() ([]StoryMedia, error) {
+	query := []trayRequest{
+		{"SUPPORTED_SDK_VERSIONS", "9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0,17.0,18.0,19.0,20.0,21.0,22.0,23.0,24.0"},
+		{"FACE_TRACKER_VERSION", "10"},
+		{"segmentation", "segmentation_enabled"},
+		{"COMPRESSION", "ETC2_COMPRESSION"},
+	}
+	data, err := json.Marshal(query)
+	if err != nil {
+		return nil, err
+	}
+	body, err := user.inst.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlUserHighlights, user.ID),
+			Query:    generateSignature(b2s(data)),
+		},
+	)
+	if err == nil {
+		tray := &Tray{}
+		err = json.Unmarshal(body, &tray)
+		if err == nil {
+			tray.set(user.inst, "")
+			for i := range tray.Stories {
+				if len(tray.Stories[i].Items) == 0 {
+					err = tray.Stories[i].Sync()
+					if err != nil {
+						return nil, err
+					}
+				}
+			}
+			return tray.Stories, nil
+		}
+	}
+	return nil, err
 }
 
 // Tags returns media where user is tagged in

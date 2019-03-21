@@ -24,12 +24,12 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/ahmdrz/goinsta/goinsta/cmd/account"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/logout"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/search"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/timeline"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/user"
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/account"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/logout"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/search"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/timeline"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user"
 )
 
 func init() {
@@ -49,6 +49,7 @@ var rootCmd = &cobra.Command{
 	Short: "Command line tool for Instagram",
 }
 
+// Execute is called from main as an entrance to the command line interaction tool.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)

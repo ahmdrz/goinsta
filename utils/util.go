@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/ahmdrz/goinsta"
 	"github.com/howeyc/gopass"
 	homedir "github.com/mitchellh/go-homedir"
-	"gopkg.in/ahmdrz/goinsta.v2"
 )
 
 // New function returns Instagram object.

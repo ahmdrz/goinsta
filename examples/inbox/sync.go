@@ -5,7 +5,7 @@ package main
 import (
 	"fmt"
 
-	e "gopkg.in/ahmdrz/goinsta.v2/examples"
+	e "github.com/ahmdrz/goinsta/examples"
 )
 
 func main() {
@@ -15,7 +15,11 @@ func main() {
 	err = inst.Inbox.Sync()
 	e.CheckErr(err)
 
-	fmt.Printf("You have %d opened conversations\n", len(inst.Inbox.Conversations))
+	i := len(inst.Inbox.Conversations)
+	for inst.Inbox.Next() {
+		i += len(inst.Inbox.Conversations)
+	}
+	fmt.Printf("You have %d opened conversations\n", i)
 
 	if !e.UsingSession {
 		err = inst.Logout()

@@ -12,6 +12,7 @@ type Activity struct {
 	inst *Instagram
 }
 
+//FollowingActivity is the latest activity of the people you are following
 type FollowingActivity struct {
 	inst *Instagram
 	err  error
@@ -31,16 +32,16 @@ type FollowingActivity struct {
 				Type  string `json:"type"`
 				ID    string `json:"id"`
 			} `json:"links"`
-			ProfileID               int    `json:"profile_id"`
+			ProfileID               int64  `json:"profile_id"`
 			ProfileImage            string `json:"profile_image"`
-			SecondProfileID         int    `json:"second_profile_id"`
+			SecondProfileID         int64  `json:"second_profile_id"`
 			SecondProfileImage      string `json:"second_profile_image"`
 			ProfileImageDestination string `json:"profile_image_destination"`
 			Media                   []struct {
 				ID    string `json:"id"`
 				Image string `json:"image"`
 			} `json:"media"`
-			Timestamp int    `json:"timestamp"`
+			Timestamp int64  `json:"timestamp"`
 			Tuuid     string `json:"tuuid"`
 		} `json:"args"`
 		Counts struct {
@@ -133,19 +134,19 @@ type MineActivity struct {
 				OutgoingRequest bool `json:"outgoing_request"`
 			} `json:"inline_follow"`
 			Actions         []string `json:"actions"`
-			ProfileID       int      `json:"profile_id"`
+			ProfileID       int64    `json:"profile_id"`
 			ProfileImage    string   `json:"profile_image"`
 			Timestamp       float64  `json:"timestamp"`
 			Tuuid           string   `json:"tuuid"`
 			Clicked         bool     `json:"clicked"`
 			ProfileName     string   `json:"profile_name"`
-			LatestReelMedia int      `json:"latest_reel_media"`
+			LatestReelMedia int64    `json:"latest_reel_media"`
 		} `json:"args"`
 		Counts struct {
 		} `json:"counts"`
 		Pk string `json:"pk"`
 	} `json:"old_stories"`
-	ContinuationToken int         `json:"continuation_token"`
+	ContinuationToken int64       `json:"continuation_token"`
 	Subscription      interface{} `json:"subscription"`
 	NextID            int64       `json:"next_max_id"`
 	Status            string      `json:"status"`

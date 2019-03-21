@@ -23,10 +23,11 @@ package following
 import (
 	"fmt"
 
+	"github.com/ahmdrz/goinsta/utils"
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/utils"
 )
 
+//RootCmd is used as a command line interaction with Instagram Following contacts.
 var RootCmd = &cobra.Command{
 	Use:     "following",
 	Short:   "Get account following",

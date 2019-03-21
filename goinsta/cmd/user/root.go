@@ -24,19 +24,21 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/ahmdrz/goinsta/goinsta/cmd/user/block"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/user/feed"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/user/follow"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/user/followers"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/user/following"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/user/highlights"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/user/info"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/user/stories"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/user/unblock"
+	"github.com/ahmdrz/goinsta/goinsta/cmd/user/unfollow"
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/block"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/feed"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/follow"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/followers"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/following"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/info"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/stories"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/unblock"
-	"gopkg.in/ahmdrz/goinsta.v2/goinsta/cmd/user/unfollow"
 )
 
 func init() {
+	RootCmd.AddCommand(highlights.RootCmd)
 	RootCmd.AddCommand(feed.RootCmd)
 	RootCmd.AddCommand(story.RootCmd)
 	RootCmd.AddCommand(info.RootCmd)
@@ -48,11 +50,13 @@ func init() {
 	RootCmd.AddCommand(unblock.RootCmd)
 }
 
+//RootCmd is used as a command line interaction with Instagram User related methods.
 var RootCmd = &cobra.Command{
 	Use:   "user",
 	Short: "Get downloads specified Instagram user's object.",
 }
 
+//Execute the method to to start the command execution of Instagram User related methods.
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
 		fmt.Println(err)

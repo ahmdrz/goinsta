@@ -5,7 +5,7 @@ package main
 import (
 	"fmt"
 
-	e "gopkg.in/ahmdrz/goinsta.v2/examples"
+	e "github.com/ahmdrz/goinsta/examples"
 )
 
 func main() {

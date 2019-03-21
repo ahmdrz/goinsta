@@ -6,17 +6,17 @@ import (
 	"fmt"
 	"os"
 
-	e "gopkg.in/ahmdrz/goinsta.v2/examples"
+	e "github.com/ahmdrz/goinsta/examples"
 )
 
 func main() {
 	inst, err := e.InitGoinsta("<target user>")
 	e.CheckErr(err)
 
-	user, err := inst.Profiles.ByName(os.Args[2])
+	user, err := inst.Profiles.ByName(os.Args[0])
 	e.CheckErr(err)
 
-	media := user.Feed(nil)
+	media := user.Feed()
 
 	for media.Next() {
 		fmt.Printf("Printing %d items\n", len(media.Items))

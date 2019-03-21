@@ -25,9 +25,9 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/ahmdrz/goinsta/utils"
 	"github.com/cheggaaa/pb"
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/utils"
 )
 
 // mediaCmd represents the media command
@@ -44,7 +44,7 @@ var mediaCmd = &cobra.Command{
 
 		output, err := cmd.Flags().GetString("output")
 		if err != nil || output == "" {
-			output = "./" + args[0] + "/"
+			output = "./" + args[0] + "/feed/"
 		}
 
 		inst := utils.New()
@@ -65,7 +65,7 @@ var mediaCmd = &cobra.Command{
 		for media.Next() {
 			pgb := pb.StartNew(len(media.Items))
 			for _, item := range media.Items {
-				err := item.Download(output, "")
+				_, _, err := item.Download(output, "")
 				if err != nil {
 					fmt.Println(err)
 				}

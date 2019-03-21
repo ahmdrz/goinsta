@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 )
 
+// Timeline is the object to represent the main feed on instagram, the first page that shows the latest feeds of my following contacts.
 type Timeline struct {
 	inst *Instagram
 }

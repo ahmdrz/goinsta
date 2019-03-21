@@ -25,11 +25,12 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/ahmdrz/goinsta/utils"
 	"github.com/cheggaaa/pb"
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/utils"
 )
 
+//RootCmd is used as a command line interaction with Instagram get user stories method.
 var RootCmd = &cobra.Command{
 	Use:     "stories",
 	Short:   "Get stories of a user",
@@ -43,7 +44,7 @@ var RootCmd = &cobra.Command{
 
 		output, err := cmd.Flags().GetString("output")
 		if err != nil || output == "" {
-			output = "./" + args[0] + "/"
+			output = "./" + args[0] + "/stories/"
 		}
 		inst := utils.New()
 
@@ -63,7 +64,7 @@ var RootCmd = &cobra.Command{
 		for media.Next() {
 			pgb := pb.StartNew(len(media.Items))
 			for _, item := range media.Items {
-				err := item.Download(output, "")
+				_, _, err := item.Download(output, "")
 				if err != nil {
 					fmt.Println(err)
 				}

@@ -7,14 +7,14 @@ import (
 	"os"
 	"strconv"
 
-	e "gopkg.in/ahmdrz/goinsta.v2/examples"
+	e "github.com/ahmdrz/goinsta/examples"
 )
 
 func main() {
 	inst, err := e.InitGoinsta("<another user>")
 	e.CheckErr(err)
 
-	id, err := strconv.Atoi(os.Args[2])
+	id, err := strconv.Atoi(os.Args[0])
 	e.CheckErr(err)
 
 	user, err := inst.Profiles.ByID(int64(id))

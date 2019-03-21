@@ -23,9 +23,9 @@ package feed
 import (
 	"fmt"
 
+	"github.com/ahmdrz/goinsta/utils"
 	"github.com/cheggaaa/pb"
 	"github.com/spf13/cobra"
-	"gopkg.in/ahmdrz/goinsta.v2/utils"
 )
 
 // mediaCmd represents the media command
@@ -49,7 +49,7 @@ var mediaCmd = &cobra.Command{
 		for media.Next() {
 			pgb := pb.StartNew(len(media.Items))
 			for _, item := range media.Items {
-				err := item.Download(output, "")
+				_, _, err := item.Download(output, "")
 				if err != nil {
 					fmt.Println(err)
 				}
