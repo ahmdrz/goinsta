@@ -15,7 +15,7 @@
 * **Security**. Your password is only required to login. After login your password is deleted.
 * **No External Dependencies**. GoInsta will not use any Go packages outside of the standard library.
 
-### Package installation 
+### Package installation
 
 `go get -u -v gopkg.in/ahmdrz/goinsta.v2`
 
@@ -39,6 +39,8 @@ import (
 
 func main() {
   //insta, err := goinsta.Import("~/.goinsta")
+  //insta.SetProxy("http://localhost:8080", true) // true for insecure connections
+  //insta.ImportSync()
   insta := goinsta.New("USERNAME", "PASSWORD")
 
   // also you can use New function from gopkg.in/ahmdrz/goinsta.v2/utils

@@ -29,6 +29,7 @@ func New() *goinsta.Instagram {
 			fmt.Println(err)
 			os.Exit(1)
 		}
+		inst.ImportSync()
 		return inst
 	}
 

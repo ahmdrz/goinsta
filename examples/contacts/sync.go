@@ -7,6 +7,7 @@ import (
 
 func main() {
 	//insta, _ := goinsta.Import("session_dump")
+	//insta.ImportSync()
 	insta := goinsta.New("lnsta_login", "insta_passwordd")
 
 	// also you can use New function from gopkg.in/ahmdrz/goinsta.v2/utils

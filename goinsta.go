@@ -234,7 +234,6 @@ func ImportReader(r io.Reader) (*Instagram, error) {
 
 	inst.init()
 	inst.Account = &Account{inst: inst, ID: config.ID}
-	inst.Account.Sync()
 
 	return inst, nil
 }
@@ -249,6 +248,13 @@ func Import(path string) (*Instagram, error) {
 	}
 	defer f.Close()
 	return ImportReader(f)
+}
+
+// ImportSync synchronizes the instagram configuration with the server
+//
+// Must be called *after* SetProxy in order to prevent packet leaks.
+func (inst *Instagram) ImportSync() {
+	inst.Account.Sync()
 }
 
 func (inst *Instagram) readMsisdnHeader() error {

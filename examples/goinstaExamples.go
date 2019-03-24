@@ -43,6 +43,7 @@ func InitGoinsta(msg string) (*goinsta.Instagram, error) {
 		if err != nil {
 			return nil, err
 		}
+		inst.ImportSync()
 
 		UsingSession = true
 	} else {
