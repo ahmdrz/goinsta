@@ -391,3 +391,32 @@ func (account *Account) Liked() *FeedMedia {
 	media.endpoint = urlFeedLiked
 	return media
 }
+
+// PendingFollowRequests returns pending follow requests.
+func (account *Account) PendingFollowRequests() ([]User, error) {
+	insta := account.inst
+	resp, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: urlFriendshipPending,
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	var result struct {
+		Users []User `json:"users"`
+		// TODO: pagination
+		// TODO: SuggestedUsers
+		Status string `json:"status"`
+	}
+	err = json.Unmarshal(resp, &result)
+	if err != nil {
+		return nil, err
+	}
+	if result.Status != "ok" {
+		return nil, fmt.Errorf("bad status: %s", result.Status)
+	}
+
+	return result.Users, nil
+}
