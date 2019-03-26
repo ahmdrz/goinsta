@@ -3,6 +3,7 @@ package goinsta
 import (
 	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -491,4 +492,32 @@ func (inst *Instagram) GetMedia(o interface{}) (*FeedMedia, error) {
 		NextID: o,
 	}
 	return media, media.Sync()
+}
+
+// GetPendingFollowRequests returns pending follow requests.
+func (inst *Instagram) GetPendingFollowRequests() ([]User, error) {
+	resp, err := inst.sendRequest(
+		&reqOptions{
+			Endpoint: urlFriendshipPending,
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	var result struct {
+		Users []User `json:"users"`
+		// TODO: pagination
+		// TODO: SuggestedUsers
+		Status string `json:"status"`
+	}
+	err = json.Unmarshal(resp, &result)
+	if err != nil {
+		return nil, err
+	}
+	if result.Status != "ok" {
+		return nil, fmt.Errorf("bad status: %s", result.Status)
+	}
+
+	return result.Users, nil
 }
