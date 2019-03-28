@@ -65,6 +65,8 @@ const (
 	urlBlockedList       = "users/blocked_list/"
 	urlUserInfo          = "users/%d/info/"
 	urlUserHighlights    = "highlights/%d/highlights_tray/"
+	urlDenyRequest       = "friendships/ignore/%d/"
+	urlAcceptRequest     = "friendships/approve/%d/"
 
 	// timeline
 	urlTimeline  = "feed/timeline/"
