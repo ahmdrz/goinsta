@@ -44,7 +44,6 @@ const (
 	urlFeedSaved        = "feed/saved/"
 	urlSetBiography     = "accounts/set_biography/"
 	urlFeedLiked        = "feed/liked/"
-	urlPendingFollowers = "friendships/pending?"
 
 	// account and profile
 	urlFollowers = "friendships/%d/followers/"
@@ -59,7 +58,7 @@ const (
 	urlUserUnfollow      = "friendships/destroy/%d/"
 	urlUserFeed          = "feed/user/%d/"
 	urlFriendship        = "friendships/show/%d/"
-	urlFriendshipPending = "friendships/pending/"
+	urlFriendshipPending = "friendships/pending?"
 	urlUserStories       = "feed/user/%d/reel_media/"
 	urlUserTags          = "usertags/%d/feed/"
 	urlBlockedList       = "users/blocked_list/"
