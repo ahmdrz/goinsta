@@ -36,14 +36,15 @@ const (
 	urlExpose         = "qe/expose/"
 
 	// account
-	urlCurrentUser      = "accounts/current_user/"
-	urlChangePass       = "accounts/change_password/"
-	urlSetPrivate       = "accounts/set_private/"
-	urlSetPublic        = "accounts/set_public/"
-	urlRemoveProfPic    = "accounts/remove_profile_picture/"
-	urlFeedSaved        = "feed/saved/"
-	urlSetBiography     = "accounts/set_biography/"
-	urlFeedLiked        = "feed/liked/"
+	urlCurrentUser   = "accounts/current_user/"
+	urlChangePass    = "accounts/change_password/"
+	urlSetPrivate    = "accounts/set_private/"
+	urlSetPublic     = "accounts/set_public/"
+	urlRemoveProfPic = "accounts/remove_profile_picture/"
+	urlFeedSaved     = "feed/saved/"
+	urlSetBiography  = "accounts/set_biography/"
+	urlEditProfile   = "accounts/edit_profile"
+	urlFeedLiked     = "feed/liked/"
 
 	// account and profile
 	urlFollowers = "friendships/%d/followers/"
