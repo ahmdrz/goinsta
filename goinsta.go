@@ -67,6 +67,11 @@ type Instagram struct {
 	c *http.Client
 }
 
+// SetHTTPClient sets http client
+func (inst *Instagram) SetHTTPClient(client *http.Client) {
+	inst.c = client
+}
+
 // SetDeviceID sets device id
 func (inst *Instagram) SetDeviceID(id string) {
 	inst.dID = id
