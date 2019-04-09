@@ -67,7 +67,9 @@ type Instagram struct {
 	c *http.Client
 }
 
-// SetHTTPClient sets http client
+// SetHTTPClient sets http client.  This further allows users to use this functionality
+// for HTTP testing using a mocking HTTP client Transport, which avoids direct calls to
+// the Instagram, instead of returning mocked responses.
 func (inst *Instagram) SetHTTPClient(client *http.Client) {
 	inst.c = client
 }
