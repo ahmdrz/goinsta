@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
+	"math/rand"
 	neturl "net/url"
 	"os"
 	"path"
@@ -546,34 +547,51 @@ func (media StoryMedia) Error() error {
 	return media.err
 }
 
+
 // Seen marks story as seen.
-/*
-func (media *StoryMedia) Seen() error {
+
+func (media *StoryMedia) Seen(items []Item) error {
 	insta := media.inst
+	maxSeenAt := time.Now().Unix();
+	seenAt := maxSeenAt - (3 * int64(len(items)));
+	reels := make(map[string]interface{});
+	
+	for i := 0; i<len(items); i++ {
+		item := items[i];
+		takenAt := int64(item.TakenAt);
+		if(seenAt < takenAt) {
+			seenAt = takenAt + 3;
+		}
+		if(seenAt > maxSeenAt) {
+			seenAt = maxSeenAt;
+		}
+		itemSourceID := item.User.ID
+		reel_id := fmt.Sprintf("%s_%d", item.ID, itemSourceID);
+		reel_value := fmt.Sprintf("%d_%d", int64(takenAt), int64(seenAt));
+		
+		reels[reel_id] = [1]string{reel_value}
+		seenAt = seenAt + rand.Int63n(3);
+	}
+	
 	data, err := insta.prepareData(
 		map[string]interface{}{
-			"container_module":   "feed_timeline",
-			"live_vods_skipped":  "",
-			"nuxes_skipped":      "",
-			"nuxes":              "",
-			"reels":              "", // TODO xd
-			"live_vods":          "",
-			"reel_media_skipped": "",
+			"reels": reels,
 		},
 	)
-	if err == nil {
-		_, err = insta.sendRequest(
+	if err == {
+		resp, err := insta.sendRequest(
 			&reqOptions{
-				Endpoint: urlMediaSeen, // reel=1&live_vod=0
+				Endpoint: fmt.Sprintf("%s?reel=1&live_vod=0", urlMediaSeen),
 				Query:    generateSignature(data),
 				IsPost:   true,
 				UseV2:    true,
 			},
 		)
 	}
+
 	return err
 }
-*/
+
 
 type trayRequest struct {
 	Name  string `json:"name"`
