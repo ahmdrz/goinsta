@@ -79,6 +79,7 @@ const (
 
 	// feeds
 	urlFeedLocationID = "feed/location/%d/"
+	urlFeedLocations  = "locations/%d/sections/"
 	urlFeedTag        = "feed/tag/%s/"
 
 	// media
