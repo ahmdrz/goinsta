@@ -578,8 +578,8 @@ func (media *StoryMedia) Seen(items []Item) error {
 			"reels": reels,
 		},
 	)
-	if err == {
-		resp, err := insta.sendRequest(
+	if err == nil {
+		_, err = insta.sendRequest(
 			&reqOptions{
 				Endpoint: fmt.Sprintf("%s?reel=1&live_vod=0", urlMediaSeen),
 				Query:    generateSignature(data),
