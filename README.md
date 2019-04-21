@@ -50,18 +50,19 @@ func main() {
 }
 ```
 
-* [**More Examples**](https://github.com/ahmdrz/goinsta/tree/master/examples)
-
 ### Projects using `goinsta`
 
-- [instagraph](https://github.com/ahmdrz/instagraph)
-- [icrawler](https://github.com/themester/icrawler)
-- [go-instabot](https://github.com/tducasse/go-instabot)
-- [ermes](https://github.com/borteo/ermes)
-- [nick_bot](https://github.com/icholy/nick_bot)
+- [go-instabot](https://github.com/tducasse/go-instabot) (155 :star:)
+- [nick_bot](https://github.com/icholy/nick_bot) (26 :star:)
+- [instagraph](https://github.com/ahmdrz/instagraph) (18 :star:)
+- [icrawler](https://github.com/themester/icrawler) (6 :star:)
+- [ermes](https://github.com/borteo/ermes) (5 :star:)
+- [instafeed](https://github.com/falzm/instafeed) (4 :star:)
 - [goinstadownload](https://github.com/alejoloaiza/goinstadownload)
-- [instafeed](https://github.com/falzm/instafeed)
-- [keepig](https://github.com/seankhliao/keepig)
+- [InstagramStoriesDownloader](https://github.com/DiSiqueira/InstagramStoriesDownloader)
+- [gridcube-challenge](https://github.com/rodrwan/gridcube-challenge)
+- [nyaakitties](https://github.com/gracechang/nyaakitties)
+- [InstaFollower](https://github.com/Unanoc/InstaFollower)
 - ...
 
 ### Legal
