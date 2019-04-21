@@ -1,0 +1,8 @@
+language: go
+
+go:
+  - master
+
+script:
+  - ./.travis.gofmt.sh
+  - go test -v ./...
