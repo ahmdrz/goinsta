@@ -4,6 +4,7 @@ go:
   - master
 
 script:
+  - chmod +x .travis.gofmt.sh
   - ./.travis.gofmt.sh
   - go vet -v ./...
   - go test -v ./...
