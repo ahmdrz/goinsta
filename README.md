@@ -52,12 +52,12 @@ func main() {
 
 ### Projects using `goinsta`
 
-- [go-instabot](https://github.com/tducasse/go-instabot) (155 :star:)
-- [nick_bot](https://github.com/icholy/nick_bot) (26 :star:)
-- [instagraph](https://github.com/ahmdrz/instagraph) (18 :star:)
-- [icrawler](https://github.com/themester/icrawler) (6 :star:)
-- [ermes](https://github.com/borteo/ermes) (5 :star:)
-- [instafeed](https://github.com/falzm/instafeed) (4 :star:)
+- [go-instabot](https://github.com/tducasse/go-instabot)
+- [nick_bot](https://github.com/icholy/nick_bot)
+- [instagraph](https://github.com/ahmdrz/instagraph)
+- [icrawler](https://github.com/themester/icrawler)
+- [ermes](https://github.com/borteo/ermes)
+- [instafeed](https://github.com/falzm/instafeed)
 - [goinstadownload](https://github.com/alejoloaiza/goinstadownload)
 - [InstagramStoriesDownloader](https://github.com/DiSiqueira/InstagramStoriesDownloader)
 - [gridcube-challenge](https://github.com/rodrwan/gridcube-challenge)
