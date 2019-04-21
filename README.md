@@ -1,9 +1,9 @@
-### Go + Instgaram API
+#### Golang + Instagram Private API
 <p align="center"><img width=100% src="https://raw.githubusercontent.com/ahmdrz/goinsta/v1/resources/goinsta-image.png"></p>
 
 > Unofficial Instagram API for Golang
 
-[![GoDoc](https://godoc.org/github.com/ahmdrz/goinsta?status.svg)](https://godoc.org/github.com/ahmdrz/goinsta) [![Go Report Card](https://goreportcard.com/badge/github.com/ahmdrz/goinsta)](https://goreportcard.com/report/github.com/ahmdrz/goinsta)
+[![Build Status](https://travis-ci.org/ahmdrz/goinsta.svg?branch=master)](https://travis-ci.org/ahmdrz/goinsta) [![GoDoc](https://godoc.org/github.com/ahmdrz/goinsta?status.svg)](https://godoc.org/github.com/ahmdrz/goinsta) [![Go Report Card](https://goreportcard.com/badge/github.com/ahmdrz/goinsta)](https://goreportcard.com/report/github.com/ahmdrz/goinsta)
 
 ### Features
 
@@ -13,17 +13,11 @@
 * **Simple**. Goinsta is made by lazy programmers!
 * **Backup methods**. You can use `Export` and `Import` functions.
 * **Security**. Your password is only required to login. After login your password is deleted.
+* **No External Dependencies**. GoInsta will not use any Go packages outside of the standard library.
 
 ### Package installation 
 
 `go get -u -v gopkg.in/ahmdrz/goinsta.v2`
-
-### CLI installation
-
-```
-go get -u -v gopkg.in/ahmdrz/goinsta.v2
-go install gopkg.in/ahmdrz/goinsta.v2/goinsta
-```
 
 ### Example
 
@@ -36,19 +30,20 @@ import (
 	"gopkg.in/ahmdrz/goinsta.v2"
 )
 
-func main() {
-  //insta, err := goinsta.Import("~/.goinsta")
+func main() {  
   insta := goinsta.New("USERNAME", "PASSWORD")
 
-  // also you can use New function from gopkg.in/ahmdrz/goinsta.v2/utils
-
+  // You can set a proxy as a transporter in goinsta
   // insta.SetProxy("http://localhost:8080", true) // true for insecure connections
   if err := insta.Login(); err != nil {
     fmt.Println(err)
     return
   }
-  // export your configuration
+
+  // Export your configuration
   // after exporting you can use Import function instead of New function.
+  // insta, err := goinsta.Import("~/.goinsta")
+  // it's useful when you want use goinsta repeatedly.
   insta.Export("~/.goinsta")
 
   ...
@@ -63,7 +58,7 @@ func main() {
 - [icrawler](https://github.com/themester/icrawler)
 - [go-instabot](https://github.com/tducasse/go-instabot)
 - [ermes](https://github.com/borteo/ermes)
-- [nick\_bot](https://github.com/icholy/nick_bot)
+- [nick_bot](https://github.com/icholy/nick_bot)
 - [goinstadownload](https://github.com/alejoloaiza/goinstadownload)
 - [instafeed](https://github.com/falzm/instafeed)
 - [keepig](https://github.com/seankhliao/keepig)
