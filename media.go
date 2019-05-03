@@ -17,6 +17,35 @@ import (
 	"time"
 )
 
+// StoryReelMention represent story reel mention
+type StoryReelMention struct {
+	X        float64 `json:"x"`
+	Y        float64 `json:"y"`
+	Z        int     `json:"z"`
+	Width    float64 `json:"width"`
+	Height   float64 `json:"height"`
+	Rotation float64 `json:"rotation"`
+	IsPinned int     `json:"is_pinned"`
+	IsHidden int     `json:"is_hidden"`
+	User     User
+}
+
+// StoryCTA represent story cta
+type StoryCTA struct {
+	Links []struct {
+		LinkType                                int         `json:"linkType"`
+		WebURI                                  string      `json:"webUri"`
+		AndroidClass                            string      `json:"androidClass"`
+		Package                                 string      `json:"package"`
+		DeeplinkURI                             string      `json:"deeplinkUri"`
+		CallToActionTitle                       string      `json:"callToActionTitle"`
+		RedirectURI                             interface{} `json:"redirectUri"`
+		LeadGenFormID                           string      `json:"leadGenFormId"`
+		IgUserID                                string      `json:"igUserId"`
+		AppInstallObjectiveInvalidationBehavior interface{} `json:"appInstallObjectiveInvalidationBehavior"`
+	} `json:"links"`
+}
+
 // Item represents media items
 //
 // All Item has Images or Videos objects which contains the url(s).
@@ -82,21 +111,21 @@ type Item struct {
 	NumberOfQualities int     `json:"number_of_qualities,omitempty"`
 
 	// Only for stories
-	StoryEvents              []interface{} `json:"story_events"`
-	StoryHashtags            []interface{} `json:"story_hashtags"`
-	StoryPolls               []interface{} `json:"story_polls"`
-	StoryFeedMedia           []interface{} `json:"story_feed_media"`
-	StorySoundOn             []interface{} `json:"story_sound_on"`
-	CreativeConfig           interface{}   `json:"creative_config"`
-	StoryLocations           []interface{} `json:"story_locations"`
-	StorySliders             []interface{} `json:"story_sliders"`
-	StoryQuestions           []interface{} `json:"story_questions"`
-	StoryProductItems        []interface{} `json:"story_product_items"`
-	StoryCTA                 []interface{} `json:"story_cta"`
-	ReelMentions             []interface{} `json:"reel_mentions"`
-	SupportsReelReactions    bool          `json:"supports_reel_reactions"`
-	ShowOneTapFbShareTooltip bool          `json:"show_one_tap_fb_share_tooltip"`
-	HasSharedToFb            int64         `json:"has_shared_to_fb"`
+	StoryEvents              []interface{}      `json:"story_events"`
+	StoryHashtags            []interface{}      `json:"story_hashtags"`
+	StoryPolls               []interface{}      `json:"story_polls"`
+	StoryFeedMedia           []interface{}      `json:"story_feed_media"`
+	StorySoundOn             []interface{}      `json:"story_sound_on"`
+	CreativeConfig           interface{}        `json:"creative_config"`
+	StoryLocations           []interface{}      `json:"story_locations"`
+	StorySliders             []interface{}      `json:"story_sliders"`
+	StoryQuestions           []interface{}      `json:"story_questions"`
+	StoryProductItems        []interface{}      `json:"story_product_items"`
+	StoryCTA                 []StoryCTA         `json:"story_cta"`
+	ReelMentions             []StoryReelMention `json:"reel_mentions"`
+	SupportsReelReactions    bool               `json:"supports_reel_reactions"`
+	ShowOneTapFbShareTooltip bool               `json:"show_one_tap_fb_share_tooltip"`
+	HasSharedToFb            int64              `json:"has_shared_to_fb"`
 	Mentions                 []Mentions
 }
 
