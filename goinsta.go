@@ -286,7 +286,10 @@ func ImportString(s string) (*Instagram, error) {
 		return nil, err
 	}
 
-	sDec, _ := b64.StdEncoding.DecodeString(s)
+	sDec, err := b64.StdEncoding.DecodeString(s)
+	if err != nil {
+		return nil, err
+	}
 
 	bytes := []byte(sDec)
 
