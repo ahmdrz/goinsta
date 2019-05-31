@@ -2,6 +2,7 @@ package goinsta
 
 import (
 	"crypto/tls"
+	b64 "encoding/base64"
 	"encoding/json"
 	"io"
 	"io/ioutil"
@@ -205,6 +206,32 @@ func Export(inst *Instagram, writer io.Writer) error {
 	return err
 }
 
+// ExportString exports selected *Instagram object as base64 encoded string
+func ExportString(inst *Instagram, writer io.Writer) (string, error) {
+	url, err := neturl.Parse(goInstaAPIUrl)
+	if err != nil {
+		return "", err
+	}
+
+	config := ConfigFile{
+		ID:        inst.Account.ID,
+		User:      inst.user,
+		DeviceID:  inst.dID,
+		UUID:      inst.uuid,
+		RankToken: inst.rankToken,
+		Token:     inst.token,
+		PhoneID:   inst.pid,
+		Cookies:   inst.c.Jar.Cookies(url),
+	}
+	bytes, err := json.Marshal(config)
+	if err != nil {
+		return "", err
+	}
+
+	sEnc := b64.StdEncoding.EncodeToString(bytes)
+	return sEnc, nil
+}
+
 // ImportReader imports instagram configuration from io.Reader
 //
 // This function does not set proxy automatically. Use SetProxy after this call.
@@ -218,6 +245,50 @@ func ImportReader(r io.Reader) (*Instagram, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	config := ConfigFile{}
+	err = json.Unmarshal(bytes, &config)
+	if err != nil {
+		return nil, err
+	}
+	inst := &Instagram{
+		user:      config.User,
+		dID:       config.DeviceID,
+		uuid:      config.UUID,
+		rankToken: config.RankToken,
+		token:     config.Token,
+		pid:       config.PhoneID,
+		c: &http.Client{
+			Transport: &http.Transport{
+				Proxy: http.ProxyFromEnvironment,
+			},
+		},
+	}
+	inst.c.Jar, err = cookiejar.New(nil)
+	if err != nil {
+		return inst, err
+	}
+	inst.c.Jar.SetCookies(url, config.Cookies)
+
+	inst.init()
+	inst.Account = &Account{inst: inst, ID: config.ID}
+	inst.Account.Sync()
+
+	return inst, nil
+}
+
+// ImportString imports instagram configuration from base64 encoded string
+//
+// This function does not set proxy automatically. Use SetProxy after this call.
+func ImportString(s string) (*Instagram, error) {
+	url, err := neturl.Parse(goInstaAPIUrl)
+	if err != nil {
+		return nil, err
+	}
+
+	sDec, _ := b64.StdEncoding.DecodeString(s)
+
+	bytes := []byte(sDec)
 
 	config := ConfigFile{}
 	err = json.Unmarshal(bytes, &config)
