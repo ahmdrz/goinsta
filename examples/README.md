@@ -1,4 +1,4 @@
-### A list of examples related to GoInsta
+## A list of examples related to GoInsta
 
 #### Follow Tag Bot
 
