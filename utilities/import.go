@@ -3,9 +3,13 @@ package utilities
 import (
 	"bytes"
 	"encoding/base64"
+
 	"github.com/ahmdrz/goinsta"
 )
 
+// ImportFromBytes imports instagram configuration from an array of bytes.
+//
+// This function does not set proxy automatically. Use SetProxy after this call.
 func ImportFromBytes(inputBytes []byte) (*goinsta.Instagram, error) {
 	return goinsta.ImportReader(bytes.NewReader(inputBytes))
 }

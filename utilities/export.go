@@ -3,9 +3,11 @@ package utilities
 import (
 	"bytes"
 	"encoding/base64"
+
 	"github.com/ahmdrz/goinsta"
 )
 
+// ExportAsBytes exports selected *Instagram object as []byte
 func ExportAsBytes(insta *goinsta.Instagram) ([]byte, error) {
 	buffer := &bytes.Buffer{}
 	err := goinsta.Export(insta, buffer)
