@@ -485,9 +485,9 @@ func (item *Item) PreviewComments() []Comment {
 	return nil
 }
 
-// StoryCloseFriends returns a bool
+// StoryIsCloseFriends returns a bool
 // If the returned value is true the story was published only for close friends
-func (item *Item) StoryCloseFriends() bool {
+func (item *Item) StoryIsCloseFriends() bool {
 	return item.Audience == "besties"
 }
 
