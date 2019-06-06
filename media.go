@@ -127,6 +127,7 @@ type Item struct {
 	ShowOneTapFbShareTooltip bool               `json:"show_one_tap_fb_share_tooltip"`
 	HasSharedToFb            int64              `json:"has_shared_to_fb"`
 	Mentions                 []Mentions
+	Audience                 string `json:"audience,omitempty"`
 }
 
 // MediaToString returns Item.MediaType as string.
@@ -482,6 +483,12 @@ func (item *Item) PreviewComments() []Comment {
 		return comments
 	}
 	return nil
+}
+
+// StoryIsCloseFriends returns a bool
+// If the returned value is true the story was published only for close friends
+func (item *Item) StoryIsCloseFriends() bool {
+	return item.Audience == "besties"
 }
 
 //Media interface defines methods for both StoryMedia and FeedMedia.
