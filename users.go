@@ -298,6 +298,72 @@ func (user *User) Unblock() error {
 	return nil
 }
 
+// Mute mutes user from appearing in the feed
+//
+// This function updates current User.Friendship structure.
+func (user *User) Mute() error {
+	insta := user.inst
+	data, err := insta.prepareData(
+		map[string]interface{}{
+			"user_id": user.ID,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlUserMute, user.ID),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	resp := friendResp{}
+	err = json.Unmarshal(body, &resp)
+	user.Friendship = resp.Friendship
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Mute unmutes user from appearing in the feed
+//
+// This function updates current User.Friendship structure.
+func (user *User) Unmute() error {
+	insta := user.inst
+	data, err := insta.prepareData(
+		map[string]interface{}{
+			"user_id": user.ID,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlUserUnmute, user.ID),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	resp := friendResp{}
+	err = json.Unmarshal(body, &resp)
+	user.Friendship = resp.Friendship
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // Follow started following some user
 //
 // This function performs a follow call. If user is private
