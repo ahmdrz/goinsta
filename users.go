@@ -305,7 +305,9 @@ func (user *User) Mute() error {
 	insta := user.inst
 	data, err := insta.prepareData(
 		map[string]interface{}{
-			"user_id": user.ID,
+			"user_id":                user.ID,
+			"target_reel_author_id":  user.ID,
+			"target_posts_author_id": user.ID,
 		},
 	)
 	if err != nil {
@@ -313,7 +315,7 @@ func (user *User) Mute() error {
 	}
 	body, err := insta.sendRequest(
 		&reqOptions{
-			Endpoint: fmt.Sprintf(urlUserMute, user.ID),
+			Endpoint: urlUserMute,
 			Query:    generateSignature(data),
 			IsPost:   true,
 		},
@@ -331,14 +333,16 @@ func (user *User) Mute() error {
 	return nil
 }
 
-// Mute unmutes user from appearing in the feed
+// Mute unmutes user so it appears in the feed again
 //
 // This function updates current User.Friendship structure.
 func (user *User) Unmute() error {
 	insta := user.inst
 	data, err := insta.prepareData(
 		map[string]interface{}{
-			"user_id": user.ID,
+			"user_id":                user.ID,
+			"target_reel_author_id":  user.ID,
+			"target_posts_author_id": user.ID,
 		},
 	)
 	if err != nil {
@@ -346,7 +350,7 @@ func (user *User) Unmute() error {
 	}
 	body, err := insta.sendRequest(
 		&reqOptions{
-			Endpoint: fmt.Sprintf(urlUserUnmute, user.ID),
+			Endpoint: urlUserUnmute,
 			Query:    generateSignature(data),
 			IsPost:   true,
 		},
