@@ -21,6 +21,14 @@ var (
 	}
 )
 
+type muteOption string
+
+const (
+	MuteAll   muteOption = "all"
+	MuteStory muteOption = "story"
+	MuteFeed  muteOption = "feed"
+)
+
 // Endpoints (with format vars)
 const (
 	// login
@@ -55,6 +63,8 @@ const (
 	urlUserByID          = "users/%d/info/"
 	urlUserBlock         = "friendships/block/%d/"
 	urlUserUnblock       = "friendships/unblock/%d/"
+	urlUserMute          = "friendships/mute_posts_or_story_from_follow/"
+	urlUserUnmute        = "friendships/unmute_posts_or_story_from_follow/"
 	urlUserFollow        = "friendships/create/%d/"
 	urlUserUnfollow      = "friendships/destroy/%d/"
 	urlUserFeed          = "feed/user/%d/"
