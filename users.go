@@ -298,24 +298,35 @@ func (user *User) Unblock() error {
 	return nil
 }
 
-// Mute mutes user from appearing in the feed
+// Mute mutes user from appearing in the feed or story reel
 //
+// Use one of the pre-defined constants to choose what exactly to mute:
+// goinsta.MuteAll, goinsta.MuteStory, goinsta.MuteFeed
 // This function updates current User.Friendship structure.
-func (user *User) Mute() error {
+func (user *User) Mute(opt muteOption) error {
+	return muteOrUnmute(user, opt, urlUserMute)
+}
+
+// Unmute unmutes user so it appears in the feed or story reel again
+//
+// Use one of the pre-defined constants to choose what exactly to unmute:
+// goinsta.MuteAll, goinsta.MuteStory, goinsta.MuteFeed
+// This function updates current User.Friendship structure.
+func (user *User) Unmute(opt muteOption) error {
+	return muteOrUnmute(user, opt, urlUserUnmute)
+}
+
+func muteOrUnmute(user *User, opt muteOption, endpoint string) error {
 	insta := user.inst
 	data, err := insta.prepareData(
-		map[string]interface{}{
-			"user_id":                user.ID,
-			"target_reel_author_id":  user.ID,
-			"target_posts_author_id": user.ID,
-		},
+		generateMuteData(user, opt),
 	)
 	if err != nil {
 		return err
 	}
 	body, err := insta.sendRequest(
 		&reqOptions{
-			Endpoint: urlUserMute,
+			Endpoint: endpoint,
 			Query:    generateSignature(data),
 			IsPost:   true,
 		},
@@ -333,39 +344,22 @@ func (user *User) Mute() error {
 	return nil
 }
 
-// Mute unmutes user so it appears in the feed again
-//
-// This function updates current User.Friendship structure.
-func (user *User) Unmute() error {
-	insta := user.inst
-	data, err := insta.prepareData(
-		map[string]interface{}{
-			"user_id":                user.ID,
-			"target_reel_author_id":  user.ID,
-			"target_posts_author_id": user.ID,
-		},
-	)
-	if err != nil {
-		return err
-	}
-	body, err := insta.sendRequest(
-		&reqOptions{
-			Endpoint: urlUserUnmute,
-			Query:    generateSignature(data),
-			IsPost:   true,
-		},
-	)
-	if err != nil {
-		return err
-	}
-	resp := friendResp{}
-	err = json.Unmarshal(body, &resp)
-	user.Friendship = resp.Friendship
-	if err != nil {
-		return err
+func generateMuteData(user *User, opt muteOption) map[string]interface{} {
+	data := map[string]interface{}{
+		"user_id": user.ID,
 	}
 
-	return nil
+	switch opt {
+	case MuteAll:
+		data["target_reel_author_id"] = user.ID
+		data["target_posts_author_id"] = user.ID
+	case MuteStory:
+		data["target_reel_author_id"] = user.ID
+	case MuteFeed:
+		data["target_posts_author_id"] = user.ID
+	}
+
+	return data
 }
 
 // Follow started following some user

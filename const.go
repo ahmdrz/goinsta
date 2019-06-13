@@ -21,6 +21,14 @@ var (
 	}
 )
 
+type muteOption string
+
+const (
+	MuteAll   muteOption = "all"
+	MuteStory muteOption = "story"
+	MuteFeed  muteOption = "feed"
+)
+
 // Endpoints (with format vars)
 const (
 	// login
