@@ -30,6 +30,10 @@ type LayoutSection struct {
 }
 
 type Section struct {
+	inst *Instagram
+	err error
+	endpoint string
+
 	Sections      []LayoutSection `json:"sections"`
 	MoreAvailable bool            `json:"more_available"`
 	NextPage      int             `json:"next_page"`
@@ -38,13 +42,25 @@ type Section struct {
 	Status        string          `json:"status"`
 }
 
-func (l *LocationInstance) Feeds(locationID int64) (*Section, error) {
-	// TODO: use pagination for location feeds.
-	insta := l.inst
+// Next allows to paginate after calling:
+// Account.Follow* and User.Follow*
+//
+// New user list is stored inside Users
+//
+// returns false when list reach the end.
+func (section *Section) Next() bool {
+	if section.err != nil {
+		return false
+	}
+
+	insta := section.inst
+	endpoint := section.endpoint
+
 	body, err := insta.sendRequest(
 		&reqOptions{
-			Endpoint: fmt.Sprintf(urlFeedLocations, locationID),
+			Endpoint: endpoint,
 			Query: map[string]string{
+				"max_id": section.NextMaxID,
 				"rank_token":     insta.rankToken,
 				"ranked_content": "true",
 				"_csrftoken":     insta.token,
@@ -53,11 +69,27 @@ func (l *LocationInstance) Feeds(locationID int64) (*Section, error) {
 			IsPost: true,
 		},
 	)
-	if err != nil {
-		return nil, err
+	if err == nil {
+		newSection := Section{}
+		err = json.Unmarshal(body, &newSection)
+
+		if err != nil {
+			section.err = err
+			return false
+		}
+
+		newSection.inst = section.inst
+		newSection.endpoint = section.endpoint
+		*section = newSection
+
+		return true
 	}
 
-	section := &Section{}
-	err = json.Unmarshal(body, section)
-	return section, err
+	section.err = err
+	return false
+}
+
+func (l *LocationInstance) Feeds(locationID int64) *Section {
+	endpoint := fmt.Sprintf(urlFeedLocations, locationID)
+	return &Section{inst:l.inst, endpoint:endpoint}
 }
