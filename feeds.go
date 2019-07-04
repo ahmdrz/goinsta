@@ -79,6 +79,14 @@ func (feed *Feed) Tags(tag string) (*FeedTag, error) {
 			NextID: res.RankedItems[i].ID,
 		}
 	}
+
+	for i := range res.Images {
+		res.Images[i].media = &FeedMedia{
+			inst:   insta,
+			NextID: res.Images[i].ID,
+		}
+	}
+
 	return res, nil
 }
 
