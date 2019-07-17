@@ -420,3 +420,23 @@ func (account *Account) PendingFollowRequests() ([]User, error) {
 
 	return result.Users, nil
 }
+
+// Archived returns current account archive feed
+//
+// For pagination use FeedMedia.Next()
+func (account *Account) Archived(params ...interface{}) *FeedMedia {
+	insta := account.inst
+
+	media := &FeedMedia{}
+	media.inst = insta
+	media.endpoint = urlUserArchived
+
+	for _, param := range params {
+		switch s := param.(type) {
+		case string:
+			media.timestamp = s
+		}
+	}
+
+	return media
+}

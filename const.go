@@ -59,6 +59,8 @@ const (
 	urlFollowing = "friendships/%d/following/"
 
 	// users
+
+	urlUserArchived      = "feed/only_me_feed/"
 	urlUserByName        = "users/%s/usernameinfo/"
 	urlUserByID          = "users/%d/info/"
 	urlUserBlock         = "friendships/block/%d/"
