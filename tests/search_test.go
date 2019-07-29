@@ -6,7 +6,6 @@ import (
 
 func TestSearchUser(t *testing.T) {
 	count := 20
-
 	insta, err := getRandomAccount()
 	if err != nil {
 		t.Fatal(err)
@@ -22,10 +21,6 @@ func TestSearchUser(t *testing.T) {
 		return
 	}
 	t.Logf("result length is %d", len(result.Users))
-	if len(result.Users) < count {
-		t.Fatalf("length is less than %d", count)
-		return
-	}
 	for _, user := range result.Users {
 		t.Logf("user %s with id %d\n", user.Username, user.ID)
 	}
