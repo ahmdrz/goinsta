@@ -22,6 +22,7 @@ import (
 // Timeline: Represents instagram's timeline.
 // Activity: Represents instagram's user activity.
 // Inbox:    Represents instagram's messages.
+// Location: Represents instagram's locations.
 //
 // See Scheme section in README.md for more information.
 //
@@ -63,8 +64,17 @@ type Instagram struct {
 	Feed *Feed
 	// User contacts from mobile address book
 	Contacts *Contacts
+	// Location instance
+	Locations *LocationInstance
 
 	c *http.Client
+}
+
+// SetHTTPClient sets http client.  This further allows users to use this functionality
+// for HTTP testing using a mocking HTTP client Transport, which avoids direct calls to
+// the Instagram, instead of returning mocked responses.
+func (inst *Instagram) SetHTTPClient(client *http.Client) {
+	inst.c = client
 }
 
 // SetDeviceID sets device id
@@ -114,6 +124,7 @@ func (inst *Instagram) init() {
 	inst.Inbox = newInbox(inst)
 	inst.Feed = newFeed(inst)
 	inst.Contacts = newContacts(inst)
+	inst.Locations = newLocation(inst)
 }
 
 // SetProxy sets proxy for connection.

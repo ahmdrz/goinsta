@@ -3,8 +3,8 @@ package goinsta
 const (
 	goInstaAPIUrl        = "https://i.instagram.com/api/v1/"
 	goInstaAPIUrlv2      = "https://i.instagram.com/api/v2/"
-	goInstaUserAgent     = "Instagram 27.0.0.7.97 Android (24/7.0; 380dpi; 1080x1920; OnePlus; ONEPLUS A3010; OnePlus3T; qcom; en_US)"
-	goInstaIGSigKey      = "109513c04303341a7daf27bb41b268e633b30dcc65a3fe14503f743176113869"
+	goInstaUserAgent     = "Instagram 85.0.0.21.100 Android (24/7.0; 380dpi; 1080x1920; OnePlus; ONEPLUS A3010; OnePlus3T; qcom; en_US)"
+	goInstaIGSigKey      = "937463b5272b5d60e9d20f0f8d7d192193dd95095a3ad43725d494300a5ea5fc"
 	fbAnalytics          = "567067343352427"
 	igCapabilities       = "3brTBw=="
 	connType             = "WIFI"
@@ -19,6 +19,14 @@ var (
 		"android_version": 24,
 		"android_release": "7.0",
 	}
+)
+
+type muteOption string
+
+const (
+	MuteAll   muteOption = "all"
+	MuteStory muteOption = "story"
+	MuteFeed  muteOption = "feed"
 )
 
 // Endpoints (with format vars)
@@ -51,19 +59,24 @@ const (
 	urlFollowing = "friendships/%d/following/"
 
 	// users
-	urlUserByName     = "users/%s/usernameinfo/"
-	urlUserByID       = "users/%d/info/"
-	urlUserBlock      = "friendships/block/%d/"
-	urlUserUnblock    = "friendships/unblock/%d/"
-	urlUserFollow     = "friendships/create/%d/"
-	urlUserUnfollow   = "friendships/destroy/%d/"
-	urlUserFeed       = "feed/user/%d/"
-	urlFriendship     = "friendships/show/%d/"
-	urlUserStories    = "feed/user/%d/reel_media/"
-	urlUserTags       = "usertags/%d/feed/"
-	urlBlockedList    = "users/blocked_list/"
-	urlUserInfo       = "users/%d/info/"
-	urlUserHighlights = "highlights/%d/highlights_tray/"
+
+	urlUserArchived      = "feed/only_me_feed/"
+	urlUserByName        = "users/%s/usernameinfo/"
+	urlUserByID          = "users/%d/info/"
+	urlUserBlock         = "friendships/block/%d/"
+	urlUserUnblock       = "friendships/unblock/%d/"
+	urlUserMute          = "friendships/mute_posts_or_story_from_follow/"
+	urlUserUnmute        = "friendships/unmute_posts_or_story_from_follow/"
+	urlUserFollow        = "friendships/create/%d/"
+	urlUserUnfollow      = "friendships/destroy/%d/"
+	urlUserFeed          = "feed/user/%d/"
+	urlFriendship        = "friendships/show/%d/"
+	urlFriendshipPending = "friendships/pending/"
+	urlUserStories       = "feed/user/%d/reel_media/"
+	urlUserTags          = "usertags/%d/feed/"
+	urlBlockedList       = "users/blocked_list/"
+	urlUserInfo          = "users/%d/info/"
+	urlUserHighlights    = "highlights/%d/highlights_tray/"
 
 	// timeline
 	urlTimeline  = "feed/timeline/"
@@ -78,6 +91,7 @@ const (
 
 	// feeds
 	urlFeedLocationID = "feed/location/%d/"
+	urlFeedLocations  = "locations/%d/sections/"
 	urlFeedTag        = "feed/tag/%s/"
 
 	// media

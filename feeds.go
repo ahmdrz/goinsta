@@ -70,7 +70,24 @@ func (feed *Feed) Tags(tag string) (*FeedTag, error) {
 	}
 	res := &FeedTag{}
 	err = json.Unmarshal(body, res)
-	return res, err
+	if err != nil {
+		return nil, err
+	}
+	for i := range res.RankedItems {
+		res.RankedItems[i].media = &FeedMedia{
+			inst:   insta,
+			NextID: res.RankedItems[i].ID,
+		}
+	}
+
+	for i := range res.Images {
+		res.Images[i].media = &FeedMedia{
+			inst:   insta,
+			NextID: res.Images[i].ID,
+		}
+	}
+
+	return res, nil
 }
 
 // FeedTag is the struct that fits the structure returned by instagram on TagSearch.
