@@ -66,8 +66,17 @@ This code is in no way affiliated with, authorized, maintained, sponsored or end
 ### Versioning
 
 Goinsta used gopkg.in as versioning control. Stable new API is the version v2.0. You can get it using:
+
 ```bash
-go get -u -v gopkg.in/ahmdrz/goinsta.v2
+$ go get -u -v gopkg.in/ahmdrz/goinsta.v2
+```
+
+Or 
+
+If you have `GO111MODULE=on`
+
+```
+$ go get -u github.com/ahmdrz/goinsta/v2
 ```
 
 ### Donate
