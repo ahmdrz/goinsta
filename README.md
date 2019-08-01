@@ -33,13 +33,6 @@ import (
 func main() {  
   insta := goinsta.New("USERNAME", "PASSWORD")
 
-  // You can set a proxy as a transporter in goinsta
-  // insta.SetProxy("http://localhost:8080", true) // true for insecure connections
-  if err := insta.Login(); err != nil {
-    fmt.Println(err)
-    return
-  }
-
   // Export your configuration
   // after exporting you can use Import function instead of New function.
   // insta, err := goinsta.Import("~/.goinsta")
@@ -63,6 +56,7 @@ func main() {
 - [gridcube-challenge](https://github.com/rodrwan/gridcube-challenge)
 - [nyaakitties](https://github.com/gracechang/nyaakitties)
 - [InstaFollower](https://github.com/Unanoc/InstaFollower)
+- [follow-sync](https://github.com/kirsle/follow-sync)
 - ...
 
 ### Legal
