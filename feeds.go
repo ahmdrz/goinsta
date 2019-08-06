@@ -73,25 +73,20 @@ func (feed *Feed) Tags(tag string) (*FeedTag, error) {
 	if err != nil {
 		return nil, err
 	}
-	for i := range res.RankedItems {
-		res.RankedItems[i].media = &FeedMedia{
-			inst:   insta,
-			NextID: res.RankedItems[i].ID,
-		}
-	}
-
-	for i := range res.Images {
-		res.Images[i].media = &FeedMedia{
-			inst:   insta,
-			NextID: res.Images[i].ID,
-		}
-	}
+	res.Name = tag
+	res.inst = feed.inst
+	res.setValues()
 
 	return res, nil
 }
 
 // FeedTag is the struct that fits the structure returned by instagram on TagSearch.
 type FeedTag struct {
+	inst *Instagram
+	err  error
+
+	Name string
+
 	RankedItems         []Item     `json:"ranked_items"`
 	Images              []Item     `json:"items"`
 	NumResults          int        `json:"num_results"`
@@ -100,4 +95,60 @@ type FeedTag struct {
 	AutoLoadMoreEnabled bool       `json:"auto_load_more_enabled"`
 	Story               StoryMedia `json:"story"`
 	Status              string     `json:"status"`
+}
+
+func (ft *FeedTag) setValues() {
+	for i := range ft.RankedItems {
+		ft.RankedItems[i].media = &FeedMedia{
+			inst:   ft.inst,
+			NextID: ft.RankedItems[i].ID,
+		}
+	}
+
+	for i := range ft.Images {
+		ft.Images[i].media = &FeedMedia{
+			inst:   ft.inst,
+			NextID: ft.Images[i].ID,
+		}
+	}
+}
+
+// Next paginates over hashtag feed.
+func (ft *FeedTag) Next() bool {
+	if ft.err != nil {
+		return false
+	}
+
+	insta := ft.inst
+	name := ft.Name
+	body, err := insta.sendRequest(
+		&reqOptions{
+			Query: map[string]string{
+				"max_id":     ft.NextID,
+				"rank_token": insta.rankToken,
+			},
+			Endpoint: fmt.Sprintf(urlFeedTag, name),
+		},
+	)
+	if err == nil {
+		newFT := FeedTag{}
+		err = json.Unmarshal(body, &newFT)
+		if err == nil {
+			*ft = newFT
+			ft.inst = insta
+			ft.Name = name
+			if !ft.MoreAvailable {
+				ft.err = ErrNoMore
+			}
+			ft.setValues()
+			return true
+		}
+	}
+	ft.err = err
+	return false
+}
+
+//Error returns hashtag error
+func (ft *FeedTag) Error() error {
+	return ft.err
 }
