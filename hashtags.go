@@ -24,10 +24,10 @@ type Hashtag struct {
 		} `json:"layout_content"`
 		FeedType        string `json:"feed_type"`
 		ExploreItemInfo struct {
-			NumColumns      int  `json:"num_columns"`
-			TotalNumColumns int  `json:"total_num_columns"`
-			AspectRatio     int  `json:"aspect_ratio"`
-			Autoplay        bool `json:"autoplay"`
+			NumColumns      int     `json:"num_columns"`
+			TotalNumColumns int     `json:"total_num_columns"`
+			AspectRatio     float32 `json:"aspect_ratio"`
+			Autoplay        bool    `json:"autoplay"`
 		} `json:"explore_item_info"`
 	} `json:"sections"`
 	MediaCount          int     `json:"media_count"`
