@@ -73,7 +73,7 @@ func (feed *Feed) Tags(tag string) (*FeedTag, error) {
 	if err != nil {
 		return nil, err
 	}
-	res.Name = tag
+	res.name = tag
 	res.inst = feed.inst
 	res.setValues()
 
@@ -85,7 +85,7 @@ type FeedTag struct {
 	inst *Instagram
 	err  error
 
-	Name string
+	name string
 
 	RankedItems         []Item     `json:"ranked_items"`
 	Images              []Item     `json:"items"`
@@ -120,7 +120,7 @@ func (ft *FeedTag) Next() bool {
 	}
 
 	insta := ft.inst
-	name := ft.Name
+	name := ft.name
 	body, err := insta.sendRequest(
 		&reqOptions{
 			Query: map[string]string{
@@ -136,7 +136,7 @@ func (ft *FeedTag) Next() bool {
 		if err == nil {
 			*ft = newFT
 			ft.inst = insta
-			ft.Name = name
+			ft.name = name
 			if !ft.MoreAvailable {
 				ft.err = ErrNoMore
 			}
