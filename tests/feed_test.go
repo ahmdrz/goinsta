@@ -29,3 +29,33 @@ func TestFeedTagLike(t *testing.T) {
 		t.Logf("media %s liked by goinsta", item.ID)
 	}
 }
+
+func TestFeedTagNext(t *testing.T) {
+	insta, err := getRandomAccount()
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	feedTag, err := insta.Feed.Tags("golang")
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	initNextID := feedTag.NextID
+	success := feedTag.Next()
+	if !success {
+		t.Fatal("Failed to fetch next page")
+		return
+	}
+	gotStatus := feedTag.Status
+
+	if gotStatus != "ok" {
+		t.Errorf("Status = %s; want ok", gotStatus)
+	}
+
+	gotNextID := feedTag.NextID
+	if gotNextID == initNextID {
+		t.Errorf("NextID must differ after FeedTag.Next() call")
+	}
+}
