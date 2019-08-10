@@ -3,8 +3,12 @@ language: go
 go:
   - master
 
+env:
+ global:
+  - GO111MODULE=off
+  
 script:
   - chmod +x .travis.gofmt.sh
-  - ./.travis.gofmt.sh
+  - gofmt -d .
   - go vet -v ./...
   - go test -v ./...
