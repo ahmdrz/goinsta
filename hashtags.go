@@ -101,10 +101,10 @@ func (h *Hashtag) Next() bool {
 		},
 	)
 	if err == nil {
-		ht := Hashtag{}
-		err = json.Unmarshal(body, &ht)
+		ht := &Hashtag{}
+		err = json.Unmarshal(body, ht)
 		if err == nil {
-			*h = ht
+			*h = *ht
 			h.inst = insta
 			h.Name = name
 			if !h.MoreAvailable {

@@ -131,10 +131,10 @@ func (ft *FeedTag) Next() bool {
 		},
 	)
 	if err == nil {
-		newFT := FeedTag{}
-		err = json.Unmarshal(body, &newFT)
+		newFT := &FeedTag{}
+		err = json.Unmarshal(body, newFT)
 		if err == nil {
-			*ft = newFT
+			*ft = *newFT
 			ft.inst = insta
 			ft.name = name
 			if !ft.MoreAvailable {
