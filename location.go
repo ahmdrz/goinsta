@@ -30,6 +30,11 @@ type LayoutSection struct {
 }
 
 type Section struct {
+	inst     *Instagram
+	err      error
+	endpoint string
+	tab      string
+
 	Sections      []LayoutSection `json:"sections"`
 	MoreAvailable bool            `json:"more_available"`
 	NextPage      int             `json:"next_page"`
@@ -38,26 +43,61 @@ type Section struct {
 	Status        string          `json:"status"`
 }
 
-func (l *LocationInstance) Feeds(locationID int64) (*Section, error) {
-	// TODO: use pagination for location feeds.
-	insta := l.inst
+// Next allows to paginate after calling:
+// Locations.Feeds()
+// returns false when list reach the end.
+func (section *Section) Next() bool {
+	if section.err != nil {
+		return false
+	}
+
+	insta := section.inst
+	endpoint := section.endpoint
+
 	body, err := insta.sendRequest(
 		&reqOptions{
-			Endpoint: fmt.Sprintf(urlFeedLocations, locationID),
+			Endpoint: endpoint,
 			Query: map[string]string{
-				"rank_token":     insta.rankToken,
-				"ranked_content": "true",
-				"_csrftoken":     insta.token,
-				"_uuid":          insta.uuid,
+				"max_id":     section.NextMaxID,
+				"rank_token": insta.rankToken,
+				"tab":        section.tab,
+				"_csrftoken": insta.token,
+				"_uuid":      insta.uuid,
 			},
 			IsPost: true,
 		},
 	)
-	if err != nil {
-		return nil, err
+
+	if err == nil {
+		newSection := Section{}
+		err = json.Unmarshal(body, &newSection)
+
+		if err == nil {
+			newSection.tab = section.tab
+			newSection.inst = section.inst
+			newSection.endpoint = section.endpoint
+			*section = newSection
+
+			if section.NextMaxID == "" {
+				section.err = ErrNoMore
+			}
+
+			return true
+		}
 	}
 
-	section := &Section{}
-	err = json.Unmarshal(body, section)
-	return section, err
+	section.err = err
+	return false
+}
+
+func (section *Section) Error() error {
+	return section.err
+}
+
+//Feeds creates a starting point for fetching location feed.
+//Use .Next() for pagination.
+//Tab can be "recent" or "top" according to instagram sections
+func (l *LocationInstance) Feeds(locationID int64, tab string) *Section {
+	endpoint := fmt.Sprintf(urlFeedLocations, locationID)
+	return &Section{inst: l.inst, endpoint: endpoint, tab: tab}
 }
