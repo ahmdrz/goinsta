@@ -54,8 +54,8 @@ func (comments Comments) Error() error {
 // See example: examples/media/commentDisable.go
 func (comments *Comments) Disable() error {
 	switch comments.item.media.(type) {
-	case *StoryMedia:
-		return fmt.Errorf("Incompatible type. Cannot use Disable() with StoryMedia type")
+	case *Reel:
+		return fmt.Errorf("Incompatible type. Cannot use Disable() with Reel type")
 	default:
 	}
 
@@ -84,8 +84,8 @@ func (comments *Comments) Disable() error {
 // See example: examples/media/commentEnable.go
 func (comments *Comments) Enable() error {
 	switch comments.item.media.(type) {
-	case *StoryMedia:
-		return fmt.Errorf("Incompatible type. Cannot use Enable() with StoryMedia type")
+	case *Reel:
+		return fmt.Errorf("Incompatible type. Cannot use Enable() with Reel type")
 	default:
 	}
 
@@ -171,7 +171,7 @@ func (comments *Comments) Sync() {
 
 // Add push a comment in media.
 //
-// If parent media is a Story this function will send a private message
+// If parent media is a Reel this function will send a private message
 // replying the Instagram story.
 //
 // See example: examples/media/commentsAdd.go
@@ -181,7 +181,7 @@ func (comments *Comments) Add(text string) (err error) {
 	insta := item.media.instagram()
 
 	switch item.media.(type) {
-	case *StoryMedia:
+	case *Reel:
 		to, err := prepareRecipients(item)
 		if err != nil {
 			return err

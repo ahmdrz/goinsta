@@ -87,14 +87,14 @@ type FeedTag struct {
 
 	name string
 
-	RankedItems         []Item     `json:"ranked_items"`
-	Images              []Item     `json:"items"`
-	NumResults          int        `json:"num_results"`
-	NextID              string     `json:"next_max_id"`
-	MoreAvailable       bool       `json:"more_available"`
-	AutoLoadMoreEnabled bool       `json:"auto_load_more_enabled"`
-	Story               StoryMedia `json:"story"`
-	Status              string     `json:"status"`
+	RankedItems         []Item `json:"ranked_items"`
+	Images              []Item `json:"items"`
+	NumResults          int    `json:"num_results"`
+	NextID              string `json:"next_max_id"`
+	MoreAvailable       bool   `json:"more_available"`
+	AutoLoadMoreEnabled bool   `json:"auto_load_more_enabled"`
+	Reel                Reel   `json:"story"`
+	Status              string `json:"status"`
 }
 
 func (ft *FeedTag) setValues() {

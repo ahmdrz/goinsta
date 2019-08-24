@@ -214,18 +214,18 @@ type Video struct {
 }
 
 type timeStoryResp struct {
-	Status string       `json:"status"`
-	Media  []StoryMedia `json:"tray"`
+	Status string `json:"status"`
+	Media  []Reel `json:"tray"`
 }
 
 type trayResp struct {
-	Reels  map[string]StoryMedia `json:"reels"`
-	Status string                `json:"status"`
+	Reels  map[string]Reel `json:"reels"`
+	Status string          `json:"status"`
 }
 
 // Tray is a set of story media received from timeline calls.
 type Tray struct {
-	Stories []StoryMedia `json:"tray"`
+	Stories []Reel `json:"tray"`
 	Lives   struct {
 		LiveItems []LiveItems `json:"post_live_items"`
 	} `json:"post_live"`

@@ -488,13 +488,13 @@ func (user *User) Feed(params ...interface{}) *FeedMedia {
 	return media
 }
 
-// Stories returns user stories
+// Reel returns user stories
 //
-// Use StoryMedia.Next for pagination.
+// Use Reel.Next for pagination.
 //
 // See example: examples/user/stories.go
-func (user *User) Stories() *StoryMedia {
-	media := &StoryMedia{}
+func (user *User) Reel() *Reel {
+	media := &Reel{}
 	media.uid = user.ID
 	media.inst = user.inst
 	media.endpoint = urlUserStories
@@ -504,7 +504,7 @@ func (user *User) Stories() *StoryMedia {
 // Highlights represents saved stories.
 //
 // See example: examples/user/highlights.go
-func (user *User) Highlights() ([]StoryMedia, error) {
+func (user *User) Highlights() ([]Reel, error) {
 	query := []trayRequest{
 		{"SUPPORTED_SDK_VERSIONS", "9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0,17.0,18.0,19.0,20.0,21.0,22.0,23.0,24.0"},
 		{"FACE_TRACKER_VERSION", "10"},
@@ -527,7 +527,7 @@ func (user *User) Highlights() ([]StoryMedia, error) {
 		if err == nil {
 			tray.set(user.inst, "")
 			for i := range tray.Stories {
-				if len(tray.Stories[i].Items) == 0 {
+				if len(tray.Stories[i].Stories) == 0 {
 					err = tray.Stories[i].Sync()
 					if err != nil {
 						return nil, err
