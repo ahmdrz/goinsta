@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"math/rand"
 	"mime/multipart"
 	"net/http"
 	neturl "net/url"
@@ -53,6 +54,70 @@ type StoryCTA struct {
 type Item struct {
 	media    Media
 	Comments *Comments `json:"-"`
+
+	TakenAt          int64   `json:"taken_at"`
+	Pk               int64   `json:"pk"`
+	ID               string  `json:"id"`
+	CommentsDisabled bool    `json:"comments_disabled"`
+	DeviceTimestamp  int64   `json:"device_timestamp"`
+	MediaType        int     `json:"media_type"`
+	Code             string  `json:"code"`
+	ClientCacheKey   string  `json:"client_cache_key"`
+	FilterType       int     `json:"filter_type"`
+	CarouselParentID string  `json:"carousel_parent_id"`
+	CarouselMedia    []Item  `json:"carousel_media,omitempty"`
+	User             User    `json:"user"`
+	CanViewerReshare bool    `json:"can_viewer_reshare"`
+	Caption          Caption `json:"caption"`
+	CaptionIsEdited  bool    `json:"caption_is_edited"`
+	Likes            int     `json:"like_count"`
+	HasLiked         bool    `json:"has_liked"`
+	// Toplikers can be `string` or `[]string`.
+	// Use TopLikers function instead of getting it directly.
+	Toplikers                    interface{} `json:"top_likers"`
+	Likers                       []User      `json:"likers"`
+	CommentLikesEnabled          bool        `json:"comment_likes_enabled"`
+	CommentThreadingEnabled      bool        `json:"comment_threading_enabled"`
+	HasMoreComments              bool        `json:"has_more_comments"`
+	MaxNumVisiblePreviewComments int         `json:"max_num_visible_preview_comments"`
+	// Previewcomments can be `string` or `[]string` or `[]Comment`.
+	// Use PreviewComments function instead of getting it directly.
+	Previewcomments interface{} `json:"preview_comments,omitempty"`
+	CommentCount    int         `json:"comment_count"`
+	PhotoOfYou      bool        `json:"photo_of_you"`
+	// Tags are tagged people in photo
+	Tags struct {
+		In []Tag `json:"in"`
+	} `json:"usertags,omitempty"`
+	FbUserTags           Tag    `json:"fb_user_tags"`
+	CanViewerSave        bool   `json:"can_viewer_save"`
+	OrganicTrackingToken string `json:"organic_tracking_token"`
+	// Images contains URL images in different versions.
+	// Version = quality.
+	Images          Images   `json:"image_versions2,omitempty"`
+	OriginalWidth   int      `json:"original_width,omitempty"`
+	OriginalHeight  int      `json:"original_height,omitempty"`
+	ImportedTakenAt int64    `json:"imported_taken_at,omitempty"`
+	Location        Location `json:"location,omitempty"`
+	Lat             float64  `json:"lat,omitempty"`
+	Lng             float64  `json:"lng,omitempty"`
+
+	// Videos
+	Videos            []Video `json:"video_versions,omitempty"`
+	HasAudio          bool    `json:"has_audio,omitempty"`
+	VideoDuration     float64 `json:"video_duration,omitempty"`
+	ViewCount         float64 `json:"view_count,omitempty"`
+	IsDashEligible    int     `json:"is_dash_eligible,omitempty"`
+	VideoDashManifest string  `json:"video_dash_manifest,omitempty"`
+	NumberOfQualities int     `json:"number_of_qualities,omitempty"`
+}
+
+type Story struct {
+	err      error
+	inst     *Instagram
+	endpoint string
+	uid      int64
+	//todo remove non stories fields
 
 	TakenAt          int64   `json:"taken_at"`
 	Pk               int64   `json:"pk"`
@@ -249,7 +314,7 @@ func (item *Item) Hashtags() []Hashtag {
 	return hsh
 }
 
-// Delete deletes your media item. StoryMedia or FeedMedia
+// Delete deletes your media item.
 //
 // See example: examples/media/mediaDelete.go
 func (item *Item) Delete() error {
@@ -487,11 +552,11 @@ func (item *Item) PreviewComments() []Comment {
 
 // StoryIsCloseFriends returns a bool
 // If the returned value is true the story was published only for close friends
-func (item *Item) StoryIsCloseFriends() bool {
-	return item.Audience == "besties"
+func (story *Story) StoryIsCloseFriends() bool {
+	return story.Audience == "besties"
 }
 
-//Media interface defines methods for both StoryMedia and FeedMedia.
+//Media interface defines methods for FeedMedia.
 type Media interface {
 	// Next allows pagination
 	Next(...interface{}) bool
@@ -505,8 +570,8 @@ type Media interface {
 	instagram() *Instagram
 }
 
-//StoryMedia is the struct that handles the information from the methods to get info about Stories.
-type StoryMedia struct {
+//Reel is the struct that handles the information from the methods to get info about Reel.
+type Reel struct {
 	inst     *Instagram
 	endpoint string
 	uid      int64
@@ -522,7 +587,7 @@ type StoryMedia struct {
 	CanReshare      bool        `json:"can_reshare"`
 	ReelType        string      `json:"reel_type"`
 	User            User        `json:"user"`
-	Items           []Item      `json:"items"`
+	Stories         []Story     `json:"items"`
 	ReelMentions    []string    `json:"reel_mentions"`
 	PrefetchCount   int         `json:"prefetch_count"`
 	// this field can be int or bool
@@ -534,20 +599,23 @@ type StoryMedia struct {
 	Status               string      `json:"status"`
 }
 
+// for compitiblity
+func (reel *Reel) Delete() error {
+	return nil
+}
+
 // Delete removes instragram story.
-//
-// See example: examples/media/deleteStories.go
-func (media *StoryMedia) Delete() error {
-	insta := media.inst
+func (story *Story) Delete() error {
+	insta := story.inst
 	data, err := insta.prepareData(
 		map[string]interface{}{
-			"media_id": media.ID(),
+			"media_id": story.ID,
 		},
 	)
 	if err == nil {
 		_, err = insta.sendRequest(
 			&reqOptions{
-				Endpoint: fmt.Sprintf(urlMediaDelete, media.ID()),
+				Endpoint: fmt.Sprintf(urlMediaDelete, story.ID),
 				Query:    generateSignature(data),
 				IsPost:   true,
 			},
@@ -556,9 +624,9 @@ func (media *StoryMedia) Delete() error {
 	return err
 }
 
-// ID returns Story id
-func (media *StoryMedia) ID() string {
-	switch id := media.Pk.(type) {
+// ID returns Reel id
+func (reel *Reel) ID() string {
+	switch id := reel.Pk.(type) {
 	case int64:
 		return strconv.FormatInt(id, 10)
 	case string:
@@ -567,40 +635,44 @@ func (media *StoryMedia) ID() string {
 	return ""
 }
 
-func (media *StoryMedia) instagram() *Instagram {
-	return media.inst
+func (reel *Reel) instagram() *Instagram {
+	return reel.inst
 }
 
-func (media *StoryMedia) setValues() {
-	for i := range media.Items {
-		setToItem(&media.Items[i], media)
+func (reel *Reel) setValues() {
+	for i, _ := range reel.Stories {
+		reel.Stories[i].inst = reel.inst
+		reel.Stories[i].User.inst = reel.inst
 	}
 }
 
 // Error returns error happened any error
-func (media StoryMedia) Error() error {
-	return media.err
+func (reel *Reel) Error() error {
+	return reel.err
+}
+
+// Error returns error happened any error
+func (story *Story) Error() error {
+	return story.err
 }
 
 // Seen marks story as seen.
-/*
-func (media *StoryMedia) Seen() error {
-	insta := media.inst
-	data, err := insta.prepareData(
+func (story *Story) Seen() error {
+	api := story.inst
+	s1, s2 := story.generateSeen(time.Now().Unix(), 0)
+	storySeen := map[string][]string{
+		s1: s2,
+	}
+
+	data, err := api.prepareData(
 		map[string]interface{}{
-			"container_module":   "feed_timeline",
-			"live_vods_skipped":  "",
-			"nuxes_skipped":      "",
-			"nuxes":              "",
-			"reels":              "", // TODO xd
-			"live_vods":          "",
-			"reel_media_skipped": "",
+			"reels": storySeen,
 		},
 	)
 	if err == nil {
-		_, err = insta.sendRequest(
+		_, err = api.sendRequest(
 			&reqOptions{
-				Endpoint: urlMediaSeen, // reel=1&live_vod=0
+				Endpoint: urlMediaSeen,
 				Query:    generateSignature(data),
 				IsPost:   true,
 				UseV2:    true,
@@ -609,7 +681,55 @@ func (media *StoryMedia) Seen() error {
 	}
 	return err
 }
-*/
+
+func (story *Story) generateSeen(time int64, i int) (string, []string) {
+	takenAt := story.TakenAt
+	seenAt := time - min(int64(i+rand.Intn(3)), max(0, time-takenAt))
+	return fmt.Sprintf("%s_%d", story.ID, story.User.ID), []string{fmt.Sprintf("%d_%d", takenAt, seenAt)}
+}
+
+//marks all stories in reel as seen
+func (reel *Reel) SeenAll() error {
+	api := reel.inst
+	now := time.Now().Unix()
+	storiesSeen := map[string][]string{}
+	for i, _ := range reel.Stories {
+		story := reel.Stories[i]
+		s1, s2 := story.generateSeen(now, i)
+		storiesSeen[s1] = s2
+	}
+	data, err := api.prepareData(
+		map[string]interface{}{
+			"reels": storiesSeen,
+		},
+	)
+	if err == nil {
+		_, err = api.sendRequest(
+			&reqOptions{
+				Endpoint: urlMediaSeen,
+				Query:    generateSignature(data),
+				IsPost:   true,
+				UseV2:    true,
+			},
+		)
+	}
+	return err
+}
+func min(a int64, b int64) int64 {
+	if a <= b {
+		return a
+	} else {
+		return b
+	}
+}
+
+func max(a int64, b int64) int64 {
+	if a >= b {
+		return a
+	} else {
+		return b
+	}
+}
 
 type trayRequest struct {
 	Name  string `json:"name"`
@@ -617,13 +737,13 @@ type trayRequest struct {
 }
 
 // Sync function is used when Highlight must be sync.
-// Highlight must be sync when User.Highlights does not return any object inside StoryMedia slice.
+// Highlight must be sync when User.Highlights does not return any object inside Reel slice.
 //
-// This function does NOT update Stories items.
+// This function does NOT update Reel items.
 //
-// This function updates StoryMedia.Items
-func (media *StoryMedia) Sync() error {
-	insta := media.inst
+// This function updates Reel.Items
+func (reel *Reel) Sync() error {
+	insta := reel.inst
 	query := []trayRequest{
 		{"SUPPORTED_SDK_VERSIONS", "9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0,17.0,18.0,19.0,20.0,21.0,22.0,23.0,24.0"},
 		{"FACE_TRACKER_VERSION", "10"},
@@ -635,7 +755,7 @@ func (media *StoryMedia) Sync() error {
 		return err
 	}
 
-	id := media.Pk.(string)
+	id := reel.Pk.(string)
 	data, err := insta.prepareData(
 		map[string]interface{}{
 			"user_ids":                   []string{id},
@@ -659,8 +779,8 @@ func (media *StoryMedia) Sync() error {
 		if err == nil {
 			m, ok := resp.Reels[id]
 			if ok {
-				media.Items = m.Items
-				media.setValues()
+				reel.Stories = m.Stories
+				reel.setValues()
 				return nil
 			}
 			err = fmt.Errorf("cannot find %s structure in response", id)
@@ -670,37 +790,37 @@ func (media *StoryMedia) Sync() error {
 }
 
 // Next allows pagination after calling:
-// User.Stories
+// User.Reel
 //
 //
 // returns false when list reach the end
-// if StoryMedia.Error() is ErrNoMore no problem have been occurred.
-func (media *StoryMedia) Next(params ...interface{}) bool {
-	if media.err != nil {
+// if Reel.Error() is ErrNoMore no problem have been occurred.
+func (reel *Reel) Next(params ...interface{}) bool {
+	if reel.err != nil {
 		return false
 	}
 
-	insta := media.inst
-	endpoint := media.endpoint
-	if media.uid != 0 {
-		endpoint = fmt.Sprintf(endpoint, media.uid)
+	insta := reel.inst
+	endpoint := reel.endpoint
+	if reel.uid != 0 {
+		endpoint = fmt.Sprintf(endpoint, reel.uid)
 	}
 
 	body, err := insta.sendSimpleRequest(endpoint)
 	if err == nil {
-		m := StoryMedia{}
+		m := Reel{}
 		err = json.Unmarshal(body, &m)
 		if err == nil {
 			// TODO check NextID media
-			*media = m
-			media.inst = insta
-			media.endpoint = endpoint
-			media.err = ErrNoMore // TODO: See if stories has pagination
-			media.setValues()
+			*reel = m
+			reel.inst = insta
+			reel.endpoint = endpoint
+			reel.err = ErrNoMore // TODO: See if stories has pagination
+			reel.setValues()
 			return true
 		}
 	}
-	media.err = err
+	reel.err = err
 	return false
 }
 
