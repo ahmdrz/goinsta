@@ -57,6 +57,7 @@ func main() {
 - [nyaakitties](https://github.com/gracechang/nyaakitties)
 - [InstaFollower](https://github.com/Unanoc/InstaFollower)
 - [follow-sync](https://github.com/kirsle/follow-sync)
+- [Game DB](https://github.com/gamedb/gamedb)
 - ...
 
 ### Legal
