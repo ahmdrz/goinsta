@@ -453,7 +453,6 @@ func (user *User) FriendShip() error {
 		&reqOptions{
 			Endpoint: fmt.Sprintf(urlFriendship, user.ID),
 			Query:    generateSignature(data),
-			IsPost:   true,
 		},
 	)
 	if err == nil {
