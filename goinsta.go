@@ -45,9 +45,13 @@ type Instagram struct {
 	pid string
 	// ads id
 	adid string
+	// challenge URL
+	challengeURL string
 
 	// Instagram objects
 
+	// Challenge controls security side of account (Like sms verify / It was me)
+	Challenge *Challenge
 	// Profiles is the user interaction
 	Profiles *Profiles
 	// Account stores all personal data of the user and his/her options.
@@ -137,6 +141,7 @@ func New(username, password string) *Instagram {
 }
 
 func (inst *Instagram) init() {
+	inst.Challenge = newChallenge(inst)
 	inst.Profiles = newProfiles(inst)
 	inst.Activity = newActivity(inst)
 	inst.Timeline = newTimeline(inst)
