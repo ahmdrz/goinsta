@@ -129,15 +129,23 @@ func isError(code int, body []byte) (err error) {
 	case 400:
 		ierr := Error400{}
 		err = json.Unmarshal(body, &ierr)
-		if err == nil && ierr.Payload.Message != "" {
+		if err != nil {
+			return err
+		}
+
+		if ierr.Message == "challenge_required" {
+			return ierr.ChallengeError
+
+		}
+
+		if err == nil && ierr.Message != "" {
 			return ierr
 		}
-		fallthrough
 	default:
 		ierr := ErrorN{}
 		err = json.Unmarshal(body, &ierr)
 		if err != nil {
-			return fmt.Errorf("Invalid status code: %d: %s", code, body)
+			return err
 		}
 		return ierr
 	}

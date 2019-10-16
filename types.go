@@ -51,6 +51,7 @@ func (e ErrorN) Error() string {
 
 // Error400 is error returned by HTTP 400 status code.
 type Error400 struct {
+	ChallengeError
 	Action     string `json:"action"`
 	StatusCode string `json:"status_code"`
 	Payload    struct {
@@ -62,6 +63,25 @@ type Error400 struct {
 
 func (e Error400) Error() string {
 	return fmt.Sprintf("%s: %s", e.Status, e.Payload.Message)
+}
+
+// ChallengeError is error returned by HTTP 400 status code.
+type ChallengeError struct {
+	Message   string `json:"message"`
+	Challenge struct {
+		URL               string `json:"url"`
+		APIPath           string `json:"api_path"`
+		HideWebviewHeader bool   `json:"hide_webview_header"`
+		Lock              bool   `json:"lock"`
+		Logout            bool   `json:"logout"`
+		NativeFlow        bool   `json:"native_flow"`
+	} `json:"challenge"`
+	Status    string `json:"status"`
+	ErrorType string `json:"error_type"`
+}
+
+func (e ChallengeError) Error() string {
+	return fmt.Sprintf("%s: %s", e.Status, e.Message)
 }
 
 // Nametag is part of the account information.
@@ -342,4 +362,12 @@ type respLikers struct {
 type threadResp struct {
 	Conversation Conversation `json:"thread"`
 	Status       string       `json:"status"`
+}
+
+type ErrChallengeProcess struct {
+	StepName string
+}
+
+func (ec ErrChallengeProcess) Error() string {
+	return ec.StepName
 }
