@@ -147,38 +147,12 @@ func (challenge *Challenge) Process(apiURL string) error {
 		return err
 	}
 
-	insta := challenge.insta
-
 	switch challenge.StepName {
 	case "select_verify_method":
 		return challenge.selectVerifyMethod(challenge.StepData.Choice)
 	case "delta_login_review":
 		return challenge.deltaLoginReview()
-	default:
-		return ErrChallengeProcess{StepName: challenge.StepName}
 	}
 
-	data, err := insta.prepareData(map[string]interface{}{
-		"guid":      insta.uuid,
-		"device_id": insta.dID,
-	})
-	if err != nil {
-		return err
-	}
-
-	body, err := insta.sendRequest(
-		&reqOptions{
-			Endpoint: apiURL[1:],
-			Query:    generateSignature(data),
-		},
-	)
-	if err == nil {
-		resp := challengeResp{}
-		err = json.Unmarshal(body, &resp)
-		if err == nil {
-			*challenge = *resp.Challenge
-			challenge.insta = insta
-		}
-	}
-	return err
+	return ErrChallengeProcess{StepName: challenge.StepName}
 }
