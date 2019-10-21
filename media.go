@@ -128,6 +128,45 @@ type Item struct {
 	HasSharedToFb            int64              `json:"has_shared_to_fb"`
 	Mentions                 []Mentions
 	Audience                 string `json:"audience,omitempty"`
+	StoryMusicStickers       []struct {
+		X              float64 `json:"x"`
+		Y              float64 `json:"y"`
+		Z              int     `json:"z"`
+		Width          float64 `json:"width"`
+		Height         float64 `json:"height"`
+		Rotation       float64 `json:"rotation"`
+		IsPinned       int     `json:"is_pinned"`
+		IsHidden       int     `json:"is_hidden"`
+		IsSticker      int     `json:"is_sticker"`
+		MusicAssetInfo struct {
+			ID                       string `json:"id"`
+			Title                    string `json:"title"`
+			Subtitle                 string `json:"subtitle"`
+			DisplayArtist            string `json:"display_artist"`
+			CoverArtworkURI          string `json:"cover_artwork_uri"`
+			CoverArtworkThumbnailURI string `json:"cover_artwork_thumbnail_uri"`
+			ProgressiveDownloadURL   string `json:"progressive_download_url"`
+			HighlightStartTimesInMs  []int  `json:"highlight_start_times_in_ms"`
+			IsExplicit               bool   `json:"is_explicit"`
+			DashManifest             string `json:"dash_manifest"`
+			HasLyrics                bool   `json:"has_lyrics"`
+			AudioAssetID             string `json:"audio_asset_id"`
+			IgArtist                 struct {
+				Pk            int    `json:"pk"`
+				Username      string `json:"username"`
+				FullName      string `json:"full_name"`
+				IsPrivate     bool   `json:"is_private"`
+				ProfilePicURL string `json:"profile_pic_url"`
+				ProfilePicID  string `json:"profile_pic_id"`
+				IsVerified    bool   `json:"is_verified"`
+			} `json:"ig_artist"`
+			PlaceholderProfilePicURL string `json:"placeholder_profile_pic_url"`
+			ShouldMuteAudio          bool   `json:"should_mute_audio"`
+			ShouldMuteAudioReason    string `json:"should_mute_audio_reason"`
+			OverlapDurationInMs      int    `json:"overlap_duration_in_ms"`
+			AudioAssetStartTimeInMs  int    `json:"audio_asset_start_time_in_ms"`
+		} `json:"music_asset_info"`
+	} `json:"story_music_stickers,omitempty"`
 }
 
 // MediaToString returns Item.MediaType as string.
