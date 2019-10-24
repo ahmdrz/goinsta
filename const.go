@@ -3,8 +3,8 @@ package goinsta
 const (
 	goInstaAPIUrl        = "https://i.instagram.com/api/v1/"
 	goInstaAPIUrlv2      = "https://i.instagram.com/api/v2/"
-	goInstaUserAgent     = "Instagram 85.0.0.21.100 Android (24/7.0; 380dpi; 1080x1920; OnePlus; ONEPLUS A3010; OnePlus3T; qcom; en_US)"
-	goInstaIGSigKey      = "937463b5272b5d60e9d20f0f8d7d192193dd95095a3ad43725d494300a5ea5fc"
+	goInstaUserAgent     = "Instagram 107.0.0.27.121 Android (24/7.0; 380dpi; 1080x1920; OnePlus; ONEPLUS A3010; OnePlus3T; qcom; en_US)"
+	goInstaIGSigKey      = "c36436a942ea1dbb40d7f2d7d45280a620d991ce8c62fb4ce600f0a048c32c11"
 	fbAnalytics          = "567067343352427"
 	igCapabilities       = "3brTBw=="
 	connType             = "WIFI"
