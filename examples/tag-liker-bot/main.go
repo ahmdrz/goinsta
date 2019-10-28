@@ -8,7 +8,7 @@ import (
 )
 
 func fetchTag(insta *goinsta.Instagram, tag string) error {
-	feedTag, err := insta.Feed.Tags("golang")
+	feedTag, err := insta.Feed.Tags(tag)
 	if err != nil {
 		return err
 	}
