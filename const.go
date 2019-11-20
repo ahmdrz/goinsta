@@ -133,4 +133,9 @@ const (
 
 	// upload
 	urlUploadStory = "https://i.instagram.com/rupload_igphoto/103079408575885_0_-1340379573"
+
+	// live
+	urlLiveCreate = "live/create"
+	urlLiveStart  = "live/%s/start"
+	urlLiveEnd    = "live/%s/end_broadcast/"
 )
