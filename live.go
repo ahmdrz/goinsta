@@ -74,8 +74,6 @@ func (live *Live) Create(width int, height int) (*LiveCreateResponse, error) {
 		return response, err
 	}
 
-	fmt.Println(string(body))
-
 	err = json.Unmarshal(body, response)
 
 	return response, err
