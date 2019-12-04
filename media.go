@@ -176,6 +176,8 @@ func (item *Item) MediaToString() string {
 		return "photo"
 	case 2:
 		return "video"
+	case 8:
+		return "carousel"
 	}
 	return ""
 }
