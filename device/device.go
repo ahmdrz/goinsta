@@ -3,6 +3,7 @@ package device
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 
 	"github.com/ahmdrz/goinsta/constants"
 )
@@ -44,6 +45,20 @@ type Device struct {
 	DeviceName       string
 	Model            string
 	CPU              string
+	userAgent        string
+}
+
+func (d *Device) UserAgent() string {
+	if d.userAgent == "" {
+		d.userAgent = fmt.Sprintf("Instagram %s Android (%d/%s; %s; %s; %s; %s; %s; %s; en_US)",
+			constants.InstagramVersion,
+			d.AndroidVersion, d.AndroidRelease,
+			d.DPI, d.Resolution,
+			d.Manufacturer, d.DeviceName,
+			d.Model, d.CPU,
+		)
+	}
+	return d.userAgent
 }
 
 // New create a android device with default parameters

@@ -1,6 +1,9 @@
 package goinsta
 
-import "testing"
+import (
+	"os"
+	"testing"
+)
 
 func TestNew(t *testing.T) {
 	var err error
@@ -14,6 +17,14 @@ func TestNew(t *testing.T) {
 	}
 	_, err = New("((hello))", "password")
 	if err != ErrInvalidUsername {
+		t.Fatal(err)
+	}
+	ig, err := New(os.Getenv("INSTAGRAM_USERNAME"), os.Getenv("INSTAGRAM_PASSWORD"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = ig.Login()
+	if err != nil {
 		t.Fatal(err)
 	}
 }

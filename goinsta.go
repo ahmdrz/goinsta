@@ -1,7 +1,10 @@
 package goinsta
 
 import (
+	"encoding/json"
 	"errors"
+	"net/http"
+	"net/http/cookiejar"
 	"regexp"
 
 	"github.com/ahmdrz/goinsta/device"
@@ -29,6 +32,8 @@ type Client struct {
 	deviceID        string
 	clientSessionID string
 	advertisingID   string
+	httpClient      *http.Client
+	token           string
 }
 
 // New create an instance of Client
@@ -44,9 +49,16 @@ func New(username, password string, options ...Option) (*Client, error) {
 	if len(password) < 3 {
 		return nil, ErrBadPassword
 	}
+	jar, _ := cookiejar.New(nil)
 	c := &Client{
 		username: username,
 		password: password,
+		httpClient: &http.Client{
+			Transport: &http.Transport{
+				Proxy: http.ProxyFromEnvironment,
+			},
+			Jar: jar,
+		},
 	}
 	c.device, _ = device.New(device.DefaultDeviceName)
 	c.phoneID = generateUUID()
@@ -66,6 +78,32 @@ func New(username, password string, options ...Option) (*Client, error) {
 	return c, nil
 }
 
+func (c *Client) readMsisdnHeader(usage string) error {
+	data, _ := json.Marshal(
+		map[string]string{
+			"device_id":          c.uuid,
+			"mobile_subno_usage": usage,
+		},
+	)
+	_, err := c.sendRequest(
+		&reqOptions{
+			Endpoint:     urlMsisdnHeader,
+			IsPost:       true,
+			LoginProcess: true,
+			Connection:   "keep-alive",
+			Headers: map[string]string{
+				"X-DEVICE-ID": c.uuid,
+			},
+			Query: generateSignature(b2s(data)),
+		},
+	)
+	return err
+}
+
 func (c *Client) Login() error {
+	err := c.readMsisdnHeader("default")
+	if err != nil {
+		return err
+	}
 	return nil
 }
