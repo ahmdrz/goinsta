@@ -1,0 +1,67 @@
+package device
+
+import (
+	"encoding/json"
+	"errors"
+
+	"github.com/ahmdrz/goinsta/constants"
+)
+
+const (
+	// DefaultDeviceName is a one of devices
+	DefaultDeviceName = "lg_g5"
+)
+
+var (
+	// ErrBadDeviceName occures when device name not matched
+	// with any devices of goinsta
+	ErrBadDeviceName = errors.New("device name not found")
+)
+
+var devices = map[string]Device{
+	"lg_g5": Device{
+		InstagramVersion: constants.InstagramVersion,
+		AndroidVersion:   23,
+		AndroidRelease:   "6.0.1",
+		DPI:              "640dpi",
+		Resolution:       "1440x2392",
+		Manufacturer:     "LGE/lge",
+		DeviceName:       "RS988",
+		Model:            "h1",
+		CPU:              "h1",
+	},
+}
+
+// Device is a simulated version of real device which can interact with
+// the Instagram
+type Device struct {
+	InstagramVersion string
+	AndroidVersion   uint
+	AndroidRelease   string
+	DPI              string
+	Resolution       string
+	Manufacturer     string
+	DeviceName       string
+	Model            string
+	CPU              string
+}
+
+// New create a android device with default parameters
+func New(deviceName string) (*Device, error) {
+	if device, ok := devices[deviceName]; ok {
+		d := &Device{}
+		*d = device
+		return d, nil
+	}
+	return nil, ErrBadDeviceName
+}
+
+// FromJSON parse json from bytes to device instance
+func FromJSON(b []byte) (*Device, error) {
+	d := &Device{}
+	err := json.Unmarshal(b, d)
+	if err != nil {
+		return nil, err
+	}
+	return d, nil
+}
