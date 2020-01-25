@@ -251,7 +251,7 @@ func ImportReader(r io.Reader) (*Instagram, error) {
 //
 // This function does not set proxy automatically. Use SetProxy after this call.
 func ImportConfig(config ConfigFile) (*Instagram, error) {
-	url, err := neturl.Parse(goInstaAPIUrl)
+	url, err := neturl.Parse(goInstaBaseUrl)
 	if err != nil {
 		return nil, err
 	}
