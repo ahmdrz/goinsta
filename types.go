@@ -58,11 +58,16 @@ type Error400 struct {
 		ClientContext string `json:"client_context"`
 		Message       string `json:"message"`
 	} `json:"payload"`
-	Status string `json:"status"`
+	Status  string `json:"status"`
+	Message string `json:"message"`
 }
 
 func (e Error400) Error() string {
-	return fmt.Sprintf("%s: %s", e.Status, e.Payload.Message)
+	var message = e.Payload.Message
+	if message == "" {
+		message = e.Message
+	}
+	return fmt.Sprintf("%s: %s", e.Status, message)
 }
 
 // ChallengeError is error returned by HTTP 400 status code.
