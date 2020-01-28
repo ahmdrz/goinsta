@@ -26,7 +26,7 @@ type InboxItem struct {
 
 	// Media is image or video
 	Media struct {
-		ID                   string `json:"id"`
+		ID                   int64  `json:"id"`
 		Images               Images `json:"image_versions2"`
 		OriginalWidth        int    `json:"original_width"`
 		OriginalHeight       int    `json:"original_height"`
