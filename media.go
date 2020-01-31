@@ -137,7 +137,6 @@ type Item struct {
 func (item *Item) Comment(text string) error {
 	var opt *reqOptions
 	var err error
-	// item := comments.item
 	insta := item.media.instagram()
 
 	switch item.media.(type) {
