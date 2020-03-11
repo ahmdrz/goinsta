@@ -951,7 +951,7 @@ func (insta *Instagram) postPhoto(photo io.Reader, photoCaption string, quality 
 	uploadID := time.Now().Unix()
 	rndNumber := rand.Intn(9999999999-1000000000) + 1000000000
 	name := strconv.FormatInt(uploadID, 10) + "_0_" + strconv.Itoa(rndNumber)
-	buf := new(bytes.Buffer)
+  buf := new(bytes.Buffer)
 	_, err := buf.ReadFrom(photo)
 	if err != nil {
 		return nil, err
