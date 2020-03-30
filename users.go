@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 )
 
 // Users is a struct that stores many user's returned by many different methods.
@@ -21,7 +22,7 @@ type Users struct {
 	BigList  bool   `json:"big_list"`
 	Users    []User `json:"users"`
 	PageSize int    `json:"page_size"`
-	NextID   string `json:"next_max_id"`
+	NextID   json.RawMessage `json:"next_max_id"`
 }
 
 func newUsers(inst *Instagram) *Users {
@@ -56,7 +57,7 @@ func (users *Users) Next() bool {
 		&reqOptions{
 			Endpoint: endpoint,
 			Query: map[string]string{
-				"max_id":             users.NextID,
+				"max_id":             strings.Trim(string(users.NextID),"\""),
 				"ig_sig_key_version": goInstaSigKeyVersion,
 				"rank_token":         insta.rankToken,
 			},
@@ -67,7 +68,7 @@ func (users *Users) Next() bool {
 		err = json.Unmarshal(body, &usrs)
 		if err == nil {
 			*users = usrs
-			if !usrs.BigList || usrs.NextID == "" {
+			if !usrs.BigList || len(usrs.NextID) == 0 {
 				users.err = ErrNoMore
 			}
 			users.inst = insta
