@@ -95,6 +95,9 @@ func (search *Search) User(user string, countParam ...int) (*SearchResult, error
 
 	res := &SearchResult{}
 	err = json.Unmarshal(body, res)
+	for id := range res.Users {
+		res.Users[id].inst = insta
+	}
 	return res, err
 }
 
