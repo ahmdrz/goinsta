@@ -169,6 +169,61 @@ type Item struct {
 	} `json:"story_music_stickers,omitempty"`
 }
 
+// Comment pushes a text comment to media item.
+//
+// If parent media is a Story this function will send a private message
+// replying the Instagram story.
+func (item *Item) Comment(text string) error {
+	var opt *reqOptions
+	var err error
+	insta := item.media.instagram()
+
+	switch item.media.(type) {
+	case *StoryMedia:
+		to, err := prepareRecipients(item)
+		if err != nil {
+			return err
+		}
+
+		query := insta.prepareDataQuery(
+			map[string]interface{}{
+				"recipient_users": to,
+				"action":          "send_item",
+				"media_id":        item.ID,
+				"client_context":  generateUUID(),
+				"text":            text,
+				"entry":           "reel",
+				"reel_id":         item.User.ID,
+			},
+		)
+		opt = &reqOptions{
+			Connection: "keep-alive",
+			Endpoint:   fmt.Sprintf("%s?media_type=%s", urlReplyStory, item.MediaToString()),
+			Query:      query,
+			IsPost:     true,
+		}
+	case *FeedMedia: // normal media
+		var data string
+		data, err = insta.prepareData(
+			map[string]interface{}{
+				"comment_text": text,
+			},
+		)
+		opt = &reqOptions{
+			Endpoint: fmt.Sprintf(urlCommentAdd, item.Pk),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		}
+	}
+	if err != nil {
+		return err
+	}
+
+	// ignoring response
+	_, err = insta.sendRequest(opt)
+	return err
+}
+
 // MediaToString returns Item.MediaType as string.
 func (item *Item) MediaToString() string {
 	switch item.MediaType {
