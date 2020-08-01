@@ -1013,7 +1013,7 @@ func (insta *Instagram) postPhoto(photo io.Reader, photoCaption string, quality 
 		return nil, err
 	}
 
-	req, err := http.NewRequest("POST", goInstaBaseURL+"rupload_igphoto/"+name, buf)
+	req, err := http.NewRequest("POST", goInstaBaseURL+"/rupload_igphoto/"+name, buf)
 	if err != nil {
 		return nil, err
 	}
