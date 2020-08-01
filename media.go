@@ -1013,6 +1013,7 @@ func (insta *Instagram) postPhoto(photo io.Reader, photoCaption string, quality 
 		return nil, err
 	}
 
+	bs := buf.Bytes()
 	req, err := http.NewRequest("POST", goInstaBaseURL+"/rupload_igphoto/"+name, buf)
 	if err != nil {
 		return nil, err
@@ -1070,10 +1071,12 @@ func (insta *Instagram) postPhoto(photo io.Reader, photoCaption string, quality 
 	if result.Status != "ok" {
 		return nil, fmt.Errorf("unknown error, status: %s", result.Status)
 	}
-	width, height, err := getImageDimensionFromReader(bytes.NewReader(buf.Bytes()))
+
+	width, height, err := getImageDimensionFromReader(bytes.NewReader(bs))
 	if err != nil {
 		return nil, err
 	}
+
 	now := time.Now()
 
 	config := map[string]interface{}{
