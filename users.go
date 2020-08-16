@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strconv"
 )
 
 // Users is a struct that stores many user's returned by many different methods.
@@ -17,11 +18,12 @@ type Users struct {
 	err      error
 	endpoint string
 
-	Status   string `json:"status"`
-	BigList  bool   `json:"big_list"`
-	Users    []User `json:"users"`
-	PageSize int    `json:"page_size"`
-	NextID   string `json:"next_max_id"`
+	Status    string          `json:"status"`
+	BigList   bool            `json:"big_list"`
+	Users     []User          `json:"users"`
+	PageSize  int             `json:"page_size"`
+	RawNextID json.RawMessage `json:"next_max_id"`
+	NextID    string          `json:"-"`
 }
 
 func newUsers(inst *Instagram) *Users {
@@ -66,6 +68,19 @@ func (users *Users) Next() bool {
 		usrs := Users{}
 		err = json.Unmarshal(body, &usrs)
 		if err == nil {
+			if len(usrs.RawNextID) > 0 && usrs.RawNextID[0] == '"' && usrs.RawNextID[len(usrs.RawNextID)-1] == '"' {
+				if err := json.Unmarshal(usrs.RawNextID, &usrs.NextID); err != nil {
+					users.err = err
+					return false
+				}
+			} else {
+				var nextID int64
+				if err := json.Unmarshal(usrs.RawNextID, &nextID); err != nil {
+					users.err = err
+					return false
+				}
+				usrs.NextID = strconv.FormatInt(nextID, 10)
+			}
 			*users = usrs
 			if !usrs.BigList || usrs.NextID == "" {
 				users.err = ErrNoMore
