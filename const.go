@@ -44,7 +44,7 @@ const (
 	urlExpose         = "qe/expose/"
 
 	// account
-	urlCurrentUser   = "accounts/current_user/"
+	urlCurrentUser   = "accounts/current_user/?edit=true"
 	urlChangePass    = "accounts/change_password/"
 	urlSetPrivate    = "accounts/set_private/"
 	urlSetPublic     = "accounts/set_public/"
