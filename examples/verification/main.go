@@ -40,9 +40,14 @@ func main() {
 			if err != nil {
 				log.Fatalln(err)
 			}
+
+			insta.Account = insta.Challenge.LoggedInUser
+		default:
+			log.Fatalln(err)
 		}
 
-		log.Fatalln(err)
+		log.Printf("logged in as %s \n", insta.Account.Username)
 	}
+
 	defer insta.Logout()
 }
