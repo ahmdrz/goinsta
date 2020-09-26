@@ -100,6 +100,7 @@ const (
 	urlMediaLike   = "media/%s/like/"
 	urlMediaUnlike = "media/%s/unlike/"
 	urlMediaSave   = "media/%s/save/"
+	urlMediaUnsave = "media/%s/unsave/"
 	urlMediaSeen   = "media/seen/"
 	urlMediaLikers = "media/%s/likers/"
 
