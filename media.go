@@ -810,7 +810,7 @@ type FeedMedia struct {
 	endpoint  string
 	timestamp string
 
-	Items               []Item `json:"items"`
+	Items               []Item `json:"feed_items"`
 	NumResults          int    `json:"num_results"`
 	MoreAvailable       bool   `json:"more_available"`
 	AutoLoadMoreEnabled bool   `json:"auto_load_more_enabled"`
@@ -937,6 +937,7 @@ func (media *FeedMedia) Next(params ...interface{}) bool {
 	body, err := insta.sendRequest(
 		&reqOptions{
 			Endpoint: endpoint,
+			IsPost:   true,
 			Query: map[string]string{
 				"max_id":         next,
 				"rank_token":     insta.rankToken,
