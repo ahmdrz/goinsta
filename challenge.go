@@ -130,6 +130,8 @@ func (challenge *Challenge) SendSecurityCode(code string) error {
 		if err == nil {
 			*challenge = *resp.Challenge
 			challenge.insta = insta
+			challenge.LoggedInUser.inst = insta
+			insta.Account = challenge.LoggedInUser
 		}
 	}
 	return err
