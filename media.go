@@ -247,6 +247,20 @@ func setToItem(item *Item, media Media) {
 	}
 }
 
+// setToMediaItem is a utility function that
+// mimics the setToItem but for the SavedMedia items
+func setToMediaItem(item *MediaItem, media Media) {
+	item.Media.media = media
+	item.Media.User.inst = media.instagram()
+
+	item.Media.Comments = newComments(&item.Media)
+
+	for i := range item.Media.CarouselMedia {
+		item.Media.CarouselMedia[i].User = item.Media.User
+		setToItem(&item.Media.CarouselMedia[i], media)
+	}
+}
+
 func getname(name string) string {
 	nname := name
 	i := 1
@@ -451,6 +465,28 @@ func (item *Item) Save() error {
 	_, err = insta.sendRequest(
 		&reqOptions{
 			Endpoint: fmt.Sprintf(urlMediaSave, item.ID),
+			Query:    generateSignature(data),
+			IsPost:   true,
+		},
+	)
+	return err
+}
+
+// Unsave unsaves media item.
+func (item *Item) Unsave() error {
+	insta := item.media.instagram()
+	data, err := insta.prepareData(
+		map[string]interface{}{
+			"media_id": item.ID,
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	_, err = insta.sendRequest(
+		&reqOptions{
+			Endpoint: fmt.Sprintf(urlMediaUnsave, item.ID),
 			Query:    generateSignature(data),
 			IsPost:   true,
 		},
@@ -962,6 +998,112 @@ func (media *FeedMedia) Next(params ...interface{}) bool {
 		}
 	}
 	return false
+}
+
+// MediaItem defines a item media for the
+// SavedMedia struct
+type MediaItem struct {
+	Media Item `json:"media"`
+}
+
+// SavedMedia stores the information about media being saved before in my account.
+type SavedMedia struct {
+	inst     *Instagram
+	endpoint string
+
+	err error
+
+	Items []MediaItem `json:"items"`
+
+	NumResults          int    `json:"num_results"`
+	MoreAvailable       bool   `json:"more_available"`
+	AutoLoadMoreEnabled bool   `json:"auto_load_more_enabled"`
+	Status              string `json:"status"`
+
+	NextID interface{} `json:"next_max_id"`
+}
+
+// Next allows pagination
+func (media *SavedMedia) Next(params ...interface{}) bool {
+	// Inital error check
+	// if last pagination had errors
+	if media.err != nil {
+		return false
+	}
+
+	insta := media.inst
+	endpoint := media.endpoint
+	next := media.ID()
+
+	opts := &reqOptions{
+		Endpoint: endpoint,
+		Query: map[string]string{
+			"max_id": next,
+		},
+	}
+
+	body, err := insta.sendRequest(opts)
+	if err != nil {
+		media.err = err
+		return false
+	}
+
+	m := SavedMedia{}
+
+	if err := json.Unmarshal(body, &m); err != nil {
+		media.err = err
+		return false
+	}
+
+	*media = m
+
+	media.inst = insta
+	media.endpoint = endpoint
+	media.err = nil
+
+	if m.NextID == 0 || !m.MoreAvailable {
+		media.err = ErrNoMore
+	}
+
+	media.setValues()
+
+	return true
+}
+
+// Error returns the SavedMedia error
+func (media *SavedMedia) Error() error {
+	return media.err
+}
+
+// ID returns the SavedMedia next id
+func (media *SavedMedia) ID() string {
+	switch id := media.NextID.(type) {
+	case int64:
+		return strconv.FormatInt(id, 10)
+	case string:
+		return id
+	}
+	return ""
+}
+
+// Delete method TODO
+//
+// I think this method should use the
+// Unsave method, instead of the Delete.
+func (media *SavedMedia) Delete() error {
+	return nil
+}
+
+// instagram returns the media instagram
+func (media *SavedMedia) instagram() *Instagram {
+	return media.inst
+}
+
+// setValues set the SavedMedia items values
+func (media *SavedMedia) setValues() {
+	for i := range media.Items {
+		setToMediaItem(&media.Items[i], media)
+	}
 }
 
 // UploadPhoto post image from io.Reader to instagram.

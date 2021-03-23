@@ -309,14 +309,14 @@ func (account *Account) Tags(minTimestamp []byte) (*FeedMedia, error) {
 }
 
 // Saved returns saved media.
-func (account *Account) Saved() (*SavedMedia, error) {
-	body, err := account.inst.sendSimpleRequest(urlUserTags, account.ID)
-	if err == nil {
-		media := &SavedMedia{}
-		err = json.Unmarshal(body, &media)
-		return media, err
+// To get all the media you have to
+// use the Next() method.
+func (account *Account) Saved() *SavedMedia {
+	return &SavedMedia{
+		inst:     account.inst,
+		endpoint: urlFeedSaved,
+		err:      nil,
 	}
-	return nil, err
 }
 
 type editResp struct {
