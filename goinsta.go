@@ -70,6 +70,8 @@ type Instagram struct {
 	Contacts *Contacts
 	// Location instance
 	Locations *LocationInstance
+	// Live instance
+	Live *Live
 
 	c *http.Client
 }
@@ -150,6 +152,7 @@ func (inst *Instagram) init() {
 	inst.Feed = newFeed(inst)
 	inst.Contacts = newContacts(inst)
 	inst.Locations = newLocation(inst)
+	inst.Live = newLive(inst)
 }
 
 // SetProxy sets proxy for connection.
