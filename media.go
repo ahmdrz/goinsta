@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"mime/multipart"
+	"math/rand"
 	"net/http"
 	neturl "net/url"
 	"os"
@@ -1144,37 +1144,115 @@ func (insta *Instagram) UploadPhoto(photo io.Reader, photoCaption string, qualit
 	return uploadResult.Media, nil
 }
 
-func (insta *Instagram) postPhoto(photo io.Reader, photoCaption string, quality int, filterType int, isSidecar bool) (map[string]interface{}, error) {
+// UploadVideo post video and thumbnail from io.Reader to instagram.
+func (insta *Instagram) UploadVideo(video io.Reader, title string, caption string, thumbnail io.Reader) (Item, error) {
+
+	out := Item{}
+	config, err := insta.postVideo(video, title, caption, thumbnail)
+	if err != nil {
+		return out, err
+	}
+
+	data, err := insta.prepareData(config)
+	if err != nil {
+		return out, err
+	}
+
+	body, err := insta.sendRequest(&reqOptions{
+		Endpoint: "media/configure/?",
+		Query:    generateSignature(data),
+		IsPost:   true,
+	})
+	if err != nil {
+		return out, err
+	}
+
+	var result struct {
+		Media    Item   `json:"media"`
+		UploadID string `json:"upload_id"`
+		Status   string `json:"status"`
+	}
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		return out, err
+	}
+	if result.Status != "ok" {
+		return out, fmt.Errorf("unknown error, status: %s", result.Status)
+	}
+
+	return result.Media, nil
+}
+
+func (insta *Instagram) postThumbnail(uploadID int64, name string, thumbnail io.Reader) error {
+	buf := new(bytes.Buffer)
+	_, err := buf.ReadFrom(thumbnail)
+	if err != nil {
+		return err
+	}
+	req, err := http.NewRequest("POST", goInstaBaseUrl+"rupload_igphoto/"+name, buf)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("X-IG-Capabilities", "3Q4=")
+	req.Header.Set("X-IG-Connection-Type", "WIFI")
+	req.Header.Set("Cookie2", "$Version=1")
+	req.Header.Set("Accept-Language", "en-US")
+	req.Header.Set("Content-type", "image/jpeg")
+	req.Header.Set("Connection", "close")
+	req.Header.Set("User-Agent", goInstaUserAgent)
+	req.Header.Set("X-Entity-Name", name)
+	req.Header.Set("X-Entity-Length", strconv.FormatInt(req.ContentLength, 10))
+	req.Header.Set("Offset", "0")
+	ruploadParams := map[string]string{
+		"media_type":          "2",
+		"upload_id":           strconv.FormatInt(uploadID, 10),
+		"upload_media_height": "240",
+		"upload_media_width":  "320",
+	}
+	params, err := json.Marshal(ruploadParams)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("X-Instagram-Rupload-Params", string(params))
+
+	resp, err := insta.c.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != 200 {
+		return fmt.Errorf("postThumbnail invalid status code, result: %s with body %s", resp.Status, string(body))
+	}
+	var result struct {
+		UploadID       string      `json:"upload_id"`
+		XsharingNonces interface{} `json:"xsharing_nonces"`
+		Status         string      `json:"status"`
+	}
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		return err
+	}
+	if result.Status != "ok" {
+		return fmt.Errorf("unknown error, status: %s", result.Status)
+	}
+
+	return nil
+}
+
+func (insta *Instagram) postVideo(video io.Reader, title string, caption string, thumbnail io.Reader) (map[string]interface{}, error) {
 	uploadID := time.Now().Unix()
-	photoName := fmt.Sprintf("pending_media_%d.jpg", uploadID)
-	var b bytes.Buffer
-	w := multipart.NewWriter(&b)
-	w.WriteField("upload_id", strconv.FormatInt(uploadID, 10))
-	w.WriteField("_uuid", insta.uuid)
-	w.WriteField("_csrftoken", insta.token)
-	var compression = map[string]interface{}{
-		"lib_name":    "jt",
-		"lib_version": "1.3.0",
-		"quality":     quality,
-	}
-	cBytes, _ := json.Marshal(compression)
-	w.WriteField("image_compression", toString(cBytes))
-	if isSidecar {
-		w.WriteField("is_sidecar", toString(1))
-	}
-	fw, err := w.CreateFormFile("photo", photoName)
+	rndNumber := rand.Intn(9999999999-1000000000) + 1000000000
+	name := "igtv_" + strconv.Itoa(rndNumber)
+	buf := new(bytes.Buffer)
+	_, err := buf.ReadFrom(video)
 	if err != nil {
 		return nil, err
 	}
-	var buf bytes.Buffer
-	rdr := io.TeeReader(photo, &buf)
-	if _, err = io.Copy(fw, rdr); err != nil {
-		return nil, err
-	}
-	if err := w.Close(); err != nil {
-		return nil, err
-	}
-	req, err := http.NewRequest("POST", goInstaAPIUrl+"upload/photo/", &b)
+	req, err := http.NewRequest("POST", goInstaBaseUrl+"rupload_igvideo/"+name, buf)
 	if err != nil {
 		return nil, err
 	}
@@ -1182,10 +1260,101 @@ func (insta *Instagram) postPhoto(photo io.Reader, photoCaption string, quality 
 	req.Header.Set("X-IG-Connection-Type", "WIFI")
 	req.Header.Set("Cookie2", "$Version=1")
 	req.Header.Set("Accept-Language", "en-US")
-	req.Header.Set("Accept-Encoding", "gzip, deflate")
-	req.Header.Set("Content-type", w.FormDataContentType())
+	req.Header.Set("Content-type", "video/mp4")
 	req.Header.Set("Connection", "close")
 	req.Header.Set("User-Agent", goInstaUserAgent)
+	req.Header.Set("X-Entity-Name", name)
+	req.Header.Set("X-Entity-Length", strconv.FormatInt(req.ContentLength, 10))
+	req.Header.Set("Offset", "0")
+	ruploadParams := map[string]string{
+		"media_type":   "2",
+		"video_format": "video/mp4",
+		"upload_id":    strconv.FormatInt(uploadID, 10),
+	}
+	params, err := json.Marshal(ruploadParams)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("X-Instagram-Rupload-Params", string(params))
+
+	resp, err := insta.c.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("postVideo invalid status code, result: %s with body %s", resp.Status, string(body))
+	}
+	var result struct {
+		UploadID       string      `json:"upload_id"`
+		XsharingNonces interface{} `json:"xsharing_nonces"`
+		Status         string      `json:"status"`
+	}
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		return nil, err
+	}
+	if result.Status != "ok" {
+		return nil, fmt.Errorf("unknown error, status: %s", result.Status)
+	}
+
+	err = insta.postThumbnail(uploadID, name, thumbnail)
+	if err != nil {
+		return nil, err
+	}
+	now := time.Now()
+
+	config := map[string]interface{}{
+		"caption":            caption,
+		"upload_id":          strconv.FormatInt(uploadID, 10),
+		"device_id":          insta.dID,
+		"source_type":        4,
+		"date_time_original": now.Format("2020:51:21 22:51:37"),
+	}
+
+	return config, nil
+}
+
+func (insta *Instagram) postPhoto(photo io.Reader, photoCaption string, quality int, filterType int, isSidecar bool) (map[string]interface{}, error) {
+	uploadID := time.Now().Unix()
+	rndNumber := rand.Intn(9999999999-1000000000) + 1000000000
+	name := strconv.FormatInt(uploadID, 10) + "_0_" + strconv.Itoa(rndNumber)
+  buf := new(bytes.Buffer)
+	_, err := buf.ReadFrom(photo)
+	if err != nil {
+		return nil, err
+	}
+	bs := buf.Bytes()
+	req, err := http.NewRequest("POST", goInstaBaseUrl+"rupload_igphoto/"+name, buf)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("X-IG-Capabilities", "3Q4=")
+	req.Header.Set("X-IG-Connection-Type", "WIFI")
+	req.Header.Set("Cookie2", "$Version=1")
+	req.Header.Set("Accept-Language", "en-US")
+	req.Header.Set("Content-type", "application/octet-stream")
+	req.Header.Set("Connection", "close")
+	req.Header.Set("User-Agent", goInstaUserAgent)
+	req.Header.Set("X-Entity-Name", name)
+	ruploadParams := map[string]string{
+		"retry_context":     `{"num_step_auto_retry": 0, "num_reupload": 0, "num_step_manual_retry": 0}`,
+		"media_type":        "1",
+		"upload_id":         strconv.FormatInt(uploadID, 10),
+		"xsharing_user_ids": "[]",
+		"image_compression": `{"lib_name": "moz", "lib_version": "3.1.m", "quality": "80"}`,
+	}
+	params, err := json.Marshal(ruploadParams)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("X-Instagram-Rupload-Params", string(params))
+	req.Header.Set("Offset", "0")
+	req.Header.Set("X-Entity-Length", strconv.FormatInt(req.ContentLength, 10))
 
 	resp, err := insta.c.Do(req)
 	if err != nil {
@@ -1211,15 +1380,18 @@ func (insta *Instagram) postPhoto(photo io.Reader, photoCaption string, quality 
 	if result.Status != "ok" {
 		return nil, fmt.Errorf("unknown error, status: %s", result.Status)
 	}
-	width, height, err := getImageDimensionFromReader(&buf)
+	width, height, err := getImageDimensionFromReader(bytes.NewReader(bs))
 	if err != nil {
 		return nil, err
 	}
+	now := time.Now()
+
 	config := map[string]interface{}{
 		"media_folder": "Instagram",
 		"source_type":  4,
 		"caption":      photoCaption,
 		"upload_id":    strconv.FormatInt(uploadID, 10),
+		"device_id":    insta.dID,
 		"device":       goInstaDeviceSettings,
 		"edits": map[string]interface{}{
 			"crop_original_size": []int{width * 1.0, height * 1.0},
@@ -1231,6 +1403,14 @@ func (insta *Instagram) postPhoto(photo io.Reader, photoCaption string, quality 
 			"source_width":  width,
 			"source_height": height,
 		},
+		"height":                height,
+		"width":                 width,
+		"camera_model":          goInstaDeviceSettings["model"],
+		"scene_capture_type":    "standard",
+		"timezone_offset":       "3600",
+		"date_time_original":    now.Format("2020:51:21 22:51:37"),
+		"date_time_digitalized": now.Format("2020:51:21 22:51:37"),
+		"software":              "1",
 	}
 	return config, nil
 }
