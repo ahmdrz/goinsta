@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"mime/multipart"
 	"net/http"
 	neturl "net/url"
@@ -1282,6 +1283,85 @@ func (insta *Instagram) UploadAlbum(photos []io.Reader, photoCaption string, qua
 	if uploadResult.Status != "ok" {
 		return out, fmt.Errorf("invalid status, result: %s", uploadResult.Status)
 	}
+
+	return uploadResult.Media, nil
+}
+
+// UploadVideo post image from io.Reader to instagram.
+func (insta *Instagram) UploadVideo(video io.Reader, photoCaption string, quality int, filterType int) (Item, error) {
+	out := Item{}
+
+	uploadID := time.Now().Unix()
+
+	var b bytes.Buffer
+	w := multipart.NewWriter(&b)
+
+	w.WriteField("upload_id", strconv.FormatInt(uploadID, 10))
+	w.WriteField("_uuid", insta.uuid)
+	w.WriteField("_csrftoken", insta.token)
+	w.WriteField("media_type", "2")
+
+	if err := w.Close(); err != nil {
+		return out, err
+	}
+	req, err := http.NewRequest("POST", goInstaAPIUrl+"upload/video/", &b)
+	if err != nil {
+		return out, err
+	}
+	req.Header.Set("X-IG-Capabilities", "3Q4=")
+	req.Header.Set("X-IG-Connection-Type", "WIFI")
+	req.Header.Set("Host", "i.instagram.com")
+	req.Header.Set("Cookie2", "$Version=1")
+	req.Header.Set("Accept-Language", "en-US")
+	req.Header.Set("Accept-Encoding", "gzip, deflate")
+	req.Header.Set("Content-type", w.FormDataContentType())
+	req.Header.Set("Connection", "keep-alive")
+	req.Header.Set("User-Agent", goInstaUserAgent)
+
+	resp, err := insta.c.Do(req)
+	if err != nil {
+		return out, err
+	}
+	defer resp.Body.Close()
+	fmt.Println("Status: ", resp.Status)
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return out, err
+	}
+
+	if resp.StatusCode != 200 {
+		return out, fmt.Errorf("invalid status code, result: %s", resp.Status)
+	}
+
+	var result struct {
+		UploadURL string `json:"video_upload_urls"`
+		Status    string
+	}
+
+	fmt.Println("[response]", string(body))
+
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		log.Println("[unmarshal]", err.Error())
+		return out, err
+	}
+
+	fmt.Println("HERE: ", result)
+
+	var uploadResult struct {
+		Media    Item   `json:"media"`
+		UploadID string `json:"upload_id"`
+		Status   string `json:"status"`
+	}
+	// err = json.Unmarshal(body, &uploadResult)
+	// if err != nil {
+	// 	return out, err
+	// }
+
+	// if uploadResult.Status != "ok" {
+	// 	return out, fmt.Errorf("invalid status, result: %s", resp.Status)
+	// }
 
 	return uploadResult.Media, nil
 }
