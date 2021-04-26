@@ -3,6 +3,7 @@ package goinsta
 import (
 	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -484,7 +485,7 @@ func (inst *Instagram) megaphoneLog() error {
 			"action":    "seen",
 			"reason":    "",
 			"device_id": inst.dID,
-			"uuid":      generateMD5Hash(string(time.Now().Unix())),
+			"uuid":      generateMD5Hash(fmt.Sprint(time.Now().Unix())),
 		},
 	)
 	if err != nil {
