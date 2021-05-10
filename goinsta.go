@@ -3,6 +3,7 @@ package goinsta
 import (
 	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -448,9 +449,44 @@ func (inst *Instagram) Login() error {
 
 // Logout closes current session
 func (inst *Instagram) Logout() error {
-	_, err := inst.sendSimpleRequest(urlLogout)
-	inst.c.Jar = nil
-	inst.c = nil
+	result, err := json.Marshal(
+		map[string]interface{}{
+			"guid":                inst.uuid,
+			"login_attempt_count": 0,
+			"_csrftoken":          inst.token,
+			"device_id":           inst.dID,
+			"adid":                inst.adid,
+			"phone_id":            inst.pid,
+			"username":            inst.user,
+			"password":            inst.pass,
+			"google_tokens":       "[]",
+		},
+	)
+	if err != nil {
+		return err
+	}
+	body, err := inst.sendRequest(
+		&reqOptions{
+			Endpoint: urlLogout,
+			Query:    generateSignature(b2s(result)),
+			IsPost:   true,
+			Login:    true,
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	// getting logout status
+	res := accountResp{}
+	err = json.Unmarshal(body, &res)
+	if err != nil {
+		return err
+	}
+	if res.Status != "ok" {
+		return fmt.Errorf("Logout failed, try later!")
+	}
+	inst = nil
 	return err
 }
 
@@ -484,7 +520,7 @@ func (inst *Instagram) megaphoneLog() error {
 			"action":    "seen",
 			"reason":    "",
 			"device_id": inst.dID,
-			"uuid":      generateMD5Hash(string(time.Now().Unix())),
+			"uuid":      generateMD5Hash(fmt.Sprint(time.Now().Unix())),
 		},
 	)
 	if err != nil {
