@@ -116,7 +116,7 @@ func (insta *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 	if err == nil {
 		err = isError(resp.StatusCode, body)
 	}
-	return body, err
+	return body, nil
 }
 
 func isError(code int, body []byte) (err error) {

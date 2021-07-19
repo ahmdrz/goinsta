@@ -107,8 +107,9 @@ func (users *Users) setValues() {
 }
 
 type userResp struct {
-	Status string `json:"status"`
-	User   User   `json:"user"`
+	Status          string `json:"status"`
+	User            User   `json:"user"`
+	FeedbackMessage string `json:"feedback_message"`
 }
 
 // User is the representation of instagram's user profile
