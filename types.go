@@ -52,9 +52,10 @@ func (e ErrorN) Error() string {
 // Error400 is error returned by HTTP 400 status code.
 type Error400 struct {
 	ChallengeError
-	Action     string `json:"action"`
-	StatusCode string `json:"status_code"`
-	Payload    struct {
+	FeedbackMessage string `json:"feedback_message"`
+	Action          string `json:"action"`
+	StatusCode      string `json:"status_code"`
+	Payload         struct {
 		ClientContext string `json:"client_context"`
 		Message       string `json:"message"`
 	} `json:"payload"`
@@ -147,6 +148,17 @@ type Friendship struct {
 	IsPrivate       bool `json:"is_private"`
 	Muting          bool `json:"muting"`
 	IsMutingReel    bool `json:"is_muting_reel"`
+}
+
+// SavedMedia stores the information about media being saved before in my account.
+type SavedMedia struct {
+	Items []struct {
+		Media Item `json:"media"`
+	} `json:"items"`
+	NumResults          int    `json:"num_results"`
+	MoreAvailable       bool   `json:"more_available"`
+	AutoLoadMoreEnabled bool   `json:"auto_load_more_enabled"`
+	Status              string `json:"status"`
 }
 
 // Images are different quality images

@@ -3,6 +3,7 @@ package goinsta
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"math/rand"
@@ -115,8 +116,11 @@ func (insta *Instagram) sendRequest(o *reqOptions) (body []byte, err error) {
 	body, err = ioutil.ReadAll(resp.Body)
 	if err == nil {
 		err = isError(resp.StatusCode, body)
+	} else if resp.StatusCode == http.StatusBadRequest {
+		err = isError(resp.StatusCode, body)
 	}
-	return body, nil
+
+	return body, err
 }
 
 func isError(code int, body []byte) (err error) {
@@ -136,6 +140,8 @@ func isError(code int, body []byte) (err error) {
 		if ierr.Message == "challenge_required" {
 			return ierr.ChallengeError
 
+		} else if ierr.Message == "feedback_required" {
+			return errors.New("fail: " + ierr.FeedbackMessage)
 		}
 
 		if err == nil && ierr.Message != "" {
