@@ -52,9 +52,10 @@ func (e ErrorN) Error() string {
 // Error400 is error returned by HTTP 400 status code.
 type Error400 struct {
 	ChallengeError
-	Action     string `json:"action"`
-	StatusCode string `json:"status_code"`
-	Payload    struct {
+	FeedbackMessage string `json:"feedback_message"`
+	Action          string `json:"action"`
+	StatusCode      string `json:"status_code"`
+	Payload         struct {
 		ClientContext string `json:"client_context"`
 		Message       string `json:"message"`
 	} `json:"payload"`
